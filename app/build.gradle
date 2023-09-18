@@ -1,0 +1,58 @@
+plugins {
+    alias(libs.plugins.android.application.gradle)
+    alias(libs.plugins.kotlin.gradle)
+    id("kotlin-kapt")
+}
+
+android {
+    namespace 'com.lyfe.android'
+    compileSdk libs.versions.compileSdk.get().toInteger()
+
+    defaultConfig {
+        applicationId "com.lyfe.android"
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
+        versionCode libs.versions.versionCode.get().toInteger()
+        versionName libs.versions.versionName.get()
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = libs.versions.jvmTarget.get()
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.kotlinCompilerExtensionVersion.get()
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+
+    implementation(libs.bundles.android.library)
+    implementation(libs.bundles.compose)
+    testImplementation(libs.bundles.test)
+    androidTestImplementation(libs.bundles.android.test)
+    androidTestImplementation(libs.bundles.android.compose.test)
+    debugImplementation(libs.bundles.compose.debug)
+}
