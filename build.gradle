@@ -5,4 +5,5 @@ plugins {
     alias(libs.plugins.android.gradle) apply false
     alias(libs.plugins.klint) apply false
     alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.dagger.hilt.android) apply false
 }
