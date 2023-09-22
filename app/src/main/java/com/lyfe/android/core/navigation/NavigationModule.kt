@@ -9,10 +9,10 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-internal abstract class NavigationModule {
+internal interface NavigationModule {
 
 	@Binds
-	abstract fun provideLyfeNavigator(
+	fun provideLyfeNavigator(
 		lyfeNavigatorImpl: LyfeNavigatorImpl
 	): LyfeNavigator
 }
