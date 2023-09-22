@@ -3,4 +3,6 @@ plugins {
     alias(libs.plugins.android.application.gradle) apply false
     alias(libs.plugins.kotlin.gradle) apply false
     alias(libs.plugins.android.gradle) apply false
+    alias(libs.plugins.klint) apply false
+    alias(libs.plugins.detekt) apply false
 }

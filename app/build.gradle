@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application.gradle)
     alias(libs.plugins.kotlin.gradle)
+    alias(libs.plugins.klint)
+    alias(libs.plugins.detekt)
     id("kotlin-kapt")
 }
 
@@ -45,12 +47,17 @@ android {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+    detekt {
+        buildUponDefaultConfig = true
+        allRules = false
+        config = files("$rootDir/detekt-config.yml")
+    }
 }
 
 dependencies {
 
     implementation(libs.bundles.android.library)
-    implementation(libs.bundles.compose)
+    implementation(libs.bundles.compose.library)
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)
     androidTestImplementation(libs.bundles.android.compose.test)
