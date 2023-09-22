@@ -38,8 +38,7 @@ fun LyfeApp(
 	Scaffold(
 		bottomBar = {
 			BottomNavigation(
-				backgroundColor = Color.White,
-				contentColor = Color(0xFF3F414E)
+				backgroundColor = Color.White
 			) {
 				val navBackStackEntry by navController.currentBackStackEntryAsState()
 				val currentDestination = navBackStackEntry?.destination

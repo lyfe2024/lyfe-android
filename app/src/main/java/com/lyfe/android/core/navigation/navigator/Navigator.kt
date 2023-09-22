@@ -5,7 +5,7 @@ import com.lyfe.android.core.navigation.NavigationCommand
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 
-abstract class Navigator {
+open class Navigator {
 	val navigationCommands = MutableSharedFlow<NavigationCommand>(extraBufferCapacity = Int.MAX_VALUE)
 
 	// 첫 컴포지션 전에 ViewModel이 관찰할 수 있도록 사용되는 변수
