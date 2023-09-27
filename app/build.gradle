@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.klint)
     alias(libs.plugins.detekt)
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -58,6 +59,10 @@ dependencies {
 
     implementation(libs.bundles.android.library)
     implementation(libs.bundles.compose.library)
+
+    implementation(libs.bundles.hilt.android)
+    kapt(libs.bundles.hilt.compiler)
+
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)
     androidTestImplementation(libs.bundles.android.compose.test)

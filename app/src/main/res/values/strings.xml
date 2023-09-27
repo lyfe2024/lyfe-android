@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Lyfe</string>
+
+    <string name="btm_nav_home">홈</string>
+    <string name="btm_nav_post_all">전체보기</string>
+    <string name="btm_nav_post">게시</string>
+    <string name="btm_nav_alarm">알림</string>
+    <string name="btm_nav_profile">프로필</string>
 </resources>
