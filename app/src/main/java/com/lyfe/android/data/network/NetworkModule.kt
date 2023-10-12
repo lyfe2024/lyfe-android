@@ -1,6 +1,7 @@
 package com.lyfe.android.data.network
 
 import com.lyfe.android.BuildConfig
+import com.lyfe.android.data.network.adapter.ResultCallAdapterFactory
 import com.lyfe.android.data.network.converter.asConverterFactory
 import dagger.Module
 import dagger.Provides
@@ -18,18 +19,23 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
+	private const val ConnectTimeout = 15L
+	private const val WriteTimeout = 20L
+	private const val ReadTimeout = 15L
 	private val contentType = "application/json".toMediaType()
 
 	@Provides
 	@Singleton
 	fun providesLyfeOkHttpClient(): OkHttpClient =
 		OkHttpClient.Builder()
-			.connectTimeout(15, TimeUnit.SECONDS)
-			.writeTimeout(20, TimeUnit.SECONDS)
-			.readTimeout(15, TimeUnit.SECONDS)
-			.addInterceptor(HttpLoggingInterceptor().apply {
-				level = HttpLoggingInterceptor.Level.BODY
-			}).build()
+			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
+			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
+			.readTimeout(ReadTimeout, TimeUnit.SECONDS)
+			.addInterceptor(
+				HttpLoggingInterceptor().apply {
+					level = HttpLoggingInterceptor.Level.BODY
+				}
+			).build()
 
 	@Provides
 	@Singleton
@@ -38,5 +44,6 @@ object NetworkModule {
 			.baseUrl(BuildConfig.BASE_URL)
 			.client(okHttpClient)
 			.addConverterFactory(Json.asConverterFactory(contentType))
+			.addCallAdapterFactory(ResultCallAdapterFactory())
 			.build()
 }
