@@ -7,6 +7,13 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
+// Properties 객체 생성
+File localProperties = project.rootProject.file('local.properties')
+Properties properties = new Properties()
+if (localProperties.exists()) {
+	properties.load(localProperties.newDataInputStream())
+}
+
 android {
     namespace 'com.lyfe.android'
     compileSdk libs.versions.compileSdk.get().toInteger()
@@ -22,7 +29,11 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-    }
+
+		if (localProperties.exists()) {
+			buildConfigField "String", "BASE_URL", properties['baseUrl']
+		}
+	}
 
     buildTypes {
         release {
@@ -38,6 +49,7 @@ android {
         jvmTarget = libs.versions.jvmTarget.get()
     }
     buildFeatures {
+		buildConfig true
         compose true
     }
     composeOptions {
@@ -62,6 +74,9 @@ dependencies {
 
     implementation(libs.bundles.hilt.android)
     kapt(libs.bundles.hilt.compiler)
+
+	implementation(libs.bundles.network)
+	implementation(libs.bundles.json.parser)
 
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)
