@@ -1,3 +1,8 @@
 package com.lyfe.android.core.domain.repository
 
-interface LyfeRepository
+import com.lyfe.android.core.model.Alarm
+import kotlinx.coroutines.flow.Flow
+
+interface LyfeRepository {
+	fun fetchAlarmList(): Flow<List<Alarm>>
+}
