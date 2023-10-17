@@ -6,4 +6,16 @@
     <string name="btm_nav_post">게시</string>
     <string name="btm_nav_alarm">알림</string>
     <string name="btm_nav_profile">프로필</string>
+
+	<string name="request_photo_reaction">신청 사진 반응</string>
+	<string name="photo_comments">사진 댓글 알림</string>
+	<string name="post_reaction">글 반응 알림</string>
+	<string name="post_comments">글 댓글 알림</string>
+
+
+	<!-- AlarmScreen -->
+	<string name="no_alarm_list">새로운 알림이 없어요</string>
+	<string name="data_loading_failure">데이터를 호출하는 데 실패했습니다</string>
+	<string name="alarm_read_all_text">모두 읽음</string>
+	<string name="alarm_screen_title">알림</string>
 </resources>
