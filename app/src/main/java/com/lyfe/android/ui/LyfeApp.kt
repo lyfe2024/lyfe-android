@@ -21,7 +21,7 @@ import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.navigation.LyfeNavHost
+import com.lyfe.android.core.navigation.LyfeNavHost
 
 @Composable
 fun LyfeApp(
