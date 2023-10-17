@@ -1,7 +1,7 @@
-package com.lyfe.android.data.network.converter
+package com.lyfe.android.core.data.network.converter
 
-import com.lyfe.android.data.network.converter.LyfeSerializer.FromString
-import com.lyfe.android.data.network.converter.LyfeSerializer.FromBytes
+import com.lyfe.android.core.data.network.converter.LyfeSerializer.FromString
+import com.lyfe.android.core.data.network.converter.LyfeSerializer.FromBytes
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.StringFormat
 import okhttp3.MediaType

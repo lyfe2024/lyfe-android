@@ -1,4 +1,4 @@
-package com.lyfe.android.data.network.model
+package com.lyfe.android.core.data.network.model
 
 sealed class Result<out T : Any> {
 	data class Success<T : Any>(val body: T?) : Result<T>()
