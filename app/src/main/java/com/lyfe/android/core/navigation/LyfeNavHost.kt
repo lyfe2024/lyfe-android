@@ -1,10 +1,9 @@
-package com.lyfe.android.navigation
+package com.lyfe.android.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable

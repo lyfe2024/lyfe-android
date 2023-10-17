@@ -1,8 +1,7 @@
-package com.lyfe.android.navigation
+package com.lyfe.android.core.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.home.HomeScreen
