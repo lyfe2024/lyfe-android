@@ -1,4 +1,4 @@
-package com.lyfe.android.core.data.network
+package com.lyfe.android.core.data.network.di
 
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
