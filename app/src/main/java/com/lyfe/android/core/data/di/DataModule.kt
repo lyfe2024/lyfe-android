@@ -1,0 +1,21 @@
+package com.lyfe.android.core.data.di
+
+import com.lyfe.android.core.data.repository.fake.FakeLyfeRepository
+import com.lyfe.android.core.domain.repository.LyfeRepository
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+interface DataModule {
+
+	// 추후 LyfeRepository로 변경해야함
+	@Singleton
+	@Binds
+	fun bindsLyfeRepository(
+		lyfeRepositoryImpl: FakeLyfeRepository
+	): LyfeRepository
+}
