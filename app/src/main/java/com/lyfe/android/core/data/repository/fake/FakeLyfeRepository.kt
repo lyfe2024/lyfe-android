@@ -15,29 +15,29 @@ class FakeLyfeRepository @Inject constructor() : LyfeRepository {
 				profileImageUrl = "",
 				type = AlarmType.REQUEST_PHOTO_REACTION,
 				message = "신청하신 사진이 위스키 잔을 받았어요!",
-				time = "방금 전",
+				time = "방금 전"
 			),
 			Alarm(
 				id = 1L,
 				profileImageUrl = "",
 				type = AlarmType.PHOTO_COMMENTS,
 				message = "신청하신 사진에 댓글이 달렸어요. 확인하러 가볼까요?",
-				time = "5시간 전",
-				),
+				time = "5시간 전"
+			),
 			Alarm(
 				id = 2L,
 				profileImageUrl = "",
 				type = AlarmType.POST_REACTION,
 				message = "작성하신 글이 위스키 잔을 받았어요!",
-				time = "하루 전",
-				),
+				time = "하루 전"
+			),
 			Alarm(
 				id = 3L,
 				profileImageUrl = "",
 				type = AlarmType.POST_COMMENTS,
 				message = "작성하신 사진에 댓글이 달렸어요. 확인하러 가볼까요?",
-				time = "08.11",
-			),
+				time = "08.11"
+			)
 		)
 		emit(fakeAlarmList)
 	}

@@ -5,5 +5,5 @@ data class Alarm(
 	val profileImageUrl: String,
 	val type: AlarmType,
 	val message: String,
-	val time: String,
+	val time: String
 )
