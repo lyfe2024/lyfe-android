@@ -64,8 +64,8 @@ fun AlarmScreen(
 			style = TextStyle(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
-				fontWeight = FontWeight(700),
-				color = Color(0xFF000000)
+				fontWeight = FontWeight(weight = 700),
+				color = Color(color = 0xFF000000)
 			)
 		)
 
@@ -116,7 +116,6 @@ private fun AlarmContent(
 			AlarmBox(
 				modifier = Modifier
 					.fillMaxWidth(),
-				profileImageUrl = alarm.profileImageUrl,
 				typeText = context.getString(alarm.type.stringRes),
 				message = alarm.message,
 				time = alarm.time
@@ -141,8 +140,8 @@ private fun AlarmTopBar(
 			style = TextStyle(
 				fontSize = 16.sp,
 				lineHeight = 24.sp,
-				fontWeight = FontWeight(600),
-				color = Color(0xFF000000),
+				fontWeight = FontWeight(weight = 600),
+				color = Color(color = 0xFF000000),
 				textAlign = TextAlign.Right
 			)
 		)
@@ -152,13 +151,12 @@ private fun AlarmTopBar(
 @Composable
 private fun AlarmBox(
 	modifier: Modifier = Modifier,
-	profileImageUrl: String,
 	typeText: String,
 	message: String,
 	time: String
 ) {
 	var isPressed by remember { mutableStateOf(false) }
-	val pressedColor = Color(0x1A000000)
+	val pressedColor = Color(color = 0x1A000000)
 	val interactionSource = remember { MutableInteractionSource() }
 
 	LaunchedEffect(interactionSource) {
@@ -202,8 +200,8 @@ private fun AlarmBox(
 			style = TextStyle(
 				fontSize = 10.sp,
 				lineHeight = 16.sp,
-				fontWeight = FontWeight(400),
-				color = Color(0xFFCCCCCC),
+				fontWeight = FontWeight(weight = 400),
+				color = Color(color = 0xFFCCCCCC),
 				textAlign = TextAlign.Right
 			)
 		)
@@ -223,15 +221,15 @@ private fun AlarmTextContent(
 			text = typeText,
 			fontSize = 10.sp,
 			lineHeight = 16.sp,
-			fontWeight = FontWeight(400),
-			color = Color(0xFFCCCCCC)
+			fontWeight = FontWeight(weight = 400),
+			color = Color(color = 0xFFCCCCCC)
 		)
 		Text(
 			text = message,
 			fontSize = 14.sp,
 			lineHeight = 22.sp,
-			fontWeight = FontWeight(500),
-			color = Color(0xFF000000)
+			fontWeight = FontWeight(weight = 500),
+			color = Color(color = 0xFF000000)
 		)
 	}
 }
@@ -247,8 +245,8 @@ private fun NoAlarmListContent(
 			style = TextStyle(
 				fontSize = 18.sp,
 				lineHeight = 28.sp,
-				fontWeight = FontWeight(700),
-				color = Color(0xFF000000),
+				fontWeight = FontWeight(weight = 700),
+				color = Color(color = 0xFF000000),
 				textAlign = TextAlign.Center
 			)
 		)
