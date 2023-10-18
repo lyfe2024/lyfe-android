@@ -40,11 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.model.Alarm
-import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
 fun AlarmScreen(
-	viewModel: AlarmViewModel = hiltViewModel(),
+	viewModel: AlarmViewModel = hiltViewModel()
 ) {
 	val context = LocalContext.current
 
@@ -55,7 +54,8 @@ fun AlarmScreen(
 	) {
 		AlarmTopBar(
 			modifier = Modifier.fillMaxWidth(),
-			readAllText = context.getString(R.string.alarm_read_all_text))
+			readAllText = context.getString(R.string.alarm_read_all_text)
+		)
 
 		Spacer(modifier = Modifier.height(16.dp))
 
@@ -130,7 +130,7 @@ private fun AlarmContent(
 @Composable
 private fun AlarmTopBar(
 	modifier: Modifier = Modifier,
-	readAllText: String,
+	readAllText: String
 ) {
 	Row(
 		modifier = modifier,
@@ -143,7 +143,7 @@ private fun AlarmTopBar(
 				lineHeight = 24.sp,
 				fontWeight = FontWeight(600),
 				color = Color(0xFF000000),
-				textAlign = TextAlign.Right,
+				textAlign = TextAlign.Right
 			)
 		)
 	}
@@ -204,7 +204,7 @@ private fun AlarmBox(
 				lineHeight = 16.sp,
 				fontWeight = FontWeight(400),
 				color = Color(0xFFCCCCCC),
-				textAlign = TextAlign.Right,
+				textAlign = TextAlign.Right
 			)
 		)
 	}
@@ -231,7 +231,7 @@ private fun AlarmTextContent(
 			fontSize = 14.sp,
 			lineHeight = 22.sp,
 			fontWeight = FontWeight(500),
-			color = Color(0xFF000000),
+			color = Color(0xFF000000)
 		)
 	}
 }
@@ -249,7 +249,7 @@ private fun NoAlarmListContent(
 				lineHeight = 28.sp,
 				fontWeight = FontWeight(700),
 				color = Color(0xFF000000),
-				textAlign = TextAlign.Center,
+				textAlign = TextAlign.Center
 			)
 		)
 	}

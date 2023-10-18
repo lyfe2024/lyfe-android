@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class LyfeRepositoryImpl @Inject constructor(
-	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-): LyfeRepository {
+	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
+) : LyfeRepository {
 	override fun fetchAlarmList() = flow<List<Alarm>> {
 		emit(emptyList())
 	}.flowOn(ioDispatcher)

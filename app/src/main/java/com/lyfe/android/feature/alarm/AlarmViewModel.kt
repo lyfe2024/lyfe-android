@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AlarmViewModel @Inject constructor(
-	getAlarmListUseCase: GetAlarmListUseCase,
-): ViewModel() {
+	getAlarmListUseCase: GetAlarmListUseCase
+) : ViewModel() {
 
 	var uiState by mutableStateOf<AlarmUiState>(AlarmUiState.Loading)
 		private set
@@ -21,8 +21,7 @@ class AlarmViewModel @Inject constructor(
 	init {
 		viewModelScope.launch {
 			getAlarmListUseCase().collect {
-				uiState = AlarmUiState.Failure
-//				uiState = AlarmUiState.Success(it)
+				uiState = AlarmUiState.Success(it)
 			}
 		}
 	}

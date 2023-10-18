@@ -7,7 +7,7 @@ sealed interface AlarmUiState {
 	object Loading : AlarmUiState
 
 	data class Success(
-		val alarmList: List<Alarm>,
+		val alarmList: List<Alarm>
 	) : AlarmUiState
 
 	object Failure : AlarmUiState
