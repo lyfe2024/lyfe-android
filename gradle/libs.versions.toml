@@ -46,6 +46,9 @@ retrofit = "2.9.0"
 # JsonParser
 kotlinx-serialization = "1.5.1"
 
+# Image
+coil = "2.4.0"
+
 [plugins]
 # build.gradle (project module)
 android-application-gradle = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -95,6 +98,10 @@ compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", versio
 compose-ui-tooling-debug = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-ui-tooling" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui" }
 
+# Image
+coil = { module = "io.coil-kt:coil", version.ref = "coil"}
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
+
 [bundles]
 # Android
 android-library = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx"]
@@ -115,3 +122,6 @@ android-test = ["androidx-junit", "androidx-espresso"]
 android-compose-test = ["compose-ui-test-junit4"]
 
 compose-debug = ["compose-ui-tooling-debug", "compose-ui-test-manifest"]
+
+# Image
+coil = ["coil", "coil-compose"]
