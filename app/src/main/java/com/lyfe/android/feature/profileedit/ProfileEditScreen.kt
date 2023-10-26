@@ -191,7 +191,7 @@ private fun ProfileEditNicknameBox(
 			Box(
 				modifier = Modifier
 					.fillMaxWidth()
-					.border(width = 1.dp, color = Color(0xFF363636), shape = RoundedCornerShape(8.dp))
+					.border(width = 1.dp, color = Color(color = 0xFF363636), shape = RoundedCornerShape(8.dp))
 					.padding(horizontal = 4.dp),
 				contentAlignment = Alignment.CenterStart
 			) {
@@ -259,7 +259,7 @@ private fun ProfileEditCompleteButton(
 			.height(48.dp)
 			.fillMaxWidth()
 			.background(
-				color = if (isEnableState) Color(0xff202124) else Color(0xfff2f3f4),
+				color = if (isEnableState) Color(color = 0xff202124) else Color(color = 0xfff2f3f4),
 				shape = RoundedCornerShape(24.dp)
 			)
 			.clip(RoundedCornerShape(10.dp)),
@@ -269,19 +269,21 @@ private fun ProfileEditCompleteButton(
 	) {
 		Text(
 			text = "완료",
-			color = if (isEnableState) Color.White else Color(0xff8c8c8c),
+			color = if (isEnableState) Color.White else Color(color = 0xff8c8c8c),
 			textAlign = TextAlign.Center,
 			fontSize = 16.sp
 		)
 	}
 }
 
+const val MAX = 10
+
 private fun checkNicknameForm(text: String): NicknameFormState {
 	val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
 	val specialCharRegex = Regex("[,=':;><?/~`_.!@#^&*]|\\\\[|\\\\]")
 	return if (text.matches(regex = regex)) {
 		NicknameFormState.CORRECT
-	} else if (text.length > 10) {
+	} else if (text.length > MAX) {
 		NicknameFormState.NICKNAME_FORM_TOO_LONG
 	} else if (text != text.replace(specialCharRegex, "")) {
 		NicknameFormState.CONTAIN_SPECIAL_CHAR
