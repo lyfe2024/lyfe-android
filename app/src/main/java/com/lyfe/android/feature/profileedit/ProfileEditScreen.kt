@@ -8,18 +8,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -32,9 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.Center
@@ -106,13 +101,14 @@ private fun ProfileEditContentArea(
 private fun ProfileEditContent(
 	nickname: String
 ) {
+	val isNicknameEnable = remember { mutableStateOf(false) }
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(top = 24.dp, bottom = 12.dp)
 	) {
 		Column(
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier.fillMaxSize(),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
 			ProfileEditThumbnailContent()
@@ -120,8 +116,13 @@ private fun ProfileEditContent(
 			Spacer(modifier = Modifier.height(40.dp))
 
 			ProfileEditNicknameBox(
-				nickname = nickname
+				nickname = nickname,
+				isNicknameEnableStateChanged = { isNicknameEnable.value = it }
 			)
+
+			Spacer(modifier = Modifier.weight(1f))
+
+			ProfileEditCompleteButton(isNicknameEnable.value)
 		}
 	}
 }
@@ -148,6 +149,7 @@ private fun ProfileEditThumbnailContent() {
 		AsyncImage(
 			model = ImageRequest.Builder(LocalContext.current)
 				.data(imageUri.value)
+				.fallback(R.drawable.ic_profile)
 				.build(),
 			contentDescription = "프로필 이미지",
 			modifier = Modifier
@@ -178,26 +180,22 @@ private fun ProfileEditThumbnailContent() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileEditNicknameBox(
-	nickname: String
+	nickname: String,
+	isNicknameEnableStateChanged: (Boolean) -> Unit
 ) {
 	// 닉네임 변경하는 부분
 	val nicknameState = remember { mutableStateOf(nickname) }
 	val nicknameFormState = remember { mutableStateOf("") }
-	var isEnableState by remember { mutableStateOf(false) }
-	Column(
-		modifier = Modifier.fillMaxHeight(),
-		verticalArrangement = Arrangement.SpaceBetween
-	) {
+	Column {
 		Column {
 			Box(
 				modifier = Modifier
-					.clip(RoundedCornerShape(8.dp))
+					.fillMaxWidth()
 					.border(width = 1.dp, color = Color(0xFF363636), shape = RoundedCornerShape(8.dp))
 					.padding(horizontal = 4.dp),
 				contentAlignment = Alignment.CenterStart
 			) {
 				Row(
-					modifier = Modifier.fillMaxWidth(),
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					TextField(
@@ -211,10 +209,12 @@ private fun ProfileEditNicknameBox(
 							disabledIndicatorColor = Color.Transparent
 						),
 						onValueChange = {
-							val checkNicknameFormState = checkNicknameForm(it)
 							nicknameState.value = it
+							// 유용한 닉네임 여부 확인
+							val checkNicknameFormState = checkNicknameForm(it)
+							isNicknameEnableStateChanged(checkNicknameFormState == NicknameFormState.CORRECT)
+							// 닉네임 오류 내용 표시
 							nicknameFormState.value = checkNicknameFormState.content
-							isEnableState = checkNicknameFormState == NicknameFormState.CORRECT && it != nickname
 						}
 					)
 
@@ -222,7 +222,11 @@ private fun ProfileEditNicknameBox(
 						modifier = Modifier
 							.size(32.dp)
 							.padding(6.dp),
-						onClick = { nicknameState.value = "" }
+						onClick = {
+							nicknameState.value = ""
+							nicknameFormState.value = ""
+							isNicknameEnableStateChanged(false)
+						}
 					) {
 						Icon(
 							imageVector = Icons.Filled.Close,
@@ -241,33 +245,34 @@ private fun ProfileEditNicknameBox(
 				fontSize = 11.sp
 			)
 		}
+	}
+}
 
-		Spacer(modifier = Modifier.weight(1f))
-
-		val context = LocalContext.current
-		// 완료 버튼
-		OutlinedButton(
-			modifier = Modifier
-				.height(48.dp)
-				.fillMaxWidth()
-				.background(
-					color = if (isEnableState) Color(0xff202124) else Color(0xfff2f3f4),
-					shape = RoundedCornerShape(24.dp)
-				)
-				.clip(RoundedCornerShape(10.dp)),
-			onClick = {
-				// 닉네임 중복 여부 확인 (서버)
-				Toast.makeText(context, "닉네임 중복 여부 체크", Toast.LENGTH_SHORT).show()
-			}
-		) {
-			Text(
-				modifier = Modifier.wrapContentSize(),
-				text = "완료",
-				color = if (isEnableState) Color.White else Color(0xff8c8c8c),
-				textAlign = TextAlign.Center,
-				fontSize = 16.sp
+@Composable
+private fun ProfileEditCompleteButton(
+	isEnableState: Boolean
+) {
+	val context = LocalContext.current
+	// 완료 버튼
+	OutlinedButton(
+		modifier = Modifier
+			.height(48.dp)
+			.fillMaxWidth()
+			.background(
+				color = if (isEnableState) Color(0xff202124) else Color(0xfff2f3f4),
+				shape = RoundedCornerShape(24.dp)
 			)
+			.clip(RoundedCornerShape(10.dp)),
+		onClick = {
+			Toast.makeText(context, "현재 닉네임 가능 여부: $isEnableState", Toast.LENGTH_SHORT).show()
 		}
+	) {
+		Text(
+			text = "완료",
+			color = if (isEnableState) Color.White else Color(0xff8c8c8c),
+			textAlign = TextAlign.Center,
+			fontSize = 16.sp
+		)
 	}
 }
 
