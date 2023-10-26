@@ -1,6 +1,9 @@
 package com.lyfe.android.feature.profile_edit
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -31,7 +34,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
@@ -49,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lyfe.android.R
+import androidx.compose.runtime.remember
 
 @Composable
 fun ProfileEditScreen(
@@ -134,18 +137,25 @@ private fun ProfileEditThumbnailContent(
 	thumbnail: String?
 ) {
 	// 썸네일 변경하는 부분
-	val thumbnailUrl = remember { mutableStateOf(thumbnail) }
+	LocalContext.current
+//	val thumbnailUrl = remember { mutableStateOf(thumbnail) }
+	val imageUri = remember { mutableStateOf<Uri?>(null) }
 	Box(
 		modifier = Modifier.size(80.dp)
 	) {
+		// Gallery Launcher
+		val galleryLauncher = rememberLauncherForActivityResult(
+			contract = ActivityResultContracts.GetContent(),
+			onResult = { imageUri.value = it }
+		)
 		val onClick = {
 			// 클릭하면 앨범으로 이동
-
+			galleryLauncher.launch("image/*")
 		}
 
 		AsyncImage(
 			model = ImageRequest.Builder(LocalContext.current)
-				.data(thumbnailUrl.value)
+				.data(imageUri.value)
 				.build(),
 			contentDescription = "프로필 이미지",
 			modifier = Modifier
@@ -286,3 +296,4 @@ private fun checkNicknameForm(text: String): NicknameFormState {
 		NicknameFormState.NEED_LETTER_NUMBER_COMBINATION
 	}
 }
+
