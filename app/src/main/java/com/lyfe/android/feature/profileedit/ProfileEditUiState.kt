@@ -7,8 +7,7 @@ sealed interface ProfileEditUiState {
 	data class Success(
 		val thumbnail: String?,
 		val nickname: String
-	): ProfileEditUiState
+	) : ProfileEditUiState
 
 	object Failure : ProfileEditUiState
-
 }

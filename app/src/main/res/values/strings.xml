@@ -6,4 +6,6 @@
     <string name="btm_nav_post">게시</string>
     <string name="btm_nav_alarm">알림</string>
     <string name="btm_nav_profile">프로필</string>
+
+	<string name="thumbnail_example">https://firebasestorage.googleapis.com/v0/b/grap–b9116.appspot.com/o/profile_default%2Fprofile_traveler.png?alt=media&amp;token=38b417dd–836c–4107–8ae5–8432a00ae610&amp;_gl=1*1lqvtm2*_ga*ODI2NTUwODkxLjE2ODgxMDE2Mjc.*_ga_CW55HF8NVT*MTY5Nzk2MDI2Ni40LjEuMTY5Nzk2MDMzMi41Ni4wLjA.</string>
 </resources>
