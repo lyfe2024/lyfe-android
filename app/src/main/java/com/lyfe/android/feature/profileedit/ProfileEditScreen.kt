@@ -62,7 +62,6 @@ fun ProfileEditScreen(
 			.padding(top = 40.dp, bottom = 16.dp, start = 24.dp, end = 24.dp)
 			.fillMaxSize()
 	) {
-
 		Text(
 			text = "프로필 수정",
 			style = TextStyle(
@@ -87,16 +86,14 @@ private fun ProfileEditContentArea(
 	when (viewModel.uiState) {
 		is ProfileEditUiState.Success -> {
 			val profileData = viewModel.uiState as ProfileEditUiState.Success
-			val thumbnail = profileData.thumbnail ?: "https://firebasestorage.googleapis.com/v0/b/grap-b9116.appspot.com/o/profile_default%2Fprofile_traveler.png?alt=media&token=38b417dd-836c-4107-8ae5-8432a00ae610&_gl=1*1lqvtm2*_ga*ODI2NTUwODkxLjE2ODgxMDE2Mjc.*_ga_CW55HF8NVT*MTY5Nzk2MDI2Ni40LjEuMTY5Nzk2MDMzMi41Ni4wLjA."
 			val nickname = profileData.nickname
 
-			ProfileEditContent(thumbnail, nickname)
-
+			ProfileEditContent(nickname)
 		}
 
 		is ProfileEditUiState.Failure -> {
-//			val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
-			ProfileEditContent(null, "")
+			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
+			ProfileEditContent("")
 		}
 
 		is ProfileEditUiState.Loading -> {
@@ -107,21 +104,18 @@ private fun ProfileEditContentArea(
 
 @Composable
 private fun ProfileEditContent(
-	thumbnail: String?,
 	nickname: String
 ) {
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(top = 24.dp, bottom = 12.dp),
+			.padding(top = 24.dp, bottom = 12.dp)
 	) {
 		Column(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			ProfileEditThumbnailContent(
-				thumbnail = thumbnail
-			)
+			ProfileEditThumbnailContent()
 
 			Spacer(modifier = Modifier.height(40.dp))
 
@@ -133,12 +127,10 @@ private fun ProfileEditContent(
 }
 
 @Composable
-private fun ProfileEditThumbnailContent(
-	thumbnail: String?
-) {
+private fun ProfileEditThumbnailContent() {
 	// 썸네일 변경하는 부분
 	LocalContext.current
-//	val thumbnailUrl = remember { mutableStateOf(thumbnail) }
+	// val thumbnailUrl = remember { mutableStateOf(thumbnail) }
 	val imageUri = remember { mutableStateOf<Uri?>(null) }
 	Box(
 		modifier = Modifier.size(80.dp)
@@ -230,14 +222,13 @@ private fun ProfileEditNicknameBox(
 						modifier = Modifier
 							.size(32.dp)
 							.padding(6.dp),
-						onClick = { nicknameState.value = "" },
+						onClick = { nicknameState.value = "" }
 					) {
 						Icon(
 							imageVector = Icons.Filled.Close,
 							contentDescription = null
 						)
 					}
-
 				}
 			}
 
@@ -249,7 +240,6 @@ private fun ProfileEditNicknameBox(
 				color = Color.Red,
 				fontSize = 11.sp
 			)
-
 		}
 
 		Spacer(modifier = Modifier.weight(1f))
@@ -266,9 +256,9 @@ private fun ProfileEditNicknameBox(
 				)
 				.clip(RoundedCornerShape(10.dp)),
 			onClick = {
-			  	// 닉네임 중복 여부 확인 (서버)
+				// 닉네임 중복 여부 확인 (서버)
 				Toast.makeText(context, "닉네임 중복 여부 체크", Toast.LENGTH_SHORT).show()
-			},
+			}
 		) {
 			Text(
 				modifier = Modifier.wrapContentSize(),
@@ -281,11 +271,9 @@ private fun ProfileEditNicknameBox(
 	}
 }
 
-
 private fun checkNicknameForm(text: String): NicknameFormState {
 	val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
 	val specialCharRegex = Regex("[,=':;><?/~`_.!@#^&*]|\\\\[|\\\\]")
-
 	return if (text.matches(regex = regex)) {
 		NicknameFormState.CORRECT
 	} else if (text.length > 10) {
@@ -296,4 +284,3 @@ private fun checkNicknameForm(text: String): NicknameFormState {
 		NicknameFormState.NEED_LETTER_NUMBER_COMBINATION
 	}
 }
-
