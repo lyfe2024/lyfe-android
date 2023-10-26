@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.profile_edit
+package com.lyfe.android.feature.profileedit
 
 import android.net.Uri
 import android.widget.Toast

@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.profile_edit
+package com.lyfe.android.feature.profileedit
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

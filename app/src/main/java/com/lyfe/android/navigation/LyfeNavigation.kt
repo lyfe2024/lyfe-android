@@ -8,8 +8,8 @@ import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.profile.ProfileScreen
-import com.lyfe.android.feature.profile_edit.ProfileEditScreen
-import com.lyfe.android.feature.profile_edit.ProfileEditViewModel
+import com.lyfe.android.feature.profileedit.ProfileEditScreen
+import com.lyfe.android.feature.profileedit.ProfileEditViewModel
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator
