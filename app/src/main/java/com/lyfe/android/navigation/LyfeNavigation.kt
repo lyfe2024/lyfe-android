@@ -8,6 +8,8 @@ import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.profile.ProfileScreen
+import com.lyfe.android.feature.profile_edit.ProfileEditScreen
+import com.lyfe.android.feature.profile_edit.ProfileEditViewModel
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator
@@ -26,5 +28,9 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 
 	composable(route = LyfeScreens.Profile.name) {
 		ProfileScreen(navigator = lyfeNavigator)
+	}
+
+	composable(route = LyfeScreens.ProfileEdit.name) {
+		ProfileEditScreen(viewModel = ProfileEditViewModel())
 	}
 }
