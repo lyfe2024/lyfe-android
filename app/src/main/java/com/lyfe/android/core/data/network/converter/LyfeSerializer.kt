@@ -1,4 +1,4 @@
-package com.lyfe.android.data.network.converter
+package com.lyfe.android.core.data.network.converter
 
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.DeserializationStrategy
