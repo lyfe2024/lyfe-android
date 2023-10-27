@@ -1,6 +1,6 @@
-package com.lyfe.android.data.network.adapter
+package com.lyfe.android.core.data.network.adapter
 
-import com.lyfe.android.data.network.model.Result
+import com.lyfe.android.core.data.network.model.Result
 import retrofit2.Call
 import retrofit2.CallAdapter
 import java.lang.reflect.Type
