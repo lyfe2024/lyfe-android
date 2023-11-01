@@ -1,4 +1,4 @@
-package com.lyfe.android.core.common_ui
+package com.lyfe.android.core.common.ui.component
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

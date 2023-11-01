@@ -1,6 +1,6 @@
 package com.lyfe.android.feature.post
 
-import com.lyfe.android.core.common_ui.permission.NeededPermission
+import com.lyfe.android.core.common.ui.permission.NeededPermission
 import javax.annotation.concurrent.Immutable
 
 sealed interface PostUiState {

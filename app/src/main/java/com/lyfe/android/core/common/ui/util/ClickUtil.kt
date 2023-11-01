@@ -1,4 +1,4 @@
-package com.lyfe.android.core.common_ui.util
+package com.lyfe.android.core.common.ui.util
 
 interface MultipleEventsBlockManager {
 	fun processEvent(event: () -> Unit)
