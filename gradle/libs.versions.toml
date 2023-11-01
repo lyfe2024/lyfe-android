@@ -6,9 +6,9 @@ klint-plugin = "11.5.1"
 detekt-plugin = "1.20.0-RC1"
 
 # Config Versions
-compileSdk = "33"
+compileSdk = "34"
 minSdk = "26"
-targetSdk = "33"
+targetSdk = "34"
 versionCode = "1"
 versionName = "1.0"
 jvmTarget = "17"
@@ -47,7 +47,11 @@ retrofit = "2.9.0"
 # JsonParser
 kotlinx-serialization = "1.5.1"
 
-# Image
+# ImageLoader
+glide-compose-version = "1.0.0-beta01"
+glide-version = "4.15.1"
+glide-compiler-version = "4.13.2"
+
 coil = "2.4.0"
 
 [plugins]
@@ -100,6 +104,11 @@ compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", versio
 compose-ui-tooling-debug = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-ui-tooling" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui" }
 
+# Image Loader Library
+glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glide-compose-version" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide-version" }
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide-compiler-version" }
+
 # Image
 coil = { module = "io.coil-kt:coil", version.ref = "coil"}
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
@@ -119,6 +128,9 @@ network = ["retrofit", "okhttp-logging-interceptor"]
 
 # JsonParser
 json-parser = ["kotlinx-serialization"]
+
+# ImageLoader
+imageloader = ["glide-compose", "glide"]
 
 test = ["junit"]
 android-test = ["androidx-junit", "androidx-espresso"]

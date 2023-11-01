@@ -73,10 +73,13 @@ dependencies {
     implementation(libs.bundles.compose.library)
 
     implementation(libs.bundles.hilt.android)
-    kapt(libs.bundles.hilt.compiler)
+	kapt(libs.bundles.hilt.compiler)
 
 	implementation(libs.bundles.network)
 	implementation(libs.bundles.json.parser)
+
+	implementation(libs.bundles.imageloader)
+	annotationProcessor(libs.glide.compiler)
 
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)
