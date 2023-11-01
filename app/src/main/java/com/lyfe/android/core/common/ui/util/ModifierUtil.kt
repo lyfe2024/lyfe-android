@@ -1,4 +1,4 @@
-package com.lyfe.android.core.common_ui.util
+package com.lyfe.android.core.common.ui.util
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable

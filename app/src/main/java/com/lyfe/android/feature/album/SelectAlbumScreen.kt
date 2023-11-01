@@ -52,7 +52,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.rememberGlidePreloadingData
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lyfe.android.R
-import com.lyfe.android.core.common_ui.RoundedCornerButton
+import com.lyfe.android.core.common.ui.component.RoundedCornerButton
 import com.lyfe.android.core.model.GalleryImage
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator

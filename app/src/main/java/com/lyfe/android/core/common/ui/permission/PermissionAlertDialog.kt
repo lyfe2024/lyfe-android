@@ -1,4 +1,4 @@
-package com.lyfe.android.core.common_ui.permission
+package com.lyfe.android.core.common.ui.permission
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
