@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class DeviceGalleryDataSourceImpl @Inject constructor(
 	@ApplicationContext private val context: Context
-): DeviceGalleryDataSource {
+) : DeviceGalleryDataSource {
 
 	private val uriExternal: Uri by lazy {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -28,7 +28,7 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 		MediaStore.Images.ImageColumns.DATA,
 		MediaStore.Images.ImageColumns.DISPLAY_NAME,
 		MediaStore.Images.ImageColumns.DATE_TAKEN,
-		MediaStore.Images.ImageColumns._ID,
+		MediaStore.Images.ImageColumns._ID
 	)
 
 	private val sortedOrder = MediaStore.Images.ImageColumns.DATE_TAKEN
@@ -57,7 +57,7 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 					uri = contentUri,
 					name = name,
 					date = date ?: "",
-					size = 0,
+					size = 0
 				)
 				galleryImageList.add(image)
 			}
@@ -67,14 +67,14 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 
 	private fun getQuery(
 		selection: String? = null,
-		selectionArgs: Array<String>? = null,
+		selectionArgs: Array<String>? = null
 	) = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
 		val bundle = bundleOf(
 			ContentResolver.QUERY_ARG_LIMIT to Integer.MAX_VALUE,
 			ContentResolver.QUERY_ARG_SORT_COLUMNS to arrayOf(MediaStore.Files.FileColumns.DATE_MODIFIED),
 			ContentResolver.QUERY_ARG_SORT_DIRECTION to ContentResolver.QUERY_SORT_DIRECTION_DESCENDING,
 			ContentResolver.QUERY_ARG_SQL_SELECTION to selection,
-			ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to selectionArgs,
+			ContentResolver.QUERY_ARG_SQL_SELECTION_ARGS to selectionArgs
 		)
 		contentResolver.query(uriExternal, projection, bundle, null)
 	} else {
@@ -83,7 +83,7 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 			projection,
 			selection,
 			selectionArgs,
-			"$sortedOrder DESC",
+			"$sortedOrder DESC"
 		)
 	}
 
@@ -92,7 +92,7 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 
 		val uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 		val projection = arrayOf(
-			MediaStore.Images.Media.DATA,
+			MediaStore.Images.Media.DATA
 		)
 
 		val cursor = context.contentResolver.query(uri, projection, null, null, null)

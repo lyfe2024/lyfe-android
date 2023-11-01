@@ -9,5 +9,5 @@ data class GalleryImageResponse(
 	val name: String,
 	val date: String,
 	val size: Int,
-	var isSelected: Boolean = false,
+	var isSelected: Boolean = false
 )

@@ -31,10 +31,11 @@ fun PermissionAlertDialog(
 			Column(
 				modifier = Modifier.fillMaxWidth()
 					.clickable {
-						if (isPermissionDeclined)
+						if (isPermissionDeclined) {
 							onGoToAppSettingsClick()
-						else
+						} else {
 							onOkClick()
+						}
 					}
 			) {
 				Divider(color = Color.LightGray)

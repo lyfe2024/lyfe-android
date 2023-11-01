@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 fun PermissionAlertDialogs(
 	failedPermissionList: List<NeededPermission>,
 	permissionSuccess: (permissionPassedList: List<NeededPermission>) -> Unit = {},
-	onDismiss: () -> Unit,
+	onDismiss: () -> Unit
 ) {
 	val permissionPassedList = mutableListOf<NeededPermission>()
 
@@ -32,7 +32,7 @@ fun PermissionAlertDialogs(
 				isSuccess = entry.value,
 				onSuccess = { neededPermission ->
 					permissionPassedList.add(neededPermission)
-				},
+				}
 			)
 		}
 
@@ -65,7 +65,7 @@ fun PermissionAlertDialogs(
 private fun classifyPermission(
 	content: String,
 	isSuccess: Boolean,
-	onSuccess: (neededPermission: NeededPermission) -> Unit,
+	onSuccess: (neededPermission: NeededPermission) -> Unit
 ) {
 	if (isSuccess) onSuccess(getNeededPermission(content))
 }

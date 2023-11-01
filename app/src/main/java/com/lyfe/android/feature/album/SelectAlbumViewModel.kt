@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectAlbumViewModel @Inject constructor(
-	private val getAlbumImagesUseCase: GetAlbumImagesUseCase,
+	private val getAlbumImagesUseCase: GetAlbumImagesUseCase
 ) : ViewModel() {
 
 	var uiState by mutableStateOf<SelectAlbumUiState>(SelectAlbumUiState.Loading)

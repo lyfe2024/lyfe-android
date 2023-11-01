@@ -13,14 +13,13 @@ import androidx.compose.ui.unit.dp
 fun IndicatorBar(
 	modifier: Modifier = Modifier,
 	listState: LazyGridState,
-	columnSize: Int,
+	columnSize: Int
 ) {
 	if (!listState.canScrollBackward && !listState.canScrollForward) {
 		return
 	}
 
 	BoxWithConstraints(modifier = modifier) {
-
 		val heightDp = with(LocalDensity.current) { maxHeight }
 
 		ScrollTrack(
@@ -29,7 +28,7 @@ fun IndicatorBar(
 				.width(6.dp)
 				.height(heightDp),
 			gridState = listState,
-			columnSize = columnSize,
+			columnSize = columnSize
 		)
 	}
 }

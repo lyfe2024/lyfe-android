@@ -56,15 +56,17 @@ import com.lyfe.android.core.common.ui.component.RoundedCornerButton
 import com.lyfe.android.core.model.GalleryImage
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.ui.theme.BtnDarkColor
+import com.lyfe.android.ui.theme.BtnLightGrayColor
+import com.lyfe.android.ui.theme.DisabledBtnTextColor
 
-const val SELECT_IMAGE_KEY = "select_image"
+const val SelectImageKey = "Select Image"
 
 @Composable
 fun SelectAlbumScreen(
 	viewModel: SelectAlbumViewModel = hiltViewModel(),
 	navigator: LyfeNavigator
 ) {
-
 	val lazyGridState = rememberLazyGridState()
 
 	Box(
@@ -108,7 +110,7 @@ fun SelectAlbumScreen(
 						isClickable = selectedImageUri.isNotEmpty()
 					) {
 						navigator.navigateBackWithResult(
-							key = SELECT_IMAGE_KEY,
+							key = SelectImageKey,
 							result = selectedImageUri,
 							route = LyfeScreens.Post.name
 						)
@@ -122,9 +124,7 @@ fun SelectAlbumScreen(
 				)
 			}
 
-			is SelectAlbumUiState.Error -> {
-
-			}
+			is SelectAlbumUiState.Error -> {}
 		}
 	}
 }
@@ -151,7 +151,7 @@ fun SelectAlbumButton(
 	isClickable: Boolean = true,
 	onClick: () -> Unit
 ) {
-	val textColor = if (isClickable) Color.White else Color(0xFF8C8C8C)
+	val textColor = if (isClickable) Color.White else DisabledBtnTextColor
 
 	RoundedCornerButton(
 		modifier = Modifier
@@ -160,17 +160,17 @@ fun SelectAlbumButton(
 		horizontalPadding = 24.dp,
 		verticalPadding = 12.dp,
 		isClickable = isClickable,
-		isClickableColor = Color(0xFF202124),
-		isNotClickableColor = Color(0xFFF2F3F4),
-		onClick = { onClick() },
+		isClickableColor = BtnDarkColor,
+		isNotClickableColor = BtnLightGrayColor,
+		onClick = { onClick() }
 	) {
 		Text(
 			text = "선택완료",
 			style = TextStyle(
 				fontSize = 16.sp,
 				lineHeight = 24.sp,
-				fontWeight = FontWeight(700),
-				color = textColor,
+				fontWeight = FontWeight.W700,
+				color = textColor
 			)
 		)
 	}
@@ -184,7 +184,6 @@ fun SelectAlbumImagesBox(
 	lazyGridState: LazyGridState,
 	selectImage: (index: Int, image: String) -> Unit
 ) {
-
 	val requestBuilderTransform =
 		{ item: GalleryImage, requestBuilder: RequestBuilder<Drawable> ->
 			requestBuilder.load(item)
@@ -196,13 +195,15 @@ fun SelectAlbumImagesBox(
 	val preloadingData = rememberGlidePreloadingData(
 		data = images,
 		preloadImageSize = thumbnailSize,
-		requestBuilderTransform = requestBuilderTransform,
+		requestBuilderTransform = requestBuilderTransform
 	)
+
+	val gridCellCount = 3
 
 	Box {
 		LazyVerticalGrid(
 			modifier = modifier,
-			columns = GridCells.Fixed(3),
+			columns = GridCells.Fixed(gridCellCount),
 			verticalArrangement = Arrangement.spacedBy(4.dp),
 			horizontalArrangement = Arrangement.spacedBy(4.dp),
 			state = lazyGridState
@@ -214,7 +215,7 @@ fun SelectAlbumImagesBox(
 					GalleryImageView(
 						image = galleryImage,
 						isSelected = selectedImageIdx == index,
-						preloadRequestBuilder = preloadRequestBuilder,
+						preloadRequestBuilder = preloadRequestBuilder
 					) { image ->
 						selectImage(index, image)
 					}
@@ -238,7 +239,7 @@ private fun GalleryImageView(
 	image: GalleryImage,
 	isSelected: Boolean = false,
 	preloadRequestBuilder: RequestBuilder<Drawable>,
-	selectImage: (image: String) -> Unit,
+	selectImage: (image: String) -> Unit
 ) {
 	val borderWidth = if (isSelected) 2.dp else 0.dp
 
@@ -266,13 +267,12 @@ private fun GalleryImageView(
 		GlideImage(
 			model = image.imageUri,
 			contentDescription = "",
-			contentScale = ContentScale.Crop,
+			contentScale = ContentScale.Crop
 		) {
 			it.thumbnail(preloadRequestBuilder)
 				.diskCacheStrategy(DiskCacheStrategy.ALL)
 		}
 	}
-
 }
 
 @Composable
@@ -291,9 +291,8 @@ private fun CircleCheckBox() {
 
 @Composable
 private fun EmptyGalleryImagesBox(
-	modifier: Modifier = Modifier,
-
-	) {
+	modifier: Modifier = Modifier
+) {
 	Box(
 		modifier = modifier
 	) {

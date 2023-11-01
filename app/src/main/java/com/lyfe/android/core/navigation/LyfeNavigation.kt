@@ -12,7 +12,7 @@ import com.lyfe.android.feature.profile.ProfileScreen
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
-	navHostController: NavHostController,
+	navHostController: NavHostController
 ) {
 	composable(route = LyfeScreens.Home.name) {
 		HomeScreen(navigator = lyfeNavigator)
@@ -21,7 +21,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	composable(route = LyfeScreens.Post.name) {
 		PostScreen(
 			navigator = lyfeNavigator,
-			navHostController = navHostController,
+			navHostController = navHostController
 		)
 	}
 
