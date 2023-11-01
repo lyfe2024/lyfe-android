@@ -44,19 +44,22 @@ import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.common.ui.util.noRippleClickable
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.feature.album.SELECT_IMAGE_KEY
+import com.lyfe.android.feature.album.SelectImageKey
+import com.lyfe.android.ui.theme.BtnDarkColor
+import com.lyfe.android.ui.theme.BtnLightGrayColor
+import com.lyfe.android.ui.theme.DisabledBtnTextColor
 
 @Composable
 fun PostScreen(
 	navigator: LyfeNavigator,
 	navHostController: NavHostController,
-	viewModel: PostViewModel = hiltViewModel(),
+	viewModel: PostViewModel = hiltViewModel()
 ) {
 	var isNavigateToSelectAlbum by remember { mutableStateOf(false) }
 
 	LaunchedEffect(navHostController) {
 		val selectedImage =
-			navHostController.getBackStackEntry(LyfeScreens.Post.name).savedStateHandle.get<String>(SELECT_IMAGE_KEY)
+			navHostController.getBackStackEntry(LyfeScreens.Post.name).savedStateHandle.get<String>(SelectImageKey)
 
 		viewModel.setSelectedImage(selectedImage ?: "")
 	}
@@ -146,22 +149,22 @@ private fun PostScreenDefault(
 			modifier = Modifier
 				.fillMaxSize()
 				.weight(1f),
-			postTitle = title,
+			postTitle = title
 		) { title ->
 			changeTitle(title)
 		}
 
 		Spacer(modifier = Modifier.height(16.dp))
 
-		val textColor = if (isBtnClickable) Color.White else Color(0xFF8C8C8C)
+		val textColor = if (isBtnClickable) Color.White else DisabledBtnTextColor
 
 		RoundedCornerButton(
 			modifier = Modifier.fillMaxWidth(),
 			cornerRadius = 10.dp,
 			horizontalPadding = 24.dp,
 			verticalPadding = 12.dp,
-			isClickableColor = Color(0xFF202124),
-			isNotClickableColor = Color(0xFFF2F3F4),
+			isClickableColor = BtnDarkColor,
+			isNotClickableColor = BtnLightGrayColor,
 			isClickable = isBtnClickable,
 			onClick = {}
 		) {
@@ -170,8 +173,8 @@ private fun PostScreenDefault(
 				style = TextStyle(
 					fontSize = 16.sp,
 					lineHeight = 24.sp,
-					fontWeight = FontWeight(700),
-					color = textColor,
+					fontWeight = FontWeight.W700,
+					color = textColor
 				)
 			)
 		}
@@ -230,7 +233,7 @@ private fun PostTitleBox(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
 				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000),
+				color = Color(color = 0xFF000000)
 			)
 		)
 	}
@@ -262,7 +265,7 @@ private fun UploadingPhotoBox(
 		modifier = modifier
 			.width(158.dp)
 			.height(158.dp)
-			.background(color = Color(0xFFF2F3F4), shape = RoundedCornerShape(size = 10.dp))
+			.background(color = BtnLightGrayColor, shape = RoundedCornerShape(size = 10.dp))
 			.clickableSingle {
 				clickPhotoBox()
 			},
@@ -281,8 +284,8 @@ private fun UploadingPhotoBox(
 			style = TextStyle(
 				fontSize = 14.sp,
 				lineHeight = 21.sp,
-				fontWeight = FontWeight(600),
-				color = Color(0xFF000000),
+				fontWeight = FontWeight.W600,
+				color = Color.Black
 			)
 		)
 	}
@@ -292,7 +295,7 @@ private fun UploadingPhotoBox(
 private fun TypingPostTitleBox(
 	modifier: Modifier = Modifier,
 	postTitle: String,
-	onPostTitleChange: (String) -> Unit,
+	onPostTitleChange: (String) -> Unit
 ) {
 	Column(
 		modifier = modifier
@@ -304,7 +307,7 @@ private fun TypingPostTitleBox(
 				fontSize = 16.sp,
 				lineHeight = 24.sp,
 				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000),
+				color = Color(color = 0xFF000000)
 			)
 		)
 		Spacer(modifier = Modifier.height(8.dp))
@@ -319,10 +322,10 @@ private fun TypingPostTitleBox(
 						fontSize = 16.sp,
 						lineHeight = 24.sp,
 						fontWeight = FontWeight(weight = 500),
-						color = Color(color = 0xFFC4C4C4),
+						color = Color(color = 0xFFC4C4C4)
 					)
 				)
-			},
+			}
 		)
 	}
 }

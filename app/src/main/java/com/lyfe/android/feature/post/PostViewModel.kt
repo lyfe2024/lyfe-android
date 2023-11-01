@@ -10,9 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PostViewModel @Inject constructor(
-
-) : ViewModel() {
+class PostViewModel @Inject constructor() : ViewModel() {
 
 	var uiState by mutableStateOf<PostUiState>(PostUiState.Success())
 		private set
@@ -41,7 +39,7 @@ class PostViewModel @Inject constructor(
 
 	fun checkPermissionResult(
 		passedPermissionList: List<NeededPermission>,
-		failedPermissionList: List<NeededPermission>,
+		failedPermissionList: List<NeededPermission>
 	) {
 		this.passedPermissionSet.addAll(passedPermissionList)
 

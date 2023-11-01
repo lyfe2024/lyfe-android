@@ -10,8 +10,10 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.semantics.Role
 
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
-	clickable(indication = null,
-		interactionSource = remember { MutableInteractionSource() }) {
+	clickable(
+		indication = null,
+		interactionSource = remember { MutableInteractionSource() }
+	) {
 		onClick()
 	}
 }

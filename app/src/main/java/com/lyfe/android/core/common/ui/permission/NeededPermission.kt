@@ -32,5 +32,5 @@ enum class NeededPermission(
 
 fun getNeededPermission(permission: String): NeededPermission {
 	return NeededPermission.values().find { it.permission == permission }
-			?: throw IllegalArgumentException("Permission $permission is not supported")
+		?: throw IllegalArgumentException("Permission $permission is not supported")
 }

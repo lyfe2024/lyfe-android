@@ -19,13 +19,13 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.lyfe.android.core.common.ui.util.printLog
+import com.lyfe.android.ui.theme.ScrollTrackColor
 
 @Composable
 fun ScrollTrack(
 	containerHeightDp: Dp,
 	modifier: Modifier = Modifier,
-	columnSize:Int,
+	columnSize: Int,
 	gridState: LazyGridState
 ) {
 	val density = LocalDensity.current
@@ -33,56 +33,56 @@ fun ScrollTrack(
 	val visibleFirstIndex = remember { derivedStateOf { gridState.firstVisibleItemIndex } }.value
 	val scrollOffset = remember { derivedStateOf { gridState.firstVisibleItemScrollOffset } }.value
 	val itemCount = layoutInfo.value.totalItemsCount
-	val itemHeight = with(density) {layoutInfo.value.visibleItemsInfo.firstOrNull()?.size?.height?.toDp() ?:0.dp}
-	val viewPortHeightDp = with(density){ layoutInfo.value.viewportSize.height.toDp()}
-	val scrollOffsetDp = with(density){ scrollOffset.toDp()}
-	val cal = if(itemCount < columnSize) 1 else itemCount.divide(columnSize)
+	val itemHeight = with(density) { layoutInfo.value.visibleItemsInfo.firstOrNull()?.size?.height?.toDp() ?: 0.dp }
+	val viewPortHeightDp = with(density) { layoutInfo.value.viewportSize.height.toDp() }
+	val scrollOffsetDp = with(density) { scrollOffset.toDp() }
+	val cal = if (itemCount < columnSize) 1 else itemCount.divide(columnSize)
 
 	val maxOffset = (itemHeight * cal) - viewPortHeightDp
-	val value =  itemHeight.times(visibleFirstIndex.divide(columnSize)) + scrollOffsetDp
+	val value = itemHeight.times(visibleFirstIndex.divide(columnSize)) + scrollOffsetDp
 
 	var size by remember { mutableStateOf(IntSize.Zero) }
 
-	Box(modifier = modifier
-		.background(Color.Transparent, shape = RoundedCornerShape(size = 16.dp))
-		.onSizeChanged {
-			size = it
-		}
+	Box(
+		modifier = modifier
+			.background(Color.Transparent, shape = RoundedCornerShape(size = 16.dp))
+			.onSizeChanged {
+				size = it
+			}
 	) {
 		if (0 < size.height && 0 < itemCount) {
-			val containerHeight = with(density){ size.height.toDp()}
+			val containerHeight = with(density) { size.height.toDp() }
 			val trackHeightRatio = containerHeight / (maxOffset + viewPortHeightDp)
 			val offsetByRatio = value * trackHeightRatio
-			val trackHeightValue = ((containerHeightDp.value * containerHeight.value) / (maxOffset.value + viewPortHeightDp.value))
+			val trackHeightValue =
+				((containerHeightDp.value * containerHeight.value) / (maxOffset.value + viewPortHeightDp.value))
 			val trackHeight = trackHeightValue.coerceAtLeast(20f)
 
 			Box(
 				Modifier
-					.then(with(LocalDensity.current) {
-						Modifier
-							.size(
-								width = size.width.toDp(),
-								height = trackHeight.dp + offsetByRatio
-							)
-							.padding(top = offsetByRatio)
-					})
-					.background(Color(0x99FFFFFF), shape = RoundedCornerShape(size = 16.dp))
+					.then(
+						with(LocalDensity.current) {
+							Modifier
+								.size(
+									width = size.width.toDp(),
+									height = trackHeight.dp + offsetByRatio
+								)
+								.padding(top = offsetByRatio)
+						}
+					)
+					.background(ScrollTrackColor, shape = RoundedCornerShape(size = 16.dp))
 
 			)
 		}
 	}
 }
-private fun Int.divide(value: Int): Int {
-	if (this < value) return 0
 
-	return try {
-		if(this % value == 0) {
-			this / value
-		} else {
-			(this / value) + 1
-		}
-	} catch (e: Exception) {
-		e.printLog()
-		0
+private fun Int.divide(value: Int): Int {
+	if (value == 0 || this < value) return 0
+
+	return if (this % value == 0) {
+		this / value
+	} else {
+		(this / value) + 1
 	}
 }

@@ -19,7 +19,7 @@ fun LyfeNavHost(
 	) {
 		lyfeHomeNavigation(
 			lyfeNavigator = navigator,
-			navHostController = navHostController,
+			navHostController = navHostController
 		)
 	}
 }

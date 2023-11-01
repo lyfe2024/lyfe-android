@@ -1,11 +1,5 @@
 package com.lyfe.android.core.common.ui.util
 
-interface MultipleEventsBlockManager {
-	fun processEvent(event: () -> Unit)
-
-	companion object
-}
-
 internal fun MultipleEventsBlockManager.Companion.get(): MultipleEventsBlockManager =
 	MultipleEventsBlockManagerImpl()
 
@@ -15,8 +9,10 @@ private class MultipleEventsBlockManagerImpl : MultipleEventsBlockManager {
 
 	private var lastEventTimeMs: Long = 0
 
+	private val delayTime = 300L
+
 	override fun processEvent(event: () -> Unit) {
-		if (now - lastEventTimeMs >= 300L) {
+		if (now - lastEventTimeMs >= delayTime) {
 			event.invoke()
 		}
 		lastEventTimeMs = now

@@ -22,9 +22,8 @@ fun RoundedCornerButton(
 	isNotClickableColor: Color = Color.Unspecified,
 	isClickable: Boolean = true,
 	onClick: () -> Unit,
-	content: @Composable () -> Unit,
+	content: @Composable () -> Unit
 ) {
-
 	Box(
 		modifier = modifier
 			.background(
@@ -36,10 +35,10 @@ fun RoundedCornerButton(
 				}
 			)
 			.padding(vertical = verticalPadding, horizontal = horizontalPadding)
-			.clickableSingle (
+			.clickableSingle(
 				enabled = isClickable,
 				onClick = onClick
-			),
+			)
 	) {
 		Box(modifier = Modifier.align(Alignment.Center)) {
 			content()

@@ -12,7 +12,7 @@ sealed interface PostUiState {
 }
 
 sealed interface PostUiEvent {
-	object IDLE: PostUiEvent
+	object IDLE : PostUiEvent
 
 	object CheckPermission : PostUiEvent
 
@@ -20,5 +20,5 @@ sealed interface PostUiEvent {
 		val failedPermissionList: List<NeededPermission>
 	) : PostUiEvent
 
-	object MoveToSelectAlbum: PostUiEvent
+	object MoveToSelectAlbum : PostUiEvent
 }

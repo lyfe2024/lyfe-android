@@ -9,8 +9,8 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.lyfe.android.ui.theme.TextFieldBgColor
 
 @Composable
 fun TextField(
@@ -19,7 +19,7 @@ fun TextField(
 	maxLines: Int = Int.MAX_VALUE,
 	placeHolder: @Composable () -> Unit,
 	text: String,
-	onChange: (String) -> Unit,
+	onChange: (String) -> Unit
 ) {
 	Box(
 		modifier = modifier
@@ -28,7 +28,9 @@ fun TextField(
 			modifier = Modifier
 				.fillMaxWidth()
 				.border(
-					width = 1.dp, color = Color(0xFFC4C4C4), shape = RoundedCornerShape(size = 8.dp)
+					width = 1.dp,
+					color = TextFieldBgColor,
+					shape = RoundedCornerShape(size = 8.dp)
 				)
 				.padding(horizontal = 12.dp, vertical = 8.dp),
 			singleLine = singleLine,
