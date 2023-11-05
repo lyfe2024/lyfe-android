@@ -1,11 +1,11 @@
-package com.lyfe.android.data.network.adapter
+package com.lyfe.android.core.data.network.adapter
 
 import okhttp3.Request
 import okio.Timeout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.lyfe.android.data.network.model.Result
+import com.lyfe.android.core.data.network.model.Result
 import okio.IOException
 
 class ResultCall<T : Any>(private val call: Call<T>) : Call<Result<T>> {
