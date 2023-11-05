@@ -30,6 +30,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.Center
@@ -46,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lyfe.android.R
-import androidx.compose.runtime.remember
 
 @Composable
 fun ProfileEditScreen(
@@ -83,12 +83,12 @@ private fun ProfileEditContentArea(
 			val profileData = viewModel.uiState as ProfileEditUiState.Success
 			val nickname = profileData.nickname
 
-			ProfileEditContent(nickname)
+			ProfileEditContent(viewModel = viewModel, nickname = nickname)
 		}
 
 		is ProfileEditUiState.Failure -> {
 			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
-			ProfileEditContent("")
+			ProfileEditContent(viewModel = viewModel, nickname = "")
 		}
 
 		is ProfileEditUiState.Loading -> {
@@ -99,6 +99,7 @@ private fun ProfileEditContentArea(
 
 @Composable
 private fun ProfileEditContent(
+	viewModel: ProfileEditViewModel,
 	nickname: String
 ) {
 	val isNicknameEnable = remember { mutableStateOf(false) }
@@ -116,6 +117,7 @@ private fun ProfileEditContent(
 			Spacer(modifier = Modifier.height(40.dp))
 
 			ProfileEditNicknameBox(
+				viewModel = viewModel,
 				nickname = nickname,
 				isNicknameEnableStateChanged = { isNicknameEnable.value = it }
 			)
@@ -130,7 +132,6 @@ private fun ProfileEditContent(
 @Composable
 private fun ProfileEditThumbnailContent() {
 	// 썸네일 변경하는 부분
-	LocalContext.current
 	// val thumbnailUrl = remember { mutableStateOf(thumbnail) }
 	val imageUri = remember { mutableStateOf<Uri?>(null) }
 	Box(
@@ -180,6 +181,7 @@ private fun ProfileEditThumbnailContent() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProfileEditNicknameBox(
+	viewModel: ProfileEditViewModel,
 	nickname: String,
 	isNicknameEnableStateChanged: (Boolean) -> Unit
 ) {
@@ -211,7 +213,7 @@ private fun ProfileEditNicknameBox(
 						onValueChange = {
 							nicknameState.value = it
 							// 유용한 닉네임 여부 확인
-							val checkNicknameFormState = checkNicknameForm(it)
+							val checkNicknameFormState = viewModel.checkNicknameForm(it)
 							isNicknameEnableStateChanged(checkNicknameFormState == NicknameFormState.CORRECT)
 							// 닉네임 오류 내용 표시
 							nicknameFormState.value = checkNicknameFormState.content
@@ -273,21 +275,5 @@ private fun ProfileEditCompleteButton(
 			textAlign = TextAlign.Center,
 			fontSize = 16.sp
 		)
-	}
-}
-
-const val MAX = 10
-
-private fun checkNicknameForm(text: String): NicknameFormState {
-	val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
-	val specialCharRegex = Regex("[,=':;><?/~`_.!@#^&*]|\\\\[|\\\\]")
-	return if (text.matches(regex = regex)) {
-		NicknameFormState.CORRECT
-	} else if (text.length > MAX) {
-		NicknameFormState.NICKNAME_FORM_TOO_LONG
-	} else if (text != text.replace(specialCharRegex, "")) {
-		NicknameFormState.CONTAIN_SPECIAL_CHAR
-	} else {
-		NicknameFormState.NEED_LETTER_NUMBER_COMBINATION
 	}
 }
