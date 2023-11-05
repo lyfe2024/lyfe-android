@@ -1,8 +1,8 @@
-package com.lyfe.android.data.network
+package com.lyfe.android.core.data.network.di
 
 import com.lyfe.android.BuildConfig
-import com.lyfe.android.data.network.adapter.ResultCallAdapterFactory
-import com.lyfe.android.data.network.converter.asConverterFactory
+import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
+import com.lyfe.android.core.data.network.converter.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
