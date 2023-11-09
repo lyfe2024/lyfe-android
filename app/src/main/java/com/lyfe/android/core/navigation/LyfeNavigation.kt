@@ -5,6 +5,7 @@ import androidx.navigation.compose.composable
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.home.HomeScreen
+import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
@@ -22,7 +23,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Alarm.name) {
-		AlarmScreen(navigator = lyfeNavigator)
+		AlarmScreen()
 	}
 
 	composable(route = LyfeScreens.Profile.name) {
@@ -31,5 +32,9 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
 		ProfileEditScreen(viewModel = ProfileEditViewModel())
+	}
+
+	composable(route = LyfeScreens.Login.name) {
+		LoginScreen(navigator = lyfeNavigator)
 	}
 }
