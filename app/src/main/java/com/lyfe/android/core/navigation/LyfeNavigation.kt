@@ -35,6 +35,6 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Login.name) {
-		LoginScreen(navigator = lyfeNavigator)
+		LoginScreen()
 	}
 }
