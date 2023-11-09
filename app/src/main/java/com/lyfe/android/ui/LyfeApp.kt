@@ -11,6 +11,8 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -19,9 +21,9 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
+import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.core.navigation.LyfeNavHost
 
 @Composable
 fun LyfeApp(
@@ -34,34 +36,40 @@ fun LyfeApp(
 	}
 
 	val bottomNavItems = listOf(BottomNavItem.Home, BottomNavItem.Post, BottomNavItem.Alarm, BottomNavItem.Profile)
+	val bottomBarState = rememberSaveable { mutableStateOf(true) }
 
 	Scaffold(
 		bottomBar = {
-			BottomNavigation(
-				backgroundColor = Color.White
-			) {
-				val navBackStackEntry by navController.currentBackStackEntryAsState()
-				val currentDestination = navBackStackEntry?.destination
+			val navBackStackEntry by navController.currentBackStackEntryAsState()
+			val currentDestination = navBackStackEntry?.destination
+			val route = currentDestination?.route
 
-				bottomNavItems.forEach { item ->
-					BottomNavigationItem(
-						icon = { Icon(painter = painterResource(id = item.icon), contentDescription = item.description) },
-						label = { Text(text = stringResource(id = item.title)) },
-						selectedContentColor = Color(color = 0xFF000000),
-						unselectedContentColor = Color(color = 0xFFA2A2A2),
-						selected = currentDestination?.hierarchy?.any { it.route == item.screenRoute } == true,
-						alwaysShowLabel = false,
-						onClick = {
-							navigator.navigate(item.screenRoute) {
-								// Avoid multiple copies of the same destination when
-								// reselecting the same item
-								launchSingleTop = true
+			bottomBarState.value = (route != "login" && route != "profileEdit")
 
-								// Restore state when reselecting a previously selected item
-								restoreState = true
+			if (bottomBarState.value) {
+				BottomNavigation(
+					backgroundColor = Color.White,
+				) {
+					bottomNavItems.forEach { item ->
+						BottomNavigationItem(
+							icon = { Icon(painter = painterResource(id = item.icon), contentDescription = item.description) },
+							label = { Text(text = stringResource(id = item.title)) },
+							selectedContentColor = Color(color = 0xFF000000),
+							unselectedContentColor = Color(color = 0xFFA2A2A2),
+							selected = currentDestination?.hierarchy?.any { it.route == item.screenRoute } == true,
+							alwaysShowLabel = false,
+							onClick = {
+								navigator.navigate(item.screenRoute) {
+									// Avoid multiple copies of the same destination when
+									// reselecting the same item
+									launchSingleTop = true
+
+									// Restore state when reselecting a previously selected item
+									restoreState = true
+								}
 							}
-						}
-					)
+						)
+					}
 				}
 			}
 		}
