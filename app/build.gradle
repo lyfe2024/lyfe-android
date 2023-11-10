@@ -3,8 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.gradle)
     alias(libs.plugins.klint)
     alias(libs.plugins.detekt)
-    id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+	alias(libs.plugins.ksp)
 }
 
 // Properties 객체 생성
@@ -73,10 +73,13 @@ dependencies {
     implementation(libs.bundles.compose.library)
 
     implementation(libs.bundles.hilt.android)
-    kapt(libs.bundles.hilt.compiler)
+	ksp(libs.bundles.hilt.compiler)
 
 	implementation(libs.bundles.network)
 	implementation(libs.bundles.json.parser)
+
+	implementation(libs.bundles.imageloader)
+	ksp(libs.glide.compiler)
 
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)

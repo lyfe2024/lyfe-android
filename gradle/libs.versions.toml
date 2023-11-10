@@ -4,15 +4,16 @@ kotlin-gradle-plugin = "1.8.0"
 android-gradle-plugin = "8.1.0"
 klint-plugin = "11.5.1"
 detekt-plugin = "1.20.0-RC1"
+ksp-version = "1.8.10-1.0.9"
 
 # Config Versions
-compileSdk = "33"
+compileSdk = "34"
 minSdk = "26"
-targetSdk = "33"
+targetSdk = "34"
 versionCode = "1"
 versionName = "1.0"
 jvmTarget = "17"
-kotlinCompilerExtensionVersion = "1.4.0"
+kotlinCompilerExtensionVersion = "1.4.3"
 
 # Library Versions
 androidx-core = "1.9.0"
@@ -47,7 +48,10 @@ retrofit = "2.9.0"
 # JsonParser
 kotlinx-serialization = "1.5.1"
 
-# Image
+# ImageLoader
+glide-compose-version = "1.0.0-beta01"
+glide-version = "4.14.2"
+
 coil = "2.4.0"
 
 [plugins]
@@ -60,7 +64,7 @@ klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "klint-plugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-plugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-gradle-plugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-gradle-plugin" }
-
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 
 [libraries]
 # Android Library
@@ -100,6 +104,11 @@ compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", versio
 compose-ui-tooling-debug = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-ui-tooling" }
 compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "compose-ui" }
 
+# Image Loader Library
+glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glide-compose-version" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide-version" }
+glide-compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "glide-version" }
+
 # Image
 coil = { module = "io.coil-kt:coil", version.ref = "coil"}
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
@@ -119,6 +128,9 @@ network = ["retrofit", "okhttp-logging-interceptor"]
 
 # JsonParser
 json-parser = ["kotlinx-serialization"]
+
+# ImageLoader
+imageloader = ["glide-compose", "glide"]
 
 test = ["junit"]
 android-test = ["androidx-junit", "androidx-espresso"]
