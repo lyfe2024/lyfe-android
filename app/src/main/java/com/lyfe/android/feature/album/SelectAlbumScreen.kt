@@ -8,7 +8,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,6 +52,7 @@ import com.bumptech.glide.integration.compose.rememberGlidePreloadingData
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.RoundedCornerButton
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.GalleryImage
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
@@ -249,7 +249,7 @@ private fun GalleryImageView(
 			.aspectRatio(1f)
 			.background(color = Color.LightGray)
 			.border(border = BorderStroke(width = borderWidth, color = Color.Black), shape = RectangleShape)
-			.clickable {
+			.clickableSingle {
 				selectImage(image.imageUri)
 			}
 	) {
