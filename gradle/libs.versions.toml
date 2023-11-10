@@ -4,6 +4,7 @@ kotlin-gradle-plugin = "1.8.0"
 android-gradle-plugin = "8.1.0"
 klint-plugin = "11.5.1"
 detekt-plugin = "1.20.0-RC1"
+ksp-version = "1.8.10-1.0.9"
 
 # Config Versions
 compileSdk = "34"
@@ -12,7 +13,7 @@ targetSdk = "34"
 versionCode = "1"
 versionName = "1.0"
 jvmTarget = "17"
-kotlinCompilerExtensionVersion = "1.4.0"
+kotlinCompilerExtensionVersion = "1.4.3"
 
 # Library Versions
 androidx-core = "1.9.0"
@@ -49,8 +50,7 @@ kotlinx-serialization = "1.5.1"
 
 # ImageLoader
 glide-compose-version = "1.0.0-beta01"
-glide-version = "4.15.1"
-glide-compiler-version = "4.13.2"
+glide-version = "4.14.2"
 
 coil = "2.4.0"
 
@@ -64,7 +64,7 @@ klint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "klint-plugin" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-plugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-gradle-plugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-gradle-plugin" }
-
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
 
 [libraries]
 # Android Library
@@ -107,7 +107,7 @@ compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", ve
 # Image Loader Library
 glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "glide-compose-version" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide-version" }
-glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide-compiler-version" }
+glide-compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "glide-version" }
 
 # Image
 coil = { module = "io.coil-kt:coil", version.ref = "coil"}
