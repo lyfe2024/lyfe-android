@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.gradle)
     alias(libs.plugins.klint)
     alias(libs.plugins.detekt)
+	id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 	alias(libs.plugins.ksp)
 }
@@ -73,7 +74,7 @@ dependencies {
     implementation(libs.bundles.compose.library)
 
     implementation(libs.bundles.hilt.android)
-	ksp(libs.bundles.hilt.compiler)
+	kapt(libs.bundles.hilt.compiler)
 
 	implementation(libs.bundles.network)
 	implementation(libs.bundles.json.parser)
