@@ -84,4 +84,6 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
 	implementation(libs.bundles.coil)
+
+	implementation(libs.bundles.kakao)
 }
