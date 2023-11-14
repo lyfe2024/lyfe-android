@@ -314,7 +314,7 @@ private fun TypingPostTitleBox(
 		TextField(
 			modifier = Modifier.fillMaxWidth(),
 			text = postTitle,
-			onChange = onPostTitleChange,
+			onTextChange = onPostTitleChange,
 			placeHolder = {
 				Text(
 					text = "제목을 입력해주세요",
