@@ -1,5 +1,7 @@
 package com.lyfe.android.ui.navigation
 
+import android.util.Log
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -14,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -27,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,18 +50,17 @@ fun NavigationTab(
 	modifier: Modifier = Modifier,
 	selectedItemIndex: Int,
 	items: List<BottomNavItem>,
-	onClick: (index: Int) -> Unit
+	onClick: (index: Int) -> Unit,
 ) {
 	val density = LocalDensity.current
 	var width by remember { mutableStateOf(0.dp) } // 너비 정보를 저장할 변수
-	val navigationShowType = NavigationShowType.getNavigationShowType(width)
-	var tabWidth by remember { mutableStateOf(0.dp) }
-	var indicatorPosition by remember { mutableStateOf(0.dp) }
+	val deviceType = DeviceType.getDeviceType(width)
+	val tabWidth = if(deviceType == DeviceType.LARGE) 66.dp else 30.dp
+	val itemSpacing = (width - tabWidth * items.size) / (items.size - 1)
 
 	val indicatorOffset: Dp by animateDpAsState(
-		targetValue = indicatorPosition,
-		animationSpec = tween(easing = LinearEasing, durationMillis = 200),
-		label = ""
+		targetValue = (tabWidth+itemSpacing) * selectedItemIndex,
+		animationSpec = tween(easing = LinearEasing, durationMillis = 200), label = "",
 	)
 
 	Box(
@@ -67,8 +69,10 @@ fun NavigationTab(
 			.height(56.dp)
 			.padding(vertical = 8.dp, horizontal = 20.dp)
 			.onGloballyPositioned {
-				width = with(density) { it.size.width.toDp() }
-			}
+				width = with(density) {
+					it.size.width.toDp()
+				}
+			},
 	) {
 		MyTabIndicator(
 			indicatorWidth = tabWidth,
@@ -80,28 +84,26 @@ fun NavigationTab(
 			modifier = Modifier
 				.fillMaxSize(),
 			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.CenterVertically
+			verticalAlignment = Alignment.CenterVertically,
 		) {
 			List(items.size) { index ->
 				val isSelected = index == selectedItemIndex
 
 				MyTabItem(
 					modifier = Modifier.onGloballyPositioned {
-						if (isSelected) {
-							indicatorPosition = with(density) {
-								it.positionInWindow().x.toDp() - 40.dp
-							}
-							tabWidth = with(density) {
+						if (index == selectedItemIndex) {
+							val itemWidth = with(density) {
 								it.size.width.toDp()
 							}
 						}
 					},
 					isSelected = isSelected,
-					navigationShowType = navigationShowType,
+					deviceType = deviceType,
 					onClick = {
 						onClick(index)
 					},
-					item = items[index]
+					tabWidth = tabWidth,
+					item = items[index],
 				)
 			}
 		}
@@ -112,15 +114,23 @@ fun NavigationTab(
 private fun MyTabIndicator(
 	indicatorWidth: Dp,
 	indicatorOffset: Dp,
-	indicatorColor: Color
+	indicatorColor: Color,
 ) {
 	Box(
 		modifier = Modifier
 			.fillMaxHeight()
-			.width(width = indicatorWidth)
-			.offset(x = indicatorOffset)
-			.clip(shape = RoundedCornerShape(12.dp))
-			.background(color = indicatorColor)
+			.width(
+				width = indicatorWidth,
+			)
+			.offset(
+				x = indicatorOffset,
+			)
+			.clip(
+				shape = CircleShape,
+			)
+			.background(
+				color = indicatorColor,
+			),
 	)
 }
 
@@ -128,25 +138,42 @@ private fun MyTabIndicator(
 private fun MyTabItem(
 	modifier: Modifier = Modifier,
 	isSelected: Boolean,
-	navigationShowType: NavigationShowType = NavigationShowType.FULL,
+	deviceType: DeviceType = DeviceType.LARGE,
 	onClick: () -> Unit,
-	item: BottomNavItem
+	tabWidth: Dp,
+	item: BottomNavItem,
 ) {
+	val iconSize = if (deviceType == DeviceType.SMALL) {
+		12.dp
+	} else {
+		24.dp
+	}
+	val tabColor: Color by animateColorAsState(
+		targetValue = if (isSelected) {
+			Main500
+		} else {
+			Color.Transparent
+		},
+		animationSpec = tween(easing = LinearEasing), label = "",
+	)
+
 	Row(
-		modifier = modifier
-			.padding(vertical = 6.dp, horizontal = 12.dp)
+		modifier = Modifier
+			.width(tabWidth)
 			.clickableSingle {
 				onClick()
 			},
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.Center
 	) {
+
 		Image(
-			painter = painterResource(id = item.getIcon(isSelected)),
-			contentDescription = item.description
+//			modifier = Modifier.size(iconSize),
+			painter = painterResource(id = item.icon),
+			contentDescription = ""
 		)
 
-		if (isSelected && navigationShowType == NavigationShowType.FULL) {
+		if (isSelected && deviceType == DeviceType.LARGE) {
 			Spacer(modifier = Modifier.width(4.dp))
 
 			Text(
@@ -158,7 +185,7 @@ private fun MyTabItem(
 					lineHeight = 16.sp,
 					fontWeight = FontWeight.W700,
 					color = Color.White,
-					textAlign = TextAlign.Center
+					textAlign = TextAlign.Center,
 				)
 			)
 		}
