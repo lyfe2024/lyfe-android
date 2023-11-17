@@ -47,7 +47,7 @@ fun NavigationTab(
 	modifier: Modifier = Modifier,
 	selectedItemIndex: Int,
 	items: List<BottomNavItem>,
-	onClick: (index: Int) -> Unit,
+	onClick: (index: Int) -> Unit
 ) {
 	val density = LocalDensity.current
 	var width by remember { mutableStateOf(0.dp) } // 너비 정보를 저장할 변수
@@ -57,7 +57,8 @@ fun NavigationTab(
 
 	val indicatorOffset: Dp by animateDpAsState(
 		targetValue = indicatorPosition,
-		animationSpec = tween(easing = LinearEasing, durationMillis = 200), label = "",
+		animationSpec = tween(easing = LinearEasing, durationMillis = 200),
+		label = ""
 	)
 
 	Box(
@@ -66,10 +67,8 @@ fun NavigationTab(
 			.height(56.dp)
 			.padding(vertical = 8.dp, horizontal = 20.dp)
 			.onGloballyPositioned {
-				width = with(density) {
-					it.size.width.toDp()
-				}
-			},
+				width = with(density) { it.size.width.toDp() }
+			}
 	) {
 		MyTabIndicator(
 			indicatorWidth = tabWidth,
@@ -81,7 +80,7 @@ fun NavigationTab(
 			modifier = Modifier
 				.fillMaxSize(),
 			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.CenterVertically,
+			verticalAlignment = Alignment.CenterVertically
 		) {
 			List(items.size) { index ->
 				val isSelected = index == selectedItemIndex
@@ -102,7 +101,7 @@ fun NavigationTab(
 					onClick = {
 						onClick(index)
 					},
-					item = items[index],
+					item = items[index]
 				)
 			}
 		}
@@ -113,23 +112,15 @@ fun NavigationTab(
 private fun MyTabIndicator(
 	indicatorWidth: Dp,
 	indicatorOffset: Dp,
-	indicatorColor: Color,
+	indicatorColor: Color
 ) {
 	Box(
 		modifier = Modifier
 			.fillMaxHeight()
-			.width(
-				width = indicatorWidth,
-			)
-			.offset(
-				x = indicatorOffset,
-			)
-			.clip(
-				shape = RoundedCornerShape(12.dp),
-			)
-			.background(
-				color = indicatorColor,
-			),
+			.width(width = indicatorWidth)
+			.offset(x = indicatorOffset)
+			.clip(shape = RoundedCornerShape(12.dp))
+			.background(color = indicatorColor)
 	)
 }
 
@@ -139,7 +130,7 @@ private fun MyTabItem(
 	isSelected: Boolean,
 	navigationShowType: NavigationShowType = NavigationShowType.FULL,
 	onClick: () -> Unit,
-	item: BottomNavItem,
+	item: BottomNavItem
 ) {
 	Row(
 		modifier = modifier
@@ -150,10 +141,9 @@ private fun MyTabItem(
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.Center
 	) {
-
 		Image(
 			painter = painterResource(id = item.icon),
-			contentDescription = ""
+			contentDescription = item.description
 		)
 
 		if (isSelected && navigationShowType == NavigationShowType.FULL) {
@@ -168,7 +158,7 @@ private fun MyTabItem(
 					lineHeight = 16.sp,
 					fontWeight = FontWeight.W700,
 					color = Color.White,
-					textAlign = TextAlign.Center,
+					textAlign = TextAlign.Center
 				)
 			)
 		}
