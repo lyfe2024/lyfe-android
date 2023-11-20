@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,8 +33,9 @@ import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
-import com.lyfe.android.core.common.ui.component.RoundedCornerButton
+import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.TextField
+import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.permission.NeededPermission
 import com.lyfe.android.core.common.ui.permission.PermissionAlertDialogs
 import com.lyfe.android.core.common.ui.permission.PermissionsCheckScreen
@@ -45,9 +44,7 @@ import com.lyfe.android.core.common.ui.util.noRippleClickable
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.album.SelectImageKey
-import com.lyfe.android.ui.theme.BtnDarkColor
 import com.lyfe.android.ui.theme.BtnLightGrayColor
-import com.lyfe.android.ui.theme.DisabledBtnTextColor
 
 @Composable
 fun PostScreen(
@@ -147,7 +144,6 @@ private fun PostScreenDefault(
 		Spacer(modifier = Modifier.height(24.dp))
 		TypingPostTitleBox(
 			modifier = Modifier
-				.fillMaxSize()
 				.weight(1f),
 			postTitle = title
 		) { title ->
@@ -156,27 +152,21 @@ private fun PostScreenDefault(
 
 		Spacer(modifier = Modifier.height(16.dp))
 
-		val textColor = if (isBtnClickable) Color.White else DisabledBtnTextColor
-
-		RoundedCornerButton(
-			modifier = Modifier.fillMaxWidth(),
-			cornerRadius = 10.dp,
-			horizontalPadding = 24.dp,
+		LyfeButton(
+			modifier = Modifier
+				.fillMaxWidth()
+				.height(48.dp),
+			text = "게시",
+			buttonType = if (isBtnClickable) {
+				LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
+			} else {
+				LyfeButtonType.TC_GREY200_BG_GREY50_SC_GREY200
+			},
 			verticalPadding = 12.dp,
-			isClickableColor = BtnDarkColor,
-			isNotClickableColor = BtnLightGrayColor,
-			isClickable = isBtnClickable,
-			onClick = {}
+			horizontalPadding = 24.dp,
+			isClearIconShow = false
 		) {
-			Text(
-				text = "게시",
-				style = TextStyle(
-					fontSize = 16.sp,
-					lineHeight = 24.sp,
-					fontWeight = FontWeight.W700,
-					color = textColor
-				)
-			)
+
 		}
 	}
 }
@@ -263,7 +253,7 @@ private fun UploadingPhotoBox(
 ) {
 	Column(
 		modifier = modifier
-			.width(158.dp)
+			.fillMaxWidth()
 			.height(158.dp)
 			.background(color = BtnLightGrayColor, shape = RoundedCornerShape(size = 10.dp))
 			.clickableSingle {
