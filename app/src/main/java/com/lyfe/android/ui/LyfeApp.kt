@@ -70,42 +70,54 @@ fun LyfeApp(
 
 sealed class BottomNavItem(
 	@StringRes val title: Int,
-	@DrawableRes val icon: Int,
+	@DrawableRes val defaultIconRes: Int,
+	@DrawableRes val selectedIconRes: Int,
 	val description: String,
 	val screenRoute: String
 ) {
 	object Home : BottomNavItem(
 		title = R.string.btm_nav_home,
-		icon = R.drawable.ic_home_white,
+		defaultIconRes = R.drawable.ic_btm_navi_home_default,
+		selectedIconRes = R.drawable.ic_btm_navi_home_selected,
 		description = "홈 아이콘",
 		screenRoute = LyfeScreens.Home.name
 	)
 
 	object Feed : BottomNavItem(
 		title = R.string.btm_nav_view_all,
-		icon = R.drawable.ic_feed_white,
+		defaultIconRes = R.drawable.ic_btm_navi_feed_default,
+		selectedIconRes = R.drawable.ic_btm_navi_feed_selected,
 		description = "피드 아이콘",
 		screenRoute = LyfeScreens.Feed.name
 	)
 
 	object Post : BottomNavItem(
 		title = R.string.btm_nav_post,
-		icon = R.drawable.ic_circle_plus_white,
+		defaultIconRes = R.drawable.ic_btm_navi_post_default,
+		selectedIconRes = R.drawable.ic_btm_navi_post_selected,
 		description = "게시 아이콘",
 		screenRoute = LyfeScreens.Post.name
 	)
 
 	object Alarm : BottomNavItem(
 		title = R.string.btm_nav_alarm,
-		icon = R.drawable.ic_alarm_white,
+		defaultIconRes = R.drawable.ic_btm_navi_alarm_default,
+		selectedIconRes = R.drawable.ic_btm_navi_alarm_selected,
 		description = "알림 아이콘",
 		screenRoute = LyfeScreens.Alarm.name
 	)
 
 	object Profile : BottomNavItem(
 		title = R.string.btm_nav_profile,
-		icon = R.drawable.ic_profile_white,
+		defaultIconRes = R.drawable.ic_btm_navi_profile_default,
+		selectedIconRes = R.drawable.ic_btm_navi_profile_selected,
 		description = "프로필 아이콘",
 		screenRoute = LyfeScreens.Profile.name
 	)
+
+	fun getIcon(isSelected: Boolean) = if (isSelected) {
+		selectedIconRes
+	} else {
+		defaultIconRes
+	}
 }
