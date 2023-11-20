@@ -17,9 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
+import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.ui.navigation.NavigationTab
 
 @Composable
@@ -48,7 +48,10 @@ fun LyfeApp(
 			modifier = Modifier.fillMaxSize(),
 			navHostController = navController,
 			navigator = navigator
-		)
+		) { route ->
+			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
+			if (idx != -1) selected = idx
+		}
 
 		NavigationTab(
 			modifier = Modifier
