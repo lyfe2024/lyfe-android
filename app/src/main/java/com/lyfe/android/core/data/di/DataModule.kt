@@ -1,6 +1,8 @@
 package com.lyfe.android.core.data.di
 
+import com.lyfe.android.core.data.repository.AlbumRepositoryImpl
 import com.lyfe.android.core.data.repository.fake.FakeLyfeRepository
+import com.lyfe.android.core.domain.repository.AlbumRepository
 import com.lyfe.android.core.domain.repository.LyfeRepository
 import dagger.Binds
 import dagger.Module
@@ -18,4 +20,10 @@ interface DataModule {
 	fun bindsLyfeRepository(
 		lyfeRepositoryImpl: FakeLyfeRepository
 	): LyfeRepository
+
+	@Singleton
+	@Binds
+	fun bindsImageRepository(
+		imageRepository: AlbumRepositoryImpl
+	): AlbumRepository
 }
