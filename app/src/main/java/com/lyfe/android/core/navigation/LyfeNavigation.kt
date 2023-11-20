@@ -28,10 +28,6 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.Feed.name)
 	}
 
-	composable(route = LyfeScreens.Feed.name) {
-		FeedScreen(navigator = lyfeNavigator)
-	}
-
 	composable(route = LyfeScreens.Post.name) {
 		PostScreen(
 			navigator = lyfeNavigator,
