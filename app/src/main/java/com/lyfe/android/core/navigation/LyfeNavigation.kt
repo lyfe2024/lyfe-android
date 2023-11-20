@@ -33,7 +33,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 			navigator = lyfeNavigator,
 			navHostController = navHostController
 		)
-		selectedScreen(LyfeScreens.Post.name)
+		selectedScreen("")
 	}
 
 	composable(route = LyfeScreens.Alarm.name) {

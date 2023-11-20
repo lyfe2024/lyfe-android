@@ -27,7 +27,7 @@ import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.util.clickableSingle
 
 @Composable
-fun DefaultButton(
+fun LyfeButton(
 	modifier: Modifier = Modifier,
 	verticalPadding: Dp = 8.dp,
 	horizontalPadding: Dp = 24.dp,
@@ -37,6 +37,7 @@ fun DefaultButton(
 	text: String,
 	fontSize: Int = 16,
 	lineHeight: Int = 24,
+	fontWeight: FontWeight = FontWeight.W700,
 	onClose: () -> Unit = {},
 	onClick: () -> Unit
 ) {
@@ -69,7 +70,7 @@ fun DefaultButton(
 			style = TextStyle(
 				fontSize = fontSize.sp,
 				lineHeight = lineHeight.sp,
-				fontWeight = FontWeight.W700,
+				fontWeight = fontWeight,
 				color = buttonType.textColor
 			)
 		)
@@ -78,9 +79,9 @@ fun DefaultButton(
 
 @Preview
 @Composable
-fun Preview_LyfeButton() {
+private fun Preview_LyfeButton() {
 	Column {
-		DefaultButton(
+		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
 			buttonType = LyfeButtonType.DISABLED
@@ -88,7 +89,7 @@ fun Preview_LyfeButton() {
 
 		Spacer(modifier = Modifier.height(20.dp))
 
-		DefaultButton(
+		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
 			buttonType = LyfeButtonType.MAIN_500
@@ -96,10 +97,10 @@ fun Preview_LyfeButton() {
 
 		Spacer(modifier = Modifier.height(20.dp))
 
-		DefaultButton(
+		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.WHITE
+			buttonType = LyfeButtonType.GREY_50
 		) {}
 	}
 }
