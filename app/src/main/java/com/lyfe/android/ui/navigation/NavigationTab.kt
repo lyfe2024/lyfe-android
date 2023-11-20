@@ -142,7 +142,7 @@ private fun MyTabItem(
 		horizontalArrangement = Arrangement.Center
 	) {
 		Image(
-			painter = painterResource(id = item.icon),
+			painter = painterResource(id = item.getIcon(isSelected)),
 			contentDescription = item.description
 		)
 
