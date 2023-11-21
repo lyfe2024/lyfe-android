@@ -31,9 +31,11 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyfe.android.R
+import com.lyfe.android.core.navigation.LyfeScreens
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(navigator: LyfeNavigator) {
 	Column(
 		modifier = Modifier
 			.padding(vertical = 16.dp, horizontal = 24.dp)
@@ -50,7 +52,7 @@ fun LoginScreen() {
 
 		Spacer(modifier = Modifier.height(98.dp))
 
-		LoginButtonArea()
+		LoginButtonArea(navigator = navigator)
 
 		Spacer(modifier = Modifier.weight(1f))
 
@@ -59,7 +61,7 @@ fun LoginScreen() {
 }
 
 @Composable
-fun LoginButtonArea() {
+fun LoginButtonArea(navigator: LyfeNavigator) {
 	val modifier = Modifier
 		.fillMaxWidth()
 		.height(42.dp)
@@ -72,7 +74,7 @@ fun LoginButtonArea() {
 			buttonColor = Color(color = 0xFFFEE500),
 			textColor = Color(color = 0xFF363636),
 			snsName = "Kakao",
-			onClick = {}
+			onClick = { navigator.navigate(LyfeScreens.Nickname.name) }
 		)
 		
 		Spacer(modifier = Modifier.height(16.dp))
@@ -82,7 +84,7 @@ fun LoginButtonArea() {
 			buttonColor = Color.Black,
 			textColor = Color.White,
 			snsName = "Apple",
-			onClick = {}
+			onClick = { navigator.navigate(LyfeScreens.Nickname.name) }
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))
@@ -92,7 +94,7 @@ fun LoginButtonArea() {
 			buttonColor = Color.White,
 			textColor = Color(color = 0xFF363636),
 			snsName = "Google",
-			onClick = {}
+			onClick = { navigator.navigate(LyfeScreens.Nickname.name) }
 		)
 	}
 }
