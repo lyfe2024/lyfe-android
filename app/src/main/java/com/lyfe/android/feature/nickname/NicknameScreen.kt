@@ -1,13 +1,10 @@
-package com.lyfe.android.feature.profileedit
+package com.lyfe.android.feature.nickname
 
-import android.net.Uri
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -29,14 +26,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.BottomEnd
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -44,12 +41,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.lyfe.android.R
+import com.lyfe.android.feature.profileedit.NicknameFormState
+import com.lyfe.android.feature.profileedit.ProfileEditViewModel
 
 @Composable
-fun ProfileEditScreen(
+fun NicknameScreen(
 	viewModel: ProfileEditViewModel
 ) {
 	Column(
@@ -58,7 +55,7 @@ fun ProfileEditScreen(
 			.fillMaxSize()
 	) {
 		Text(
-			text = "프로필 수정",
+			text = "닉네임 설정",
 			style = TextStyle(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
@@ -67,42 +64,30 @@ fun ProfileEditScreen(
 			)
 		)
 
-		Spacer(modifier = Modifier.height(21.dp))
+		Spacer(modifier = Modifier.height(16.dp))
 
-		ProfileEditContentArea(viewModel)
+		Text(
+			text = "원하는 닉네임을 설정해주세요.",
+			style = TextStyle(
+				fontSize = 14.sp,
+				fontWeight = FontWeight(weight = 600),
+				color = Color(color = 0xFF000000)
+			)
+		)
+
+		Spacer(modifier = Modifier.height(48.dp))
+
+		NicknameEnterContent(viewModel)
 	}
 }
 
 @Composable
-private fun ProfileEditContentArea(
+private fun NicknameEnterContent(
 	viewModel: ProfileEditViewModel
 ) {
-	// ViewModel uiState 에 따라서 화면 표시 여부 달라짐
-	when (viewModel.uiState) {
-		is ProfileEditUiState.Success -> {
-			val profileData = viewModel.uiState as ProfileEditUiState.Success
-			val nickname = profileData.nickname
-
-			ProfileEditContent(viewModel = viewModel, nickname = nickname)
-		}
-
-		is ProfileEditUiState.Failure -> {
-			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
-			ProfileEditContent(viewModel = viewModel, nickname = "")
-		}
-
-		is ProfileEditUiState.Loading -> {
-			// 로딩하는 동안 Progressbar 보여주기
-		}
-	}
-}
-
-@Composable
-private fun ProfileEditContent(
-	viewModel: ProfileEditViewModel,
-	nickname: String
-) {
 	val isNicknameEnable = remember { mutableStateOf(false) }
+	val nicknameFormStateList = remember { mutableStateListOf<NicknameFormState>() }
+
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -112,82 +97,38 @@ private fun ProfileEditContent(
 			modifier = Modifier.fillMaxSize(),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			ProfileEditThumbnailContent()
-
-			Spacer(modifier = Modifier.height(40.dp))
-
-			ProfileEditNicknameBox(
+			NicknameTextBox(
 				viewModel = viewModel,
-				nickname = nickname,
-				isNicknameEnableStateChanged = { isNicknameEnable.value = it }
+				isNicknameEnableStateChanged = { isNicknameEnable.value = it },
+				onNicknameInvalidReasonsChanged = {
+					nicknameFormStateList.clear()
+					nicknameFormStateList.addAll(it)
+				}
+			)
+
+			Spacer(modifier = Modifier.height(10.dp))
+
+			NicknameConditionTextArea(
+				nicknameInvalidReasons = nicknameFormStateList
 			)
 
 			Spacer(modifier = Modifier.weight(1f))
 
-			ProfileEditCompleteButton(isNicknameEnable.value)
+			NicknameCompleteButton(isNicknameEnable.value)
 		}
-	}
-}
-
-@Composable
-private fun ProfileEditThumbnailContent() {
-	// 썸네일 변경하는 부분
-	// val thumbnailUrl = remember { mutableStateOf(thumbnail) }
-	val imageUri = remember { mutableStateOf<Uri?>(null) }
-	Box(
-		modifier = Modifier.size(80.dp)
-	) {
-		// Gallery Launcher
-		val galleryLauncher = rememberLauncherForActivityResult(
-			contract = ActivityResultContracts.GetContent(),
-			onResult = { imageUri.value = it }
-		)
-		val onClick = {
-			// 클릭하면 앨범으로 이동
-			galleryLauncher.launch("image/*")
-		}
-
-		AsyncImage(
-			model = ImageRequest.Builder(LocalContext.current)
-				.data(imageUri.value)
-				.fallback(R.drawable.ic_profile)
-				.build(),
-			contentDescription = "프로필 이미지",
-			modifier = Modifier
-				.align(Center)
-				.fillMaxSize()
-				.clip(CircleShape)
-				.clickable {
-					// 클릭하면 앨범으로 이동
-					onClick()
-				}
-		)
-
-		Image(
-			painter = painterResource(id = R.drawable.ic_post_add),
-			contentDescription = "프로필 변경",
-			modifier = Modifier
-				.size(24.dp)
-				.clip(CircleShape)
-				.align(BottomEnd)
-				.clickable {
-					// 클릭하면 앨범으로 이동
-					onClick()
-				}
-		)
 	}
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProfileEditNicknameBox(
+private fun NicknameTextBox(
 	viewModel: ProfileEditViewModel,
-	nickname: String,
-	isNicknameEnableStateChanged: (Boolean) -> Unit
+	isNicknameEnableStateChanged: (Boolean) -> Unit,
+	onNicknameInvalidReasonsChanged: (List<NicknameFormState>) -> Unit
 ) {
 	// 닉네임 변경하는 부분
-	val nicknameState = remember { mutableStateOf(nickname) }
-	val nicknameFormState = remember { mutableStateOf("") }
+	val nicknameState = remember { mutableStateOf("") }
+	val nicknameFormStateList = remember { mutableStateListOf<NicknameFormState>() }
 	Column {
 		Column {
 			Box(
@@ -203,7 +144,7 @@ private fun ProfileEditNicknameBox(
 					TextField(
 						modifier = Modifier.weight(1f),
 						value = nicknameState.value,
-						placeholder = { Text(text = "변경할 닉네임을 입력해주세요.") },
+						placeholder = { Text(text = "닉네임을 입력해주세요") },
 						colors = TextFieldDefaults.textFieldColors(
 							containerColor = Color.Transparent,
 							focusedIndicatorColor = Color.Transparent,
@@ -212,12 +153,20 @@ private fun ProfileEditNicknameBox(
 						),
 						onValueChange = {
 							nicknameState.value = it
+							nicknameFormStateList.clear()
 							// 유용한 닉네임 여부 확인
 							val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
 							isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
-							// 닉네임 오류 내용 표시
-							val message = if (nicknameInvalidReasons.isEmpty()) NicknameFormState.CORRECT.message else nicknameInvalidReasons[0].message
-							nicknameFormState.value = message
+							// 닉네임 불가능 이유 설정
+							if (it.isEmpty()){
+								nicknameFormStateList.clear()
+							} else if (nicknameInvalidReasons.isEmpty()) {
+								// 불가능한 이유 없을 경우 CORRECT
+								nicknameFormStateList.add(NicknameFormState.CORRECT)
+							} else {
+								nicknameInvalidReasons.forEach { reason -> nicknameFormStateList.add(reason) }
+							}
+							onNicknameInvalidReasonsChanged(nicknameFormStateList)
 						}
 					)
 
@@ -227,8 +176,9 @@ private fun ProfileEditNicknameBox(
 							.padding(6.dp),
 						onClick = {
 							nicknameState.value = ""
-							nicknameFormState.value = ""
+							nicknameFormStateList.clear()
 							isNicknameEnableStateChanged(false)
+							onNicknameInvalidReasonsChanged(nicknameFormStateList)
 						}
 					) {
 						Icon(
@@ -238,21 +188,90 @@ private fun ProfileEditNicknameBox(
 					}
 				}
 			}
-
-			Spacer(modifier = Modifier.height(10.dp))
-
-			Text(
-				modifier = Modifier.align(Alignment.Start),
-				text = nicknameFormState.value,
-				color = Color.Red,
-				fontSize = 11.sp
-			)
 		}
 	}
 }
 
 @Composable
-private fun ProfileEditCompleteButton(
+private fun NicknameConditionTextArea(
+	nicknameInvalidReasons: List<NicknameFormState>
+) {
+	var assetIndex1 = 2
+	var assetIndex2 = 2
+	var assetIndex3 = 2
+	nicknameInvalidReasons.forEach { reason ->
+		when(reason) {
+			NicknameFormState.NEED_LETTER_NUMBER_COMBINATION -> assetIndex1 = 1
+			NicknameFormState.CONTAIN_SPECIAL_CHAR -> assetIndex2 = 1
+			NicknameFormState.NICKNAME_FORM_TOO_LONG -> assetIndex3 = 1
+			NicknameFormState.CORRECT -> {
+				assetIndex1 = 2; assetIndex2 = 2; assetIndex3 = 2
+			}
+		}
+	}
+	if (nicknameInvalidReasons.isEmpty()) {
+		assetIndex1 = 0; assetIndex2 = 0; assetIndex3 = 0
+	}
+	val painterResources = listOf(
+		painterResource(id = R.drawable.ic_check_gray),
+		painterResource(id = R.drawable.ic_check_red),
+		painterResource(id = R.drawable.ic_check_blue)
+	)
+	val colorResources = listOf(
+		Color(color = 0xFFC6C6C6),
+		Color(color = 0xFFEE483D),
+		Color(color = 0xFF1F72E0)
+	)
+
+	Column(
+		modifier = Modifier.fillMaxWidth(),
+		verticalArrangement = Arrangement.spacedBy(4.dp)
+	) {
+		NicknameConditionText(
+			painterResources = painterResources[assetIndex1],
+			text = "영문+숫자 조합",
+			color = colorResources[assetIndex1]
+		)
+
+		NicknameConditionText(
+			painterResources = painterResources[assetIndex2],
+			text = "특수문자 사용 X",
+			color = colorResources[assetIndex2]
+		)
+
+		NicknameConditionText(
+			painterResources = painterResources[assetIndex3],
+			text = "최대 10글자",
+			color = colorResources[assetIndex3]
+		)
+	}
+}
+
+@Composable
+private fun NicknameConditionText(
+	painterResources: Painter,
+	text: String,
+	color: Color
+) {
+	Row {
+		Image(
+			painter = painterResources,
+			contentDescription = "기본은 회색"
+		)
+
+		Spacer(modifier = Modifier.width(4.dp))
+
+		Text(
+			text = text,
+			color = color,
+			fontSize = 14.sp
+		)
+	}
+}
+
+
+@Composable
+private fun NicknameCompleteButton(
 	isEnableState: Boolean
 ) {
 	val context = LocalContext.current

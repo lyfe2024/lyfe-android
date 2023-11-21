@@ -23,17 +23,23 @@ class ProfileEditViewModel @Inject constructor() : ViewModel() {
 		}
 	}
 
-	fun checkNicknameForm(text: String): NicknameFormState {
-		val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
+	fun getNicknameInvalidReason(text: String): List<NicknameFormState> {
+//		val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
+		val regex1 = Regex("^[a-zA-Z]+[0-9]+\$")
+		val regex2 = Regex("^[0-9]+[a-zA-Z]+\$")
 		val specialCharRegex = Regex("[,=':;><?/~`_.!@#^&*]|\\\\[|\\\\]")
-		return if (text.matches(regex = regex)) {
-			NicknameFormState.CORRECT
-		} else if (text.length > maxLength) {
-			NicknameFormState.NICKNAME_FORM_TOO_LONG
-		} else if (text != text.replace(specialCharRegex, "")) {
-			NicknameFormState.CONTAIN_SPECIAL_CHAR
-		} else {
-			NicknameFormState.NEED_LETTER_NUMBER_COMBINATION
+		val list = mutableListOf<NicknameFormState>()
+
+		if (text.length > maxLength) {
+			list.add(NicknameFormState.NICKNAME_FORM_TOO_LONG)
 		}
+		if (text != text.replace(specialCharRegex, "")) {
+			list.add(NicknameFormState.CONTAIN_SPECIAL_CHAR)
+		}
+		if (!text.matches(regex1) && !text.matches(regex2)) {
+			list.add(NicknameFormState.NEED_LETTER_NUMBER_COMBINATION)
+		}
+
+		return list
 	}
 }

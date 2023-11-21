@@ -21,6 +21,8 @@ sealed class LyfeScreens(
 	object ProfileEdit : LyfeScreens("profileEdit")
 
 	object Login : LyfeScreens("login")
+
+	object Nickname : LyfeScreens("nickname")
 }
 
 private fun String.appendArguments(navArguments: List<NamedNavArgument>): String {
