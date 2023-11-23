@@ -87,9 +87,6 @@ fun LoginButtonArea(
 	clickable: Boolean
 ) {
 	val context = LocalContext.current
-
-//	val kakaoToken = viewModel.kakaoLoginResult.collectAsState()
-
 	val modifier = Modifier.fillMaxWidth().height(42.dp)
 
 	Column(
@@ -100,7 +97,18 @@ fun LoginButtonArea(
 			buttonColor = Color(color = 0xFFFEE500),
 			textColor = Color(color = 0xFF363636),
 			snsName = "Kakao",
-			onClick = { if (clickable) viewModel.kakaoLogin(context) }
+			onClick = {
+				if (clickable) {
+					viewModel.updateUiState(LoginUiState.Loading)
+					KakaoLoginManager(context).startKakaoLogin {
+						Log.d("KAKAO_REFRESH_TOKEN", it.refreshToken)
+						Log.d("KAKAO_ACCESS_TOKEN", it.accessToken)
+						viewModel.updateKakaoToken(it)
+						// 로그인 성공하면 다음 화면으로 이동
+						navigator.navigate(LyfeScreens.Nickname.name)
+					}
+				}
+			}
 		)
 		
 		Spacer(modifier = Modifier.height(16.dp))
