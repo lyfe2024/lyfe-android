@@ -2,6 +2,8 @@ package com.lyfe.android.core.data.datasource.di
 
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
+import com.lyfe.android.core.data.datasource.LocalPreferenceDataSource
+import com.lyfe.android.core.data.datasource.LocalPreferenceDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,4 +19,10 @@ interface DataSourceModule {
 	fun bindsDeviceGalleryImageDataSource(
 		deviceGalleryImageDataSourceImpl: DeviceGalleryDataSourceImpl
 	): DeviceGalleryDataSource
+
+	@Singleton
+	@Binds
+	fun bindsLocalPreferenceUserDataSource(
+		localPreferenceUserDataSourceImpl: LocalPreferenceDataSourceImpl
+	): LocalPreferenceDataSource
 }
