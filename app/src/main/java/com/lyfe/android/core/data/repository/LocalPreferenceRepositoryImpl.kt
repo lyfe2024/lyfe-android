@@ -5,7 +5,7 @@ import com.lyfe.android.core.domain.repository.LocalPreferenceRepository
 import javax.inject.Inject
 
 class LocalPreferenceRepositoryImpl @Inject constructor(
-	private val localPreferencesUserDataSource: LocalPreferenceDataSource,
+	private val localPreferencesUserDataSource: LocalPreferenceDataSource
 ) : LocalPreferenceRepository {
 
 	override fun getAccessToken(): String? {
@@ -19,5 +19,4 @@ class LocalPreferenceRepositoryImpl @Inject constructor(
 	override fun removeAccessToken() {
 		localPreferencesUserDataSource.removeAccessToken()
 	}
-
 }

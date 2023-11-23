@@ -132,8 +132,7 @@ private fun NicknameTextBox(
 	Column {
 		Column {
 			Box(
-				modifier = Modifier
-					.fillMaxWidth()
+				modifier = Modifier.fillMaxWidth()
 					.border(width = 1.dp, color = Color(color = 0xFF363636), shape = RoundedCornerShape(8.dp))
 					.padding(horizontal = 4.dp),
 				contentAlignment = Alignment.CenterStart
@@ -158,11 +157,10 @@ private fun NicknameTextBox(
 							val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
 							isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
 							// 닉네임 불가능 이유 설정
-							if (it.isEmpty()){
+							if (it.isEmpty()) {
 								nicknameFormStateList.clear()
 							} else if (nicknameInvalidReasons.isEmpty()) {
-								// 불가능한 이유 없을 경우 CORRECT
-								nicknameFormStateList.add(NicknameFormState.CORRECT)
+								nicknameFormStateList.add(NicknameFormState.CORRECT) // 불가능한 이유 없을 경우 CORRECT
 							} else {
 								nicknameInvalidReasons.forEach { reason -> nicknameFormStateList.add(reason) }
 							}
@@ -171,8 +169,7 @@ private fun NicknameTextBox(
 					)
 
 					IconButton(
-						modifier = Modifier
-							.size(32.dp)
+						modifier = Modifier.size(32.dp)
 							.padding(6.dp),
 						onClick = {
 							nicknameState.value = ""
@@ -200,7 +197,7 @@ private fun NicknameConditionTextArea(
 	var assetIndex2 = 2
 	var assetIndex3 = 2
 	nicknameInvalidReasons.forEach { reason ->
-		when(reason) {
+		when (reason) {
 			NicknameFormState.NEED_LETTER_NUMBER_COMBINATION -> assetIndex1 = 1
 			NicknameFormState.CONTAIN_SPECIAL_CHAR -> assetIndex2 = 1
 			NicknameFormState.NICKNAME_FORM_TOO_LONG -> assetIndex3 = 1
@@ -268,7 +265,6 @@ private fun NicknameConditionText(
 		)
 	}
 }
-
 
 @Composable
 private fun NicknameCompleteButton(

@@ -34,7 +34,9 @@ class KakaoLoginManager @Inject constructor(
 	private fun getKaKaoLoginState(): KaKaoLoginState =
 		if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
 			KaKaoLoginState.KAKAO_TALK_LOGIN
-		} else KaKaoLoginState.KAKAO_ACCOUNT_LOGIN
+		} else {
+			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN
+		}
 
 	private fun getLoginCallback(updateSocialToken: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
 		return { token, error ->

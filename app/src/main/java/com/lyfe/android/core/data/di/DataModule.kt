@@ -33,5 +33,5 @@ interface DataModule {
 	@Binds
 	fun bindsLocalPreferenceRepository(
 		sharedPreferenceRepository: LocalPreferenceRepositoryImpl
-	) : LocalPreferenceRepository
+	): LocalPreferenceRepository
 }

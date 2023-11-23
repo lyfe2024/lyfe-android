@@ -24,7 +24,7 @@ class ProfileEditViewModel @Inject constructor() : ViewModel() {
 	}
 
 	fun getNicknameInvalidReason(text: String): List<NicknameFormState> {
-//		val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
+		//  val regex = Regex("^[\\s가-힣a-zA-Z0-9]{1,10}$")
 		val regex1 = Regex("^[a-zA-Z]+[0-9]+\$")
 		val regex2 = Regex("^[0-9]+[a-zA-Z]+\$")
 		val specialCharRegex = Regex("[,=':;><?/~`_.!@#^&*]|\\\\[|\\\\]")
