@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -30,12 +31,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun LoginScreen(navigator: LyfeNavigator) {
+fun LoginScreen(
+	navigator: LyfeNavigator,
+	viewModel: LoginViewModel = hiltViewModel()
+) {
 	Column(
 		modifier = Modifier
 			.padding(vertical = 16.dp, horizontal = 24.dp)
@@ -52,7 +57,22 @@ fun LoginScreen(navigator: LyfeNavigator) {
 
 		Spacer(modifier = Modifier.height(98.dp))
 
-		LoginButtonArea(navigator = navigator)
+		when(viewModel.uiState) {
+			LoginUiState.Loading -> {
+				LoginButtonArea(
+					navigator = navigator,
+					viewModel = viewModel,
+					clickable = false
+				)
+			}
+			else -> {
+				LoginButtonArea(
+					navigator = navigator,
+					viewModel = viewModel,
+					clickable = true
+				)
+			}
+		}
 
 		Spacer(modifier = Modifier.weight(1f))
 
@@ -61,10 +81,16 @@ fun LoginScreen(navigator: LyfeNavigator) {
 }
 
 @Composable
-fun LoginButtonArea(navigator: LyfeNavigator) {
-	val modifier = Modifier
-		.fillMaxWidth()
-		.height(42.dp)
+fun LoginButtonArea(
+	navigator: LyfeNavigator,
+	viewModel: LoginViewModel,
+	clickable: Boolean
+) {
+	val context = LocalContext.current
+
+//	val kakaoToken = viewModel.kakaoLoginResult.collectAsState()
+
+	val modifier = Modifier.fillMaxWidth().height(42.dp)
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally
@@ -74,7 +100,7 @@ fun LoginButtonArea(navigator: LyfeNavigator) {
 			buttonColor = Color(color = 0xFFFEE500),
 			textColor = Color(color = 0xFF363636),
 			snsName = "Kakao",
-			onClick = { navigator.navigate(LyfeScreens.Nickname.name) }
+			onClick = { if (clickable) viewModel.kakaoLogin(context) }
 		)
 		
 		Spacer(modifier = Modifier.height(16.dp))
@@ -84,7 +110,7 @@ fun LoginButtonArea(navigator: LyfeNavigator) {
 			buttonColor = Color.Black,
 			textColor = Color.White,
 			snsName = "Apple",
-			onClick = { navigator.navigate(LyfeScreens.Nickname.name) }
+			onClick = { if (clickable) navigator.navigate(LyfeScreens.Nickname.name) }
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))
@@ -94,7 +120,7 @@ fun LoginButtonArea(navigator: LyfeNavigator) {
 			buttonColor = Color.White,
 			textColor = Color(color = 0xFF363636),
 			snsName = "Google",
-			onClick = { navigator.navigate(LyfeScreens.Nickname.name) }
+			onClick = { if (clickable) navigator.navigate(LyfeScreens.Nickname.name) }
 		)
 	}
 }
@@ -107,16 +133,19 @@ fun SocialLoginButton(
 	snsName: String,
 	onClick: () -> Unit
 ) {
-	val buttonText: String = when(snsName) {
+	val buttonText: String = when (snsName) {
 		"Kakao" -> {
 			"카카오로 3초만에 시작하기"
 		}
+
 		"Apple" -> {
 			"Apple로 시작하기"
 		}
+
 		"Google" -> {
 			"Google로 시작하기"
 		}
+
 		else -> {
 			"이메일로 시작하기"
 		}
