@@ -7,5 +7,4 @@ interface LocalPreferenceDataSource {
 	fun updateAccessToken(accessToken: String)
 
 	fun removeAccessToken()
-
 }

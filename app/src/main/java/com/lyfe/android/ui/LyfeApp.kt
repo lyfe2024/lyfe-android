@@ -48,7 +48,7 @@ fun LyfeApp(
 
 			if (bottomBarState.value) {
 				BottomNavigation(
-					backgroundColor = Color.White,
+					backgroundColor = Color.White
 				) {
 					bottomNavItems.forEach { item ->
 						BottomNavigationItem(

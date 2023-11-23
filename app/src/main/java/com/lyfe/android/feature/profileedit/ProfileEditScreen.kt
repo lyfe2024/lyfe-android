@@ -185,14 +185,12 @@ private fun ProfileEditNicknameBox(
 	nickname: String,
 	isNicknameEnableStateChanged: (Boolean) -> Unit
 ) {
-	// 닉네임 변경하는 부분
 	val nicknameState = remember { mutableStateOf(nickname) }
 	val nicknameFormState = remember { mutableStateOf("") }
 	Column {
 		Column {
 			Box(
-				modifier = Modifier
-					.fillMaxWidth()
+				modifier = Modifier.fillMaxWidth()
 					.border(width = 1.dp, color = Color(color = 0xFF363636), shape = RoundedCornerShape(8.dp))
 					.padding(horizontal = 4.dp),
 				contentAlignment = Alignment.CenterStart
@@ -216,14 +214,17 @@ private fun ProfileEditNicknameBox(
 							val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
 							isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
 							// 닉네임 오류 내용 표시
-							val message = if (nicknameInvalidReasons.isEmpty()) NicknameFormState.CORRECT.message else nicknameInvalidReasons[0].message
+							val message = if (nicknameInvalidReasons.isEmpty()) {
+								NicknameFormState.CORRECT.message
+							} else {
+								nicknameInvalidReasons[0].message
+							}
 							nicknameFormState.value = message
 						}
 					)
 
 					IconButton(
-						modifier = Modifier
-							.size(32.dp)
+						modifier = Modifier.size(32.dp)
 							.padding(6.dp),
 						onClick = {
 							nicknameState.value = ""
@@ -231,10 +232,7 @@ private fun ProfileEditNicknameBox(
 							isNicknameEnableStateChanged(false)
 						}
 					) {
-						Icon(
-							imageVector = Icons.Filled.Close,
-							contentDescription = null
-						)
+						Icon(imageVector = Icons.Filled.Close, contentDescription = null)
 					}
 				}
 			}

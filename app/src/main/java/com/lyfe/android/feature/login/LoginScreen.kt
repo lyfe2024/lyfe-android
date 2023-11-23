@@ -57,7 +57,7 @@ fun LoginScreen(
 
 		Spacer(modifier = Modifier.height(98.dp))
 
-		when(viewModel.uiState) {
+		when (viewModel.uiState) {
 			LoginUiState.Loading -> {
 				LoginButtonArea(
 					navigator = navigator,
