@@ -5,6 +5,7 @@ android-gradle-plugin = "8.1.0"
 klint-plugin = "11.5.1"
 detekt-plugin = "1.20.0-RC1"
 ksp-version = "1.8.10-1.0.9"
+google-servies-plugin = "4.4.0"
 
 # Config Versions
 compileSdk = "34"
@@ -57,6 +58,9 @@ coil = "2.4.0"
 # Kakao SDK
 kakao-sdk = "2.10.0"
 
+# Firebase SDK
+firebase = "32.6.0"
+
 [plugins]
 # build.gradle (project module)
 android-application-gradle = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -68,6 +72,7 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt-plugin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-gradle-plugin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-gradle-plugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-servies-plugin" }
 
 [libraries]
 # Android Library
@@ -119,6 +124,11 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
 # Kakao SDK
 kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakao-sdk"}
 
+# Firebase SDK
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
+firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
+
 [bundles]
 # Android
 android-library = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx"]
@@ -149,3 +159,6 @@ coil = ["coil", "coil-compose"]
 
 # Kakao SDK
 kakao = ["kakao-user"]
+
+# Firebase
+firebaes = ["firebase-auth-ktx", "firebase-analytics-ktx"]

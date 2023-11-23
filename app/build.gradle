@@ -90,4 +90,7 @@ dependencies {
 	implementation(libs.bundles.coil)
 
 	implementation(libs.bundles.kakao)
+
+	implementation(platform(libs.firebase.bom))
+	implementation(libs.firebase.auth.ktx)
 }
