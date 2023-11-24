@@ -10,7 +10,8 @@ import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 fun LyfeNavHost(
 	modifier: Modifier = Modifier,
 	navHostController: NavHostController,
-	navigator: LyfeNavigator
+	navigator: LyfeNavigator,
+	selectedScreen: (route: String) -> Unit
 ) {
 	NavHost(
 		modifier = modifier,
@@ -19,7 +20,8 @@ fun LyfeNavHost(
 	) {
 		lyfeHomeNavigation(
 			lyfeNavigator = navigator,
-			navHostController = navHostController
+			navHostController = navHostController,
+			selectedScreen = selectedScreen
 		)
 	}
 }
