@@ -10,6 +10,8 @@ sealed class LyfeScreens(
 
 	object Home : LyfeScreens("home")
 
+	object Feed : LyfeScreens("feed")
+
 	object Post : LyfeScreens("post")
 
 	object Alarm : LyfeScreens("Alarm")
