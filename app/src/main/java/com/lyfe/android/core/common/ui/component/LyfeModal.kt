@@ -44,8 +44,8 @@ fun LyfeModal(
 				style = TextStyle(
 					fontSize = 18.sp,
 					lineHeight = 28.sp,
-					fontWeight = FontWeight(700),
-					color = Color(0xFF000000),
+					fontWeight = FontWeight.W700,
+					color = Color.Black
 				)
 			)
 		},
@@ -55,8 +55,8 @@ fun LyfeModal(
 				style = TextStyle(
 					fontSize = 16.sp,
 					lineHeight = 24.sp,
-					fontWeight = FontWeight(500),
-					color = Color(0xFF000000),
+					fontWeight = FontWeight.W500,
+					color = Color.Black
 				)
 			)
 		},
@@ -83,20 +83,18 @@ fun LyfeModal(
 				)
 			}
 		},
-		shape = RoundedCornerShape(16.dp),
+		shape = RoundedCornerShape(16.dp)
 	)
 }
 
 @Preview
 @Composable
 private fun Preview_LyfeModel() {
-
 	var showModal by remember { mutableStateOf(false) }
 
 	Box(
 		modifier = Modifier.background(Color.White)
 	) {
-
 		Button(
 			modifier = Modifier.align(Alignment.Center),
 			onClick = {
@@ -116,9 +114,8 @@ private fun Preview_LyfeModel() {
 				confirmBtnText = "로그인",
 				dismissBtnText = "취소",
 				onConfirm = { showModal = false },
-				onDismiss = { showModal = false },
+				onDismiss = { showModal = false }
 			)
 		}
-
 	}
 }

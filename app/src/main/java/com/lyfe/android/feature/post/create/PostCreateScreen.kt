@@ -166,7 +166,7 @@ private fun PostScreenDefault(
 			horizontalPadding = 24.dp,
 			isClearIconShow = false
 		) {
-
+			// TODO 게시 했을 때 게시글 작성
 		}
 	}
 }

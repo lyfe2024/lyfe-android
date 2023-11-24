@@ -47,5 +47,5 @@ enum class LyfeButtonType(
 		strokeColor = Color.Transparent,
 		borderWidth = 0.dp,
 		closeIcon = R.drawable.ic_circle_close_white
-	),
+	)
 }

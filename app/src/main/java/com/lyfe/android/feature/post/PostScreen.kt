@@ -19,7 +19,7 @@ fun PostScreen(
 		modifier = Modifier.fillMaxSize(),
 		verticalArrangement = Arrangement.Center,
 		horizontalAlignment = Alignment.CenterHorizontally
-	){
+	) {
 		Text(text = "PostScreen")
 
 		Button(
