@@ -2,6 +2,7 @@ package com.lyfe.android.core.common.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,7 @@ fun LyfeButton(
 	horizontalPadding: Dp = 24.dp,
 	cornerSize: Dp = 6.dp,
 	isClearIconShow: Boolean = true,
-	buttonType: LyfeButtonType = LyfeButtonType.DISABLED,
+	buttonType: LyfeButtonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
 	text: String,
 	fontSize: Int = 16,
 	lineHeight: Int = 24,
@@ -46,7 +47,13 @@ fun LyfeButton(
 			.background(
 				shape = RoundedCornerShape(size = cornerSize),
 				color = buttonType.bgColor
-			).clickableSingle {
+			)
+			.border(
+				width = buttonType.borderWidth,
+				color = buttonType.strokeColor,
+				shape = RoundedCornerShape(size = cornerSize)
+			)
+			.clickableSingle {
 				onClick()
 			}
 			.padding(vertical = verticalPadding, horizontal = horizontalPadding),
@@ -58,7 +65,7 @@ fun LyfeButton(
 				modifier = Modifier
 					.size(20.dp)
 					.clickableSingle { onClose() },
-				painter = painterResource(id = buttonType.icon),
+				painter = painterResource(id = buttonType.closeIcon),
 				contentDescription = "circle_close_icon"
 			)
 
@@ -84,7 +91,7 @@ private fun Preview_LyfeButton() {
 		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.DISABLED
+			buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 		) {}
 
 		Spacer(modifier = Modifier.height(20.dp))
@@ -92,7 +99,7 @@ private fun Preview_LyfeButton() {
 		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.MAIN_500
+			buttonType = LyfeButtonType.TC_GREY200_BG_GREY50_SC_GREY200
 		) {}
 
 		Spacer(modifier = Modifier.height(20.dp))
@@ -100,7 +107,7 @@ private fun Preview_LyfeButton() {
 		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.GREY_50
+			buttonType = LyfeButtonType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
 		) {}
 	}
 }

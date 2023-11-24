@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +34,6 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
-import com.lyfe.android.core.common.ui.component.RoundedCornerButton
 import com.lyfe.android.core.common.ui.component.TextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.permission.NeededPermission
@@ -46,9 +44,7 @@ import com.lyfe.android.core.common.ui.util.noRippleClickable
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.album.SelectImageKey
-import com.lyfe.android.ui.theme.BtnDarkColor
 import com.lyfe.android.ui.theme.BtnLightGrayColor
-import com.lyfe.android.ui.theme.DisabledBtnTextColor
 
 @Composable
 fun PostScreen(
@@ -161,7 +157,11 @@ private fun PostScreenDefault(
 				.fillMaxWidth()
 				.height(48.dp),
 			text = "게시",
-			buttonType = if (isBtnClickable) LyfeButtonType.MAIN_500 else LyfeButtonType.GREY_50,
+			buttonType = if (isBtnClickable) {
+				LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
+			} else {
+				LyfeButtonType.TC_GREY200_BG_GREY50_SC_GREY200
+			},
 			verticalPadding = 12.dp,
 			horizontalPadding = 24.dp,
 			isClearIconShow = false
