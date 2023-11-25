@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.post
+package com.lyfe.android.feature.post.create
 
 import android.os.Build
 import androidx.compose.runtime.getValue
@@ -10,9 +10,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PostViewModel @Inject constructor() : ViewModel() {
+class PostCreateViewModel @Inject constructor() : ViewModel() {
 
-	var uiState by mutableStateOf<PostUiState>(PostUiState.Success())
+	var uiState by mutableStateOf<PostCreateUiState>(PostCreateUiState.Success())
 		private set
 
 	var title by mutableStateOf("")
@@ -34,7 +34,7 @@ class PostViewModel @Inject constructor() : ViewModel() {
 	}
 
 	fun checkPermission() {
-		uiState = PostUiState.Success(event = PostUiEvent.CheckPermission)
+		uiState = PostCreateUiState.Success(event = PostCreateUiEvent.CheckPermission)
 	}
 
 	fun checkPermissionResult(
@@ -44,35 +44,35 @@ class PostViewModel @Inject constructor() : ViewModel() {
 		this.passedPermissionSet.addAll(passedPermissionList)
 
 		val event = if (checkPassedAllPermissions()) {
-			PostUiEvent.MoveToSelectAlbum
+			PostCreateUiEvent.MoveToSelectAlbum
 		} else {
-			PostUiEvent.ShowPermissionAlertDialog(
+			PostCreateUiEvent.ShowPermissionAlertDialog(
 				failedPermissionList = failedPermissionList
 			)
 		}
 
-		uiState = PostUiState.Success(event = event)
+		uiState = PostCreateUiState.Success(event = event)
 	}
 
 	fun addAllowedPermissions(passedPermissionList: List<NeededPermission>) {
 		this.passedPermissionSet.addAll(passedPermissionList)
 
 		val event = if (checkPassedAllPermissions()) {
-			PostUiEvent.MoveToSelectAlbum
+			PostCreateUiEvent.MoveToSelectAlbum
 		} else {
-			PostUiEvent.IDLE
+			PostCreateUiEvent.IDLE
 		}
-		uiState = PostUiState.Success(event = event)
+		uiState = PostCreateUiState.Success(event = event)
 	}
 
 	fun setUiEventIdle() {
-		uiState = PostUiState.Success(event = PostUiEvent.IDLE)
+		uiState = PostCreateUiState.Success(event = PostCreateUiEvent.IDLE)
 	}
 
 	private fun checkPassedAllPermissions() =
 		passedPermissionSet.size == neededPermissions.size
 
 	fun setSelectedImage(selectedImage: String) {
-		uiState = PostUiState.Success(selectedImage = selectedImage)
+		uiState = PostCreateUiState.Success(selectedImage = selectedImage)
 	}
 }
