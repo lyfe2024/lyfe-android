@@ -50,21 +50,23 @@ fun LyfeApp(
 			navigator = navigator
 		) { route ->
 			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
-			if (idx != -1) selected = idx
+			selected = idx
 		}
 
-		NavigationTab(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(bottom = 8.dp, start = 20.dp, end = 20.dp)
-				.align(Alignment.BottomCenter),
-			items = bottomNavItems,
-			selectedItemIndex = selected,
-			onClick = { index ->
-				selected = index
-				navigator.navigate(bottomNavItems[index].screenRoute)
-			}
-		)
+		if (selected != -1) {
+			NavigationTab(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp, start = 20.dp, end = 20.dp)
+					.align(Alignment.BottomCenter),
+				items = bottomNavItems,
+				selectedItemIndex = selected,
+				onClick = { index ->
+					selected = index
+					navigator.navigate(bottomNavItems[index].screenRoute)
+				}
+			)
+		}
 	}
 }
 

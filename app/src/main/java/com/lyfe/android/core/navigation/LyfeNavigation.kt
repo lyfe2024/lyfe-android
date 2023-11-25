@@ -9,6 +9,7 @@ import com.lyfe.android.feature.album.SelectAlbumScreen
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.post.PostScreen
+import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
@@ -29,11 +30,16 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Post.name) {
-		PostScreen(
+		PostScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.Post.name)
+	}
+
+	composable(route = LyfeScreens.PostCreate.name) {
+		PostCreateScreen(
 			navigator = lyfeNavigator,
 			navHostController = navHostController
 		)
-		selectedScreen(LyfeScreens.Post.name)
+		selectedScreen(LyfeScreens.PostCreate.name)
 	}
 
 	composable(route = LyfeScreens.Alarm.name) {
@@ -48,9 +54,11 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 
 	composable(route = LyfeScreens.SelectAlbum.name) {
 		SelectAlbumScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.SelectAlbum.name)
 	}
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
 		ProfileEditScreen(viewModel = ProfileEditViewModel())
+		selectedScreen(LyfeScreens.ProfileEdit.name)
 	}
 }

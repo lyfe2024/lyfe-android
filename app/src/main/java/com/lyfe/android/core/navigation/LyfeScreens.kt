@@ -18,6 +18,8 @@ sealed class LyfeScreens(
 
 	object Profile : LyfeScreens("profile")
 
+	object PostCreate : LyfeScreens("post/create")
+
 	object SelectAlbum : LyfeScreens("album/select")
 
 	object ProfileEdit : LyfeScreens("profileEdit")
