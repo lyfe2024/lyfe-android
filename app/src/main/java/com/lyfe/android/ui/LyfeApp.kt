@@ -2,28 +2,25 @@ package com.lyfe.android.ui
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
 import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.ui.navigation.NavigationTab
 
 @Composable
 fun LyfeApp(
@@ -35,61 +32,94 @@ fun LyfeApp(
 		navigator.handleNavigationCommands(navController)
 	}
 
-	val bottomNavItems = listOf(BottomNavItem.Home, BottomNavItem.Post, BottomNavItem.Alarm, BottomNavItem.Profile)
-	val bottomBarState = rememberSaveable { mutableStateOf(true) }
+	val bottomNavItems = listOf(
+		BottomNavItem.Home,
+		BottomNavItem.Feed,
+		BottomNavItem.Post,
+		BottomNavItem.Alarm,
+		BottomNavItem.Profile
+	)
+	var selected by remember { mutableIntStateOf(0) }
 
-	Scaffold(
-		bottomBar = {
-			val navBackStackEntry by navController.currentBackStackEntryAsState()
-			val currentDestination = navBackStackEntry?.destination
-			val route = currentDestination?.route
-
-			bottomBarState.value = (route != "login" && route != "profileEdit")
-
-			if (bottomBarState.value) {
-				BottomNavigation(
-					backgroundColor = Color.White
-				) {
-					bottomNavItems.forEach { item ->
-						BottomNavigationItem(
-							icon = { Icon(painter = painterResource(id = item.icon), contentDescription = item.description) },
-							label = { Text(text = stringResource(id = item.title)) },
-							selectedContentColor = Color(color = 0xFF000000),
-							unselectedContentColor = Color(color = 0xFFA2A2A2),
-							selected = currentDestination?.hierarchy?.any { it.route == item.screenRoute } == true,
-							alwaysShowLabel = false,
-							onClick = {
-								navigator.navigate(item.screenRoute) {
-									// Avoid multiple copies of the same destination when
-									// reselecting the same item
-									launchSingleTop = true
-
-									// Restore state when reselecting a previously selected item
-									restoreState = true
-								}
-							}
-						)
-					}
-				}
-			}
-		}
-	) { innerPadding ->
+	Box(
+		modifier = Modifier.fillMaxSize()
+	) {
 		LyfeNavHost(
-			modifier = Modifier.padding(innerPadding),
+			modifier = Modifier.fillMaxSize(),
 			navHostController = navController,
 			navigator = navigator
-		)
+		) { route ->
+			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
+			selected = idx
+		}
+
+		if (selected != -1) {
+			NavigationTab(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(bottom = 8.dp, start = 20.dp, end = 20.dp)
+					.align(Alignment.BottomCenter),
+				items = bottomNavItems,
+				selectedItemIndex = selected,
+				onClick = { index ->
+					selected = index
+					navigator.navigate(bottomNavItems[index].screenRoute)
+				}
+			)
+		}
 	}
 }
 
 sealed class BottomNavItem(
 	@StringRes val title: Int,
-	@DrawableRes val icon: Int,
+	@DrawableRes val defaultIconRes: Int,
+	@DrawableRes val selectedIconRes: Int,
 	val description: String,
 	val screenRoute: String
 ) {
-	object Home : BottomNavItem(R.string.btm_nav_home, R.drawable.ic_home, "홈 아이콘", LyfeScreens.Home.name)
-	object Post : BottomNavItem(R.string.btm_nav_post, R.drawable.ic_post_add, "게시 아이콘", LyfeScreens.Post.name)
-	object Alarm : BottomNavItem(R.string.btm_nav_alarm, R.drawable.ic_alarm, "알림 아이콘", LyfeScreens.Alarm.name)
-	object Profile : BottomNavItem(R.string.btm_nav_profile, R.drawable.ic_profile, "프로필 아이콘", LyfeScreens.Profile.name)
+	object Home : BottomNavItem(
+		title = R.string.btm_nav_home,
+		defaultIconRes = R.drawable.ic_btm_navi_home_default,
+		selectedIconRes = R.drawable.ic_btm_navi_home_selected,
+		description = "홈 아이콘",
+		screenRoute = LyfeScreens.Home.name
+	)
+
+	object Feed : BottomNavItem(
+		title = R.string.btm_nav_view_all,
+		defaultIconRes = R.drawable.ic_btm_navi_feed_default,
+		selectedIconRes = R.drawable.ic_btm_navi_feed_selected,
+		description = "피드 아이콘",
+		screenRoute = LyfeScreens.Feed.name
+	)
+
+	object Post : BottomNavItem(
+		title = R.string.btm_nav_post,
+		defaultIconRes = R.drawable.ic_btm_navi_post_default,
+		selectedIconRes = R.drawable.ic_btm_navi_post_selected,
+		description = "게시 아이콘",
+		screenRoute = LyfeScreens.Post.name
+	)
+
+	object Alarm : BottomNavItem(
+		title = R.string.btm_nav_alarm,
+		defaultIconRes = R.drawable.ic_btm_navi_alarm_default,
+		selectedIconRes = R.drawable.ic_btm_navi_alarm_selected,
+		description = "알림 아이콘",
+		screenRoute = LyfeScreens.Alarm.name
+	)
+
+	object Profile : BottomNavItem(
+		title = R.string.btm_nav_profile,
+		defaultIconRes = R.drawable.ic_btm_navi_profile_default,
+		selectedIconRes = R.drawable.ic_btm_navi_profile_selected,
+		description = "프로필 아이콘",
+		screenRoute = LyfeScreens.Profile.name
+	)
+
+	fun getIcon(isSelected: Boolean) = if (isSelected) {
+		selectedIconRes
+	} else {
+		defaultIconRes
+	}
 }

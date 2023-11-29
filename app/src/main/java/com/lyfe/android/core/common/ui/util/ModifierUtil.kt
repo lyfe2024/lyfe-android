@@ -1,6 +1,5 @@
 package com.lyfe.android.core.common.ui.util
 
-import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.runtime.remember
@@ -38,7 +37,7 @@ fun Modifier.clickableSingle(
 		onClickLabel = onClickLabel,
 		onClick = { multipleEventsCutter.processEvent { onClick() } },
 		role = role,
-		indication = LocalIndication.current,
+		indication = null,
 		interactionSource = remember { MutableInteractionSource() }
 	)
 }

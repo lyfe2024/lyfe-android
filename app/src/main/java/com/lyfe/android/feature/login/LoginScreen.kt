@@ -64,7 +64,7 @@ fun LoginScreen(
 		
 		Image(
 			modifier = Modifier.size(100.dp),
-			painter = painterResource(id = R.drawable.ic_home),
+			painter = painterResource(id = R.drawable.ic_profile),
 			contentDescription = "로고 들어갈 자리"
 		)
 
@@ -241,7 +241,7 @@ fun SocialLoginButton(
 		) {
 			Icon(
 				modifier = Modifier.size(20.dp),
-				painter = painterResource(id = R.drawable.ic_alarm),
+				painter = painterResource(id = R.drawable.ic_profile),
 				contentDescription = "sns 로고"
 			)
 

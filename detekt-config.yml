@@ -8,7 +8,7 @@ style:
         ignoreLocalVariableDeclaration: true
         ignoreCompanionObjectPropertyDeclaration: true
     UnusedPrivateMember:
-        ignoreAnnotated: [ 'preview' ]
+        ignoreAnnotated: [ 'Preview' ]
     NewLineAtEndOfFile:
         active: false
 

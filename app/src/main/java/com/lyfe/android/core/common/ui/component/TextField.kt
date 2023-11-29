@@ -19,7 +19,7 @@ fun TextField(
 	maxLines: Int = Int.MAX_VALUE,
 	placeHolder: @Composable () -> Unit,
 	text: String,
-	onChange: (String) -> Unit
+	onTextChange: (String) -> Unit
 ) {
 	Box(
 		modifier = modifier
@@ -36,7 +36,7 @@ fun TextField(
 			singleLine = singleLine,
 			maxLines = maxLines,
 			value = text,
-			onValueChange = onChange
+			onValueChange = onTextChange
 		) {
 			if (text.isEmpty()) {
 				placeHolder()
