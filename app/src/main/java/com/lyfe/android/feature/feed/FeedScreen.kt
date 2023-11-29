@@ -1,7 +1,6 @@
-package com.lyfe.android.feature.post
+package com.lyfe.android.feature.feed
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -12,22 +11,21 @@ import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun PostScreen(
+fun FeedScreen(
 	navigator: LyfeNavigator
 ) {
-	Column(
-		modifier = Modifier.fillMaxSize(),
-		verticalArrangement = Arrangement.Center,
-		horizontalAlignment = Alignment.CenterHorizontally
+	Box(
+		modifier = Modifier.fillMaxSize()
 	) {
-		Text(text = "PostScreen")
+		Text(
+			modifier = Modifier.align(Alignment.Center),
+			text = "Feed"
+		)
 
 		Button(
 			onClick = {
-				navigator.navigate(LyfeScreens.PostCreate.name)
+				navigator.navigate(LyfeScreens.Home.name)
 			}
-		) {
-			Text(text = "Create Post")
-		}
+		) {}
 	}
 }

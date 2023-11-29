@@ -10,11 +10,15 @@ sealed class LyfeScreens(
 
 	object Home : LyfeScreens("home")
 
+	object Feed : LyfeScreens("feed")
+
 	object Post : LyfeScreens("post")
 
 	object Alarm : LyfeScreens("Alarm")
 
 	object Profile : LyfeScreens("profile")
+
+	object PostCreate : LyfeScreens("post/create")
 
 	object SelectAlbum : LyfeScreens("album/select")
 
