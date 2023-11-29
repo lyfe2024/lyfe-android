@@ -1,6 +1,13 @@
 package com.lyfe.android.feature.login
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,9 +40,14 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 import com.lyfe.android.R
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -57,80 +70,134 @@ fun LoginScreen(
 
 		Spacer(modifier = Modifier.height(98.dp))
 
-		when (viewModel.uiState) {
-			LoginUiState.Loading -> {
-				LoginButtonArea(
-					navigator = navigator,
-					viewModel = viewModel,
-					clickable = false
-				)
-			}
-			else -> {
-				LoginButtonArea(
-					navigator = navigator,
-					viewModel = viewModel,
-					clickable = true
-				)
-			}
-		}
+
+		LoginButtonArea(
+			navigator = navigator,
+			viewModel = viewModel
+		)
 
 		Spacer(modifier = Modifier.weight(1f))
 
 		ServicePolicyText()
+
+		if (viewModel.uiState == LoginUiState.Success) {
+			navigator.navigate(LyfeScreens.Nickname.name)
+		}
 	}
 }
 
 @Composable
 fun LoginButtonArea(
 	navigator: LyfeNavigator,
-	viewModel: LoginViewModel,
-	clickable: Boolean
+	viewModel: LoginViewModel
 ) {
-	val context = LocalContext.current
-	val modifier = Modifier.fillMaxWidth().height(42.dp)
+	val modifier = Modifier
+		.fillMaxWidth()
+		.height(42.dp)
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		SocialLoginButton(
+		KakaoLoginButton(
+			viewModel = viewModel,
 			modifier = modifier,
-			buttonColor = Color(color = 0xFFFEE500),
-			textColor = Color(color = 0xFF363636),
-			snsName = "Kakao",
-			onClick = {
-				if (clickable) {
-					viewModel.updateUiState(LoginUiState.Loading)
-					KakaoLoginManager(context).startKakaoLogin {
-						Log.d("KAKAO_REFRESH_TOKEN", it.refreshToken)
-						Log.d("KAKAO_ACCESS_TOKEN", it.accessToken)
-						viewModel.updateKakaoToken(it)
-						// 로그인 성공하면 다음 화면으로 이동
-						navigator.navigate(LyfeScreens.Nickname.name)
-					}
-				}
-			}
 		)
 		
 		Spacer(modifier = Modifier.height(16.dp))
 
+		// AppleLoginButton으로 변경 예정
 		SocialLoginButton(
 			modifier = modifier,
 			buttonColor = Color.Black,
 			textColor = Color.White,
 			snsName = "Apple",
-			onClick = { if (clickable) navigator.navigate(LyfeScreens.Nickname.name) }
+			onClick = {
+				if (viewModel.uiState != LoginUiState.Loading) {
+					navigator.navigate(LyfeScreens.Nickname.name)
+				}
+			}
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))
 
-		SocialLoginButton(
+		GoogleLoginButton(
+			viewModel = viewModel,
 			modifier = modifier,
-			buttonColor = Color.White,
-			textColor = Color(color = 0xFF363636),
-			snsName = "Google",
-			onClick = { if (clickable) navigator.navigate(LyfeScreens.Nickname.name) }
 		)
 	}
+}
+
+@Composable
+fun KakaoLoginButton(
+	viewModel: LoginViewModel,
+	modifier: Modifier,
+) {
+	val context = LocalContext.current
+	val kakaoLoginManager = KakaoLoginManager(context)
+	val onClick = {
+		if (viewModel.uiState != LoginUiState.Loading) {
+			viewModel.updateUiState(LoginUiState.Loading)
+			kakaoLoginManager.startKakaoLogin {
+				// 토큰 표시
+				Log.d("KAKAO_REFRESH_TOKEN", it.refreshToken)
+				Log.d("KAKAO_ACCESS_TOKEN", it.accessToken)
+				// 로그인 성공하면 다음 화면으로 이동
+				viewModel.updateUiState(LoginUiState.Success)
+			}
+		}
+	}
+
+	SocialLoginButton(
+		modifier = modifier,
+		buttonColor = Color(color = 0xFFFEE500),
+		textColor = Color(color = 0xFF363636),
+		snsName = "Kakao",
+		onClick = onClick
+	)
+}
+
+@Composable
+fun GoogleLoginButton(
+	viewModel: LoginViewModel,
+	modifier: Modifier,
+) {
+	val context = LocalContext.current
+	val coroutineScope = rememberCoroutineScope()
+	val googleLoginManager = GoogleLoginManager(context)
+
+	val launcher = rememberGoogleSignInLauncher(
+		onSignInComplete = {
+			val authCode = googleLoginManager.handleSignInResult(it)
+			viewModel.getGoogleAccessToken(authCode)
+		},
+		onSignInFailure = { Log.e("onSignInFailure", "Error Code is $it") },
+		onError = { throw it }
+	)
+
+	val onClick = {
+		if (viewModel.uiState != LoginUiState.Loading) {
+			viewModel.updateUiState(LoginUiState.Loading)
+			if (googleLoginManager.isLogin(context)) {
+				coroutineScope.launch {
+					val isLogout = googleLoginManager.signOut()
+					if (isLogout) {
+						Toast.makeText(context, "로그아웃 되었습니다!", Toast.LENGTH_SHORT).show()
+						viewModel.updateUiState(LoginUiState.IDLE)
+					}
+				}
+			} else {
+				launcher.launch(googleLoginManager.createSignInIntent())
+			}
+		}
+	}
+
+	SocialLoginButton(
+		modifier = modifier,
+		buttonColor = Color.White,
+		textColor = Color(color = 0xFF363636),
+		snsName = "Google",
+		onClick = onClick
+	)
 }
 
 @Composable
@@ -223,6 +290,29 @@ fun ServicePolicyText() {
 			annotatedString.getStringAnnotations(tag = "개인정보 처리방침", start = offset, end = offset).firstOrNull()?.let {
 				Log.d("terms URL", it.item)
 				uriHandler.openUri(it.item)
+			}
+		}
+	)
+}
+
+@Composable
+fun rememberGoogleSignInLauncher(
+	onSignInComplete: (Task<GoogleSignInAccount>) -> Unit,
+	onSignInFailure: (Int) -> Unit,
+	onError: (ApiException) -> Unit
+): ManagedActivityResultLauncher<Intent, ActivityResult> {
+	return rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.StartActivityForResult(),
+		onResult = { result ->
+			try {
+				if (result.resultCode != RESULT_OK) {
+					onSignInFailure(result.resultCode)
+				} else {
+					val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+					onSignInComplete(task)
+				}
+			} catch (e: ApiException) {
+				onError(e)
 			}
 		}
 	)

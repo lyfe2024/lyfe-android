@@ -8,7 +8,9 @@ import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import dagger.hilt.android.qualifiers.ActivityContext
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class KakaoLoginManager @Inject constructor(
 	@ActivityContext private val context: Context
 ) {
@@ -20,13 +22,13 @@ class KakaoLoginManager @Inject constructor(
 	private lateinit var kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit
 
 	fun startKakaoLogin(
-		updateSocialToken: (OAuthToken) -> Unit
+		onToken: (OAuthToken) -> Unit
 	) {
 		kakaoLoginState = getKaKaoLoginState()
-		kakaoLoginCallback = getLoginCallback(updateSocialToken)
+		kakaoLoginCallback = getLoginCallback(onToken)
 
 		when (kakaoLoginState) {
-			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(updateSocialToken)
+			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(onToken)
 			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> onKakaoAccountLogin()
 		}
 	}
@@ -38,18 +40,18 @@ class KakaoLoginManager @Inject constructor(
 			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN
 		}
 
-	private fun getLoginCallback(updateSocialToken: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
+	private fun getLoginCallback(onToken: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
 		return { token, error ->
 			if (error != null) {
 				Log.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
 				throw error
 			} else if (token != null) {
-				updateSocialToken(token)
+				onToken(token)
 			}
 		}
 	}
 
-	private fun onKakaoTalkLogin(updateSocialToken: (OAuthToken) -> Unit) {
+	private fun onKakaoTalkLogin(onTokenReceived: (OAuthToken) -> Unit) {
 		UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
 			if (error != null) {
 				// 카카오톡으로 로그인 실패
@@ -58,7 +60,7 @@ class KakaoLoginManager @Inject constructor(
 				}
 				onKakaoAccountLogin()
 			} else if (token != null) {
-				updateSocialToken(token)
+				onTokenReceived(token)
 			}
 		}
 	}

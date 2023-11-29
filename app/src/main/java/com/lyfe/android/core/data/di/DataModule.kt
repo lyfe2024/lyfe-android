@@ -1,10 +1,10 @@
 package com.lyfe.android.core.data.di
 
 import com.lyfe.android.core.data.repository.AlbumRepositoryImpl
-import com.lyfe.android.core.data.repository.LocalPreferenceRepositoryImpl
+import com.lyfe.android.core.data.repository.GoogleRepositoryImpl
 import com.lyfe.android.core.data.repository.fake.FakeLyfeRepository
 import com.lyfe.android.core.domain.repository.AlbumRepository
-import com.lyfe.android.core.domain.repository.LocalPreferenceRepository
+import com.lyfe.android.core.domain.repository.GoogleRepository
 import com.lyfe.android.core.domain.repository.LyfeRepository
 import dagger.Binds
 import dagger.Module
@@ -31,7 +31,7 @@ interface DataModule {
 
 	@Singleton
 	@Binds
-	fun bindsLocalPreferenceRepository(
-		sharedPreferenceRepository: LocalPreferenceRepositoryImpl
-	): LocalPreferenceRepository
+	fun bindsGoogleRepository(
+		googleRepositoryImpl: GoogleRepositoryImpl
+	): GoogleRepository
 }

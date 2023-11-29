@@ -2,8 +2,8 @@ package com.lyfe.android.core.data.datasource.di
 
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
-import com.lyfe.android.core.data.datasource.LocalPreferenceDataSource
-import com.lyfe.android.core.data.datasource.LocalPreferenceDataSourceImpl
+import com.lyfe.android.core.data.datasource.GoogleDataSource
+import com.lyfe.android.core.data.datasource.GoogleDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -22,7 +22,7 @@ interface DataSourceModule {
 
 	@Singleton
 	@Binds
-	fun bindsLocalPreferenceUserDataSource(
-		localPreferenceUserDataSourceImpl: LocalPreferenceDataSourceImpl
-	): LocalPreferenceDataSource
+	fun bindsGoogleSource(
+		googleDataSourceImpl: GoogleDataSourceImpl
+	): GoogleDataSource
 }
