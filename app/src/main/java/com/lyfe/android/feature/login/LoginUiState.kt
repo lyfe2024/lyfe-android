@@ -9,6 +9,6 @@ sealed interface LoginUiState {
 	object Success : LoginUiState
 
 	data class Failure(
-		val reason: String?
+		val errorMessage: String = "에러메세지가 존재하지 않습니다."
 	) : LoginUiState
 }
