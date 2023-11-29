@@ -1,11 +1,12 @@
 package com.lyfe.android.core.data.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class GoogleTokenRequest(
-	private val grant_type: String,
-	private val client_id: String,
-	private val client_secret: String,
-	private val code: String
+	@SerialName("grant_type") val grantType: String,
+	@SerialName("client_id") val clientId: String,
+	@SerialName("client_secret") val clientSecret: String,
+	@SerialName("code") val code: String
 )

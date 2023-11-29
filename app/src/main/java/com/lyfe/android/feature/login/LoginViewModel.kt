@@ -34,15 +34,15 @@ class LoginViewModel @Inject constructor(
 		viewModelScope.launch {
 			googleRepository.getAccessToken(
 				GoogleTokenRequest(
-					grant_type = "authorization_code",
-					client_id = BuildConfig.GOOGLE_WEB_CLIENT_ID,
-					client_secret = BuildConfig.GOOGLE_WEB_CLIENT_SECRET,
+					grantType = "authorization_code",
+					clientId = BuildConfig.GOOGLE_WEB_CLIENT_ID,
+					clientSecret = BuildConfig.GOOGLE_WEB_CLIENT_SECRET,
 					code = authCode
 				)
 			).collect { result ->
 				when (result) {
 					is Result.Success -> {
-						val accessToken = result.body?.access_token
+						val accessToken = result.body?.accessToken
 						Log.d(TAG, accessToken ?: "token is empty")
 						uiState = LoginUiState.Success
 					}

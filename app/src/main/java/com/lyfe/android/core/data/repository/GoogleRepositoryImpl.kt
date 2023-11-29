@@ -16,7 +16,7 @@ import javax.inject.Inject
 class GoogleRepositoryImpl @Inject constructor(
 	private val googleDataSource: GoogleDataSource,
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
-): GoogleRepository {
+) : GoogleRepository {
 
 	override suspend fun getAccessToken(request: GoogleTokenRequest): Flow<Result<GoogleTokenResponse>> = flow {
 		emit(googleDataSource.getAccessToken(request))

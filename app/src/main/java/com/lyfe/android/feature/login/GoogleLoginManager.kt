@@ -14,8 +14,8 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class GoogleLoginManager @Inject constructor (
-	@ActivityContext private val context: Context,
+class GoogleLoginManager @Inject constructor(
+	@ActivityContext private val context: Context
 ) {
 	companion object {
 		const val TAG = "GoogleLoginManager"

@@ -7,5 +7,4 @@ import com.lyfe.android.core.data.network.model.Result
 interface GoogleDataSource {
 
 	suspend fun getAccessToken(request: GoogleTokenRequest): Result<GoogleTokenResponse>
-
 }
