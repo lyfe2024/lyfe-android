@@ -70,7 +70,6 @@ fun LoginScreen(
 
 		Spacer(modifier = Modifier.height(98.dp))
 
-
 		LoginButtonArea(
 			navigator = navigator,
 			viewModel = viewModel
@@ -100,7 +99,7 @@ fun LoginButtonArea(
 	) {
 		KakaoLoginButton(
 			viewModel = viewModel,
-			modifier = modifier,
+			modifier = modifier
 		)
 		
 		Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +121,7 @@ fun LoginButtonArea(
 
 		GoogleLoginButton(
 			viewModel = viewModel,
-			modifier = modifier,
+			modifier = modifier
 		)
 	}
 }
@@ -130,7 +129,7 @@ fun LoginButtonArea(
 @Composable
 fun KakaoLoginButton(
 	viewModel: LoginViewModel,
-	modifier: Modifier,
+	modifier: Modifier
 ) {
 	val context = LocalContext.current
 	val kakaoLoginManager = KakaoLoginManager(context)
@@ -159,7 +158,7 @@ fun KakaoLoginButton(
 @Composable
 fun GoogleLoginButton(
 	viewModel: LoginViewModel,
-	modifier: Modifier,
+	modifier: Modifier
 ) {
 	val context = LocalContext.current
 	val coroutineScope = rememberCoroutineScope()
