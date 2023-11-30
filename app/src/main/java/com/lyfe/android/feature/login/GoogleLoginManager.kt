@@ -23,17 +23,16 @@ class GoogleLoginManager @Inject constructor(
 
 	private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 		.requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
-		.requestServerAuthCode(BuildConfig.GOOGLE_WEB_CLIENT_ID)
 		.requestEmail()
 		.build()
 
 	private val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
-	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): String {
+	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): String? {
 		try {
-			val authCode = completedTask.getResult(ApiException::class.java)?.serverAuthCode!!
-			Log.d(TAG, "Auth Code: $authCode")
-			return authCode
+			val idToken = completedTask.getResult(ApiException::class.java)?.idToken
+			Log.d(TAG, "ID Token: $idToken")
+			return idToken
 		} catch (e: ApiException) {
 			Log.w(TAG, "handleSignInResult: error" + e.statusCode)
 			throw e

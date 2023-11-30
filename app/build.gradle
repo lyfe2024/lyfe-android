@@ -33,9 +33,7 @@ android {
 
 		if (localProperties.exists()) {
 			buildConfigField "String", "BASE_URL", properties['baseUrl']
-			buildConfigField "String", "GOOGLE_API_URL", properties['googleApiUrl']
 			buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", properties['google-web-client-id']
-			buildConfigField "String", "GOOGLE_WEB_CLIENT_SECRET", properties['google-web-client-secret']
 		}
 	}
 

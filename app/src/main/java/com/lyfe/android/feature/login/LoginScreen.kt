@@ -60,12 +60,12 @@ fun LoginScreen(
 			.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Spacer(modifier = Modifier.height(200.dp))
+		Spacer(modifier = Modifier.height(168.dp))
 		
 		Image(
-			modifier = Modifier.size(100.dp),
-			painter = painterResource(id = R.drawable.ic_profile),
-			contentDescription = "로고 들어갈 자리"
+			modifier = Modifier,
+			painter = painterResource(id = R.drawable.ic_main_logo),
+			contentDescription = "앱 메인 로고"
 		)
 
 		Spacer(modifier = Modifier.height(98.dp))
@@ -75,7 +75,7 @@ fun LoginScreen(
 			viewModel = viewModel
 		)
 
-		Spacer(modifier = Modifier.weight(1f))
+//		Spacer(modifier = Modifier.weight(1f))
 
 		ServicePolicyText()
 
@@ -110,6 +110,7 @@ fun LoginButtonArea(
 			buttonColor = Color.Black,
 			textColor = Color.White,
 			snsName = "Apple",
+			logoDrawable = R.drawable.ic_apple,
 			onClick = {
 				if (viewModel.uiState != LoginUiState.Loading) {
 					navigator.navigate(LyfeScreens.Nickname.name)
@@ -151,6 +152,7 @@ fun KakaoLoginButton(
 		buttonColor = Color(color = 0xFFFEE500),
 		textColor = Color(color = 0xFF363636),
 		snsName = "Kakao",
+		logoDrawable = R.drawable.ic_kakao_talk,
 		onClick = onClick
 	)
 }
@@ -166,9 +168,14 @@ fun GoogleLoginButton(
 
 	val launcher = rememberGoogleSignInLauncher(
 		onSignInComplete = {
-			val authCode = googleLoginManager.handleSignInResult(it)
-			viewModel.getGoogleAccessToken(authCode)
-		},
+			val idToken = googleLoginManager.handleSignInResult(it)
+			if (idToken == null)
+				Log.e("onSignInFailure", "ID Token is null")
+			else {
+				Toast.makeText(context, "구글 로그인이 완료되었습니다!", Toast.LENGTH_SHORT).show()
+				viewModel.updateUiState(LoginUiState.Success)
+			}
+	    },
 		onSignInFailure = { Log.e("onSignInFailure", "Error Code is $it") },
 		onError = { throw it }
 	)
@@ -195,6 +202,7 @@ fun GoogleLoginButton(
 		buttonColor = Color.White,
 		textColor = Color(color = 0xFF363636),
 		snsName = "Google",
+		logoDrawable = R.drawable.ic_profile,
 		onClick = onClick
 	)
 }
@@ -205,6 +213,7 @@ fun SocialLoginButton(
 	buttonColor: Color,
 	textColor: Color,
 	snsName: String,
+	logoDrawable: Int,
 	onClick: () -> Unit
 ) {
 	val buttonText: String = when (snsName) {
@@ -240,7 +249,7 @@ fun SocialLoginButton(
 		) {
 			Icon(
 				modifier = Modifier.size(20.dp),
-				painter = painterResource(id = R.drawable.ic_profile),
+				painter = painterResource(id = logoDrawable),
 				contentDescription = "sns 로고"
 			)
 
