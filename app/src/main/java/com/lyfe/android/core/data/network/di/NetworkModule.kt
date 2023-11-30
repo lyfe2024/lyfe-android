@@ -46,14 +46,4 @@ object NetworkModule {
 			.addConverterFactory(Json.asConverterFactory(contentType))
 			.addCallAdapterFactory(ResultCallAdapterFactory())
 			.build()
-
-	@Provides
-	@Singleton
-	fun providesGoogleRetrofit(okHttpClient: OkHttpClient): Retrofit =
-		Retrofit.Builder()
-			.baseUrl(BuildConfig.GOOGLE_API_URL)
-			.client(okHttpClient)
-			.addConverterFactory(Json.asConverterFactory(contentType))
-			.addCallAdapterFactory(ResultCallAdapterFactory())
-			.build()
 }
