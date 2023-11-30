@@ -40,3 +40,5 @@ val DisabledBtnTextColor = Color(0xFF8C8C8C)
 val TextFieldBgColor = Color(0xFFC4C4C4)
 
 val ScrollTrackColor = Color(0x99FFFFFF)
+
+val KakaoYelowColor = Color(0xFFFEE500)
