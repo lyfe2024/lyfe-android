@@ -75,7 +75,7 @@ fun LoginScreen(
 			viewModel = viewModel
 		)
 
-//		Spacer(modifier = Modifier.weight(1f))
+		Spacer(modifier = Modifier.weight(1f))
 
 		ServicePolicyText()
 
@@ -169,13 +169,13 @@ fun GoogleLoginButton(
 	val launcher = rememberGoogleSignInLauncher(
 		onSignInComplete = {
 			val idToken = googleLoginManager.handleSignInResult(it)
-			if (idToken == null)
+			if (idToken == null) {
 				Log.e("onSignInFailure", "ID Token is null")
-			else {
+			} else {
 				Toast.makeText(context, "구글 로그인이 완료되었습니다!", Toast.LENGTH_SHORT).show()
 				viewModel.updateUiState(LoginUiState.Success)
 			}
-	    },
+		},
 		onSignInFailure = { Log.e("onSignInFailure", "Error Code is $it") },
 		onError = { throw it }
 	)
