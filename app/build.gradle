@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.gradle)
     alias(libs.plugins.klint)
     alias(libs.plugins.detekt)
+	alias(libs.plugins.kotlin.serialization)
 	id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 	alias(libs.plugins.ksp)
