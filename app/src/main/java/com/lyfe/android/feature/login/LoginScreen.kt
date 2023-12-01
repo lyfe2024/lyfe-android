@@ -3,7 +3,6 @@ package com.lyfe.android.feature.login
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,6 +39,7 @@ import com.google.android.gms.tasks.Task
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.SNSLoginButton
 import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
+import com.lyfe.android.core.common.ui.util.LogUtils
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.ui.theme.DEFAULT
@@ -165,11 +165,9 @@ fun ServicePolicyText() {
 		),
 		onClick = { offset ->
 			annotatedString.getStringAnnotations(tag = "서비스 약관", start = offset, end = offset).firstOrNull()?.let {
-				Log.d("policy URL", it.item)
 				uriHandler.openUri(it.item)
 			}
 			annotatedString.getStringAnnotations(tag = "개인정보 처리방침", start = offset, end = offset).firstOrNull()?.let {
-				Log.d("terms URL", it.item)
 				uriHandler.openUri(it.item)
 			}
 		}
@@ -185,9 +183,6 @@ fun kakaoLogin(
 		if (viewModel.uiState != LoginUiState.Loading) {
 			viewModel.updateUiState(LoginUiState.Loading)
 			kakaoLoginManager.startKakaoLogin {
-				// 토큰 표시
-				Log.d("KAKAO_REFRESH_TOKEN", it.refreshToken)
-				Log.d("KAKAO_ACCESS_TOKEN", it.accessToken)
 				// 로그인 성공하면 다음 화면으로 이동
 				viewModel.updateUiState(LoginUiState.Success)
 			}
@@ -208,13 +203,13 @@ fun googleLogin(
 		onSignInComplete = {
 			val idToken = googleLoginManager.handleSignInResult(it)
 			if (idToken == null) {
-				Log.e("onSignInFailure", "ID Token is null")
+				LogUtils.e("onSignInFailure", "ID Token is null")
 			} else {
 				Toast.makeText(context, "구글 로그인이 완료되었습니다!", Toast.LENGTH_SHORT).show()
 				viewModel.updateUiState(LoginUiState.Success)
 			}
 		},
-		onSignInFailure = { Log.e("onSignInFailure", "Error Code is $it") },
+		onSignInFailure = { LogUtils.e("onSignInFailure", "Error Code is $it") },
 		onError = { throw it }
 	)
 

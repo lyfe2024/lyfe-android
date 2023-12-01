@@ -31,7 +31,6 @@ class GoogleLoginManager @Inject constructor(
 	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): String? {
 		try {
 			val idToken = completedTask.getResult(ApiException::class.java)?.idToken
-			Log.d(TAG, "ID Token: $idToken")
 			return idToken
 		} catch (e: ApiException) {
 			Log.w(TAG, "handleSignInResult: error" + e.statusCode)
