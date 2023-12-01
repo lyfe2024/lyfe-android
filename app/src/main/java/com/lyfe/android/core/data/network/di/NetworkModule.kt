@@ -39,11 +39,14 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesLyfeRetrofit(okHttpClient: OkHttpClient): Retrofit =
-		Retrofit.Builder()
+	fun providesLyfeRetrofit(okHttpClient: OkHttpClient): Retrofit {
+		val jsonConfig = Json { isLenient = true }
+
+		return Retrofit.Builder()
 			.baseUrl(BuildConfig.BASE_URL)
 			.client(okHttpClient)
-			.addConverterFactory(Json.asConverterFactory(contentType))
+			.addConverterFactory(jsonConfig.asConverterFactory(contentType))
 			.addCallAdapterFactory(ResultCallAdapterFactory())
 			.build()
+	}
 }
