@@ -1,11 +1,11 @@
 package com.lyfe.android.feature.login
 
 import android.content.Context
-import android.util.Log
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.lyfe.android.core.common.ui.util.LogUtils
 import dagger.hilt.android.qualifiers.ActivityContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,7 +43,7 @@ class KakaoLoginManager @Inject constructor(
 	private fun getLoginCallback(onToken: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
 		return { token, error ->
 			if (error != null) {
-				Log.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
+				LogUtils.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
 				throw error
 			} else if (token != null) {
 				onToken(token)
