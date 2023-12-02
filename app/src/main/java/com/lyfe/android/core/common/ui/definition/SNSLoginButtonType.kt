@@ -18,7 +18,7 @@ enum class SNSLoginButtonType(
 	Kakao(
 		textColor = DEFAULT,
 		bgColor = KakaoYelowColor,
-		text =  "카카오로 3초만에 시작하기",
+		text = "카카오로 3초만에 시작하기",
 		icon = R.drawable.ic_kakao_talk
 	),
 	Apple(

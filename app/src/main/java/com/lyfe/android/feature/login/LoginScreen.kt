@@ -126,7 +126,7 @@ fun ServicePolicyText() {
 			style = SpanStyle(
 				color = Main500,
 				textDecoration = TextDecoration.Underline,
-				fontWeight = FontWeight.W700,
+				fontWeight = FontWeight.W700
 			)
 		) {
 			append("서비스 약관")

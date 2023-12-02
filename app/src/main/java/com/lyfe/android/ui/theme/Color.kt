@@ -33,6 +33,7 @@ val Grey10 = Color(0xFFF9F9F9)
 
 val DEFAULT = Color(0xFF363636)
 val Error = Color(0xFFF75B2B)
+val Success = Color(0xFF1F72E0)
 
 val BtnDarkColor = Color(0xFF202124)
 val BtnLightGrayColor = Color(0xFFF2F3F4)
