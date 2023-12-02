@@ -5,12 +5,9 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,16 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,13 +29,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeTextField
+import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 
 @Composable
 fun ProfileEditScreen(
@@ -117,7 +108,7 @@ private fun ProfileEditContent(
 
 			Spacer(modifier = Modifier.height(40.dp))
 
-			ProfileEditNicknameBox(
+			ProfileEditNicknameTextField(
 				viewModel = viewModel,
 				nickname = nickname,
 				isNicknameEnableStateChanged = { isNicknameEnable.value = it }
@@ -179,9 +170,8 @@ private fun ProfileEditThumbnailContent() {
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProfileEditNicknameBox(
+private fun ProfileEditNicknameTextField(
 	viewModel: ProfileEditViewModel,
 	nickname: String,
 	isNicknameEnableStateChanged: (Boolean) -> Unit
@@ -189,66 +179,42 @@ private fun ProfileEditNicknameBox(
 	val nicknameState = remember { mutableStateOf(nickname) }
 	val nicknameFormState = remember { mutableStateOf("") }
 	Column {
-		Column {
-			Box(
-				modifier = Modifier
-					.fillMaxWidth()
-					.border(width = 1.dp, color = Color(color = 0xFF363636), shape = RoundedCornerShape(8.dp))
-					.padding(horizontal = 4.dp),
-				contentAlignment = Alignment.CenterStart
-			) {
-				Row(
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					TextField(
-						modifier = Modifier.weight(1f),
-						value = nicknameState.value,
-						placeholder = { Text(text = "변경할 닉네임을 입력해주세요.") },
-						colors = TextFieldDefaults.textFieldColors(
-							containerColor = Color.Transparent,
-							focusedIndicatorColor = Color.Transparent,
-							unfocusedIndicatorColor = Color.Transparent,
-							disabledIndicatorColor = Color.Transparent
-						),
-						onValueChange = {
-							nicknameState.value = it
-							// 유용한 닉네임 여부 확인
-							val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
-							isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
-							// 닉네임 오류 내용 표시
-							val message = if (nicknameInvalidReasons.isEmpty()) {
-								NicknameFormState.CORRECT.message
-							} else {
-								nicknameInvalidReasons[0].message
-							}
-							nicknameFormState.value = message
-						}
-					)
-
-					IconButton(
-						modifier = Modifier
-							.size(32.dp)
-							.padding(6.dp),
-						onClick = {
-							nicknameState.value = ""
-							nicknameFormState.value = ""
-							isNicknameEnableStateChanged(false)
-						}
-					) {
-						Icon(imageVector = Icons.Filled.Close, contentDescription = null)
-					}
+		LyfeTextField(
+			singleLine = true,
+			text = nicknameState.value,
+			textFieldType = if (nicknameState.value == "") {
+				LyfeTextFieldType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
+			} else {
+				LyfeTextFieldType.TC_DEFAULT_BG_TRANSPARENT_SC_DEFAULT
+			},
+			onTextClear = {
+				nicknameState.value = ""
+				nicknameFormState.value = ""
+				isNicknameEnableStateChanged(false)
+			},
+			onTextChange = {
+				nicknameState.value = it
+				// 유용한 닉네임 여부 확인
+				val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
+				isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
+				// 닉네임 오류 내용 표시
+				val message = if (nicknameInvalidReasons.isEmpty()) {
+					NicknameFormState.CORRECT.message
+				} else {
+					nicknameInvalidReasons[0].message
 				}
+				nicknameFormState.value = message
 			}
+		)
 
-			Spacer(modifier = Modifier.height(10.dp))
+		Spacer(modifier = Modifier.height(10.dp))
 
-			Text(
-				modifier = Modifier.align(Alignment.Start),
-				text = nicknameFormState.value,
-				color = Color.Red,
-				fontSize = 11.sp
-			)
-		}
+		Text(
+			modifier = Modifier.align(Alignment.Start),
+			text = nicknameFormState.value,
+			color = Color.Red,
+			fontSize = 11.sp
+		)
 	}
 }
 
@@ -257,25 +223,20 @@ private fun ProfileEditCompleteButton(
 	isEnableState: Boolean
 ) {
 	val context = LocalContext.current
-	// 완료 버튼
-	OutlinedButton(
-		modifier = Modifier
-			.height(48.dp)
-			.fillMaxWidth()
-			.background(
-				color = if (isEnableState) Color(color = 0xff202124) else Color(color = 0xfff2f3f4),
-				shape = RoundedCornerShape(24.dp)
-			)
-			.clip(RoundedCornerShape(10.dp)),
+
+	LyfeButton(
+		modifier = Modifier.height(48.dp)
+			.fillMaxWidth(),
+		cornerSize = 10.dp,
+		isClearIconShow = false,
+		buttonType = if (isEnableState) {
+			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
+		} else {
+			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
+		},
+		text = "완료",
 		onClick = {
 			Toast.makeText(context, "현재 닉네임 가능 여부: $isEnableState", Toast.LENGTH_SHORT).show()
 		}
-	) {
-		Text(
-			text = "완료",
-			color = if (isEnableState) Color.White else Color(color = 0xff8c8c8c),
-			textAlign = TextAlign.Center,
-			fontSize = 16.sp
-		)
-	}
+	)
 }

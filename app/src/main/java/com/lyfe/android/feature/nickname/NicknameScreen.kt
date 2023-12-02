@@ -2,10 +2,7 @@ package com.lyfe.android.feature.nickname
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,38 +10,33 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeTextField
+import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.feature.profileedit.NicknameFormState
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
+import com.lyfe.android.ui.theme.Error
+import com.lyfe.android.ui.theme.Grey200
+import com.lyfe.android.ui.theme.Success
 
 @Composable
 fun NicknameScreen(
@@ -76,7 +68,7 @@ fun NicknameScreen(
 			)
 		)
 
-		Spacer(modifier = Modifier.height(48.dp))
+		Spacer(modifier = Modifier.height(40.dp))
 
 		NicknameEnterContent(viewModel)
 	}
@@ -98,7 +90,7 @@ private fun NicknameEnterContent(
 			modifier = Modifier.fillMaxSize(),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			NicknameTextBox(
+			NicknameTextField(
 				viewModel = viewModel,
 				isNicknameEnableStateChanged = { isNicknameEnable.value = it },
 				onNicknameInvalidReasonsChanged = {
@@ -120,9 +112,8 @@ private fun NicknameEnterContent(
 	}
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NicknameTextBox(
+private fun NicknameTextField(
 	viewModel: ProfileEditViewModel,
 	isNicknameEnableStateChanged: (Boolean) -> Unit,
 	onNicknameInvalidReasonsChanged: (List<NicknameFormState>) -> Unit
@@ -130,66 +121,38 @@ private fun NicknameTextBox(
 	// 닉네임 변경하는 부분
 	val nicknameState = remember { mutableStateOf("") }
 	val nicknameFormStateList = remember { mutableStateListOf<NicknameFormState>() }
-	Column {
-		Column {
-			Box(
-				modifier = Modifier
-					.fillMaxWidth()
-					.border(width = 1.dp, color = Color(color = 0xFF363636), shape = RoundedCornerShape(8.dp))
-					.padding(horizontal = 4.dp),
-				contentAlignment = Alignment.CenterStart
-			) {
-				Row(
-					verticalAlignment = Alignment.CenterVertically
-				) {
-					TextField(
-						modifier = Modifier.weight(1f),
-						value = nicknameState.value,
-						placeholder = { Text(text = "닉네임을 입력해주세요") },
-						colors = TextFieldDefaults.textFieldColors(
-							containerColor = Color.Transparent,
-							focusedIndicatorColor = Color.Transparent,
-							unfocusedIndicatorColor = Color.Transparent,
-							disabledIndicatorColor = Color.Transparent
-						),
-						onValueChange = {
-							nicknameState.value = it
-							nicknameFormStateList.clear()
-							// 유용한 닉네임 여부 확인
-							val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
-							isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
-							// 닉네임 불가능 이유 설정
-							if (it.isEmpty()) {
-								nicknameFormStateList.clear()
-							} else if (nicknameInvalidReasons.isEmpty()) {
-								nicknameFormStateList.add(NicknameFormState.CORRECT) // 불가능한 이유 없을 경우 CORRECT
-							} else {
-								nicknameInvalidReasons.forEach { reason -> nicknameFormStateList.add(reason) }
-							}
-							onNicknameInvalidReasonsChanged(nicknameFormStateList)
-						}
-					)
 
-					IconButton(
-						modifier = Modifier
-							.size(32.dp)
-							.padding(6.dp),
-						onClick = {
-							nicknameState.value = ""
-							nicknameFormStateList.clear()
-							isNicknameEnableStateChanged(false)
-							onNicknameInvalidReasonsChanged(nicknameFormStateList)
-						}
-					) {
-						Icon(
-							imageVector = Icons.Filled.Close,
-							contentDescription = null
-						)
-					}
-				}
+	LyfeTextField(
+		singleLine = true,
+		text = nicknameState.value,
+		textFieldType = if (nicknameState.value == "") {
+			LyfeTextFieldType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
+		} else {
+			LyfeTextFieldType.TC_DEFAULT_BG_TRANSPARENT_SC_DEFAULT
+		},
+		onTextClear = {
+			nicknameState.value = ""
+			nicknameFormStateList.clear()
+			isNicknameEnableStateChanged(false)
+			onNicknameInvalidReasonsChanged(nicknameFormStateList)
+		},
+		onTextChange = {
+			nicknameState.value = it
+			nicknameFormStateList.clear()
+			// 유용한 닉네임 여부 확인
+			val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
+			isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
+			// 닉네임 불가능 이유 설정
+			if (it.isEmpty()) {
+				nicknameFormStateList.clear()
+			} else if (nicknameInvalidReasons.isEmpty()) {
+				nicknameFormStateList.add(NicknameFormState.CORRECT) // 불가능한 이유 없을 경우 CORRECT
+			} else {
+				nicknameInvalidReasons.forEach { reason -> nicknameFormStateList.add(reason) }
 			}
+			onNicknameInvalidReasonsChanged(nicknameFormStateList)
 		}
-	}
+	)
 }
 
 @Composable
@@ -218,9 +181,9 @@ private fun NicknameConditionTextArea(
 		painterResource(id = R.drawable.ic_check_blue)
 	)
 	val colorResources = listOf(
-		Color(color = 0xFFC6C6C6),
-		Color(color = 0xFFEE483D),
-		Color(color = 0xFF1F72E0)
+		Grey200,
+		Error,
+		Success
 	)
 
 	Column(
@@ -274,25 +237,20 @@ private fun NicknameCompleteButton(
 	isEnableState: Boolean
 ) {
 	val context = LocalContext.current
-	// 완료 버튼
-	OutlinedButton(
-		modifier = Modifier
-			.height(48.dp)
-			.fillMaxWidth()
-			.background(
-				color = if (isEnableState) Color(color = 0xff202124) else Color(color = 0xfff2f3f4),
-				shape = RoundedCornerShape(24.dp)
-			)
-			.clip(RoundedCornerShape(10.dp)),
+
+	LyfeButton(
+		modifier = Modifier.height(48.dp)
+			.fillMaxWidth(),
+		cornerSize = 10.dp,
+		isClearIconShow = false,
+		buttonType = if (isEnableState) {
+			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
+		} else {
+			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
+		},
+		text = "완료",
 		onClick = {
 			Toast.makeText(context, "현재 닉네임 가능 여부: $isEnableState", Toast.LENGTH_SHORT).show()
 		}
-	) {
-		Text(
-			text = "완료",
-			color = if (isEnableState) Color.White else Color(color = 0xff8c8c8c),
-			textAlign = TextAlign.Center,
-			fontSize = 16.sp
-		)
-	}
+	)
 }

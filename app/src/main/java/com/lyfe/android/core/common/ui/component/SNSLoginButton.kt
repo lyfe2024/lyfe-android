@@ -67,7 +67,7 @@ fun SNSLoginButton(
 					lineHeight = lineHeight.sp,
 					fontWeight = fontWeight,
 					color = buttonType.textColor
-				),
+				)
 			)
 		}
 	}

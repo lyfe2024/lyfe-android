@@ -5,5 +5,4 @@ import com.lyfe.android.core.model.TestResponse
 
 interface TestDataSource {
 	suspend fun testApi(): Result<TestResponse>
-
 }

@@ -7,7 +7,7 @@ import com.lyfe.android.core.model.TestResponse
 import javax.inject.Inject
 
 class TestRepositoryImpl @Inject constructor(
-	private val testDataSource: TestDataSource,
+	private val testDataSource: TestDataSource
 ) : TestRepository {
 
 	override suspend fun testApi(): Result<TestResponse> {
