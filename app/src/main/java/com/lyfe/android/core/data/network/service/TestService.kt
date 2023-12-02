@@ -7,9 +7,9 @@ import retrofit2.http.Query
 
 interface TestService {
 	// 테스트 API 조회
-	@GET("/v2/villages")
+	@GET("/v1/images/get-upload-url")
 	suspend fun testApi(
-		@Query("page") page: Int = 0,
-		@Query("pageSize") pageSize: Int = 5
+		@Query("format") format: String = "jpg",
+		@Query("path") path: String = "topic_picture"
 	): Result<TestResponse>
 }

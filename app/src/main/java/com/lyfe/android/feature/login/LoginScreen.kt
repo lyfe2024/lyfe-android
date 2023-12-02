@@ -87,8 +87,7 @@ fun LoginButtonArea(
 	viewModel: LoginViewModel
 ) {
 	val context = LocalContext.current
-	val modifier = Modifier
-		.fillMaxWidth()
+	val modifier = Modifier.fillMaxWidth()
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally
@@ -103,16 +102,16 @@ fun LoginButtonArea(
 
 		SNSLoginButton(
 			modifier = modifier,
-			buttonType = SNSLoginButtonType.Apple,
-			onClick = { }
+			buttonType = SNSLoginButtonType.Google,
+			onClick = googleLogin(context = context, viewModel = viewModel)
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))
 
 		SNSLoginButton(
 			modifier = modifier,
-			buttonType = SNSLoginButtonType.Google,
-			onClick = googleLogin(context = context, viewModel = viewModel)
+			buttonType = SNSLoginButtonType.Apple,
+			onClick = { }
 		)
 	}
 }
