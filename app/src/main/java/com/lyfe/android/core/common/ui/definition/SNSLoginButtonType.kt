@@ -24,13 +24,13 @@ enum class SNSLoginButtonType(
 	Apple(
 		textColor = Color.White,
 		bgColor = Color.Black,
-		text = "Apple로 시작하기",
+		text = "Apple로 계속하기",
 		icon = R.drawable.ic_apple
 	),
 	Google(
 		textColor = DEFAULT,
 		bgColor = Color.White,
-		text = "Google로 시작하기",
-		icon = R.drawable.ic_kakao_talk
+		text = "Google로 계속하기",
+		icon = R.drawable.ic_google
 	)
 }

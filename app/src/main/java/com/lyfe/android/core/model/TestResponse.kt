@@ -4,9 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TestResponse(
-	val isSuccess: Boolean,
-	val message: String,
-	val code: Int,
-	val timestamp: String,
-	val result: List<TestResult>
+	val result: TestResult
 )

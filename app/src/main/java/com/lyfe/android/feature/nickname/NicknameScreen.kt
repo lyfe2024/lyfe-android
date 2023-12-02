@@ -41,13 +41,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.feature.profileedit.NicknameFormState
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
 
 @Composable
 fun NicknameScreen(
-	viewModel: ProfileEditViewModel
+	viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
 	Column(
 		modifier = Modifier
@@ -132,7 +133,8 @@ private fun NicknameTextBox(
 	Column {
 		Column {
 			Box(
-				modifier = Modifier.fillMaxWidth()
+				modifier = Modifier
+					.fillMaxWidth()
 					.border(width = 1.dp, color = Color(color = 0xFF363636), shape = RoundedCornerShape(8.dp))
 					.padding(horizontal = 4.dp),
 				contentAlignment = Alignment.CenterStart
@@ -169,7 +171,8 @@ private fun NicknameTextBox(
 					)
 
 					IconButton(
-						modifier = Modifier.size(32.dp)
+						modifier = Modifier
+							.size(32.dp)
 							.padding(6.dp),
 						onClick = {
 							nicknameState.value = ""
