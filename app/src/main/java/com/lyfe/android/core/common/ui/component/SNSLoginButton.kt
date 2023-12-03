@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -54,13 +55,13 @@ fun SNSLoginButton(
 		) {
 			Image(
 				modifier = Modifier.size(20.dp),
-				painter = painterResource(id = buttonType.icon),
+				painter = painterResource(id = buttonType.iconRes),
 				contentDescription = "sns_logo_icon"
 			)
 
 			Text(
 				modifier = Modifier.fillMaxWidth(),
-				text = buttonType.text,
+				text = stringResource(id = buttonType.textRes),
 				textAlign = TextAlign.Center,
 				style = TextStyle(
 					fontSize = fontSize.sp,
