@@ -39,7 +39,7 @@ import com.google.android.gms.tasks.Task
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.SNSLoginButton
 import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
-import com.lyfe.android.core.common.ui.util.LogUtils
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.ui.theme.DEFAULT
@@ -202,13 +202,13 @@ fun googleLogin(
 		onSignInComplete = {
 			val idToken = googleLoginManager.handleSignInResult(it)
 			if (idToken == null) {
-				LogUtils.e("onSignInFailure", "ID Token is null")
+				LogUtil.e("onSignInFailure", "ID Token is null")
 			} else {
 				Toast.makeText(context, "구글 로그인이 완료되었습니다!", Toast.LENGTH_SHORT).show()
 				viewModel.updateUiState(LoginUiState.Success)
 			}
 		},
-		onSignInFailure = { LogUtils.e("onSignInFailure", "Error Code is $it") },
+		onSignInFailure = { LogUtil.e("onSignInFailure", "Error Code is $it") },
 		onError = { throw it }
 	)
 
