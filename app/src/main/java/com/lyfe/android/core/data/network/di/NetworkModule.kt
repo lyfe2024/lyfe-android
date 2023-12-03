@@ -3,6 +3,7 @@ package com.lyfe.android.core.data.network.di
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
 import com.lyfe.android.core.data.network.converter.asConverterFactory
+import com.lyfe.android.core.data.network.service.TestService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -48,5 +49,11 @@ object NetworkModule {
 			.addConverterFactory(jsonConfig.asConverterFactory(contentType))
 			.addCallAdapterFactory(ResultCallAdapterFactory())
 			.build()
+	}
+
+	@Provides
+	@Singleton
+	fun providesTestService(retrofit: Retrofit): TestService {
+		return retrofit.create(TestService::class.java)
 	}
 }

@@ -1,4 +1,4 @@
-package com.lyfe.android.core.model
+package com.lyfe.android.core.data.model
 
 import kotlinx.serialization.Serializable
 

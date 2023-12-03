@@ -11,8 +11,8 @@ class TestViewModel @Inject constructor(
 	private val testRepository: TestRepository
 ) : ViewModel() {
 
-	suspend fun testApi(): Boolean {
-		return when (testRepository.testApi()) {
+	suspend fun fetchTestData(): Boolean {
+		return when (testRepository.fetchTestData()) {
 			is Result.Success -> true
 			else -> false
 		}
