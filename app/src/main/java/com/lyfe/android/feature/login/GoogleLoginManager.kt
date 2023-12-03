@@ -2,20 +2,20 @@ package com.lyfe.android.feature.login
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.lyfe.android.BuildConfig
-import dagger.hilt.android.qualifiers.ActivityContext
+import com.lyfe.android.core.common.ui.util.LogUtil
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class GoogleLoginManager @Inject constructor(
-	@ActivityContext private val context: Context
+	@ActivityRetainedScoped private val context: Context
 ) {
 	companion object {
 		const val TAG = "GoogleLoginManager"
@@ -32,14 +32,12 @@ class GoogleLoginManager @Inject constructor(
 		try {
 			return completedTask.getResult(ApiException::class.java)?.idToken
 		} catch (e: ApiException) {
-			Log.w(TAG, "handleSignInResult: error" + e.statusCode)
+			LogUtil.w(TAG, "handleSignInResult: error" + e.statusCode)
 			throw e
 		}
 	}
 
-	fun createSignInIntent(): Intent {
-		return googleSignInClient.signInIntent
-	}
+	fun createSignInIntent(): Intent = googleSignInClient.signInIntent
 
 	suspend fun signOut(): Boolean = suspendCoroutine { continuation ->
 		googleSignInClient.signOut().addOnCompleteListener {
