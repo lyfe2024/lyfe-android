@@ -5,14 +5,14 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.lyfe.android.core.common.ui.util.LogUtils
-import dagger.hilt.android.qualifiers.ActivityContext
+import com.lyfe.android.core.common.ui.util.LogUtil
+import dagger.hilt.android.scopes.ActivityRetainedScoped
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class KakaoLoginManager @Inject constructor(
-	@ActivityContext private val context: Context
+	@ActivityRetainedScoped private val context: Context
 ) {
 	companion object {
 		const val TAG = "KakaoLoginManager"
@@ -43,7 +43,7 @@ class KakaoLoginManager @Inject constructor(
 	private fun getLoginCallback(onToken: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
 		return { token, error ->
 			if (error != null) {
-				LogUtils.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
+				LogUtil.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
 				throw error
 			} else if (token != null) {
 				onToken(token)
@@ -70,6 +70,6 @@ class KakaoLoginManager @Inject constructor(
 	}
 }
 
-enum class KaKaoLoginState {
+private enum class KaKaoLoginState {
 	KAKAO_TALK_LOGIN, KAKAO_ACCOUNT_LOGIN
 }
