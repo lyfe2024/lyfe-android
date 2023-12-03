@@ -39,7 +39,7 @@ fun HomeScreen(
 		Button(
 			onClick = {
 				runBlocking {
-					val isSuccess = viewModel.testApi()
+					val isSuccess = viewModel.fetchTestData()
 					if (isSuccess) {
 						Toast.makeText(context, "API 테스트 성공", Toast.LENGTH_SHORT).show()
 					} else {
