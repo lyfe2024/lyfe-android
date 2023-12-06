@@ -69,8 +69,7 @@ fun <T : Any?> Modifier.swipeable(
 	thresholds: (from: String, to: String) -> ThresholdConfig = { _, _ -> FixedThreshold(56.dp) },
 	resistance: ResistanceConfig? = resistanceConfig(anchors.keys),
 	velocityThreshold: Dp = VelocityThreshold
-) {
-}
+) = this
 
 suspend fun PointerInputScope.detectDragGestures(
 	onDragStart: (Offset) -> Unit = { },
@@ -90,6 +89,4 @@ fun Modifier.draggable(
 	onDragStarted: suspend CoroutineScope.(startedPosition: Offset) -> Unit = {},
 	onDragStopped: suspend CoroutineScope.(velocity: Float) -> Unit = {},
 	reverseDirection: Boolean = false
-) {
-
-}
+) = this
