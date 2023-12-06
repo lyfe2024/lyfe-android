@@ -88,4 +88,7 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
 
 	implementation(libs.bundles.coil)
+	def accompanist_version = "0.28.0"
+	implementation "com.google.accompanist:accompanist-pager:$accompanist_version" // Pager
+	implementation "com.google.accompanist:accompanist-pager-indicators:$accompanist_version" // Pager Indicators
 }
