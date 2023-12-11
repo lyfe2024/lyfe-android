@@ -55,8 +55,6 @@ kotlinx-serialization = "1.6.0"
 glide-compose-version = "1.0.0-beta01"
 glide-version = "4.14.2"
 
-coil = "2.4.0"
-
 # Kakao SDK
 kakao-sdk = "2.10.0"
 
@@ -119,10 +117,6 @@ glide-compose = { module = "com.github.bumptech.glide:compose", version.ref = "g
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide-version" }
 glide-compiler = { module = "com.github.bumptech.glide:ksp", version.ref = "glide-version" }
 
-# Image
-coil = { module = "io.coil-kt:coil", version.ref = "coil"}
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil"}
-
 # Kakao SDK
 kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakao-sdk"}
 
@@ -158,9 +152,6 @@ android-test = ["androidx-junit", "androidx-espresso"]
 android-compose-test = ["compose-ui-test-junit4"]
 
 compose-debug = ["compose-ui-tooling-debug", "compose-ui-test-manifest"]
-
-# Image
-coil = ["coil", "coil-compose"]
 
 # Kakao SDK
 kakao = ["kakao-user"]

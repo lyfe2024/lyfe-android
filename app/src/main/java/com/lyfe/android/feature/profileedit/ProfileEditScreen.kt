@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalGlideComposeApi::class)
+
 package com.lyfe.android.feature.profileedit
 
 import android.net.Uri
@@ -32,8 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
@@ -139,11 +141,8 @@ private fun ProfileEditThumbnailContent() {
 			galleryLauncher.launch("image/*")
 		}
 
-		AsyncImage(
-			model = ImageRequest.Builder(LocalContext.current)
-				.data(imageUri.value)
-				.fallback(R.drawable.ic_profile)
-				.build(),
+		GlideImage(
+			model = imageUri.value,
 			contentDescription = "프로필 이미지",
 			modifier = Modifier
 				.align(Center)
