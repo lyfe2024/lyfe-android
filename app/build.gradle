@@ -92,8 +92,6 @@ dependencies {
     androidTestImplementation(libs.bundles.android.compose.test)
     debugImplementation(libs.bundles.compose.debug)
 
-	implementation(libs.bundles.coil)
-
 	implementation(libs.bundles.kakao)
 
 	implementation(platform(libs.firebase.bom))
