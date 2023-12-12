@@ -7,15 +7,19 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +31,7 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -41,6 +46,7 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.ui.theme.Grey200
 
 @Composable
 fun ProfileEditScreen(
@@ -96,11 +102,11 @@ private fun ProfileEditContent(
 	viewModel: ProfileEditViewModel,
 	nickname: String
 ) {
-	val isNicknameEnable = remember { mutableStateOf(false) }
+	val nicknameState = remember { mutableStateOf(nickname) }
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(top = 24.dp, bottom = 12.dp)
+			.padding(top = 12.dp, bottom = 12.dp)
 	) {
 		Column(
 			modifier = Modifier.fillMaxSize(),
@@ -111,14 +117,23 @@ private fun ProfileEditContent(
 			Spacer(modifier = Modifier.height(40.dp))
 
 			ProfileEditNicknameTextField(
-				viewModel = viewModel,
 				nickname = nickname,
-				isNicknameEnableStateChanged = { isNicknameEnable.value = it }
+				onNicknameChanged = { nicknameState.value = it }
+			)
+
+			Spacer(modifier = Modifier.height(8.dp))
+
+			ProfileEditNicknameConditionTextArea(
+				viewModel = viewModel,
+				nickname = nicknameState.value
 			)
 
 			Spacer(modifier = Modifier.weight(1f))
 
-			ProfileEditCompleteButton(isNicknameEnable.value)
+			ProfileEditCompleteButton(
+				viewModel = viewModel,
+				nickname = nicknameState.value
+			)
 		}
 	}
 }
@@ -126,10 +141,9 @@ private fun ProfileEditContent(
 @Composable
 private fun ProfileEditThumbnailContent() {
 	// 썸네일 변경하는 부분
-	// val thumbnailUrl = remember { mutableStateOf(thumbnail) }
 	val imageUri = remember { mutableStateOf<Uri?>(null) }
 	Box(
-		modifier = Modifier.size(80.dp)
+		modifier = Modifier.size(92.dp)
 	) {
 		// Gallery Launcher
 		val galleryLauncher = rememberLauncherForActivityResult(
@@ -144,10 +158,11 @@ private fun ProfileEditThumbnailContent() {
 		GlideImage(
 			model = imageUri.value,
 			contentDescription = "프로필 이미지",
-			modifier = Modifier
-				.align(Center)
-				.fillMaxSize()
+			contentScale = ContentScale.Crop,
+			modifier = Modifier.align(Center)
+				.size(80.dp)
 				.clip(CircleShape)
+				.border(width = 1.dp, Grey200, CircleShape)
 				.clickable {
 					// 클릭하면 앨범으로 이동
 					onClick()
@@ -155,10 +170,9 @@ private fun ProfileEditThumbnailContent() {
 		)
 
 		Image(
-			painter = painterResource(id = R.drawable.ic_post_add),
+			painter = painterResource(id = R.drawable.ic_add_circle_fill),
 			contentDescription = "프로필 변경",
-			modifier = Modifier
-				.size(24.dp)
+			modifier = Modifier.size(24.dp)
 				.clip(CircleShape)
 				.align(BottomEnd)
 				.clickable {
@@ -171,12 +185,10 @@ private fun ProfileEditThumbnailContent() {
 
 @Composable
 private fun ProfileEditNicknameTextField(
-	viewModel: ProfileEditViewModel,
 	nickname: String,
-	isNicknameEnableStateChanged: (Boolean) -> Unit
+	onNicknameChanged: (String) -> Unit,
 ) {
 	val nicknameState = remember { mutableStateOf(nickname) }
-	val nicknameFormState = remember { mutableStateOf("") }
 	Column {
 		LyfeTextField(
 			singleLine = true,
@@ -188,54 +200,107 @@ private fun ProfileEditNicknameTextField(
 			},
 			onTextClear = {
 				nicknameState.value = ""
-				nicknameFormState.value = ""
-				isNicknameEnableStateChanged(false)
+				onNicknameChanged("")
 			},
 			onTextChange = {
 				nicknameState.value = it
-				// 유용한 닉네임 여부 확인
-				val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
-				isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
-				// 닉네임 오류 내용 표시
-				val message = if (nicknameInvalidReasons.isEmpty()) {
-					NicknameFormState.CORRECT.message
-				} else {
-					nicknameInvalidReasons[0].message
-				}
-				nicknameFormState.value = message
+				onNicknameChanged(nicknameState.value)
 			}
 		)
+	}
+}
 
-		Spacer(modifier = Modifier.height(10.dp))
+@Composable
+private fun ProfileEditNicknameConditionTextArea(
+	viewModel: ProfileEditViewModel,
+	nickname: String
+) {
+	val nicknameLengthState = viewModel.isNicknameTooLong(nickname)
+	val nicknameSpecialLetterState = viewModel.isNicknameHasSpecialLetter(nickname)
+	val nicknameCombinationState = viewModel.isNicknameCombinationWrong(nickname)
+
+	Column(
+		modifier = Modifier.fillMaxWidth(),
+		verticalArrangement = Arrangement.spacedBy(4.dp)
+	) {
+		NicknameConditionText(
+			text = when (nicknameCombinationState) {
+				NicknameInvalidState.EMPTY -> "한글/영문+숫자 조합으로 설정해주세요"
+				NicknameInvalidState.INCORRECT -> "한글/영문+숫자 조합으로만 설정가능해요"
+				else -> "한글/영문+숫자 조합"
+			},
+			color = nicknameCombinationState.color,
+			icon = nicknameCombinationState.icon
+		)
+
+		NicknameConditionText(
+			text = when (nicknameSpecialLetterState) {
+				NicknameInvalidState.EMPTY,
+				NicknameInvalidState.INCORRECT -> "특수문자는 사용할 수 없어요"
+				NicknameInvalidState.CORRECT -> "특수문자 사용 X"
+			},
+			color = nicknameSpecialLetterState.color,
+			icon = nicknameSpecialLetterState.icon
+		)
+
+		NicknameConditionText(
+			text = when (nicknameLengthState) {
+				NicknameInvalidState.EMPTY,
+				NicknameInvalidState.INCORRECT -> "최대 10글자로 설정해주세요"
+				NicknameInvalidState.CORRECT -> "최대 10글자"
+			},
+			color = nicknameLengthState.color,
+			icon = nicknameLengthState.icon
+		)
+	}
+}
+
+@Composable
+private fun NicknameConditionText(
+	text: String,
+	color: Color,
+	icon: Int
+) {
+	Row {
+		Image(
+			painter = painterResource(id = icon),
+			contentDescription = "만족하면 파랑 아니면 회색"
+		)
+
+		Spacer(modifier = Modifier.width(4.dp))
 
 		Text(
-			modifier = Modifier.align(Alignment.Start),
-			text = nicknameFormState.value,
-			color = Color.Red,
-			fontSize = 11.sp
+			text = text,
+			color = color,
+			fontSize = 14.sp
 		)
 	}
 }
 
 @Composable
 private fun ProfileEditCompleteButton(
-	isEnableState: Boolean
+	viewModel: ProfileEditViewModel,
+	nickname: String
 ) {
 	val context = LocalContext.current
+	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT
+		&& viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT
+		&& viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
 
 	LyfeButton(
-		modifier = Modifier.height(48.dp)
+		modifier = Modifier
+			.height(48.dp)
 			.fillMaxWidth(),
 		cornerSize = 10.dp,
 		isClearIconShow = false,
-		buttonType = if (isEnableState) {
+		buttonType = if (isNicknameEnable) {
 			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
 		text = "완료",
 		onClick = {
-			Toast.makeText(context, "현재 닉네임 가능 여부: $isEnableState", Toast.LENGTH_SHORT).show()
+			Toast.makeText(context, "현재 닉네임 가능 여부: $isNicknameEnable", Toast.LENGTH_SHORT).show()
 		}
 	)
 }
