@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.nickname
 
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,13 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -27,16 +24,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
-import com.lyfe.android.feature.profileedit.NicknameFormState
+import com.lyfe.android.feature.profileedit.NicknameInvalidState
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
-import com.lyfe.android.ui.theme.Error
-import com.lyfe.android.ui.theme.Grey200
-import com.lyfe.android.ui.theme.Success
 
 @Composable
 fun NicknameScreen(
@@ -78,8 +71,7 @@ fun NicknameScreen(
 private fun NicknameEnterContent(
 	viewModel: ProfileEditViewModel
 ) {
-	val isNicknameEnable = remember { mutableStateOf(false) }
-	val nicknameFormStateList = remember { mutableStateListOf<NicknameFormState>() }
+	val nicknameState = remember { mutableStateOf("") }
 
 	Column(
 		modifier = Modifier
@@ -91,36 +83,32 @@ private fun NicknameEnterContent(
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
 			NicknameTextField(
-				viewModel = viewModel,
-				isNicknameEnableStateChanged = { isNicknameEnable.value = it },
-				onNicknameInvalidReasonsChanged = {
-					nicknameFormStateList.clear()
-					nicknameFormStateList.addAll(it)
-				}
+				onNicknameChanged = { nicknameState.value = it }
 			)
 
 			Spacer(modifier = Modifier.height(10.dp))
 
 			NicknameConditionTextArea(
-				nicknameInvalidReasons = nicknameFormStateList
+				viewModel = viewModel,
+				nickname = nicknameState.value
 			)
 
 			Spacer(modifier = Modifier.weight(1f))
 
-			NicknameCompleteButton(isNicknameEnable.value)
+			NicknameCompleteButton(
+				viewModel = viewModel,
+				nickname = nicknameState.value
+			)
 		}
 	}
 }
 
 @Composable
 private fun NicknameTextField(
-	viewModel: ProfileEditViewModel,
-	isNicknameEnableStateChanged: (Boolean) -> Unit,
-	onNicknameInvalidReasonsChanged: (List<NicknameFormState>) -> Unit
+	onNicknameChanged: (String) -> Unit
 ) {
 	// 닉네임 변경하는 부분
 	val nicknameState = remember { mutableStateOf("") }
-	val nicknameFormStateList = remember { mutableStateListOf<NicknameFormState>() }
 
 	LyfeTextField(
 		singleLine = true,
@@ -132,94 +120,74 @@ private fun NicknameTextField(
 		},
 		onTextClear = {
 			nicknameState.value = ""
-			nicknameFormStateList.clear()
-			isNicknameEnableStateChanged(false)
-			onNicknameInvalidReasonsChanged(nicknameFormStateList)
+			onNicknameChanged("")
 		},
 		onTextChange = {
 			nicknameState.value = it
-			nicknameFormStateList.clear()
-			// 유용한 닉네임 여부 확인
-			val nicknameInvalidReasons = viewModel.getNicknameInvalidReason(it)
-			isNicknameEnableStateChanged(nicknameInvalidReasons.isEmpty())
-			// 닉네임 불가능 이유 설정
-			if (it.isEmpty()) {
-				nicknameFormStateList.clear()
-			} else if (nicknameInvalidReasons.isEmpty()) {
-				nicknameFormStateList.add(NicknameFormState.CORRECT) // 불가능한 이유 없을 경우 CORRECT
-			} else {
-				nicknameInvalidReasons.forEach { reason -> nicknameFormStateList.add(reason) }
-			}
-			onNicknameInvalidReasonsChanged(nicknameFormStateList)
+			onNicknameChanged(nicknameState.value)
 		}
 	)
 }
 
 @Composable
 private fun NicknameConditionTextArea(
-	nicknameInvalidReasons: List<NicknameFormState>
+	viewModel: ProfileEditViewModel,
+	nickname: String
 ) {
-	var assetIndex1 = 2
-	var assetIndex2 = 2
-	var assetIndex3 = 2
-	nicknameInvalidReasons.forEach { reason ->
-		when (reason) {
-			NicknameFormState.NEED_LETTER_NUMBER_COMBINATION -> assetIndex1 = 1
-			NicknameFormState.CONTAIN_SPECIAL_CHAR -> assetIndex2 = 1
-			NicknameFormState.NICKNAME_FORM_TOO_LONG -> assetIndex3 = 1
-			NicknameFormState.CORRECT -> {
-				assetIndex1 = 2; assetIndex2 = 2; assetIndex3 = 2
-			}
-		}
-	}
-	if (nicknameInvalidReasons.isEmpty()) {
-		assetIndex1 = 0; assetIndex2 = 0; assetIndex3 = 0
-	}
-	val painterResources = listOf(
-		painterResource(id = R.drawable.ic_check_gray),
-		painterResource(id = R.drawable.ic_check_red),
-		painterResource(id = R.drawable.ic_check_blue)
-	)
-	val colorResources = listOf(
-		Grey200,
-		Error,
-		Success
-	)
+	val nicknameLengthState = viewModel.isNicknameTooLong(nickname)
+	val nicknameSpecialLetterState = viewModel.isNicknameHasSpecialLetter(nickname)
+	val nicknameCombinationState = viewModel.isNicknameCombinationWrong(nickname)
 
 	Column(
 		modifier = Modifier.fillMaxWidth(),
 		verticalArrangement = Arrangement.spacedBy(4.dp)
 	) {
 		NicknameConditionText(
-			painterResources = painterResources[assetIndex1],
-			text = "영문+숫자 조합",
-			color = colorResources[assetIndex1]
+			text = when (nicknameCombinationState) {
+				NicknameInvalidState.EMPTY -> "한글/영문+숫자 조합으로 설정해주세요"
+				NicknameInvalidState.INCORRECT -> "한글/영문+숫자 조합으로만 설정가능해요"
+				else -> "한글/영문+숫자 조합"
+			},
+			color = nicknameCombinationState.color,
+			icon = nicknameCombinationState.icon
 		)
 
 		NicknameConditionText(
-			painterResources = painterResources[assetIndex2],
-			text = "특수문자 사용 X",
-			color = colorResources[assetIndex2]
+			text = when (nicknameSpecialLetterState) {
+				NicknameInvalidState.EMPTY,
+				NicknameInvalidState.INCORRECT
+				-> "특수문자는 사용할 수 없어요"
+
+				NicknameInvalidState.CORRECT -> "특수문자 사용 X"
+			},
+			color = nicknameSpecialLetterState.color,
+			icon = nicknameSpecialLetterState.icon
 		)
 
 		NicknameConditionText(
-			painterResources = painterResources[assetIndex3],
-			text = "최대 10글자",
-			color = colorResources[assetIndex3]
+			text = when (nicknameLengthState) {
+				NicknameInvalidState.EMPTY,
+				NicknameInvalidState.INCORRECT
+				-> "최대 10글자로 설정해주세요"
+
+				NicknameInvalidState.CORRECT -> "최대 10글자"
+			},
+			color = nicknameLengthState.color,
+			icon = nicknameLengthState.icon
 		)
 	}
 }
 
 @Composable
 private fun NicknameConditionText(
-	painterResources: Painter,
 	text: String,
-	color: Color
+	color: Color,
+	icon: Int
 ) {
 	Row {
 		Image(
-			painter = painterResources,
-			contentDescription = "기본은 회색"
+			painter = painterResource(id = icon),
+			contentDescription = "만족하면 파랑 아니면 회색"
 		)
 
 		Spacer(modifier = Modifier.width(4.dp))
@@ -234,23 +202,29 @@ private fun NicknameConditionText(
 
 @Composable
 private fun NicknameCompleteButton(
-	isEnableState: Boolean
+	viewModel: ProfileEditViewModel,
+	nickname: String
 ) {
 	val context = LocalContext.current
+	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT
+		&& viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT
+		&& viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
 
 	LyfeButton(
-		modifier = Modifier.height(48.dp)
+		modifier = Modifier
+			.height(48.dp)
 			.fillMaxWidth(),
 		cornerSize = 10.dp,
 		isClearIconShow = false,
-		buttonType = if (isEnableState) {
+		buttonType = if (isNicknameEnable) {
 			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
 		text = "완료",
 		onClick = {
-			Toast.makeText(context, "현재 닉네임 가능 여부: $isEnableState", Toast.LENGTH_SHORT).show()
+			// 중복 닉네임 체크 API 추후 연결
+
 		}
 	)
 }
