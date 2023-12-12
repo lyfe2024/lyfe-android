@@ -4,6 +4,7 @@ import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
 import com.lyfe.android.core.data.network.converter.asConverterFactory
 import com.lyfe.android.core.data.network.service.TestService
+import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,5 +56,11 @@ object NetworkModule {
 	@Singleton
 	fun providesTestService(retrofit: Retrofit): TestService {
 		return retrofit.create(TestService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesUserService(retrofit: Retrofit): UserService {
+		return retrofit.create(UserService::class.java)
 	}
 }

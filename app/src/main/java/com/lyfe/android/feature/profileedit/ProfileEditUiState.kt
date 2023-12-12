@@ -2,6 +2,7 @@ package com.lyfe.android.feature.profileedit
 
 sealed interface ProfileEditUiState {
 
+	object IDLE : ProfileEditUiState
 	object Loading : ProfileEditUiState
 
 	data class Success(
@@ -9,5 +10,7 @@ sealed interface ProfileEditUiState {
 		val nickname: String
 	) : ProfileEditUiState
 
-	object Failure : ProfileEditUiState
+	data class Failure(
+		val message: String
+	) : ProfileEditUiState
 }
