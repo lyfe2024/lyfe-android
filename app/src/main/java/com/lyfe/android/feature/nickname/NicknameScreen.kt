@@ -1,5 +1,6 @@
 package com.lyfe.android.feature.nickname
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,17 +25,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.feature.profileedit.NicknameInvalidState
+import com.lyfe.android.feature.profileedit.ProfileEditUiState
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun NicknameScreen(
 	viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
+	val context = LocalContext.current
+
 	Column(
 		modifier = Modifier
 			.padding(top = 40.dp, bottom = 16.dp, start = 24.dp, end = 24.dp)
@@ -64,6 +70,24 @@ fun NicknameScreen(
 		Spacer(modifier = Modifier.height(40.dp))
 
 		NicknameEnterContent(viewModel)
+
+		when (viewModel.uiState) {
+			is ProfileEditUiState.IDLE -> { }
+
+			is ProfileEditUiState.Success -> {
+				Toast.makeText(context, "사용 가능한 닉네임입니다.", Toast.LENGTH_SHORT).show()
+			}
+
+			is ProfileEditUiState.Failure -> {
+				// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
+				val error = viewModel.uiState as ProfileEditUiState.Failure
+				Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+			}
+
+			is ProfileEditUiState.Loading -> {
+				// 로딩하는 동안 Progressbar 보여주기
+			}
+		}
 	}
 }
 
@@ -205,10 +229,9 @@ private fun NicknameCompleteButton(
 	viewModel: ProfileEditViewModel,
 	nickname: String
 ) {
-	val context = LocalContext.current
-	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT
-		&& viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT
-		&& viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
+	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT &&
+		viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT &&
+		viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
 
 	LyfeButton(
 		modifier = Modifier
@@ -221,10 +244,13 @@ private fun NicknameCompleteButton(
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
-		text = "완료",
+		text = "다음",
 		onClick = {
 			// 중복 닉네임 체크 API 추후 연결
-
+			if (!isNicknameEnable) return@LyfeButton
+			viewModel.viewModelScope.launch {
+				viewModel.checkNicknameDuplicate(nickname = nickname)
+			}
 		}
 	)
 }

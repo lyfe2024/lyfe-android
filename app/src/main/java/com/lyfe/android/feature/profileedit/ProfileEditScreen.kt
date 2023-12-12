@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalGlideComposeApi::class)
-
 package com.lyfe.android.feature.profileedit
 
 import android.net.Uri
@@ -39,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
@@ -47,6 +46,7 @@ import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.ui.theme.Grey200
+import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileEditScreen(
@@ -77,18 +77,28 @@ fun ProfileEditScreen(
 private fun ProfileEditContentArea(
 	viewModel: ProfileEditViewModel
 ) {
+	val context = LocalContext.current
 	// ViewModel uiState 에 따라서 화면 표시 여부 달라짐
 	when (viewModel.uiState) {
+		is ProfileEditUiState.IDLE -> {
+			// 처음 화면에 보일 닉네임은 로컬 저장소에서 가져옴.
+			ProfileEditContent(viewModel = viewModel, nickname = "Guest")
+		}
 		is ProfileEditUiState.Success -> {
 			val profileData = viewModel.uiState as ProfileEditUiState.Success
 			val nickname = profileData.nickname
 
 			ProfileEditContent(viewModel = viewModel, nickname = nickname)
+
+			Toast.makeText(context, "프로필 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
 		}
 
 		is ProfileEditUiState.Failure -> {
 			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
-			ProfileEditContent(viewModel = viewModel, nickname = "")
+			val error = viewModel.uiState as ProfileEditUiState.Failure
+			ProfileEditContent(viewModel = viewModel, nickname = "Guest")
+
+			Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
 		}
 
 		is ProfileEditUiState.Loading -> {
@@ -138,6 +148,7 @@ private fun ProfileEditContent(
 	}
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun ProfileEditThumbnailContent() {
 	// 썸네일 변경하는 부분
@@ -159,7 +170,8 @@ private fun ProfileEditThumbnailContent() {
 			model = imageUri.value,
 			contentDescription = "프로필 이미지",
 			contentScale = ContentScale.Crop,
-			modifier = Modifier.align(Center)
+			modifier = Modifier
+				.align(Center)
 				.size(80.dp)
 				.clip(CircleShape)
 				.border(width = 1.dp, Grey200, CircleShape)
@@ -172,7 +184,8 @@ private fun ProfileEditThumbnailContent() {
 		Image(
 			painter = painterResource(id = R.drawable.ic_add_circle_fill),
 			contentDescription = "프로필 변경",
-			modifier = Modifier.size(24.dp)
+			modifier = Modifier
+				.size(24.dp)
 				.clip(CircleShape)
 				.align(BottomEnd)
 				.clickable {
@@ -186,7 +199,7 @@ private fun ProfileEditThumbnailContent() {
 @Composable
 private fun ProfileEditNicknameTextField(
 	nickname: String,
-	onNicknameChanged: (String) -> Unit,
+	onNicknameChanged: (String) -> Unit
 ) {
 	val nicknameState = remember { mutableStateOf(nickname) }
 	Column {
@@ -282,10 +295,9 @@ private fun ProfileEditCompleteButton(
 	viewModel: ProfileEditViewModel,
 	nickname: String
 ) {
-	val context = LocalContext.current
-	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT
-		&& viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT
-		&& viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
+	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT &&
+		viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT &&
+		viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
 
 	LyfeButton(
 		modifier = Modifier
@@ -300,7 +312,10 @@ private fun ProfileEditCompleteButton(
 		},
 		text = "완료",
 		onClick = {
-			Toast.makeText(context, "현재 닉네임 가능 여부: $isNicknameEnable", Toast.LENGTH_SHORT).show()
+			if (!isNicknameEnable) return@LyfeButton
+			viewModel.viewModelScope.launch {
+				viewModel.checkNicknameDuplicate(nickname = nickname)
+			}
 		}
 	)
 }
