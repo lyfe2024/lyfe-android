@@ -57,7 +57,9 @@ class ProfileEditViewModel @Inject constructor(
 		viewModelScope.launch {
 			val result = userRepository.fetchIsNicknameDuplicated(nickname = nickname)
 			when (result) {
-				is Result.Success -> uiState = ProfileEditUiState.Success(nickname = nickname)
+				is Result.Success -> {
+					uiState = ProfileEditUiState.Success(nickname = nickname)
+				}
 				is Result.Failure -> {
 					uiState = ProfileEditUiState.Failure(
 						message = result.error ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."

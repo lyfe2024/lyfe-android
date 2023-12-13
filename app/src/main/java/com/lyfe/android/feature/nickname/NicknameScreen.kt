@@ -76,6 +76,7 @@ fun NicknameScreen(
 
 			is ProfileEditUiState.Success -> {
 				Toast.makeText(context, "사용 가능한 닉네임입니다.", Toast.LENGTH_SHORT).show()
+				// 중복 없는거 확인되면 바로 회원가입 완료? 아니면 추가 확인작업 있는지 물어봐야 함.
 			}
 
 			is ProfileEditUiState.Failure -> {

@@ -1,7 +1,6 @@
 package com.lyfe.android.core.data.network.service
 
-import com.lyfe.android.core.data.model.CheckNicknameResult
-import com.lyfe.android.core.data.model.Response
+import com.lyfe.android.core.data.model.CheckNicknameResponse
 import com.lyfe.android.core.data.network.model.Result
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -11,5 +10,5 @@ interface UserService {
 	@GET("/v1/users/check-nickname/{nickname}")
 	suspend fun fetchIsNicknameDuplicated(
 		@Path("nickname") nickname: String
-	): Result<Response<CheckNicknameResult>>
+	): Result<CheckNicknameResponse>
 }
