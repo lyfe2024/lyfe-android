@@ -111,7 +111,8 @@ fun LoginButtonArea(
 		SNSLoginButton(
 			modifier = modifier,
 			buttonType = SNSLoginButtonType.Apple,
-			onClick = { }
+			onClick = {}
+// 			onClick = appleLogin(context = context, viewModel = viewModel)
 		)
 	}
 }
@@ -230,6 +231,41 @@ fun googleLogin(
 	}
 	return onClick
 }
+
+// @Composable
+// fun appleLogin(
+// 	context: Context,
+// 	viewModel: LoginViewModel
+// ): () -> Unit {
+// 	val coroutineScope = rememberCoroutineScope()
+// 	val appleLoginManager = AppleLoginManager(context = context)
+//
+// 	val onClick = {
+// 		if (viewModel.uiState != LoginUiState.Loading) {
+// 			viewModel.updateUiState(LoginUiState.Loading)
+// 			coroutineScope.launch {
+// 				if (appleLoginManager.checkPending()) {
+// 					val isLogout = appleLoginManager.signOut()
+// 					if (isLogout) {
+// 						Toast.makeText(context, "로그아웃 되었습니다!", Toast.LENGTH_SHORT).show()
+// 						viewModel.updateUiState(LoginUiState.IDLE)
+// 					}
+// 				} else {
+// 					appleLoginManager.auth.startActivityForSignInWithProvider(
+// 						context as Activity,
+// 						appleLoginManager.oAuthProvider.build()
+// 					).addOnSuccessListener { authResult ->
+// 						// Sign-in successful!
+// 						LogUtil.d("Apple Login Success", "activitySignIn:onSuccess:${authResult.credential}")
+// 					}.addOnFailureListener {
+// 						LogUtil.w("Apple Login Failure", "error is: $it")
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// 	return onClick
+// }
 
 @Composable
 fun rememberGoogleSignInLauncher(
