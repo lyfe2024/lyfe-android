@@ -33,7 +33,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -44,8 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.lyfe.android.R
 
 @Composable
@@ -147,21 +144,21 @@ private fun ProfileEditThumbnailContent() {
 			galleryLauncher.launch("image/*")
 		}
 
-		AsyncImage(
-			model = ImageRequest.Builder(LocalContext.current)
-				.data(imageUri.value)
-				.fallback(R.drawable.ic_profile)
-				.build(),
-			contentDescription = "프로필 이미지",
-			modifier = Modifier
-				.align(Center)
-				.fillMaxSize()
-				.clip(CircleShape)
-				.clickable {
-					// 클릭하면 앨범으로 이동
-					onClick()
-				}
-		)
+//		AsyncImage(
+//			model = ImageRequest.Builder(LocalContext.current)
+//				.data(imageUri.value)
+//				.fallback(R.drawable.ic_profile)
+//				.build(),
+//			contentDescription = "프로필 이미지",
+//			modifier = Modifier
+//				.align(Center)
+//				.fillMaxSize()
+//				.clip(CircleShape)
+//				.clickable {
+//					// 클릭하면 앨범으로 이동
+//					onClick()
+//				}
+//		)
 
 		Image(
 			painter = painterResource(id = R.drawable.ic_post_add),

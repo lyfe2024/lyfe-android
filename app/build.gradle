@@ -32,7 +32,7 @@ android {
         }
 
 		if (localProperties.exists()) {
-			buildConfigField "String", "BASE_URL", properties['baseUrl']
+			buildConfigField "String", "BASE_URL", properties['base-url']
 		}
 	}
 
@@ -72,6 +72,8 @@ dependencies {
 
     implementation(libs.bundles.android.library)
     implementation(libs.bundles.compose.library)
+
+	implementation(libs.bundles.accompanist)
 
     implementation(libs.bundles.hilt.android)
 	kapt(libs.bundles.hilt.compiler)

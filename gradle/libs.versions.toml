@@ -38,6 +38,8 @@ compose-ui-test-junit4 = "1.5.1"
 
 compose-ui-tooling = "1.3.3"
 
+accompanist = "0.32.0"
+
 # Dependency Injection
 hilt = "2.44"
 
@@ -80,6 +82,9 @@ compose-material = { module = "androidx.compose.material:material", version.ref 
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation"}
 compose-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref =  "compose-hilt-navigation"}
+
+# Accompanist
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanist" }
 
 # Dependency Injection Library
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
@@ -140,3 +145,6 @@ compose-debug = ["compose-ui-tooling-debug", "compose-ui-test-manifest"]
 
 # Image
 coil = ["coil", "coil-compose"]
+
+# Accompanist
+accompanist = ["accompanist-pager"]
