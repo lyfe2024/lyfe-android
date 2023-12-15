@@ -11,6 +11,6 @@ class UserRepositoryImpl @Inject constructor(
 ) : UserRepository {
 
 	override suspend fun fetchIsNicknameDuplicated(nickname: String): Result<CheckNicknameResponse> {
-		return userDataSource.fetchIsNicknameDuplicated(nickname)
+		return userDataSource.checkNicknameDuplicated(nickname)
 	}
 }

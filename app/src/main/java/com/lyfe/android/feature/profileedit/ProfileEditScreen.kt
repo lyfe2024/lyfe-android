@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,8 +22,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomEnd
 import androidx.compose.ui.Alignment.Companion.Center
@@ -32,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -45,11 +49,13 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.ui.theme.Grey200
 import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileEditScreen(
+	navigator: LyfeNavigator,
 	viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
 	Column(
@@ -58,23 +64,24 @@ fun ProfileEditScreen(
 			.fillMaxSize()
 	) {
 		Text(
-			text = "프로필 수정",
+			text = stringResource(R.string.profile_edit_title),
 			style = TextStyle(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
 				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000)
+				color = Color.Black
 			)
 		)
 
 		Spacer(modifier = Modifier.height(21.dp))
 
-		ProfileEditContentArea(viewModel)
+		ProfileEditContentArea(navigator, viewModel)
 	}
 }
 
 @Composable
 private fun ProfileEditContentArea(
+	navigator: LyfeNavigator,
 	viewModel: ProfileEditViewModel
 ) {
 	val context = LocalContext.current
@@ -85,12 +92,9 @@ private fun ProfileEditContentArea(
 			ProfileEditContent(viewModel = viewModel, nickname = "Guest")
 		}
 		is ProfileEditUiState.Success -> {
-			val profileData = viewModel.uiState as ProfileEditUiState.Success
-			val nickname = profileData.nickname
-
-			ProfileEditContent(viewModel = viewModel, nickname = nickname)
-
-			Toast.makeText(context, "프로필 변경이 완료되었습니다.", Toast.LENGTH_SHORT).show()
+			// 프로필 변경 완료하면 토스트 메세지 띄우고 이전 화면으로
+			Toast.makeText(context, stringResource(R.string.edit_nickname_complete), Toast.LENGTH_SHORT).show()
+			navigator.navigateUp()
 		}
 
 		is ProfileEditUiState.Failure -> {
@@ -112,7 +116,7 @@ private fun ProfileEditContent(
 	viewModel: ProfileEditViewModel,
 	nickname: String
 ) {
-	val nicknameState = remember { mutableStateOf(nickname) }
+	var nicknameState by remember { mutableStateOf(nickname) }
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -128,21 +132,21 @@ private fun ProfileEditContent(
 
 			ProfileEditNicknameTextField(
 				nickname = nickname,
-				onNicknameChanged = { nicknameState.value = it }
+				onNicknameChanged = { nicknameState = it }
 			)
 
 			Spacer(modifier = Modifier.height(8.dp))
 
 			ProfileEditNicknameConditionTextArea(
 				viewModel = viewModel,
-				nickname = nicknameState.value
+				nickname = nicknameState
 			)
 
 			Spacer(modifier = Modifier.weight(1f))
 
 			ProfileEditCompleteButton(
 				viewModel = viewModel,
-				nickname = nicknameState.value
+				nickname = nicknameState
 			)
 		}
 	}
@@ -152,14 +156,14 @@ private fun ProfileEditContent(
 @Composable
 private fun ProfileEditThumbnailContent() {
 	// 썸네일 변경하는 부분
-	val imageUri = remember { mutableStateOf<Uri?>(null) }
+	var imageUri by remember { mutableStateOf<Uri?>(null) }
 	Box(
 		modifier = Modifier.size(92.dp)
 	) {
 		// Gallery Launcher
 		val galleryLauncher = rememberLauncherForActivityResult(
 			contract = ActivityResultContracts.GetContent(),
-			onResult = { imageUri.value = it }
+			onResult = { imageUri = it }
 		)
 		val onClick = {
 			// 클릭하면 앨범으로 이동
@@ -167,7 +171,7 @@ private fun ProfileEditThumbnailContent() {
 		}
 
 		GlideImage(
-			model = imageUri.value,
+			model = imageUri,
 			contentDescription = "프로필 이미지",
 			contentScale = ContentScale.Crop,
 			modifier = Modifier
@@ -201,23 +205,23 @@ private fun ProfileEditNicknameTextField(
 	nickname: String,
 	onNicknameChanged: (String) -> Unit
 ) {
-	val nicknameState = remember { mutableStateOf(nickname) }
+	var nicknameState by remember { mutableStateOf(nickname) }
 	Column {
 		LyfeTextField(
 			singleLine = true,
-			text = nicknameState.value,
-			textFieldType = if (nicknameState.value == "") {
+			text = nicknameState,
+			textFieldType = if (nicknameState.isEmpty()) {
 				LyfeTextFieldType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
 			} else {
 				LyfeTextFieldType.TC_DEFAULT_BG_TRANSPARENT_SC_DEFAULT
 			},
 			onTextClear = {
-				nicknameState.value = ""
+				nicknameState = ""
 				onNicknameChanged("")
 			},
 			onTextChange = {
-				nicknameState.value = it
-				onNicknameChanged(nicknameState.value)
+				nicknameState = it
+				onNicknameChanged(nicknameState)
 			}
 		)
 	}
@@ -238,9 +242,9 @@ private fun ProfileEditNicknameConditionTextArea(
 	) {
 		NicknameConditionText(
 			text = when (nicknameCombinationState) {
-				NicknameInvalidState.EMPTY -> "한글/영문+숫자 조합으로 설정해주세요"
-				NicknameInvalidState.INCORRECT -> "한글/영문+숫자 조합으로만 설정가능해요"
-				else -> "한글/영문+숫자 조합"
+				NicknameInvalidState.EMPTY -> stringResource(R.string.nickname_comb_empty_text)
+				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_comb_incorrect_text)
+				else -> stringResource(R.string.nickname_comb_correct_text)
 			},
 			color = nicknameCombinationState.color,
 			icon = nicknameCombinationState.icon
@@ -249,8 +253,8 @@ private fun ProfileEditNicknameConditionTextArea(
 		NicknameConditionText(
 			text = when (nicknameSpecialLetterState) {
 				NicknameInvalidState.EMPTY,
-				NicknameInvalidState.INCORRECT -> "특수문자는 사용할 수 없어요"
-				NicknameInvalidState.CORRECT -> "특수문자 사용 X"
+				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_special_letter_incorrect_text)
+				NicknameInvalidState.CORRECT -> stringResource(R.string.nickname_special_letter_correct_text)
 			},
 			color = nicknameSpecialLetterState.color,
 			icon = nicknameSpecialLetterState.icon
@@ -259,8 +263,8 @@ private fun ProfileEditNicknameConditionTextArea(
 		NicknameConditionText(
 			text = when (nicknameLengthState) {
 				NicknameInvalidState.EMPTY,
-				NicknameInvalidState.INCORRECT -> "최대 10글자로 설정해주세요"
-				NicknameInvalidState.CORRECT -> "최대 10글자"
+				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_length_incorrect_text)
+				NicknameInvalidState.CORRECT -> stringResource(R.string.nickname_length_correct_text)
 			},
 			color = nicknameLengthState.color,
 			icon = nicknameLengthState.icon
@@ -272,7 +276,7 @@ private fun ProfileEditNicknameConditionTextArea(
 private fun NicknameConditionText(
 	text: String,
 	color: Color,
-	icon: Int
+	@DrawableRes icon: Int
 ) {
 	Row {
 		Image(
@@ -310,7 +314,7 @@ private fun ProfileEditCompleteButton(
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
-		text = "완료",
+		text = stringResource(id = R.string.complete),
 		onClick = {
 			if (!isNicknameEnable) return@LyfeButton
 			viewModel.viewModelScope.launch {

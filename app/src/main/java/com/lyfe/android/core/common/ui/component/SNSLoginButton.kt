@@ -22,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
@@ -29,11 +30,11 @@ import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
 @Composable
 fun SNSLoginButton(
 	modifier: Modifier = Modifier,
-	verticalPadding: Dp = 12.dp,
+	verticalPadding: Dp = 14.dp,
 	horizontalPadding: Dp = 20.dp,
 	buttonType: SNSLoginButtonType,
-	fontSize: Int = 14,
-	lineHeight: Int = 24,
+	fontSize: TextUnit = 14.sp,
+	lineHeight: TextUnit = 24.sp,
 	fontWeight: FontWeight = FontWeight.W600,
 	onClick: () -> Unit
 ) {
@@ -64,8 +65,8 @@ fun SNSLoginButton(
 				text = stringResource(id = buttonType.textRes),
 				textAlign = TextAlign.Center,
 				style = TextStyle(
-					fontSize = fontSize.sp,
-					lineHeight = lineHeight.sp,
+					fontSize = fontSize,
+					lineHeight = lineHeight,
 					fontWeight = fontWeight,
 					color = buttonType.textColor
 				)

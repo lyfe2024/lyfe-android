@@ -59,7 +59,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
-		ProfileEditScreen()
+		ProfileEditScreen(navigator = lyfeNavigator)
 		selectedScreen(LyfeScreens.ProfileEdit.name)
 	}
 

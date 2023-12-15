@@ -1,6 +1,7 @@
 package com.lyfe.android.feature.nickname
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,12 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
+import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
@@ -33,7 +35,6 @@ import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.feature.profileedit.NicknameInvalidState
 import com.lyfe.android.feature.profileedit.ProfileEditUiState
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
-import kotlinx.coroutines.launch
 
 @Composable
 fun NicknameScreen(
@@ -47,23 +48,23 @@ fun NicknameScreen(
 			.fillMaxSize()
 	) {
 		Text(
-			text = "닉네임 설정",
+			text = stringResource(R.string.nickname_screen_title),
 			style = TextStyle(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
 				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000)
+				color = Color.Black
 			)
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))
 
 		Text(
-			text = "원하는 닉네임을 설정해주세요.",
+			text = stringResource(R.string.set_user_nickname),
 			style = TextStyle(
 				fontSize = 14.sp,
 				fontWeight = FontWeight(weight = 600),
-				color = Color(color = 0xFF000000)
+				color = Color.Black
 			)
 		)
 
@@ -75,7 +76,7 @@ fun NicknameScreen(
 			is ProfileEditUiState.IDLE -> { }
 
 			is ProfileEditUiState.Success -> {
-				Toast.makeText(context, "사용 가능한 닉네임입니다.", Toast.LENGTH_SHORT).show()
+				Toast.makeText(context, stringResource(R.string.available_nickname), Toast.LENGTH_SHORT).show()
 				// 중복 없는거 확인되면 바로 회원가입 완료? 아니면 추가 확인작업 있는지 물어봐야 함.
 			}
 
@@ -169,9 +170,9 @@ private fun NicknameConditionTextArea(
 	) {
 		NicknameConditionText(
 			text = when (nicknameCombinationState) {
-				NicknameInvalidState.EMPTY -> "한글/영문+숫자 조합으로 설정해주세요"
-				NicknameInvalidState.INCORRECT -> "한글/영문+숫자 조합으로만 설정가능해요"
-				else -> "한글/영문+숫자 조합"
+				NicknameInvalidState.EMPTY -> stringResource(R.string.nickname_comb_empty_text)
+				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_comb_incorrect_text)
+				else -> stringResource(R.string.nickname_comb_correct_text)
 			},
 			color = nicknameCombinationState.color,
 			icon = nicknameCombinationState.icon
@@ -181,9 +182,9 @@ private fun NicknameConditionTextArea(
 			text = when (nicknameSpecialLetterState) {
 				NicknameInvalidState.EMPTY,
 				NicknameInvalidState.INCORRECT
-				-> "특수문자는 사용할 수 없어요"
+				-> stringResource(R.string.nickname_special_letter_incorrect_text)
 
-				NicknameInvalidState.CORRECT -> "특수문자 사용 X"
+				NicknameInvalidState.CORRECT -> stringResource(R.string.nickname_special_letter_correct_text)
 			},
 			color = nicknameSpecialLetterState.color,
 			icon = nicknameSpecialLetterState.icon
@@ -193,9 +194,9 @@ private fun NicknameConditionTextArea(
 			text = when (nicknameLengthState) {
 				NicknameInvalidState.EMPTY,
 				NicknameInvalidState.INCORRECT
-				-> "최대 10글자로 설정해주세요"
+				-> stringResource(R.string.nickname_length_incorrect_text)
 
-				NicknameInvalidState.CORRECT -> "최대 10글자"
+				NicknameInvalidState.CORRECT -> stringResource(R.string.nickname_length_correct_text)
 			},
 			color = nicknameLengthState.color,
 			icon = nicknameLengthState.icon
@@ -207,7 +208,7 @@ private fun NicknameConditionTextArea(
 private fun NicknameConditionText(
 	text: String,
 	color: Color,
-	icon: Int
+	@DrawableRes icon: Int
 ) {
 	Row {
 		Image(
@@ -236,8 +237,8 @@ private fun NicknameCompleteButton(
 
 	LyfeButton(
 		modifier = Modifier
-			.height(48.dp)
-			.fillMaxWidth(),
+			.fillMaxWidth()
+			.height(48.dp),
 		cornerSize = 10.dp,
 		isClearIconShow = false,
 		buttonType = if (isNicknameEnable) {
@@ -245,11 +246,10 @@ private fun NicknameCompleteButton(
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
-		text = "다음",
+		text = stringResource(id = R.string.next),
 		onClick = {
 			// 중복 닉네임 체크 API 추후 연결
-			if (!isNicknameEnable) return@LyfeButton
-			viewModel.viewModelScope.launch {
+			if (isNicknameEnable) {
 				viewModel.checkNicknameDuplicate(nickname = nickname)
 			}
 		}

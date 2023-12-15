@@ -1,5 +1,6 @@
 package com.lyfe.android.feature.profileedit
 
+import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
 import com.lyfe.android.ui.theme.Error
@@ -8,7 +9,7 @@ import com.lyfe.android.ui.theme.Success
 
 enum class NicknameInvalidState(
 	val color: Color,
-	val icon: Int
+	@DrawableRes val icon: Int
 ) {
 	EMPTY(
 		color = Grey200,

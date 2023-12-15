@@ -8,7 +8,7 @@ import retrofit2.http.Path
 interface UserService {
 	// 유저 API 조회
 	@GET("/v1/users/check-nickname/{nickname}")
-	suspend fun fetchIsNicknameDuplicated(
+	suspend fun checkNicknameDuplicated(
 		@Path("nickname") nickname: String
 	): Result<CheckNicknameResponse>
 }

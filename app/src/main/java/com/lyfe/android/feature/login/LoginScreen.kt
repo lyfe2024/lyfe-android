@@ -57,21 +57,17 @@ fun LoginScreen(
 			.fillMaxSize(),
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Spacer(modifier = Modifier.height(168.dp))
-		
 		Image(
-			modifier = Modifier,
+			modifier = Modifier.weight(1f),
 			painter = painterResource(id = R.drawable.ic_main_logo),
 			contentDescription = "앱 메인 로고"
 		)
-
-		Spacer(modifier = Modifier.height(98.dp))
 
 		LoginButtonArea(
 			viewModel = viewModel
 		)
 
-		Spacer(modifier = Modifier.weight(1f))
+		Spacer(modifier = Modifier.height(48.dp))
 
 		ServicePolicyText()
 
@@ -174,7 +170,7 @@ fun ServicePolicyText() {
 	)
 }
 
-fun kakaoLogin(
+private fun kakaoLogin(
 	context: Context,
 	viewModel: LoginViewModel
 ): () -> Unit {
@@ -192,7 +188,7 @@ fun kakaoLogin(
 }
 
 @Composable
-fun googleLogin(
+private fun googleLogin(
 	context: Context,
 	viewModel: LoginViewModel
 ): () -> Unit {
@@ -233,7 +229,7 @@ fun googleLogin(
 }
 
 // @Composable
-// fun appleLogin(
+// private fun appleLogin(
 // 	context: Context,
 // 	viewModel: LoginViewModel
 // ): () -> Unit {
@@ -268,7 +264,7 @@ fun googleLogin(
 // }
 
 @Composable
-fun rememberGoogleSignInLauncher(
+private fun rememberGoogleSignInLauncher(
 	onSignInComplete: (Task<GoogleSignInAccount>) -> Unit,
 	onSignInFailure: (Int) -> Unit,
 	onError: (ApiException) -> Unit
