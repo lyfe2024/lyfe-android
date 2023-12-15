@@ -31,6 +31,3 @@ google-services.json
 
 # Android Profiling
 *.hprof
-
-# Kakao App Key
-kakao_strings.xml

@@ -9,7 +9,7 @@ class UserDataSourceImpl @Inject constructor(
 	private val userService: UserService
 ) : UserDataSource {
 
-	override suspend fun fetchIsNicknameDuplicated(nickname: String): Result<CheckNicknameResponse> {
-		return userService.fetchIsNicknameDuplicated(nickname = nickname)
+	override suspend fun checkNicknameDuplicated(nickname: String): Result<CheckNicknameResponse> {
+		return userService.checkNicknameDuplicated(nickname = nickname)
 	}
 }

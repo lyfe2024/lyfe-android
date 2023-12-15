@@ -18,17 +18,16 @@ class KakaoLoginManager @Inject constructor(
 		const val TAG = "KakaoLoginManager"
 	}
 
-	private lateinit var kakaoLoginState: KaKaoLoginState
-	private lateinit var kakaoLoginCallback: (OAuthToken?, Throwable?) -> Unit
+	private val kakaoLoginState by lazy { getKaKaoLoginState() }
+	private lateinit var kakaoAccountLoginCallback: (OAuthToken?, Throwable?) -> Unit
 
 	fun startKakaoLogin(
-		onToken: (OAuthToken) -> Unit
+		onTokenReceived: (OAuthToken) -> Unit
 	) {
-		kakaoLoginState = getKaKaoLoginState()
-		kakaoLoginCallback = getLoginCallback(onToken)
+		kakaoAccountLoginCallback = getAccountLoginCallback(onTokenReceived)
 
 		when (kakaoLoginState) {
-			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(onToken)
+			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(onTokenReceived)
 			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> onKakaoAccountLogin()
 		}
 	}
@@ -40,13 +39,13 @@ class KakaoLoginManager @Inject constructor(
 			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN
 		}
 
-	private fun getLoginCallback(onToken: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
+	private fun getAccountLoginCallback(onTokenReceived: (OAuthToken) -> Unit): (OAuthToken?, Throwable?) -> Unit {
 		return { token, error ->
 			if (error != null) {
 				LogUtil.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
 				throw error
 			} else if (token != null) {
-				onToken(token)
+				onTokenReceived(token)
 			}
 		}
 	}
@@ -66,7 +65,7 @@ class KakaoLoginManager @Inject constructor(
 	}
 
 	private fun onKakaoAccountLogin() {
-		UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoLoginCallback)
+		UserApiClient.instance.loginWithKakaoAccount(context, callback = kakaoAccountLoginCallback)
 	}
 }
 

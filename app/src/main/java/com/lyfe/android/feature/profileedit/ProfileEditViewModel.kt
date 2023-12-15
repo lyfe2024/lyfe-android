@@ -53,7 +53,7 @@ class ProfileEditViewModel @Inject constructor(
 		}
 	}
 
-	suspend fun checkNicknameDuplicate(nickname: String) {
+	fun checkNicknameDuplicate(nickname: String) {
 		viewModelScope.launch {
 			val result = userRepository.fetchIsNicknameDuplicated(nickname = nickname)
 			when (result) {

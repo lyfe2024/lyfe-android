@@ -47,6 +47,6 @@ class GoogleLoginManager @Inject constructor(
 
 	fun isLogin(context: Context): Boolean {
 		val account = GoogleSignIn.getLastSignedInAccount(context)
-		return if (account == null) false else (true)
+		return if (account == null) false else true
 	}
 }
