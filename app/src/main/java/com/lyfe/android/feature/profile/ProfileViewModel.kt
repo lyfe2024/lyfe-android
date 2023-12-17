@@ -16,7 +16,11 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 
 	init {
 		viewModelScope.launch {
-			uiState = ProfileUiState.Success(isGuest = true)
+			uiState = ProfileUiState.GuestSuccess
 		}
+	}
+
+	fun updateUiState(updatedState: ProfileUiState) {
+		uiState = updatedState
 	}
 }
