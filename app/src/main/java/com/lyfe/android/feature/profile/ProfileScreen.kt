@@ -2,22 +2,26 @@ package com.lyfe.android.feature.profile
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -43,8 +47,13 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.model.ImageFeed
+import com.lyfe.android.core.model.TextFeed
+import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.ui.theme.Grey100
 import com.lyfe.android.ui.theme.Grey200
+import com.lyfe.android.ui.theme.Grey300
 import com.lyfe.android.ui.theme.Grey500
 import com.lyfe.android.ui.theme.Grey900
 import com.lyfe.android.ui.theme.Main500
@@ -58,44 +67,22 @@ fun ProfileScreen(
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
-			.padding(start = 20.dp, end = 20.dp, top = 0.dp, bottom = 0.dp)
+			.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 0.dp)
 	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.wrapContentHeight()
-				.padding(start = 0.dp, end = 0.dp, top = 16.dp, bottom = 16.dp)
-		) {
-			IconButton(
-				modifier = Modifier
-					.align(Alignment.CenterVertically)
-					.size(24.dp),
-				onClick = { navigator.navigateUp() }
-			) {
-				Image(
-					modifier = Modifier.fillMaxSize(),
-					painter = painterResource(id = R.drawable.ic_arror_back_black),
-					contentDescription = "뒤로 가기 버튼"
-				)
+		ClickableText(
+			modifier = Modifier.align(Alignment.End),
+			text = AnnotatedString("설정"),
+			style = TextStyle(
+				fontSize = 16.sp,
+				fontWeight = FontWeight.W600,
+				color = Color.Black
+			),
+			onClick = {
+				// TODO 설정 창으로 이동
 			}
+		)
 
-			Spacer(modifier = Modifier.weight(1f))
-
-			ClickableText(
-				modifier = Modifier.align(Alignment.CenterVertically),
-				text = AnnotatedString("설정"),
-				style = TextStyle(
-					fontSize = 16.sp,
-					fontWeight = FontWeight.W600,
-					color = Color.Black
-				),
-				onClick = {
-					// TODO 설정 창으로 이동
-				}
-			)
-		}
-
-		Spacer(modifier = Modifier.height(21.dp))
+		Spacer(modifier = Modifier.height(16.dp))
 
 		ProfileContentArea(viewModel, navigator)
 	}
@@ -107,22 +94,23 @@ private fun ProfileContentArea(
 	navigator: LyfeNavigator
 ) {
 	when (viewModel.uiState) {
-		is ProfileUiState.Success -> {
-			val uiState = viewModel.uiState as ProfileUiState.Success
-			if (uiState.isGuest) {
-				ProfileUserInfoArea(
-					profileImage = null
-				)
+		is ProfileUiState.GuestSuccess,
+		is ProfileUiState.UserSuccess -> {
+			val isGuest = viewModel.uiState is ProfileUiState.GuestSuccess
 
-				ProfilePostArea(navigator = navigator)
-			} else {
-				// TODO 유저 정보 가져와서 표시
-//				ProfileUserInfoArea(
-//					profileImage = null
-//				)
-//
-//				ProfilePostArea()
-			}
+			ProfileUserInfo(
+				navigator = navigator,
+				isGuest = isGuest,
+				profileImage = null
+			)
+
+			Spacer(modifier = Modifier.height(16.dp))
+
+			ProfileUserPostPager(
+				viewModel = viewModel,
+				isGuest = isGuest,
+				navigator = navigator
+			)
 		}
 		is ProfileUiState.Failure -> {
 			// 로딩 실패
@@ -135,18 +123,19 @@ private fun ProfileContentArea(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun ProfileUserInfoArea(
+private fun ProfileUserInfo(
+	navigator: LyfeNavigator,
+	isGuest: Boolean,
 	profileImage: String?,
 	nickname: String = "익명의 쿼카"
 ) {
 	Row (
-		modifier = Modifier
-			.fillMaxWidth()
-			.wrapContentHeight()
-			.padding(bottom = 16.dp)
+		modifier = Modifier.height(48.dp)
 	){
 		GlideImage(
-			modifier = Modifier.size(48.dp),
+			modifier = Modifier
+				.fillMaxHeight()
+				.aspectRatio(1.0f),
 			model = profileImage ?: R.drawable.ic_profile_default,
 			failure = placeholder(R.drawable.ic_profile_default),
 			contentDescription = "프로필 이미지"
@@ -154,25 +143,42 @@ private fun ProfileUserInfoArea(
 
 		Spacer(modifier = Modifier.width(16.dp))
 
-		Text(
-			modifier = Modifier.align(Alignment.CenterVertically),
-			text = nickname,
-			fontSize = 20.sp,
-			fontWeight = FontWeight.W700,
-			color = Color.Black
-		)
+		Column(
+			modifier = Modifier
+				.fillMaxHeight(),
+			verticalArrangement = Arrangement.Center
+		) {
+			Text(
+				text = nickname,
+				fontSize = 20.sp,
+				fontWeight = FontWeight.W700,
+				lineHeight = 32.sp,
+				color = Color.Black,
+			)
+
+			if (!isGuest) {
+				ClickableText(
+					text = AnnotatedString("프로필 수정"),
+					style = TextStyle(
+						fontSize = 12.sp,
+						color = Grey300
+					),
+					onClick = { navigator.navigate(LyfeScreens.ProfileEdit.route) }
+				)
+			}
+		}
 	}
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ProfilePostArea(
+private fun ProfileUserPostPager(
+	viewModel: ProfileViewModel,
 	isGuest: Boolean = true,
 	navigator: LyfeNavigator
 ) {
 	val pages = listOf("신청 사진", "고민 글")
 	val pagerState = rememberPagerState { pages.size }
-	val coroutineScope = rememberCoroutineScope()
 
 	Column(
 		modifier = Modifier.fillMaxSize()
@@ -190,38 +196,55 @@ private fun ProfilePostArea(
 			divider = { }
 		) {
 			pages.forEachIndexed { index, title ->
-				Tab(
-					text = {
-						Text(
-							text = title,
-							fontSize = 16.sp,
-							color = if (pagerState.currentPage == index) Main500 else Grey200
-						)
-					},
-					selected = pagerState.currentPage == index,
-					onClick = {
-						coroutineScope.launch {
-							pagerState.scrollToPage(index)
-						}
-					}
-				)
+				ProfileTab(pagerState = pagerState, index = index, title = title)
 			}
 		}
 
 		if (isGuest) {
 			// 게스트는 로그인 유도창 띄우기
-			ProfileGuestLoginArea(navigator = navigator)
+			ProfileGuestLoginView(viewModel = viewModel, navigator = navigator)
 		}
 
-		ProfilePostContent(
+		Spacer(modifier = Modifier.height(16.dp))
+
+		ProfileUserPostPager(
+			navigator = navigator,
+			viewModel = viewModel,
 			isGuest = isGuest,
 			pagerState = pagerState
 		)
 	}
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ProfileGuestLoginArea(
+private fun ProfileTab(
+	pagerState: PagerState,
+	index: Int,
+	title: String,
+) {
+	val coroutineScope = rememberCoroutineScope()
+
+	Tab(
+		text = {
+			Text(
+				text = title,
+				fontSize = 16.sp,
+				color = if (pagerState.currentPage == index) Main500 else Grey200
+			)
+		},
+		selected = pagerState.currentPage == index,
+		onClick = {
+			coroutineScope.launch {
+				pagerState.scrollToPage(index)
+			}
+		}
+	)
+}
+
+@Composable
+private fun ProfileGuestLoginView(
+	viewModel: ProfileViewModel,
 	navigator: LyfeNavigator
 ) {
 	Column(
@@ -250,9 +273,8 @@ private fun ProfileGuestLoginArea(
 			horizontalPadding = 24.dp
 		) {
 			// TODO 로그인 화면으로
-//			navigator.navigate(
-//				route = LyfeScreens.Login.route
-//			)
+//			navigator.navigate(route = LyfeScreens.Login.route)
+			viewModel.updateUiState(ProfileUiState.UserSuccess())
 		}
 
 		Spacer(modifier = Modifier.height(8.dp))
@@ -268,16 +290,16 @@ private fun ProfileGuestLoginArea(
 			)
 		) {
 			// TODO 로그인 화면으로
-//			navigator.navigate(
-//				route = LyfeScreens.Login.route
-//			)
+//			navigator.navigate(route = LyfeScreens.Login.route)
 		}
 	}
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun ProfilePostContent(
+private fun ProfileUserPostPager(
+	navigator: LyfeNavigator,
+	viewModel: ProfileViewModel,
 	isGuest: Boolean,
 	pagerState: PagerState
 ) {
@@ -286,9 +308,121 @@ private fun ProfilePostContent(
 		state = pagerState
 	) { page ->
 		if (isGuest) return@HorizontalPager
-		Text(
-			text = (page+1).toString() ,
-			fontSize = 30.sp
-		)
+
+		val imageFeeds = (viewModel.uiState as ProfileUiState.UserSuccess).imageFeeds
+		val textFeeds = (viewModel.uiState as ProfileUiState.UserSuccess).textFeeds
+		when (page) {
+			0 -> {
+				// 신청 사진 리스트
+				ProfileUserImageFeedContent(
+					navigator = navigator,
+					viewModel = viewModel,
+					imageFeeds = imageFeeds
+				)
+			}
+			1 -> {
+				// 고민 글
+				ProfileUserTextFeedContent(
+					navigator = navigator,
+					viewModel = viewModel,
+					textFeeds = textFeeds
+				)
+			}
+		}
+	}
+}
+
+@Composable
+private fun ProfileUserImageFeedContent(
+	navigator: LyfeNavigator,
+	viewModel: ProfileViewModel,
+	imageFeeds: List<ImageFeed>
+) {
+	
+}
+
+@Composable
+private fun ProfileUserTextFeedContent(
+	navigator: LyfeNavigator,
+	viewModel: ProfileViewModel,
+	textFeeds: List<TextFeed>
+) {
+	LazyColumn(
+		verticalArrangement = Arrangement.spacedBy(12.dp)
+	) {
+		items(textFeeds, key = { it.id }) { data ->
+			LyfeTextFeed(
+				textFeed = data,
+				onClick = { }
+			)
+
+			Spacer(modifier = Modifier.height(12.dp))
+
+			Divider(color = Grey100, thickness = 1.dp)
+		}
+	}
+}
+
+@Composable
+fun LyfeTextFeed(
+	modifier: Modifier = Modifier,
+	textFeed: TextFeed,
+	onClick: () -> Unit
+) {
+	Box(modifier = modifier.clickable { onClick() }) {
+		Column(horizontalAlignment = Alignment.Start) {
+			Text(
+				text = textFeed.createdAt,
+				fontSize = 10.sp,
+				color = Grey300,
+				fontWeight = FontWeight.W400
+			)
+
+			Text(
+				text = textFeed.title,
+				fontSize = 16.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W700,
+				lineHeight = 24.sp
+			)
+
+			Text(
+				text = textFeed.content,
+				fontSize = 14.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W500,
+				maxLines = 2
+			)
+
+			Spacer(modifier = Modifier.height(4.dp))
+
+			Row(verticalAlignment = Alignment.CenterVertically) {
+				Image(
+					painter = painterResource(id = R.drawable.ic_drink_wine_regular),
+					contentDescription = "리액션 아이콘"
+				)
+
+				Text(
+					text = textFeed.reactionCount.toString(),
+					fontSize = 12.sp,
+					fontWeight = FontWeight.W400,
+					color = Grey300
+				)
+
+				Spacer(modifier = Modifier.width(16.dp))
+
+				Image(
+					painter = painterResource(id = R.drawable.ic_comment),
+					contentDescription = "댓글 아이콘"
+				)
+
+				Text(
+					text = textFeed.commentCount.toString(),
+					fontSize = 12.sp,
+					fontWeight = FontWeight.W400,
+					color = Grey300
+				)
+			}
+		}
 	}
 }
