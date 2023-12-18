@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -14,12 +15,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Tab
@@ -32,7 +38,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -67,10 +75,12 @@ fun ProfileScreen(
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
-			.padding(start = 20.dp, end = 20.dp, top = 16.dp, bottom = 0.dp)
+			.padding(top = 16.dp, bottom = 0.dp)
 	) {
 		ClickableText(
-			modifier = Modifier.align(Alignment.End),
+			modifier = Modifier
+				.align(Alignment.End)
+				.padding(horizontal = 20.dp),
 			text = AnnotatedString("설정"),
 			style = TextStyle(
 				fontSize = 16.sp,
@@ -130,7 +140,9 @@ private fun ProfileUserInfo(
 	nickname: String = "익명의 쿼카"
 ) {
 	Row (
-		modifier = Modifier.height(48.dp)
+		modifier = Modifier
+			.height(48.dp)
+			.padding(horizontal = 20.dp)
 	){
 		GlideImage(
 			modifier = Modifier
@@ -185,7 +197,9 @@ private fun ProfileUserPostPager(
 	) {
 		TabRow(
 			selectedTabIndex = pagerState.currentPage,
-			modifier = Modifier.fillMaxWidth(),
+			modifier = Modifier
+				.fillMaxWidth()
+				.padding(horizontal = 20.dp),
 			containerColor = Color.Transparent,
 			indicator = {
 				TabRowDefaults.Indicator(
@@ -338,7 +352,21 @@ private fun ProfileUserImageFeedContent(
 	viewModel: ProfileViewModel,
 	imageFeeds: List<ImageFeed>
 ) {
-	
+	LazyVerticalGrid(
+		columns = GridCells.Fixed(2),
+		contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 16.dp),
+		horizontalArrangement = Arrangement.spacedBy(16.dp),
+		verticalArrangement = Arrangement.spacedBy(12.dp)
+	) {
+		items(imageFeeds.size) { index ->
+			LyfeImageFeed(
+				modifier = Modifier,
+				paddingValues = PaddingValues(all = 10.dp),
+				imageFeed = imageFeeds[index],
+				onClick = { }
+			)
+		}
+	}
 }
 
 @Composable
@@ -348,6 +376,7 @@ private fun ProfileUserTextFeedContent(
 	textFeeds: List<TextFeed>
 ) {
 	LazyColumn(
+		contentPadding = PaddingValues(horizontal = 20.dp),
 		verticalArrangement = Arrangement.spacedBy(12.dp)
 	) {
 		items(textFeeds, key = { it.id }) { data ->
@@ -363,66 +392,158 @@ private fun ProfileUserTextFeedContent(
 	}
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun LyfeImageFeed(
+	modifier: Modifier = Modifier,
+	paddingValues: PaddingValues,
+	imageFeed: ImageFeed,
+	onClick: () -> Unit
+) {
+	Column(
+		modifier = modifier
+			.fillMaxWidth(),
+		horizontalAlignment = Alignment.Start
+	) {
+		Box(
+			modifier = Modifier
+				.fillMaxWidth()
+				.clip(shape = RoundedCornerShape(16.dp))
+				.aspectRatio(0.7f)
+				.clickable { onClick() }
+		) {
+			GlideImage(
+				modifier = Modifier.fillMaxSize(),
+				contentScale = ContentScale.FillBounds,
+				model = "https://picsum.photos/300/360",
+				contentDescription = "이미지 피드"
+			)
+
+			Column(modifier = Modifier.padding(paddingValues)) {
+				Row(verticalAlignment = Alignment.CenterVertically) {
+					Image(
+						modifier = Modifier
+							.size(24.dp)
+							.clip(CircleShape),
+						painter = painterResource(id = R.drawable.ic_profile_default),
+						contentDescription = "유저 프로필 썸네일"
+					)
+
+					Spacer(modifier = Modifier.width(4.dp))
+					
+					Text(
+						text = imageFeed.nickname,
+						color = Color.White,
+						fontSize = 12.sp,
+						fontWeight = FontWeight.W600
+					)
+				}
+
+				Spacer(modifier = Modifier.weight(1f))
+
+				Text(
+					text = imageFeed.title,
+					color = Color.White,
+					fontSize = 14.sp,
+					fontWeight = FontWeight.W700,
+					maxLines = 2
+				)
+			}
+		}
+
+		Spacer(modifier = Modifier.height(4.dp))
+
+		Row(verticalAlignment = Alignment.CenterVertically) {
+			Image(
+				painter = painterResource(id = R.drawable.ic_drink_wine_regular),
+				contentDescription = "리액션 아이콘"
+			)
+
+			Text(
+				text = imageFeed.reactionCount.toString(),
+				fontSize = 12.sp,
+				fontWeight = FontWeight.W400,
+				color = Grey300
+			)
+
+			Spacer(modifier = Modifier.width(8.dp))
+
+			Image(
+				painter = painterResource(id = R.drawable.ic_comment),
+				contentDescription = "댓글 아이콘"
+			)
+
+			Text(
+				text = imageFeed.commentCount.toString(),
+				fontSize = 12.sp,
+				fontWeight = FontWeight.W400,
+				color = Grey300
+			)
+		}
+	}
+}
+
 @Composable
 fun LyfeTextFeed(
 	modifier: Modifier = Modifier,
 	textFeed: TextFeed,
 	onClick: () -> Unit
 ) {
-	Box(modifier = modifier.clickable { onClick() }) {
-		Column(horizontalAlignment = Alignment.Start) {
-			Text(
-				text = textFeed.createdAt,
-				fontSize = 10.sp,
-				color = Grey300,
-				fontWeight = FontWeight.W400
+	Column(
+		modifier = modifier.clickable { onClick() },
+		horizontalAlignment = Alignment.Start
+	) {
+		Text(
+			text = textFeed.createdAt,
+			fontSize = 10.sp,
+			color = Grey300,
+			fontWeight = FontWeight.W400
+		)
+
+		Text(
+			text = textFeed.title,
+			fontSize = 16.sp,
+			color = Color.Black,
+			fontWeight = FontWeight.W700,
+			lineHeight = 24.sp
+		)
+
+		Text(
+			text = textFeed.content,
+			fontSize = 14.sp,
+			color = Color.Black,
+			fontWeight = FontWeight.W500,
+			maxLines = 2
+		)
+
+		Spacer(modifier = Modifier.height(4.dp))
+
+		Row(verticalAlignment = Alignment.CenterVertically) {
+			Image(
+				painter = painterResource(id = R.drawable.ic_drink_wine_regular),
+				contentDescription = "리액션 아이콘"
 			)
 
 			Text(
-				text = textFeed.title,
-				fontSize = 16.sp,
-				color = Color.Black,
-				fontWeight = FontWeight.W700,
-				lineHeight = 24.sp
+				text = textFeed.reactionCount.toString(),
+				fontSize = 12.sp,
+				fontWeight = FontWeight.W400,
+				color = Grey300
+			)
+
+			Spacer(modifier = Modifier.width(16.dp))
+
+			Image(
+				painter = painterResource(id = R.drawable.ic_comment),
+				contentDescription = "댓글 아이콘"
 			)
 
 			Text(
-				text = textFeed.content,
-				fontSize = 14.sp,
-				color = Color.Black,
-				fontWeight = FontWeight.W500,
-				maxLines = 2
+				text = textFeed.commentCount.toString(),
+				fontSize = 12.sp,
+				fontWeight = FontWeight.W400,
+				color = Grey300
 			)
-
-			Spacer(modifier = Modifier.height(4.dp))
-
-			Row(verticalAlignment = Alignment.CenterVertically) {
-				Image(
-					painter = painterResource(id = R.drawable.ic_drink_wine_regular),
-					contentDescription = "리액션 아이콘"
-				)
-
-				Text(
-					text = textFeed.reactionCount.toString(),
-					fontSize = 12.sp,
-					fontWeight = FontWeight.W400,
-					color = Grey300
-				)
-
-				Spacer(modifier = Modifier.width(16.dp))
-
-				Image(
-					painter = painterResource(id = R.drawable.ic_comment),
-					contentDescription = "댓글 아이콘"
-				)
-
-				Text(
-					text = textFeed.commentCount.toString(),
-					fontSize = 12.sp,
-					fontWeight = FontWeight.W400,
-					color = Grey300
-				)
-			}
 		}
 	}
 }
