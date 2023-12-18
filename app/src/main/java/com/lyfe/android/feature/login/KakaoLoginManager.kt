@@ -12,20 +12,17 @@ import javax.inject.Singleton
 
 @Singleton
 class KakaoLoginManager @Inject constructor(
-	@ActivityRetainedScoped private val context: Context
+	@ActivityRetainedScoped private val context: Context,
+	val onTokenReceived: (OAuthToken) -> Unit
 ) {
 	companion object {
 		const val TAG = "KakaoLoginManager"
 	}
 
 	private val kakaoLoginState by lazy { getKaKaoLoginState() }
-	private lateinit var kakaoAccountLoginCallback: (OAuthToken?, Throwable?) -> Unit
+	private val kakaoAccountLoginCallback by lazy { getAccountLoginCallback(onTokenReceived) }
 
-	fun startKakaoLogin(
-		onTokenReceived: (OAuthToken) -> Unit
-	) {
-		kakaoAccountLoginCallback = getAccountLoginCallback(onTokenReceived)
-
+	fun startKakaoLogin() {
 		when (kakaoLoginState) {
 			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(onTokenReceived)
 			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> onKakaoAccountLogin()

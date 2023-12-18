@@ -174,14 +174,17 @@ private fun kakaoLogin(
 	context: Context,
 	viewModel: LoginViewModel
 ): () -> Unit {
-	val kakaoLoginManager = KakaoLoginManager(context)
+	val kakaoLoginManager = KakaoLoginManager(
+		context = context,
+		onTokenReceived = {
+			// 카카오 액세스 토큰 성공적으로 받음
+			viewModel.updateUiState(LoginUiState.Success)
+		}
+	)
 	val onClick = {
 		if (viewModel.uiState != LoginUiState.Loading) {
 			viewModel.updateUiState(LoginUiState.Loading)
-			kakaoLoginManager.startKakaoLogin {
-				// 로그인 성공하면 다음 화면으로 이동
-				viewModel.updateUiState(LoginUiState.Success)
-			}
+			kakaoLoginManager.startKakaoLogin()
 		}
 	}
 	return onClick
