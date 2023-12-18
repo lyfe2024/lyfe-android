@@ -165,10 +165,8 @@ private fun ProfileEditThumbnailContent() {
 			contract = ActivityResultContracts.GetContent(),
 			onResult = { imageUri = it }
 		)
-		val onClick = {
-			// 클릭하면 앨범으로 이동
-			galleryLauncher.launch("image/*")
-		}
+		// 클릭하면 앨범으로 이동
+		val onClick = { galleryLauncher.launch("image/*") }
 
 		GlideImage(
 			model = imageUri,
@@ -179,10 +177,6 @@ private fun ProfileEditThumbnailContent() {
 				.size(80.dp)
 				.clip(CircleShape)
 				.border(width = 1.dp, Grey200, CircleShape)
-				.clickable {
-					// 클릭하면 앨범으로 이동
-					onClick()
-				}
 		)
 
 		Image(
@@ -192,10 +186,7 @@ private fun ProfileEditThumbnailContent() {
 				.size(24.dp)
 				.clip(CircleShape)
 				.align(BottomEnd)
-				.clickable {
-					// 클릭하면 앨범으로 이동
-					onClick()
-				}
+				.clickable { onClick() }
 		)
 	}
 }
