@@ -18,6 +18,7 @@ import com.lyfe.android.feature.profileedit.ProfileEditScreen
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
 	navHostController: NavHostController,
+	isScroll: (Boolean) -> Unit,
 	selectedScreen: (route: String) -> Unit
 ) {
 	composable(route = LyfeScreens.Home.name) {
@@ -26,7 +27,10 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Feed.name) {
-		FeedScreen(navigator = lyfeNavigator)
+		FeedScreen(
+			navigator = lyfeNavigator,
+			isScroll = isScroll
+		)
 		selectedScreen(LyfeScreens.Feed.name)
 	}
 

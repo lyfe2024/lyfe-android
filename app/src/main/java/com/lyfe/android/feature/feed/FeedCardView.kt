@@ -1,14 +1,20 @@
 package com.lyfe.android.feature.feed
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -18,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,19 +33,91 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.lyfe.android.R
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.ui.theme.BlackTransparent30
+import com.lyfe.android.ui.theme.TempColor
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun FeedCardView(
 	modifier: Modifier = Modifier,
-	feed: Feed,
+	feed: Feed
+) {
+	Column {
+		FeedMainBox(
+			modifier = modifier,
+			feed = feed
+		)
+		Spacer(modifier = Modifier.height(4.dp))
+		FeedScoreRow(
+			modifier = Modifier.fillMaxWidth(),
+			whiskyCnt = feed.whiskyCount,
+			commentCnt = feed.commentCount
+		)
+	}
+}
+
+@Composable
+private fun FeedScoreRow(
+	modifier: Modifier = Modifier,
+	whiskyCnt: Int,
+	commentCnt: Int
+) {
+	Row(
+		modifier = modifier,
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Image(
+			painter = painterResource(id = R.drawable.ic_whisky),
+			contentDescription = "ic_whisky"
+		)
+
+		Spacer(modifier = Modifier.width(2.dp))
+
+		Text(
+			text = whiskyCnt.toString(),
+			style = TextStyle(
+				fontSize = 12.sp,
+				lineHeight = 18.sp,
+				fontWeight = FontWeight.W600,
+				color = TempColor.CCCCCC
+			)
+		)
+
+		Spacer(modifier = Modifier.width(8.dp))
+
+		Image(
+			painter = painterResource(id = R.drawable.ic_comment),
+			contentDescription = "ic_whisky"
+		)
+
+		Spacer(modifier = Modifier.width(2.dp))
+
+		Text(
+			text = commentCnt.toString(),
+			style = TextStyle(
+				fontSize = 12.sp,
+				lineHeight = 18.sp,
+				fontWeight = FontWeight.W600,
+				color = TempColor.CCCCCC
+			)
+		)
+	}
+}
+
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+private fun FeedMainBox(
+	modifier: Modifier,
+	feed: Feed
 ) {
 	Box(
 		modifier = modifier
-			.clip(RoundedCornerShape(16.dp)),
+			.widthIn(min = 152.dp)
+			.aspectRatio(getMainBoxRatio())
+			.fillMaxSize()
+			.clip(RoundedCornerShape(16.dp))
 	) {
-
 		GlideImage(
 			modifier = Modifier
 				.fillMaxSize()
@@ -47,6 +126,12 @@ fun FeedCardView(
 			model = feed.feedImageUrl,
 			contentDescription = "feed_image",
 			contentScale = ContentScale.FillBounds
+		)
+
+		Spacer(
+			modifier = Modifier
+				.fillMaxSize()
+				.background(BlackTransparent30)
 		)
 
 		Row(
@@ -88,11 +173,17 @@ fun FeedCardView(
 				color = Color.White,
 				fontWeight = FontWeight.W700,
 				fontSize = 14.sp,
-				lineHeight = 22.sp,
+				lineHeight = 22.sp
 			),
 			overflow = TextOverflow.Ellipsis
 		)
 	}
+}
+
+private fun getMainBoxRatio(): Float {
+	val fractionWidth = 152f
+	val fractionHeight = 210f
+	return fractionWidth / fractionHeight
 }
 
 @Preview
