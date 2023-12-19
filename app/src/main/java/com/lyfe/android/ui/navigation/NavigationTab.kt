@@ -47,6 +47,7 @@ fun NavigationTab(
 	modifier: Modifier = Modifier,
 	selectedItemIndex: Int,
 	items: List<BottomNavItem>,
+	isNeedIndicatorAnimation: Boolean = true,
 	onClick: (index: Int) -> Unit
 ) {
 	val density = LocalDensity.current
@@ -57,7 +58,10 @@ fun NavigationTab(
 
 	val indicatorOffset: Dp by animateDpAsState(
 		targetValue = indicatorPosition,
-		animationSpec = tween(easing = LinearEasing, durationMillis = 200),
+		animationSpec = tween(
+			easing = LinearEasing,
+			durationMillis = if (isNeedIndicatorAnimation) 200 else 0
+		),
 		label = ""
 	)
 
