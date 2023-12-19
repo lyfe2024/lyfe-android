@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.model.Alarm
+import com.lyfe.android.ui.theme.TempColor
 
 @Composable
 fun AlarmScreen(
@@ -65,7 +66,7 @@ fun AlarmScreen(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
 				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000)
+				color = Color.Black
 			)
 		)
 
@@ -201,7 +202,7 @@ private fun AlarmBox(
 				fontSize = 10.sp,
 				lineHeight = 16.sp,
 				fontWeight = FontWeight(weight = 400),
-				color = Color(color = 0xFFCCCCCC),
+				color = TempColor.CCCCCC,
 				textAlign = TextAlign.Right
 			)
 		)
@@ -222,7 +223,7 @@ private fun AlarmTextContent(
 			fontSize = 10.sp,
 			lineHeight = 16.sp,
 			fontWeight = FontWeight(weight = 400),
-			color = Color(color = 0xFFCCCCCC)
+			color = TempColor.CCCCCC
 		)
 		Text(
 			text = message,
@@ -246,7 +247,7 @@ private fun NoAlarmListContent(
 				fontSize = 18.sp,
 				lineHeight = 28.sp,
 				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000),
+				color = Color.Black,
 				textAlign = TextAlign.Center
 			)
 		)

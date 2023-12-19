@@ -16,6 +16,12 @@
 	<string name="post_reaction">글 반응 알림</string>
 	<string name="post_comments">글 댓글 알림</string>
 
+	<!-- Feed -->
+	<string name="feed_screen_title">피드</string>
+	<string name="feed_screen_request_photo">사진 신청</string>
+	<string name="feed_screen_latest_tab_text">최신</string>
+	<string name="feed_screen_popular_tab_text">인기</string>
+
 	<!-- AlarmScreen -->
 	<string name="no_alarm_list">새로운 알림이 없어요</string>
 	<string name="data_loading_failure">데이터를 호출하는 데 실패했습니다</string>
