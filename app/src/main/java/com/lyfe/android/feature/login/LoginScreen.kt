@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,7 +43,6 @@ import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.ui.theme.DEFAULT
 import com.lyfe.android.ui.theme.Main500
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen(
@@ -107,8 +105,7 @@ fun LoginButtonArea(
 		SNSLoginButton(
 			modifier = modifier,
 			buttonType = SNSLoginButtonType.Apple,
-			onClick = {}
-// 			onClick = appleLogin(context = context, viewModel = viewModel)
+			onClick = appleLogin(context = context, viewModel = viewModel)
 		)
 	}
 }
@@ -174,17 +171,14 @@ private fun kakaoLogin(
 	context: Context,
 	viewModel: LoginViewModel
 ): () -> Unit {
-	val kakaoLoginManager = KakaoLoginManager(
-		context = context,
-		onTokenReceived = {
-			// 카카오 액세스 토큰 성공적으로 받음
-			viewModel.updateUiState(LoginUiState.Success)
-		}
-	)
 	val onClick = {
 		if (viewModel.uiState != LoginUiState.Loading) {
 			viewModel.updateUiState(LoginUiState.Loading)
-			kakaoLoginManager.startKakaoLogin()
+			KakaoLoginManager.startKakaoLogin(
+				context = context,
+				onTokenReceived = { viewModel.updateUiState(LoginUiState.Success) },
+				onFailure = { viewModel.updateUiState(LoginUiState.Failure(it?.message ?: "에러메세지가 존재하지 않습니다.")) }
+			)
 		}
 	}
 	return onClick
@@ -195,12 +189,9 @@ private fun googleLogin(
 	context: Context,
 	viewModel: LoginViewModel
 ): () -> Unit {
-	val coroutineScope = rememberCoroutineScope()
-	val googleLoginManager = GoogleLoginManager(context)
-
 	val launcher = rememberGoogleSignInLauncher(
 		onSignInComplete = {
-			val idToken = googleLoginManager.handleSignInResult(it)
+			val idToken = GoogleLoginManager.handleSignInResult(it)
 			if (idToken == null) {
 				LogUtil.e("onSignInFailure", "ID Token is null")
 			} else {
@@ -208,63 +199,45 @@ private fun googleLogin(
 				viewModel.updateUiState(LoginUiState.Success)
 			}
 		},
-		onSignInFailure = { LogUtil.e("onSignInFailure", "Error Code is $it") },
-		onError = { throw it }
+		onSignInFailure = {
+			LogUtil.e("onSignInFailure", "Error Code is $it")
+			viewModel.updateUiState(LoginUiState.Failure(it.toString()))
+		},
+		onError = {
+			viewModel.updateUiState(LoginUiState.Failure(it.message ?: "에러메세지가 존재하지 않습니다."))
+			throw it
+		}
 	)
 
 	val onClick = {
 		if (viewModel.uiState != LoginUiState.Loading) {
 			viewModel.updateUiState(LoginUiState.Loading)
-			if (googleLoginManager.isLogin(context)) {
-				coroutineScope.launch {
-					val isLogout = googleLoginManager.signOut()
-					if (isLogout) {
-						Toast.makeText(context, "로그아웃 되었습니다!", Toast.LENGTH_SHORT).show()
-						viewModel.updateUiState(LoginUiState.IDLE)
-					}
-				}
-			} else {
-				launcher.launch(googleLoginManager.createSignInIntent())
-			}
+			launcher.launch(GoogleLoginManager.createSignInIntent(context))
 		}
 	}
 	return onClick
 }
 
-// @Composable
-// private fun appleLogin(
-// 	context: Context,
-// 	viewModel: LoginViewModel
-// ): () -> Unit {
-// 	val coroutineScope = rememberCoroutineScope()
-// 	val appleLoginManager = AppleLoginManager(context = context)
-//
-// 	val onClick = {
-// 		if (viewModel.uiState != LoginUiState.Loading) {
-// 			viewModel.updateUiState(LoginUiState.Loading)
-// 			coroutineScope.launch {
-// 				if (appleLoginManager.checkPending()) {
-// 					val isLogout = appleLoginManager.signOut()
-// 					if (isLogout) {
-// 						Toast.makeText(context, "로그아웃 되었습니다!", Toast.LENGTH_SHORT).show()
-// 						viewModel.updateUiState(LoginUiState.IDLE)
-// 					}
-// 				} else {
-// 					appleLoginManager.auth.startActivityForSignInWithProvider(
-// 						context as Activity,
-// 						appleLoginManager.oAuthProvider.build()
-// 					).addOnSuccessListener { authResult ->
-// 						// Sign-in successful!
-// 						LogUtil.d("Apple Login Success", "activitySignIn:onSuccess:${authResult.credential}")
-// 					}.addOnFailureListener {
-// 						LogUtil.w("Apple Login Failure", "error is: $it")
-// 					}
-// 				}
-// 			}
-// 		}
-// 	}
-// 	return onClick
-// }
+@Composable
+private fun appleLogin(
+	context: Context,
+	viewModel: LoginViewModel
+): () -> Unit {
+	return {
+		if (viewModel.uiState != LoginUiState.Loading) {
+			viewModel.updateUiState(LoginUiState.Loading)
+			AppleLoginManager.signIn(
+				context = context,
+				onResult = { LogUtil.d("Apple Login Success", "activitySignIn:onSuccess:${it.credential}") },
+				onError = { exception ->
+					val errorMessage = exception.message ?: "에러메세지가 존재하지 않습니다."
+					LogUtil.e("Apple Login Failure", "error is: $errorMessage")
+					viewModel.updateUiState(LoginUiState.Failure(errorMessage))
+				}
+			)
+		}
+	}
+}
 
 @Composable
 private fun rememberGoogleSignInLauncher(
