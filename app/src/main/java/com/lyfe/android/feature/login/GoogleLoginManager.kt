@@ -14,7 +14,7 @@ import kotlin.coroutines.suspendCoroutine
 
 object GoogleLoginManager {
 
-	const val TAG = "GoogleLoginManager"
+	private const val TAG = "GoogleLoginManager"
 
 	private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 		.requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)

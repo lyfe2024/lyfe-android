@@ -14,8 +14,8 @@ object AppleLoginManager {
 
 	private const val TAG = "AppleLoginManager"
 
-	val oAuthProvider: OAuthProvider.Builder by lazy { OAuthProvider.newBuilder("apple.com") }
-	val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
+	private val oAuthProvider: OAuthProvider.Builder by lazy { OAuthProvider.newBuilder("apple.com") }
+	private val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
 
 	init {
 		oAuthProvider.scopes = listOf("email", "name")

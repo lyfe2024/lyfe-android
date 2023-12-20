@@ -9,7 +9,7 @@ import com.lyfe.android.core.common.ui.util.LogUtil
 
 object KakaoLoginManager {
 
-	const val TAG = "KakaoLoginManager"
+	private const val TAG = "KakaoLoginManager"
 
 	fun startKakaoLogin(context: Context, onTokenReceived: (OAuthToken) -> Unit, onFailure: (Throwable?) -> Unit) {
 		when (getKaKaoLoginState(context)) {
