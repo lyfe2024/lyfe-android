@@ -9,24 +9,17 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.common.ui.util.LogUtil
-import dagger.hilt.android.scopes.ActivityRetainedScoped
-import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
-class GoogleLoginManager @Inject constructor(
-	@ActivityRetainedScoped private val context: Context
-) {
-	companion object {
-		const val TAG = "GoogleLoginManager"
-	}
+object GoogleLoginManager {
+
+	const val TAG = "GoogleLoginManager"
 
 	private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 		.requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
 		.requestEmail()
 		.build()
-
-	private val googleSignInClient = GoogleSignIn.getClient(context, gso)
 
 	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): String? {
 		try {
@@ -37,9 +30,10 @@ class GoogleLoginManager @Inject constructor(
 		}
 	}
 
-	fun createSignInIntent(): Intent = googleSignInClient.signInIntent
+	fun createSignInIntent(context: Context): Intent = GoogleSignIn.getClient(context, gso).signInIntent
 
-	suspend fun signOut(): Boolean = suspendCoroutine { continuation ->
+	suspend fun signOut(context: Context): Boolean = suspendCoroutine { continuation ->
+		val googleSignInClient = GoogleSignIn.getClient(context, gso)
 		googleSignInClient.signOut().addOnCompleteListener {
 			continuation.resume(it.isSuccessful)
 		}
@@ -47,6 +41,6 @@ class GoogleLoginManager @Inject constructor(
 
 	fun isLogin(context: Context): Boolean {
 		val account = GoogleSignIn.getLastSignedInAccount(context)
-		return if (account == null) false else true
+		return account != null
 	}
 }
