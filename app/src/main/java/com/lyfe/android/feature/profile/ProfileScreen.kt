@@ -87,9 +87,7 @@ fun ProfileScreen(
 				fontWeight = FontWeight.W600,
 				color = Color.Black
 			),
-			onClick = {
-				// TODO 설정 창으로 이동
-			}
+			onClick = { navigator.navigate(LyfeScreens.Setting.route) }
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))

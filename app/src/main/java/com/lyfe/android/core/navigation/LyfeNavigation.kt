@@ -13,6 +13,8 @@ import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
+import com.lyfe.android.feature.setting.SettingScreen
+import com.lyfe.android.feature.setting.UserExperienceScreen
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
@@ -60,5 +62,15 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	composable(route = LyfeScreens.ProfileEdit.name) {
 		ProfileEditScreen(viewModel = ProfileEditViewModel())
 		selectedScreen(LyfeScreens.ProfileEdit.name)
+	}
+
+	composable(route = LyfeScreens.Setting.name) {
+		SettingScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.Setting.name)
+	}
+
+	composable(route = LyfeScreens.UserExperience.name) {
+		UserExperienceScreen()
+		selectedScreen(LyfeScreens.UserExperience.name)
 	}
 }
