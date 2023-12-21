@@ -15,7 +15,6 @@ object KakaoLoginManager {
 		when (getKaKaoLoginState(context)) {
 			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(context, onTokenReceived, onFailure)
 			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> onKakaoAccountLogin(context, onTokenReceived, onFailure)
-			KaKaoLoginState.KAKAO_LOGIN_STATE_NONE -> {}
 		}
 	}
 
@@ -71,5 +70,5 @@ object KakaoLoginManager {
 }
 
 private enum class KaKaoLoginState {
-	KAKAO_TALK_LOGIN, KAKAO_ACCOUNT_LOGIN, KAKAO_LOGIN_STATE_NONE
+	KAKAO_TALK_LOGIN, KAKAO_ACCOUNT_LOGIN
 }

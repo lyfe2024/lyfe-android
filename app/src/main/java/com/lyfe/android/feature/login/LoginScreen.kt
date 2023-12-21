@@ -61,9 +61,7 @@ fun LoginScreen(
 			contentDescription = "앱 메인 로고"
 		)
 
-		LoginButtonArea(
-			viewModel = viewModel
-		)
+		LoginButtonArea(viewModel = viewModel)
 
 		Spacer(modifier = Modifier.height(48.dp))
 
@@ -171,7 +169,7 @@ private fun kakaoLogin(
 	context: Context,
 	viewModel: LoginViewModel
 ): () -> Unit {
-	val onClick = {
+	return {
 		if (viewModel.uiState != LoginUiState.Loading) {
 			viewModel.updateUiState(LoginUiState.Loading)
 			KakaoLoginManager.startKakaoLogin(
@@ -181,7 +179,6 @@ private fun kakaoLogin(
 			)
 		}
 	}
-	return onClick
 }
 
 @Composable
@@ -218,7 +215,6 @@ private fun googleLogin(
 	return onClick
 }
 
-@Composable
 private fun appleLogin(
 	context: Context,
 	viewModel: LoginViewModel
