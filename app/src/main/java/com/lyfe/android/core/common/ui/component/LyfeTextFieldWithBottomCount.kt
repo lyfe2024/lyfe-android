@@ -29,6 +29,7 @@ fun LyfeTextFieldWithBottomCount(
 	isActivateCloseIcon: Boolean = true,
 	maxLength: Int,
 	text: String,
+	hintText: String = "",
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
 ) {
@@ -44,6 +45,7 @@ fun LyfeTextFieldWithBottomCount(
 			textFieldType = textFieldType,
 			isActivateCloseIcon = isActivateCloseIcon,
 			text = text,
+			hintText = hintText,
 			onTextClear = onTextClear,
 			onTextChange = {
 				if (it.length > maxLength) return@LyfeTextField
@@ -62,11 +64,12 @@ fun LyfeTextFieldWithBottomCount(
 @Preview
 @Composable
 fun Preview_LyfeTextFieldWithBottomCount() {
-	var text by remember { mutableStateOf("") }
+	var text by remember { mutableStateOf("텍스트 필드 테스트 메세지") }
 
 	LyfeTextFieldWithBottomCount(
 		modifier = Modifier.fillMaxWidth(),
 		text = text,
+		hintText = "피드백 내용을 입력해주세요.",
 		onTextClear = { text = "" },
 		onTextChange = {
 			text = it
