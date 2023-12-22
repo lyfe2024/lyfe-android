@@ -72,7 +72,7 @@ fun PopularFeedScreen(
 		) {
 			items(feedList) { feed ->
 				key(feed.feedId) {
-					FeedCardView(feed = feed)
+					FeedScreenCardView(feed = feed)
 				}
 			}
 		}
