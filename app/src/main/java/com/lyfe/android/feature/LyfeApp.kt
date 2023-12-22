@@ -1,4 +1,4 @@
-package com.lyfe.android.ui
+package com.lyfe.android.feature
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -32,7 +32,7 @@ import com.lyfe.android.R
 import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.ui.navigation.NavigationTab
+import com.lyfe.android.core.common.ui.navigation.NavigationTab
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
