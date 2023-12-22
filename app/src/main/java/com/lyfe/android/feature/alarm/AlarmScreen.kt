@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.model.Alarm
-import com.lyfe.android.ui.theme.TempColor
+import com.lyfe.android.core.common.ui.theme.TempColor
 
 @Composable
 fun AlarmScreen(
