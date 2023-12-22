@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.core.common.ui.util.clickableSingle
-import com.lyfe.android.ui.theme.Grey400
+import com.lyfe.android.core.common.ui.theme.Grey400
 
 @Composable
 fun LyfeTextField(

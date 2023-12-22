@@ -1,4 +1,4 @@
-package com.lyfe.android.ui.theme
+package com.lyfe.android.core.common.ui.theme
 
 import android.app.Activity
 import android.os.Build

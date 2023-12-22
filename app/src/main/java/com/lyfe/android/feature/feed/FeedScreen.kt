@@ -40,9 +40,9 @@ import com.lyfe.android.core.common.ui.model.TabItem
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.ui.theme.Grey200
-import com.lyfe.android.ui.theme.Grey50
-import com.lyfe.android.ui.theme.Main500
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey50
+import com.lyfe.android.core.common.ui.theme.Main500
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -156,7 +156,6 @@ private fun FeedTab(
 	tabIdx: Int,
 	onTabClick: (index: Int) -> Unit
 ) {
-
 	val density = LocalDensity.current
 	var tabWidth by remember { mutableStateOf(0.dp) }
 
