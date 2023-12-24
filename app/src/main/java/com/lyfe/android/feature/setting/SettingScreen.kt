@@ -40,10 +40,11 @@ fun SettingScreen(
 ) {
     Column(
         modifier = Modifier
-            .padding(top = 16.dp, bottom = 24.dp, start = 20.dp, end = 20.dp)
+            .padding(top = 16.dp, bottom = 24.dp)
             .fillMaxSize()
     ) {
         Text(
+            modifier = Modifier.padding(start = 20.dp),
             text = "설정",
             style = TextStyle(
                 fontSize = 24.sp,
@@ -74,21 +75,21 @@ fun SettingContent(
 ) {
     Column {
         list.forEach { setting ->
-            SettingRow(setting) {
-                when(setting) {
-                    Setting.ALARM -> { }
-                    Setting.SCRAP -> {
+            when(setting) {
+                Setting.ALARM -> { SettingSwitchRow(setting = setting) }
+                Setting.SCRAP -> {
+                    SettingButtonRow(setting = setting) {
                         // TODO
                     }
-                    Setting.USER_EXPERIENCE -> {
-                        navigator.navigate(LyfeScreens.UserExperience.route)
-                    }
-                    Setting.PRIVACY_POLICY -> {
-                        // TODO
-                    }
-                    Setting.DELETE_ACCOUNT -> {
-                        // TODO
-                    }
+                }
+                Setting.USER_EXPERIENCE -> SettingButtonRow(setting = setting) {
+                    navigator.navigate(LyfeScreens.UserExperience.route)
+                }
+                Setting.PRIVACY_POLICY -> SettingButtonRow(setting = setting) {
+                    // TODO
+                }
+                Setting.DELETE_ACCOUNT -> SettingButtonRow(setting = setting) {
+                    // TODO
                 }
             }
         }
@@ -97,7 +98,8 @@ fun SettingContent(
 
         // 로그아웃 버튼
         LyfeButton(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 20.dp),
             verticalPadding = 12.dp,
             buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
             text = "로그아웃",
@@ -109,17 +111,11 @@ fun SettingContent(
 }
 
 @Composable
-fun SettingRow(setting: Setting, onClick: () -> Unit) {
+fun SettingSwitchRow(setting: Setting) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 12.dp)
-            .clickable {
-                if (setting == Setting.ALARM) {
-                    return@clickable
-                }
-                onClick()
-            },
+            .padding(vertical = 12.dp, horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
@@ -131,18 +127,36 @@ fun SettingRow(setting: Setting, onClick: () -> Unit) {
 
         Spacer(modifier = Modifier.weight(1f))
 
-        if (setting == Setting.ALARM) {
-            var checkedState by remember { mutableStateOf(false) }
+        var checkedState by remember { mutableStateOf(false) }
 
-            LyfeSwitch(
-                checkedTrackColor = Main500,
-                onCheckedChange = { checkedState = it }
-            )
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.ic_arrow_next),
-                contentDescription = "다음으로 넘어가는 버튼 이미지"
-            )
-        }
+        LyfeSwitch(
+            checkedTrackColor = Main500,
+            onCheckedChange = { checkedState = it }
+        )
+    }
+}
+
+@Composable
+fun SettingButtonRow(setting: Setting, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(vertical = 12.dp, horizontal = 20.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = setting.title,
+            fontSize = 16.sp,
+            color = Default,
+            fontWeight = FontWeight.W500
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Image(
+            painter = painterResource(id = R.drawable.ic_arrow_next),
+            contentDescription = "다음으로 넘어가는 버튼 이미지"
+        )
     }
 }

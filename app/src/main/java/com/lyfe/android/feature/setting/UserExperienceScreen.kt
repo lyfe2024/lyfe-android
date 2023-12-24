@@ -69,7 +69,11 @@ fun UserFeedbackContent() {
             maxLength = 500,
             text = text,
             hintText = "피드백 내용을 입력해주세요.",
-            textFieldType = LyfeTextFieldType.TC_GREY200_BG_TRANSPARENT_SC_GREY200,
+            textFieldType = if (text.isEmpty()) {
+                LyfeTextFieldType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
+            } else {
+                LyfeTextFieldType.TC_BLACK_BG_WHITE_SC_GREY900
+            },
             isActivateCloseIcon = false,
             onTextChange = { text = it },
             onTextClear = { text = "" },

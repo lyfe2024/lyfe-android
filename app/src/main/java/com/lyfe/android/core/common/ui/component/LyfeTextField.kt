@@ -46,6 +46,7 @@ fun LyfeTextField(
 	text: String,
 	hintText: String = "",
 	fontSize: TextUnit = 16.sp,
+	lineHeight: TextUnit = TextUnit.Unspecified,
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
 ) {
@@ -68,7 +69,8 @@ fun LyfeTextField(
 			textStyle = TextStyle(
 				color = textFieldType.textColor,
 				fontSize = fontSize,
-				fontWeight = FontWeight.W600
+				fontWeight = FontWeight.W600,
+				lineHeight = lineHeight
 			),
 			onValueChange = onTextChange,
 		) { innerTextField ->

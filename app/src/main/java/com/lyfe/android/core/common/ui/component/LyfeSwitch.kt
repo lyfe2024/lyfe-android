@@ -61,7 +61,7 @@ fun LyfeSwitch(
 		// Track
 		drawRoundRect(
 			color = if (switchON) checkedTrackColor else uncheckedTrackColor,
-			cornerRadius = CornerRadius(x = thumbRadius.toPx(), y = thumbRadius.toPx())
+			cornerRadius = CornerRadius(x = height.toPx(), y = height.toPx())
 		)
 
 		// Thumb
