@@ -1,4 +1,4 @@
-package com.lyfe.android.ui.navigation
+package com.lyfe.android.core.common.ui.navigation
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -38,15 +38,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.util.clickableSingle
-import com.lyfe.android.ui.BottomNavItem
-import com.lyfe.android.ui.theme.DEFAULT
-import com.lyfe.android.ui.theme.Main500
+import com.lyfe.android.feature.BottomNavItem
+import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.Main500
 
 @Composable
 fun NavigationTab(
 	modifier: Modifier = Modifier,
 	selectedItemIndex: Int,
 	items: List<BottomNavItem>,
+	isNeedIndicatorAnimation: Boolean = true,
 	onClick: (index: Int) -> Unit
 ) {
 	val density = LocalDensity.current
@@ -57,7 +58,10 @@ fun NavigationTab(
 
 	val indicatorOffset: Dp by animateDpAsState(
 		targetValue = indicatorPosition,
-		animationSpec = tween(easing = LinearEasing, durationMillis = 200),
+		animationSpec = tween(
+			easing = LinearEasing,
+			durationMillis = if (isNeedIndicatorAnimation) 200 else 0
+		),
 		label = ""
 	)
 
