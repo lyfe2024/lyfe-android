@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Lyfe</string>
 
+	<!-- Common -->
+	<string name="complete">완료</string>
+	<string name="next">다음</string>
+
     <string name="btm_nav_home">홈</string>
     <string name="btm_nav_view_all">피드</string>
     <string name="btm_nav_post">게시</string>
@@ -12,10 +16,28 @@
 	<string name="post_reaction">글 반응 알림</string>
 	<string name="post_comments">글 댓글 알림</string>
 
-
 	<!-- AlarmScreen -->
 	<string name="no_alarm_list">새로운 알림이 없어요</string>
 	<string name="data_loading_failure">데이터를 호출하는 데 실패했습니다</string>
 	<string name="alarm_read_all_text">모두 읽음</string>
 	<string name="alarm_screen_title">알림</string>
+
+	<!-- LoginScreen -->
+	<string name="kakao_button_text">카카오로 3초만에 시작하기</string>
+	<string name="apple_button_text">Apple로 계속하기</string>
+	<string name="google_button_text">Google로 계속하기</string>
+
+	<!-- NicknameScreen -->
+	<string name="nickname_screen_title">닉네임 설정</string>
+	<string name="set_user_nickname">원하는 닉네임을 설정해주세요.</string>
+	<string name="nickname_comb_incorrect_text">한글/영문+숫자 조합으로만 설정가능해요</string>
+	<string name="nickname_comb_empty_text">한글/영문+숫자 조합으로 설정해주세요</string>
+	<string name="nickname_comb_correct_text">한글/영문+숫자 조합</string>
+	<string name="nickname_special_letter_incorrect_text">특수문자는 사용할 수 없어요</string>
+	<string name="nickname_special_letter_correct_text">특수문자 사용 X</string>
+	<string name="nickname_length_incorrect_text">최대 10글자로 설정해주세요</string>
+	<string name="nickname_length_correct_text">최대 10글자</string>
+	<string name="profile_edit_title">프로필 수정</string>
+	<string name="edit_nickname_complete">닉네임 변경이 완료되었습니다!</string>
+	<string name="available_nickname">사용 가능한 닉네임입니다.</string>
 </resources>
