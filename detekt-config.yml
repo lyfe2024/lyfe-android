@@ -1,6 +1,8 @@
 complexity:
     LongParameterList:
         active: false
+    LongMethod:
+        active: false
 
 style:
     MagicNumber:

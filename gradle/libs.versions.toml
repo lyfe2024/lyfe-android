@@ -84,6 +84,7 @@ activity-compose = { module = "androidx.activity:activity-compose", version.ref 
 compose-ui = { module = "androidx.activity:activity-compose", version.ref = "compose-ui" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics", version.ref = "compose-ui" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose-ui" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose-material" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "androidx-navigation"}
@@ -132,7 +133,8 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 # Android
 android-library = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx"]
 compose-library = ["activity-compose", "compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview",
-	"compose-material3", "compose-navigation", "compose-material", "compose-hilt-navigation"]
+	"compose-material3", "compose-navigation", "compose-material", "compose-hilt-navigation",
+	"androidx-lifecycle-runtime-compose"]
 
 # Dependency Injection
 hilt-android = ["hilt-android"]

@@ -1,4 +1,4 @@
-package com.lyfe.android.ui.theme
+package com.lyfe.android.core.common.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -41,5 +41,6 @@ val DisabledBtnTextColor = Color(0xFF8C8C8C)
 val TextFieldBgColor = Color(0xFFC4C4C4)
 
 val ScrollTrackColor = Color(0x99FFFFFF)
+val BlackTransparent30 = Color(0x4D000000)
 
 val KakaoYelowColor = Color(0xFFFEE500)

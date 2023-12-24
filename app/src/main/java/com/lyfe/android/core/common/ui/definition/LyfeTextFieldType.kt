@@ -3,9 +3,9 @@ package com.lyfe.android.core.common.ui.definition
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
-import com.lyfe.android.ui.theme.DEFAULT
-import com.lyfe.android.ui.theme.Error
-import com.lyfe.android.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.Error
+import com.lyfe.android.core.common.ui.theme.Grey200
 
 /**
  * TC: TextColor, BC: BgColor, SC: strokeColor

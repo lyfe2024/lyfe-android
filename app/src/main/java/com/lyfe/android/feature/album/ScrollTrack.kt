@@ -19,7 +19,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
-import com.lyfe.android.ui.theme.ScrollTrackColor
+import com.lyfe.android.core.common.ui.theme.ScrollTrackColor
 
 @Composable
 fun ScrollTrack(
