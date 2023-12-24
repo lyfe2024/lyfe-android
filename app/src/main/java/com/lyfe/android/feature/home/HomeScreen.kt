@@ -21,5 +21,13 @@ fun HomeScreen(
 		) {
 			Text(text = "Home Btn")
 		}
+
+		Button(
+			onClick = {
+				navigator.navigate(LyfeScreens.Login.name)
+			}
+		) {
+			Text(text = "Login Btn")
+		}
 	}
 }
