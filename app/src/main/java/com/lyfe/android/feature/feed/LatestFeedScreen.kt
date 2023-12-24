@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun LatestFeedScreen(
 	modifier: Modifier = Modifier,
 	viewModel: FeedViewModel = viewModel(),
-	isScroll: (Boolean) -> Unit = {}
+	onScroll: (Boolean) -> Unit = {}
 ) {
 	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
@@ -34,7 +34,7 @@ fun LatestFeedScreen(
 	LaunchedEffect(lazyGridState) {
 		snapshotFlow { lazyGridState.isScrollInProgress }
 			.collect {
-				isScroll(it)
+				onScroll(it)
 			}
 	}
 

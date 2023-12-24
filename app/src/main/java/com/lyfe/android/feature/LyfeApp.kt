@@ -80,7 +80,7 @@ fun LyfeApp(
 			modifier = Modifier.fillMaxSize(),
 			navHostController = navController,
 			navigator = navigator,
-			isScroll = {
+			onScroll = {
 				isNavigationBarHide = it
 			}
 		) { route ->

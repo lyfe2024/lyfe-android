@@ -48,7 +48,7 @@ import com.lyfe.android.core.common.ui.theme.Main500
 @Composable
 fun FeedScreen(
 	navigator: LyfeNavigator,
-	isScroll: (Boolean) -> Unit
+	onScroll: (Boolean) -> Unit
 ) {
 	val tabItemList = listOf(
 		TabItem(stringResource(id = R.string.feed_screen_latest_tab_text)),
@@ -137,11 +137,11 @@ fun FeedScreen(
 		) { page ->
 			when (page) {
 				0 -> LatestFeedScreen(
-					isScroll = isScroll
+					onScroll = onScroll
 				)
 
 				1 -> PopularFeedScreen(
-					isScroll = isScroll
+					onScroll = onScroll
 				)
 			}
 		}
