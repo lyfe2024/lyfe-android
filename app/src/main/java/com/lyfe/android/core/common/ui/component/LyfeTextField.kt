@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.util.clickableSingle
-import com.lyfe.android.ui.theme.Grey200
-import com.lyfe.android.ui.theme.Grey400
 
 @Composable
 fun LyfeTextField(

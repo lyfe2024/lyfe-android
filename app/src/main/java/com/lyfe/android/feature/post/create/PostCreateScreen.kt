@@ -44,7 +44,7 @@ import com.lyfe.android.core.common.ui.util.noRippleClickable
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.album.SelectImageKey
-import com.lyfe.android.ui.theme.BtnLightGrayColor
+import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
 
 @Composable
 fun PostCreateScreen(

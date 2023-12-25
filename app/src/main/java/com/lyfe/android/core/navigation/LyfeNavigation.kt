@@ -8,6 +8,8 @@ import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.album.SelectAlbumScreen
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.home.HomeScreen
+import com.lyfe.android.feature.login.LoginScreen
+import com.lyfe.android.feature.nickname.NicknameScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
@@ -19,6 +21,7 @@ import com.lyfe.android.feature.setting.UserExperienceScreen
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
 	navHostController: NavHostController,
+	onScroll: (Boolean) -> Unit,
 	selectedScreen: (route: String) -> Unit
 ) {
 	composable(route = LyfeScreens.Home.name) {
@@ -27,7 +30,10 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Feed.name) {
-		FeedScreen(navigator = lyfeNavigator)
+		FeedScreen(
+			navigator = lyfeNavigator,
+			onScroll = onScroll
+		)
 		selectedScreen(LyfeScreens.Feed.name)
 	}
 
@@ -60,7 +66,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
-		ProfileEditScreen(viewModel = ProfileEditViewModel())
+		ProfileEditScreen(navigator = lyfeNavigator)
 		selectedScreen(LyfeScreens.ProfileEdit.name)
 	}
 
@@ -72,5 +78,15 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	composable(route = LyfeScreens.UserExperience.name) {
 		UserExperienceScreen()
 		selectedScreen(LyfeScreens.UserExperience.name)
+	}
+
+	composable(route = LyfeScreens.Login.name) {
+		LoginScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.Login.name)
+	}
+
+	composable(route = LyfeScreens.Nickname.name) {
+		NicknameScreen()
+		selectedScreen(LyfeScreens.Nickname.name)
 	}
 }

@@ -1,4 +1,4 @@
-package com.lyfe.android.ui.navigation
+package com.lyfe.android.core.common.ui.navigation
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp

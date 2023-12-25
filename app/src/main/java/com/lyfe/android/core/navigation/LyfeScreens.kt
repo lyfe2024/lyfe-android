@@ -24,6 +24,10 @@ sealed class LyfeScreens(
 
 	object ProfileEdit : LyfeScreens("profileEdit")
 
+	object Login : LyfeScreens("login")
+
+	object Nickname : LyfeScreens("nickname")
+
 	object Setting : LyfeScreens("setting")
 
 	object UserExperience : LyfeScreens("userExperience")

@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.lyfe.android.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.Grey100
 
 @Composable
 fun LyfeSwitch(

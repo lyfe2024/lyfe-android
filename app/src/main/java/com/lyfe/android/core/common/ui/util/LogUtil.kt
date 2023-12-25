@@ -3,7 +3,7 @@ package com.lyfe.android.core.common.ui.util
 import android.util.Log
 import com.lyfe.android.BuildConfig
 
-object LogUtils {
+object LogUtil {
 	fun i(tag: String = "", message: String) {
 		if (BuildConfig.DEBUG) {
 			Log.i(tag, message)
