@@ -28,10 +28,10 @@ import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeSwitch
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.theme.Default
+import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.ui.theme.Default
-import com.lyfe.android.ui.theme.Main500
 
 @Composable
 fun SettingScreen(

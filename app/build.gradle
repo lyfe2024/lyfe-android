@@ -3,9 +3,11 @@ plugins {
     alias(libs.plugins.kotlin.gradle)
     alias(libs.plugins.klint)
     alias(libs.plugins.detekt)
+	alias(libs.plugins.kotlin.serialization)
 	id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 	alias(libs.plugins.ksp)
+    id("com.google.gms.google-services")
 }
 
 // Properties 객체 생성
@@ -33,6 +35,10 @@ android {
 
 		if (localProperties.exists()) {
 			buildConfigField "String", "BASE_URL", properties['base-url']
+			buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", properties['google-web-client-id']
+			buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties["kakao_native_app_key"]
+			manifestPlaceholders = [KAKAO_REDIRECTION_SCHEME: properties["kakao_redirection_scheme"]]
+
 		}
 	}
 
@@ -89,5 +95,10 @@ dependencies {
     androidTestImplementation(libs.bundles.android.compose.test)
     debugImplementation(libs.bundles.compose.debug)
 
-	implementation(libs.bundles.coil)
+	implementation(libs.bundles.kakao)
+
+	implementation(platform(libs.firebase.bom))
+	implementation(libs.bundles.firebase)
+
+	implementation(libs.bundles.play.services)
 }

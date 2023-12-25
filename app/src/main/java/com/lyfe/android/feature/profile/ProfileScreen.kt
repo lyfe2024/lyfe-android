@@ -55,16 +55,16 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey300
+import com.lyfe.android.core.common.ui.theme.Grey500
+import com.lyfe.android.core.common.ui.theme.Grey900
+import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.model.ImageFeed
 import com.lyfe.android.core.model.TextFeed
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.ui.theme.Grey100
-import com.lyfe.android.ui.theme.Grey200
-import com.lyfe.android.ui.theme.Grey300
-import com.lyfe.android.ui.theme.Grey500
-import com.lyfe.android.ui.theme.Grey900
-import com.lyfe.android.ui.theme.Main500
 import kotlinx.coroutines.launch
 
 @Composable

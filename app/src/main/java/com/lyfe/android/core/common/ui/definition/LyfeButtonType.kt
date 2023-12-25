@@ -5,10 +5,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyfe.android.R
-import com.lyfe.android.ui.theme.Grey200
-import com.lyfe.android.ui.theme.Grey50
-import com.lyfe.android.ui.theme.Grey500
-import com.lyfe.android.ui.theme.Main500
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey50
+import com.lyfe.android.core.common.ui.theme.Grey500
+import com.lyfe.android.core.common.ui.theme.Main500
 
 /**
  * TC: TextColor, BC: BgColor, SC: strokeColor

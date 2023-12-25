@@ -3,6 +3,8 @@ package com.lyfe.android.core.data.network.di
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
 import com.lyfe.android.core.data.network.converter.asConverterFactory
+import com.lyfe.android.core.data.network.service.TestService
+import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -39,11 +41,26 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesLyfeRetrofit(okHttpClient: OkHttpClient): Retrofit =
-		Retrofit.Builder()
+	fun providesLyfeRetrofit(okHttpClient: OkHttpClient): Retrofit {
+		val jsonConfig = Json { isLenient = true }
+
+		return Retrofit.Builder()
 			.baseUrl(BuildConfig.BASE_URL)
 			.client(okHttpClient)
-			.addConverterFactory(Json.asConverterFactory(contentType))
+			.addConverterFactory(jsonConfig.asConverterFactory(contentType))
 			.addCallAdapterFactory(ResultCallAdapterFactory())
 			.build()
+	}
+
+	@Provides
+	@Singleton
+	fun providesTestService(retrofit: Retrofit): TestService {
+		return retrofit.create(TestService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesUserService(retrofit: Retrofit): UserService {
+		return retrofit.create(UserService::class.java)
+	}
 }

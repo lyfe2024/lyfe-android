@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.ui.LyfeApp
-import com.lyfe.android.ui.theme.LyfeTheme
+import com.lyfe.android.feature.LyfeApp
+import com.lyfe.android.core.common.ui.theme.LyfeTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
