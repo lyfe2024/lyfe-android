@@ -3,9 +3,9 @@ package com.lyfe.android.feature.profileedit
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
-import com.lyfe.android.ui.theme.Error
-import com.lyfe.android.ui.theme.Grey200
-import com.lyfe.android.ui.theme.Success
+import com.lyfe.android.core.common.ui.theme.Error
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Success
 
 enum class NicknameInvalidState(
 	val color: Color,

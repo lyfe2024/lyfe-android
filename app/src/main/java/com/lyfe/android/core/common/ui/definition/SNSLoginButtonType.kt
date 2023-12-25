@@ -4,8 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
-import com.lyfe.android.ui.theme.DEFAULT
-import com.lyfe.android.ui.theme.KakaoYelowColor
+import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.KakaoYelowColor
 
 /**
  * TC: TextColor, BC: BgColor
