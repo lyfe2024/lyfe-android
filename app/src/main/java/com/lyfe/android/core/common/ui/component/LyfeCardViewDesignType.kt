@@ -11,6 +11,8 @@ import com.lyfe.android.core.common.ui.component.RatioConstData.FEED_CARD_HEIGHT
 import com.lyfe.android.core.common.ui.component.RatioConstData.FEED_CARD_WIDTH
 import com.lyfe.android.core.common.ui.component.RatioConstData.MAIN_CARD_HEIGHT
 import com.lyfe.android.core.common.ui.component.RatioConstData.MAIN_CARD_WIDTH
+import com.lyfe.android.core.common.ui.component.RatioConstData.PROFILE_CARD_HEIGHT
+import com.lyfe.android.core.common.ui.component.RatioConstData.PROFILE_CARD_WIDTH
 import com.lyfe.android.core.common.ui.theme.pretenard
 
 private object RatioConstData {
@@ -18,6 +20,8 @@ private object RatioConstData {
 	const val MAIN_CARD_HEIGHT = 358f
 	const val FEED_CARD_WIDTH = 152f
 	const val FEED_CARD_HEIGHT = 210f
+	const val PROFILE_CARD_WIDTH = 152f
+	const val PROFILE_CARD_HEIGHT = 210f
 }
 enum class LyfeCardViewDesignType(
 	val userProfileImgSize: Dp,
@@ -63,5 +67,24 @@ enum class LyfeCardViewDesignType(
 		),
 		contentPadding = PaddingValues(all = 10.dp),
 		ratio = FEED_CARD_WIDTH / FEED_CARD_HEIGHT
+	),
+	PROFILE_SCREEN_CARD(
+		userProfileImgSize = 24.dp,
+		userNameTextStyle = TextStyle(
+			color = Color.White,
+			fontSize = 12.sp,
+			lineHeight = 18.sp,
+			fontWeight = FontWeight.W600,
+			fontFamily = pretenard
+		),
+		cardContentTextStyle = TextStyle(
+			color = Color.White,
+			fontSize = 14.sp,
+			lineHeight = 22.sp,
+			fontWeight = FontWeight.W700,
+			fontFamily = pretenard
+		),
+		contentPadding = PaddingValues(all = 10.dp),
+		ratio = PROFILE_CARD_WIDTH / PROFILE_CARD_HEIGHT
 	)
 }
