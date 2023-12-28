@@ -49,17 +49,21 @@ fun LyfeModal(
 				)
 			)
 		},
-		text = if (message.isNotEmpty()) {{
-			Text(
-				text = message,
-				style = TextStyle(
-					fontSize = 16.sp,
-					lineHeight = 24.sp,
-					fontWeight = FontWeight.W500,
-					color = Color.Black
+		text = if (message.isNotEmpty()) {
+			{
+				Text(
+					text = message,
+					style = TextStyle(
+						fontSize = 16.sp,
+						lineHeight = 24.sp,
+						fontWeight = FontWeight.W500,
+						color = Color.Black
+					)
 				)
-			)
-		}} else null,
+			}
+		} else {
+			null
+		},
 		buttons = {
 			Row(
 				modifier = Modifier.padding(

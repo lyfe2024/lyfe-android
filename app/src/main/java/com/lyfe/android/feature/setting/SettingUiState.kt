@@ -1,11 +1,10 @@
 package com.lyfe.android.feature.setting
 
-sealed interface SettingUiState{
+sealed interface SettingUiState {
 
-    object Success : SettingUiState
+	object Success : SettingUiState
 
-    object Loading : SettingUiState
+	object Loading : SettingUiState
 
-    object Failure : SettingUiState
-
+	object Failure : SettingUiState
 }

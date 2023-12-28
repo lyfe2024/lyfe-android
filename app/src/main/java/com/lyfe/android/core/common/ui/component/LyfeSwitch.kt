@@ -32,7 +32,6 @@ fun LyfeSwitch(
 	trackPadding: Dp = 2.dp,
 	onCheckedChange: (Boolean) -> Unit
 ) {
-
 	var switchON by remember { mutableStateOf(checked) }
 
 	val thumbRadius = (height / 2) - trackPadding
@@ -79,7 +78,5 @@ fun LyfeSwitch(
 @Preview
 @Composable
 private fun Preview_LyfeSwitch() {
-	LyfeSwitch {
-
-	}
+	LyfeSwitch {}
 }
