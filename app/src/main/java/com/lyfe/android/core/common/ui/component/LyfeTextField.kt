@@ -72,7 +72,7 @@ fun LyfeTextField(
 				fontWeight = FontWeight.W600,
 				lineHeight = lineHeight
 			),
-			onValueChange = onTextChange,
+			onValueChange = onTextChange
 		) { innerTextField ->
 			Row(
 				verticalAlignment = Alignment.CenterVertically

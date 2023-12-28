@@ -8,6 +8,6 @@ import javax.inject.Inject
 
 class SettingViewModel @Inject constructor() : ViewModel() {
 
-    var uiState by mutableStateOf<SettingUiState>(SettingUiState.Success)
-        private set
+	var uiState by mutableStateOf<SettingUiState>(SettingUiState.Success)
+		private set
 }
