@@ -14,9 +14,8 @@ import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
-import com.lyfe.android.feature.profileedit.ProfileEditViewModel
 import com.lyfe.android.feature.setting.SettingScreen
-import com.lyfe.android.feature.setting.UserExperienceScreen
+import com.lyfe.android.feature.userexperience.UserExperienceScreen
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,

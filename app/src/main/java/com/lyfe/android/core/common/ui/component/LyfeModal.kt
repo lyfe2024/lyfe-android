@@ -49,7 +49,7 @@ fun LyfeModal(
 				)
 			)
 		},
-		text = {
+		text = if (message.isNotEmpty()) {{
 			Text(
 				text = message,
 				style = TextStyle(
@@ -59,10 +59,15 @@ fun LyfeModal(
 					color = Color.Black
 				)
 			)
-		},
+		}} else null,
 		buttons = {
 			Row(
-				modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
+				modifier = Modifier.padding(
+					start = 16.dp,
+					end = 16.dp,
+					bottom = 16.dp,
+					top = if (message.isEmpty()) 16.dp else 0.dp
+				)
 			) {
 				LyfeButton(
 					modifier = Modifier.weight(1f),
@@ -90,7 +95,7 @@ fun LyfeModal(
 @Preview
 @Composable
 private fun Preview_LyfeModel() {
-	var showModal by remember { mutableStateOf(false) }
+	var showModal by remember { mutableStateOf(true) }
 
 	Box(
 		modifier = Modifier.background(Color.White)
@@ -110,7 +115,7 @@ private fun Preview_LyfeModel() {
 		if (showModal) {
 			LyfeModal(
 				title = "로그인",
-				message = "반응을 남기려면 로그인이 필요해요",
+				message = "반응을 남기려면 로그인이 필요해요.",
 				confirmBtnText = "로그인",
 				dismissBtnText = "취소",
 				onConfirm = { showModal = false },

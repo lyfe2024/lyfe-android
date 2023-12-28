@@ -35,12 +35,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -55,17 +59,18 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.model.TabItem
 import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.Grey500
 import com.lyfe.android.core.common.ui.theme.Grey900
 import com.lyfe.android.core.common.ui.theme.Main500
+import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.model.UserInfo
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.feed.FeedScreenCardView
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProfileScreen(
@@ -81,7 +86,7 @@ fun ProfileScreen(
 			modifier = Modifier
 				.align(Alignment.End)
 				.padding(horizontal = 20.dp),
-			text = AnnotatedString("설정"),
+			text = AnnotatedString(stringResource(id = R.string.setting_screen_title)),
 			style = TextStyle(
 				fontSize = 16.sp,
 				fontWeight = FontWeight.W600,
@@ -145,7 +150,7 @@ private fun ProfileUserInfo(
 				.clip(CircleShape),
 			model = userInfo.profileImage,
 			failure = placeholder(R.drawable.ic_profile_default),
-			contentDescription = "프로필 이미지"
+			contentDescription = "profile image"
 		)
 
 		Spacer(modifier = Modifier.width(16.dp))
@@ -165,7 +170,7 @@ private fun ProfileUserInfo(
 
 			if (userInfo.id <= 0) {
 				ClickableText(
-					text = AnnotatedString("프로필 수정"),
+					text = AnnotatedString(stringResource(id = R.string.profile_edit_title)),
 					style = TextStyle(
 						fontSize = 12.sp,
 						color = Grey300
@@ -184,30 +189,36 @@ private fun ProfileUserPostTabContent(
 	isGuest: Boolean = true,
 	navigator: LyfeNavigator
 ) {
-	val pages = listOf("신청 사진", "고민 글")
+	val pages = listOf(
+		TabItem(stringResource(R.string.profile_screen_image_feeds)),
+		TabItem(stringResource(R.string.profile_screen_text_feeds))
+	)
 	val pagerState = rememberPagerState { pages.size }
+	var tabIdx by remember { mutableIntStateOf(0) }
+
+	LaunchedEffect(pagerState.currentPage) {
+		snapshotFlow { pagerState.currentPage }
+			.collect { currentPage ->
+				tabIdx = currentPage
+				pagerState.animateScrollToPage(currentPage)
+			}
+	}
+
+	LaunchedEffect(tabIdx) {
+		snapshotFlow { tabIdx }
+			.collect { currentPage ->
+				pagerState.animateScrollToPage(currentPage)
+			}
+	}
 
 	Column(
 		modifier = Modifier.fillMaxSize()
 	) {
-		TabRow(
-			selectedTabIndex = pagerState.currentPage,
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 20.dp),
-			containerColor = Color.Transparent,
-			indicator = {
-				TabRowDefaults.Indicator(
-					modifier = Modifier.tabIndicatorOffset(it[pagerState.currentPage]),
-					color = Main500
-				)
-			},
-			divider = { }
-		) {
-			pages.forEachIndexed { index, title ->
-				ProfileTab(pagerState = pagerState, index = index, title = title)
-			}
-		}
+		ProfileTab(
+			pages = pages,
+			pagerState = pagerState,
+			onTabClick = { tabIdx = it }
+		)
 
 		if (isGuest) {
 			// 게스트는 로그인 유도창 띄우기
@@ -226,27 +237,37 @@ private fun ProfileUserPostTabContent(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ProfileTab(
+	pages: List<TabItem>,
 	pagerState: PagerState,
-	index: Int,
-	title: String,
+	onTabClick: (Int) -> Unit
 ) {
-	val coroutineScope = rememberCoroutineScope()
-
-	Tab(
-		text = {
-			Text(
-				text = title,
-				fontSize = 16.sp,
-				color = if (pagerState.currentPage == index) Main500 else Grey200
+	TabRow(
+		selectedTabIndex = pagerState.currentPage,
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = 20.dp),
+		containerColor = Color.Transparent,
+		indicator = {
+			TabRowDefaults.Indicator(
+				modifier = Modifier.tabIndicatorOffset(it[pagerState.currentPage]),
+				color = Main500
 			)
 		},
-		selected = pagerState.currentPage == index,
-		onClick = {
-			coroutineScope.launch {
-				pagerState.scrollToPage(index)
-			}
+		divider = {}
+	) {
+		pages.forEachIndexed { index, tabItem ->
+			Tab(
+				text = {
+					Text(
+						text = tabItem.text,
+						style = getTabTextStyle(pagerState.currentPage, index),
+					)
+				},
+				selected = isCurrentTab(pagerState.currentPage, index),
+				onClick = { onTabClick(index) }
+			)
 		}
-	)
+	}
 }
 
 @Composable
@@ -261,7 +282,7 @@ private fun ProfileGuestLoginView(
 		Spacer(modifier = Modifier.fillMaxHeight(0.2f))
 
 		Text(
-			text = "로그인 하시면 신청한 사진,\n작성한 고민글을 모아 볼 수 있어요",
+			text = stringResource(R.string.profile_screen_guest_login_title),
 			fontSize = 18.sp,
 			fontWeight = FontWeight.W700,
 			lineHeight = 28.sp,
@@ -274,7 +295,7 @@ private fun ProfileGuestLoginView(
 		LyfeButton(
 			modifier = Modifier.align(CenterHorizontally),
 			isClearIconShow = false,
-			text = "로그인 하러 가기",
+			text = stringResource(R.string.profile_screen_guest_login_btn_text),
 			buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
 			verticalPadding = 12.dp,
 			horizontalPadding = 24.dp
@@ -288,7 +309,7 @@ private fun ProfileGuestLoginView(
 
 		ClickableText(
 			modifier = Modifier.align(CenterHorizontally),
-			text = AnnotatedString("아직 회원이 아니신가요?"),
+			text = AnnotatedString(stringResource(R.string.profile_screen_guest_login_message)),
 			style = TextStyle(
 				fontSize = 14.sp,
 				fontWeight = FontWeight.W400,
@@ -397,3 +418,26 @@ private fun ProfileUserTextFeedContent(
 		}
 	}
 }
+
+private fun getTabTextStyle(
+	currentPage: Int,
+	tabIdx: Int
+) = if (isCurrentTab(currentPage, tabIdx)) {
+	TextStyle(
+		color = Main500,
+		fontSize = 18.sp,
+		fontWeight = FontWeight.W700,
+		fontFamily = pretenard,
+		lineHeight = 28.sp
+	)
+} else {
+	TextStyle(
+		color = Grey200,
+		fontSize = 18.sp,
+		fontWeight = FontWeight.W500,
+		fontFamily = pretenard,
+		lineHeight = 28.sp
+	)
+}
+
+private fun isCurrentTab(currentPage: Int, tabIdx: Int) = currentPage == tabIdx

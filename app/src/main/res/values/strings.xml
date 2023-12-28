@@ -4,6 +4,8 @@
 	<!-- Common -->
 	<string name="complete">완료</string>
 	<string name="next">다음</string>
+	<string name="confirm">예</string>
+	<string name="nope">아니오</string>
 
     <string name="btm_nav_home">홈</string>
     <string name="btm_nav_view_all">피드</string>
@@ -15,6 +17,8 @@
 	<string name="photo_comments">사진 댓글 알림</string>
 	<string name="post_reaction">글 반응 알림</string>
 	<string name="post_comments">글 댓글 알림</string>
+
+	<string name="delete_dialog_title">정말 삭제하시겠어요?</string>
 
 	<!-- Feed -->
 	<string name="feed_screen_title">피드</string>
@@ -43,7 +47,30 @@
 	<string name="nickname_special_letter_correct_text">특수문자 사용 X</string>
 	<string name="nickname_length_incorrect_text">최대 10글자로 설정해주세요</string>
 	<string name="nickname_length_correct_text">최대 10글자</string>
+
+	<!-- ProfileEditScreen -->
 	<string name="profile_edit_title">프로필 수정</string>
 	<string name="edit_nickname_complete">닉네임 변경이 완료되었습니다!</string>
 	<string name="available_nickname">사용 가능한 닉네임입니다.</string>
+
+	<!-- UserExperienceScreen -->
+    <string name="user_experience_title">사용경험</string>
+	<string name="user_experience_sub_title">Lyfe에서의 경험을 편하게 말씀해주세요.\n긍정/부정 적인 피드백 무엇이든 괜찮아요.</string>
+	<string name="send_feedback">피드백 보내기</string>
+	<string name="enter_feedback">피드백 내용을 입력해주세요</string>
+
+	<!-- SettingScreen -->
+	<string name="setting_screen_title">설정</string>
+	<string name="setting_screen_logout">로그아웃</string>
+	<string name="setting_screen_notification">알림설정</string>
+	<string name="setting_screen_scrap">스크랩</string>
+	<string name="setting_screen_privacy_policy">개인정보 수집 및 이용동의</string>
+	<string name="setting_screen_delete_account">회원탈퇴</string>
+
+	<!-- ProfileScreen -->
+	<string name="profile_screen_guest_login_title">로그인 하시면 신청한 사진,\n작성한 고민글을 모아 볼 수 있어요</string>
+	<string name="profile_screen_guest_login_btn_text">로그인 하러 가기</string>
+	<string name="profile_screen_guest_login_message">아직 회원이 아니신가요?</string>
+	<string name="profile_screen_image_feeds">신청 사진</string>
+	<string name="profile_screen_text_feeds">고민 글</string>
 </resources>
