@@ -2,6 +2,7 @@ package com.lyfe.android.feature.setting
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeModal
 import com.lyfe.android.core.common.ui.component.LyfeSwitch
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.theme.Default
@@ -45,7 +48,7 @@ fun SettingScreen(
     ) {
         Text(
             modifier = Modifier.padding(start = 20.dp),
-            text = "설정",
+            text = stringResource(R.string.setting_screen_title),
             style = TextStyle(
                 fontSize = 24.sp,
                 lineHeight = 36.sp,
@@ -57,7 +60,7 @@ fun SettingScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         val list = listOf(
-            Setting.ALARM,
+            Setting.NOTIFICATION,
             Setting.SCRAP,
             Setting.USER_EXPERIENCE,
             Setting.PRIVACY_POLICY,
@@ -73,45 +76,64 @@ fun SettingContent(
     navigator: LyfeNavigator,
     list: List<Setting>
 ) {
-    Column {
-        list.forEach { setting ->
-            when(setting) {
-                Setting.ALARM -> { SettingSwitchRow(setting = setting) }
-                Setting.SCRAP -> {
-                    SettingButtonRow(setting = setting) {
+    var showModal by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column {
+            list.forEach { setting ->
+                when(setting) {
+                    Setting.NOTIFICATION -> { SettingSwitchRow(stringResource(R.string.setting_screen_notification)) }
+                    Setting.SCRAP -> {
+                        SettingButtonRow(stringResource(R.string.setting_screen_scrap)) {
+                            // TODO
+                        }
+                    }
+                    Setting.USER_EXPERIENCE -> SettingButtonRow(stringResource(R.string.user_experience_title)) {
+                        navigator.navigate(LyfeScreens.UserExperience.route)
+                    }
+                    Setting.PRIVACY_POLICY -> SettingButtonRow(stringResource(R.string.setting_screen_privacy_policy)) {
                         // TODO
                     }
+                    Setting.DELETE_ACCOUNT -> SettingButtonRow(stringResource(R.string.setting_screen_delete_account)) {
+                        // 회원탈퇴 창 생성
+                        showModal = true
+                    }
                 }
-                Setting.USER_EXPERIENCE -> SettingButtonRow(setting = setting) {
-                    navigator.navigate(LyfeScreens.UserExperience.route)
-                }
-                Setting.PRIVACY_POLICY -> SettingButtonRow(setting = setting) {
-                    // TODO
-                }
-                Setting.DELETE_ACCOUNT -> SettingButtonRow(setting = setting) {
-                    // TODO
-                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // 로그아웃 버튼
+            LyfeButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp),
+                verticalPadding = 12.dp,
+                buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
+                text = stringResource(R.string.setting_screen_logout),
+                isClearIconShow = false
+            ) {
+                // TODO 로그아웃
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        // 로그아웃 버튼
-        LyfeButton(
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 20.dp),
-            verticalPadding = 12.dp,
-            buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
-            text = "로그아웃",
-            isClearIconShow = false
-        ) {
-            // TODO 로그아웃
+        if (showModal) {
+            LyfeModal(
+                title = stringResource(R.string.delete_dialog_title),
+                message = "",
+                confirmBtnText = stringResource(R.string.confirm),
+                dismissBtnText = stringResource(R.string.nope),
+                onConfirm = { showModal = false },
+                onDismiss = { showModal = false }
+            )
         }
     }
 }
 
 @Composable
-fun SettingSwitchRow(setting: Setting) {
+fun SettingSwitchRow(title: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -119,7 +141,7 @@ fun SettingSwitchRow(setting: Setting) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = setting.title,
+            text = title,
             fontSize = 16.sp,
             color = Default,
             fontWeight = FontWeight.W500
@@ -137,7 +159,7 @@ fun SettingSwitchRow(setting: Setting) {
 }
 
 @Composable
-fun SettingButtonRow(setting: Setting, onClick: () -> Unit) {
+fun SettingButtonRow(title: String, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,7 +168,7 @@ fun SettingButtonRow(setting: Setting, onClick: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = setting.title,
+            text = title,
             fontSize = 16.sp,
             color = Default,
             fontWeight = FontWeight.W500
@@ -156,7 +178,7 @@ fun SettingButtonRow(setting: Setting, onClick: () -> Unit) {
 
         Image(
             painter = painterResource(id = R.drawable.ic_arrow_next),
-            contentDescription = "다음으로 넘어가는 버튼 이미지"
+            contentDescription = "ic_next"
         )
     }
 }
