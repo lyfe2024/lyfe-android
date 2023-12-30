@@ -12,6 +12,9 @@ sealed class LyfeScreens(
 
 	object Feed : LyfeScreens("feed")
 
+	// 나중에 id값으로 변경 예정
+	object FeedDetail : LyfeScreens("feed/detail")
+
 	object Post : LyfeScreens("post")
 
 	object Alarm : LyfeScreens("Alarm")
