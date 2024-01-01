@@ -46,4 +46,7 @@
 	<string name="profile_edit_title">프로필 수정</string>
 	<string name="edit_nickname_complete">닉네임 변경이 완료되었습니다!</string>
 	<string name="available_nickname">사용 가능한 닉네임입니다.</string>
+
+	<!-- FeedDetailScreen -->
+	<string name="comment_reply_text">답글 달기</string>
 </resources>
