@@ -138,11 +138,15 @@ fun FeedScreen(
 			when (page) {
 				0 -> LatestFeedScreen(
 					onScroll = onScroll
-				)
+				) {
+					navigator.navigate(LyfeScreens.FeedDetail.name)
+				}
 
 				1 -> PopularFeedScreen(
 					onScroll = onScroll
-				)
+				) {
+					navigator.navigate(LyfeScreens.FeedDetail.name)
+				}
 			}
 		}
 	}
