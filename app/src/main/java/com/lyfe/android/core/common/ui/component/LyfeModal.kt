@@ -98,7 +98,7 @@ fun LyfeModal(
 
 @Preview
 @Composable
-private fun Preview_LyfeModel() {
+private fun Preview_LyfeModal() {
 	var showModal by remember { mutableStateOf(true) }
 
 	Box(
