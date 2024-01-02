@@ -37,7 +37,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lyfe.android.core.common.ui.theme.Default
+import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.feature.BottomNavItem
@@ -67,7 +67,7 @@ fun NavigationTab(
 
 	Box(
 		modifier = modifier
-			.background(color = Default, shape = RoundedCornerShape(20.dp))
+			.background(color = DEFAULT, shape = RoundedCornerShape(20.dp))
 			.height(56.dp)
 			.padding(vertical = 8.dp, horizontal = 20.dp)
 			.onGloballyPositioned {

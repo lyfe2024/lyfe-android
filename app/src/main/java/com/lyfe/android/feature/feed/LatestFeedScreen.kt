@@ -22,7 +22,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun LatestFeedScreen(
 	modifier: Modifier = Modifier,
 	viewModel: FeedViewModel = viewModel(),
-	onScroll: (Boolean) -> Unit = {}
+	onScroll: (Boolean) -> Unit = {},
+	onFeedClick: () -> Unit = {}
 ) {
 	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
@@ -50,7 +51,9 @@ fun LatestFeedScreen(
 		) {
 			items(feedList) { feed ->
 				key(feed.feedId) {
-					FeedScreenCardView(feed = feed)
+					FeedScreenCardView(feed = feed) {
+						onFeedClick()
+					}
 				}
 			}
 		}

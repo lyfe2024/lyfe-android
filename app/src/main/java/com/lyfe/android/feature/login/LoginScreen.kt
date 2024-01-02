@@ -38,11 +38,11 @@ import com.google.android.gms.tasks.Task
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.SNSLoginButton
 import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
-import com.lyfe.android.core.common.ui.theme.Default
-import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.Main500
 
 @Composable
 fun LoginScreen(
@@ -151,7 +151,7 @@ fun ServicePolicyText() {
 		modifier = Modifier.padding(bottom = 32.dp),
 		text = annotatedString,
 		style = TextStyle(
-			color = Default,
+			color = DEFAULT,
 			textAlign = TextAlign.Center
 		),
 		onClick = { offset ->

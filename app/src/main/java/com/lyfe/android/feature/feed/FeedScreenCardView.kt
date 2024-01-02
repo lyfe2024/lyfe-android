@@ -25,15 +25,20 @@ import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.TempColor
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 
 @Composable
 fun FeedScreenCardView(
 	modifier: Modifier = Modifier,
-	feed: Feed
+	feed: Feed,
+	onClick: () -> Unit = {}
 ) {
 	Column(
 		modifier = modifier
+			.clickableSingle {
+				onClick()
+			}
 	) {
 		LyfeFeedCardView(
 			modifier = Modifier.wrapContentSize(),

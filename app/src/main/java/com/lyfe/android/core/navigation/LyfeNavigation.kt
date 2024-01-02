@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.album.SelectAlbumScreen
+import com.lyfe.android.feature.detail.FeedDetailScreen
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
@@ -34,6 +35,13 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 			onScroll = onScroll
 		)
 		selectedScreen(LyfeScreens.Feed.name)
+	}
+
+	composable(route = LyfeScreens.FeedDetail.name) {
+		FeedDetailScreen(
+			navigator = lyfeNavigator
+		)
+		selectedScreen(LyfeScreens.FeedDetail.name)
 	}
 
 	composable(route = LyfeScreens.Post.name) {

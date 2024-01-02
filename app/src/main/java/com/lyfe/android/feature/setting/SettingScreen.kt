@@ -30,7 +30,7 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeModal
 import com.lyfe.android.core.common.ui.component.LyfeSwitch
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
-import com.lyfe.android.core.common.ui.theme.Default
+import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
@@ -141,7 +141,7 @@ fun SettingSwitchRow(title: String) {
 		Text(
 			text = title,
 			fontSize = 16.sp,
-			color = Default,
+			color = DEFAULT,
 			fontWeight = FontWeight.W500
 		)
 
@@ -168,7 +168,7 @@ fun SettingButtonRow(title: String, onClick: () -> Unit) {
 		Text(
 			text = title,
 			fontSize = 16.sp,
-			color = Default,
+			color = DEFAULT,
 			fontWeight = FontWeight.W500
 		)
 
