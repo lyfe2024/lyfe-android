@@ -53,6 +53,9 @@
 	<string name="edit_nickname_complete">닉네임 변경이 완료되었습니다!</string>
 	<string name="available_nickname">사용 가능한 닉네임입니다.</string>
 
+	<!-- FeedDetailScreen -->
+	<string name="comment_reply_text">답글 달기</string>
+
 	<!-- UserExperienceScreen -->
     <string name="user_experience_title">사용경험</string>
 	<string name="user_experience_sub_title">Lyfe에서의 경험을 편하게 말씀해주세요.\n긍정/부정 적인 피드백 무엇이든 괜찮아요.</string>

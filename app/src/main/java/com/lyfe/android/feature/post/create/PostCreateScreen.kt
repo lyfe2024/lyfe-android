@@ -240,7 +240,7 @@ private fun PostTopBar(
 		Image(
 			modifier = Modifier
 				.noRippleClickable { onClickBackBtn() },
-			painter = painterResource(id = R.drawable.ic_arror_back_black),
+			painter = painterResource(id = R.drawable.ic_arrow_back),
 			contentDescription = "post_back_btn"
 		)
 	}

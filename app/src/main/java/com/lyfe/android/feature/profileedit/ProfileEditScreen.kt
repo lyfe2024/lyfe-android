@@ -48,8 +48,8 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
-import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.core.common.ui.theme.Grey200
 
 @Composable
 fun ProfileEditScreen(

@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
-import com.lyfe.android.core.common.ui.theme.Default
+import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.KakaoYelowColor
 
 /**
@@ -17,7 +17,7 @@ enum class SNSLoginButtonType(
 	@DrawableRes val iconRes: Int
 ) {
 	Kakao(
-		textColor = Default,
+		textColor = DEFAULT,
 		bgColor = KakaoYelowColor,
 		textRes = R.string.kakao_button_text,
 		iconRes = R.drawable.ic_kakao_talk
@@ -29,7 +29,7 @@ enum class SNSLoginButtonType(
 		iconRes = R.drawable.ic_apple
 	),
 	Google(
-		textColor = Default,
+		textColor = DEFAULT,
 		bgColor = Color.White,
 		textRes = R.string.google_button_text,
 		iconRes = R.drawable.ic_google
