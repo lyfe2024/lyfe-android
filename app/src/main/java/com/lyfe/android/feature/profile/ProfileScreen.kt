@@ -217,6 +217,7 @@ private fun ProfileUserPostTabContent(
 
 		ProfileUserPostPager(
 			viewModel = viewModel,
+			navigator = navigator,
 			isGuest = isGuest,
 			pagerState = pagerState
 		)
@@ -318,6 +319,7 @@ private fun ProfileGuestLoginView(
 @Composable
 private fun ProfileUserPostPager(
 	viewModel: ProfileViewModel,
+	navigator: LyfeNavigator,
 	isGuest: Boolean,
 	pagerState: PagerState
 ) {
@@ -332,13 +334,17 @@ private fun ProfileUserPostPager(
 				// 신청 사진 리스트
 				ProfileImageFeedScreen(
 					viewModel = viewModel
-				)
+				) {
+					navigator.navigate(LyfeScreens.FeedDetail.route)
+				}
 			}
 			1 -> {
 				// 고민 글
 				ProfileTextFeedScreen(
 					viewModel = viewModel
-				)
+				) {
+					navigator.navigate(LyfeScreens.FeedDetail.route)
+				}
 			}
 		}
 	}

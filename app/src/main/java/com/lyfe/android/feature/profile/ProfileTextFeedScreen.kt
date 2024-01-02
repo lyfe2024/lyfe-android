@@ -19,13 +19,14 @@ import com.lyfe.android.core.common.ui.theme.Grey100
 
 @Composable
 fun ProfileTextFeedScreen(
-	viewModel: ProfileViewModel
+	viewModel: ProfileViewModel,
+	onFeedClick: () -> Unit
 ) {
-	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
+	val feeds by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyListState = rememberLazyListState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchTextFeedList()
+		viewModel.fetchFeedList()
 	}
 
 	LazyColumn(
@@ -33,11 +34,12 @@ fun ProfileTextFeedScreen(
 		contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
 		verticalArrangement = Arrangement.spacedBy(12.dp)
 	) {
-		items(textFeeds) { textFeed ->
+		items(feeds) { textFeed ->
 			key(textFeed.feedId) {
 				ProfileScreenTextFeedView(
 					modifier = Modifier,
-					feed = textFeed
+					feed = textFeed,
+					onClick = onFeedClick
 				)
 
 				Spacer(modifier = Modifier.height(12.dp))
