@@ -27,6 +27,7 @@ import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.TempColor
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 
 @Composable
@@ -54,10 +55,14 @@ fun ProfileScreenImageFeedView(
 @Composable
 fun ProfileScreenTextFeedView(
 	modifier: Modifier,
-	feed: TextFeed
+	feed: Feed,
+	onClick: () -> Unit = {}
 ) {
 	Column(
 		modifier = modifier
+			.clickableSingle {
+				onClick()
+			}
 	) {
 		ProfileTextFeed(
 			modifier = Modifier.wrapContentSize(),
@@ -77,13 +82,13 @@ fun ProfileScreenTextFeedView(
 @Composable
 fun ProfileTextFeed(
 	modifier: Modifier = Modifier,
-	feed: TextFeed
+	feed: Feed
 ) {
 	Column(
 		modifier = modifier,
 		horizontalAlignment = Alignment.Start
 	) {
-		androidx.compose.material3.Text(
+		Text(
 			text = feed.date,
 			fontSize = 10.sp,
 			color = Grey300,
@@ -93,7 +98,7 @@ fun ProfileTextFeed(
 
 		Spacer(modifier = Modifier.height(4.dp))
 
-		androidx.compose.material3.Text(
+		Text(
 			text = feed.title,
 			fontSize = 16.sp,
 			color = Color.Black,
@@ -103,7 +108,7 @@ fun ProfileTextFeed(
 
 		Spacer(modifier = Modifier.height(4.dp))
 
-		androidx.compose.material3.Text(
+		Text(
 			text = feed.content,
 			fontSize = 14.sp,
 			color = Color.Black,
@@ -183,17 +188,6 @@ private fun Preview_ProfileFeedView() {
 		commentCount = 1,
 		isLike = false
 	)
-	val textFeed = TextFeed(
-		feedId = 1L,
-		title = "타이틀1",
-		content = "텍스트 피드 컨텐츠 내용 텍스트 피드 컨텐츠 내용 텍스트 피드 컨텐츠 내용 텍스트 피드 컨텐츠 내용 ",
-		date = "2021-01-01",
-		userId = 2L,
-		userName = "홍길동",
-		whiskyCount = 23,
-		commentCount = 50,
-		isLike = false
-	)
 
 	ProfileScreenImageFeedView(
 		modifier = Modifier.fillMaxSize(),
@@ -202,6 +196,6 @@ private fun Preview_ProfileFeedView() {
 
 	ProfileScreenTextFeedView(
 		modifier = Modifier.fillMaxWidth(),
-		feed = textFeed
+		feed = feed
 	)
 }

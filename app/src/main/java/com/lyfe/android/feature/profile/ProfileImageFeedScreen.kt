@@ -17,13 +17,14 @@ import com.lyfe.android.feature.feed.FeedScreenCardView
 
 @Composable
 fun ProfileImageFeedScreen(
-	viewModel: ProfileViewModel
+	viewModel: ProfileViewModel,
+	onFeedClick: () -> Unit
 ) {
-	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+	val feeds by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchImageFeedList()
+		viewModel.fetchFeedList()
 	}
 
 	LazyVerticalGrid(
@@ -33,11 +34,12 @@ fun ProfileImageFeedScreen(
 		horizontalArrangement = Arrangement.spacedBy(16.dp),
 		verticalArrangement = Arrangement.spacedBy(12.dp)
 	) {
-		items(imageFeeds) { imageFeed ->
+		items(feeds) { imageFeed ->
 			key(imageFeed.feedId) {
 				FeedScreenCardView(
 					modifier = Modifier,
-					feed = imageFeed
+					feed = imageFeed,
+					onClick = onFeedClick
 				)
 			}
 		}

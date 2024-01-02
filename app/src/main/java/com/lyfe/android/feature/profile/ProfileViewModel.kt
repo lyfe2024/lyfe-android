@@ -21,11 +21,8 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 	private val _userInfo = mutableStateOf(UserInfo(0, "Guest", ""))
 	val userInfo get() = _userInfo.value
 
-	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
-	val imageFeedList get() = _imageFeedList.asStateFlow()
-
-	private val _textFeedList = MutableStateFlow<List<TextFeed>>(emptyList())
-	val textFeedList get() = _textFeedList.asStateFlow()
+	private val _feedList = MutableStateFlow<List<Feed>>(emptyList())
+	val feedList get() = _feedList.asStateFlow()
 
 	init {
 		viewModelScope.launch {
@@ -38,19 +35,15 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		_userInfo.value = UserInfo(1, "설정된닉네임123", "https://picsum.photos/100")
 	}
 
-	fun fetchImageFeedList() {
-		_imageFeedList.compareAndSet(imageFeedList.value, imageFeedList.value + fakeImageFeedList)
+	fun fetchFeedList() {
+		_feedList.compareAndSet(feedList.value, feedList.value + fakeFeedList)
 	}
 
-	fun fetchTextFeedList() {
-		_textFeedList.compareAndSet(textFeedList.value, fakeTextFeedList)
-	}
-
-	private val fakeImageFeedList = listOf(
+	private val fakeFeedList = listOf(
 		Feed(
 			feedId = 1L,
-			title = "타이틀1\n타이틀2",
-			content = "컨텐츠1",
+			title = "타이틀1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 2L,
@@ -63,7 +56,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 3L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 4L,
@@ -76,7 +69,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 5L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 6L,
@@ -89,7 +82,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 7L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 8L,
@@ -102,7 +95,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 9L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 10L,
@@ -115,7 +108,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 11L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 12L,
@@ -128,7 +121,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 13L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 14L,
@@ -141,7 +134,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 15L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 16L,
@@ -154,7 +147,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 17L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 18L,
@@ -167,7 +160,7 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 		Feed(
 			feedId = 19L,
 			title = "타이틀1",
-			content = "컨텐츠1",
+			content = "원장은 국회의 동의를 얻어 대통령이 임명하고, 그 임기는 4년으로 하며, 1차에 한하여 중임할 수 있다. 대한민국의 주권은 국민에게 있고, 모든 권력은 국민으로부터 나온다.",
 			feedImageUrl = "https://picsum.photos/700/700",
 			date = "2021-01-01",
 			userId = 20L,
@@ -175,119 +168,6 @@ class ProfileViewModel @Inject constructor() : ViewModel() {
 			userProfileImgUrl = "https://picsum.photos/700/700",
 			whiskyCount = 1,
 			commentCount = 1,
-			isLike = false
-		)
-	)
-
-	private val fakeTextFeedList = listOf(
-		TextFeed(
-			feedId = 1L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 2L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 3L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 4L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 5L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 6L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 7L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 8L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 9L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
-			isLike = false
-		),
-		TextFeed(
-			feedId = 10L,
-			title = "Feed Title",
-			content = "여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다. 여기는 이제 고민글의 내용이 표시되는 부분입니다.",
-			date = "2021-01-01",
-			userId = 1L,
-			userName = "홍길동",
-			whiskyCount = 32,
-			commentCount = 50,
 			isLike = false
 		)
 	)
