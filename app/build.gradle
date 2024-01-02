@@ -38,7 +38,6 @@ android {
 			buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", properties['google-web-client-id']
 			buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties["kakao_native_app_key"]
 			manifestPlaceholders = [KAKAO_REDIRECTION_SCHEME: properties["kakao_redirection_scheme"]]
-
 		}
 	}
 
@@ -78,8 +77,6 @@ dependencies {
 
     implementation(libs.bundles.android.library)
     implementation(libs.bundles.compose.library)
-
-	implementation(libs.bundles.accompanist)
 
     implementation(libs.bundles.hilt.android)
 	kapt(libs.bundles.hilt.compiler)
