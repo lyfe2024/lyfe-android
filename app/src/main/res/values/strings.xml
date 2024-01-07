@@ -39,7 +39,7 @@
 
 	<!-- NicknameScreen -->
 	<string name="nickname_screen_title">닉네임 설정</string>
-	<string name="set_user_nickname">원하는 닉네임을 설정해주세요.</string>
+	<string name="nickname_screen_sub_title">원하는 닉네임을 설정해주세요.</string>
 	<string name="nickname_comb_incorrect_text">한글/영문+숫자 조합으로만 설정가능해요</string>
 	<string name="nickname_comb_empty_text">한글/영문+숫자 조합으로 설정해주세요</string>
 	<string name="nickname_comb_correct_text">한글/영문+숫자 조합</string>
@@ -76,4 +76,12 @@
 	<string name="profile_screen_guest_login_message">아직 회원이 아니신가요?</string>
 	<string name="profile_screen_image_feeds">신청 사진</string>
 	<string name="profile_screen_text_feeds">고민 글</string>
+
+	<!-- PolicyScreen -->
+	<string name="policy_screen_title">회원가입 약관 동의</string>
+	<string name="policy_screen_sub_title">마지막 단계에요!</string>
+	<string name="policy_screen_agree_all">아래의 약관에 모두 동의합니다.</string>
+	<string name="policy_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
+	<string name="policy_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
+
 </resources>
