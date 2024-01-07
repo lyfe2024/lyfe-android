@@ -74,7 +74,7 @@ fun UserExperienceScreen() {
 	}
 }
 
-private const val MAX = 300
+private const val MAX_LENGTH = 300
 
 @Composable
 fun UserExperienceContent() {
@@ -103,7 +103,7 @@ fun UserExperienceContent() {
 					append("${text.length}")
 				}
 				withStyle(style = SpanStyle(color = Grey400)) {
-					append("/$MAX")
+					append("/$MAX_LENGTH")
 				}
 			},
 			fontWeight = FontWeight.W400,
