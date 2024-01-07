@@ -30,6 +30,10 @@ sealed class LyfeScreens(
 	object Login : LyfeScreens("login")
 
 	object Nickname : LyfeScreens("nickname")
+
+	object Setting : LyfeScreens("setting")
+
+	object UserExperience : LyfeScreens("userExperience")
 }
 
 private fun String.appendArguments(navArguments: List<NamedNavArgument>): String {

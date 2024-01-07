@@ -66,7 +66,7 @@ fun ProfileEditScreen(
 			style = TextStyle(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
-				fontWeight = FontWeight(weight = 700),
+				fontWeight = FontWeight.W700,
 				color = Color.Black
 			)
 		)

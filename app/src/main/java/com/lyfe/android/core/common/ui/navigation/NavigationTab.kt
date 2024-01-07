@@ -37,10 +37,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.lyfe.android.core.common.ui.util.clickableSingle
-import com.lyfe.android.feature.BottomNavItem
 import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.Main500
+import com.lyfe.android.core.common.ui.util.clickableSingle
+import com.lyfe.android.feature.BottomNavItem
 
 @Composable
 fun NavigationTab(
