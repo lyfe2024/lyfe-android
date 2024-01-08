@@ -98,6 +98,4 @@ dependencies {
 	implementation(libs.bundles.firebase)
 
 	implementation(libs.bundles.play.services)
-
-    implementation(libs.bundles.accompanist)
 }
