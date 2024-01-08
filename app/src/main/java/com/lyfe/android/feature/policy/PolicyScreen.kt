@@ -1,10 +1,8 @@
 package com.lyfe.android.feature.policy
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -34,10 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.web.AccompanistWebChromeClient
-import com.google.accompanist.web.AccompanistWebViewClient
-import com.google.accompanist.web.WebView
-import com.google.accompanist.web.rememberWebViewState
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
@@ -45,58 +40,46 @@ import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey900
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.navigation.LyfeScreens
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun PolicyScreen() {
-	Box(modifier = Modifier.fillMaxSize()) {
-		var showWebView by remember { mutableStateOf(false) }
-		var url by remember { mutableStateOf("https://www.naver.com") }
-
-		Column(
-			modifier = Modifier
-				.padding(top = 56.dp, bottom = 24.dp, start = 20.dp, end = 20.dp)
-				.fillMaxSize()
-		) {
-			Text(
-				text = stringResource(R.string.policy_screen_title),
-				style = TextStyle(
-					fontSize = 24.sp,
-					lineHeight = 36.sp,
-					fontWeight = FontWeight(weight = 700),
-					color = Color.Black
-				)
+fun PolicyScreen(
+	navigator: LyfeNavigator
+) {
+	Column(
+		modifier = Modifier
+			.padding(top = 56.dp, bottom = 24.dp, start = 20.dp, end = 20.dp)
+			.fillMaxSize()
+	) {
+		Text(
+			text = stringResource(R.string.policy_screen_title),
+			style = TextStyle(
+				fontSize = 24.sp,
+				lineHeight = 36.sp,
+				fontWeight = FontWeight(weight = 700),
+				color = Color.Black
 			)
+		)
 
-			Spacer(modifier = Modifier.height(8.dp))
+		Spacer(modifier = Modifier.height(8.dp))
 
-			Text(
-				text = stringResource(R.string.policy_screen_sub_title),
-				style = TextStyle(
-					fontSize = 14.sp,
-					fontWeight = FontWeight(weight = 600),
-					color = Color.Black
-				)
+		Text(
+			text = stringResource(R.string.policy_screen_sub_title),
+			style = TextStyle(
+				fontSize = 14.sp,
+				fontWeight = FontWeight(weight = 600),
+				color = Color.Black
 			)
+		)
 
-			PolicyAgreeContent {
-				showWebView = true
-				url = it
-			}
-		}
-
-		if (showWebView) {
-			PolicyWebView(url)
-		}
-
-		BackHandler(enabled = showWebView) {
-			showWebView = false
-		}
+		PolicyAgreeContent(navigator)
 	}
 }
 
 @Composable
 private fun PolicyAgreeContent(
-	onLinkClicked: (String) -> Unit
+	navigator: LyfeNavigator
 ) {
 	var allChecked by remember { mutableStateOf(false) }
 	var firstChecked by remember { mutableStateOf(false) }
@@ -113,28 +96,30 @@ private fun PolicyAgreeContent(
 		)
 
 		PolicyAgreeChildRow(
-			text = stringResource(R.string.policy_screen_agree_to_service_rule),
-			checked = secondChecked,
+			text = stringResource(id = R.string.policy_screen_agree_to_service_rule),
+			link = "https://www.naver.com",
+			checked = firstChecked,
 			onCheckedChange = {
-				secondChecked = !secondChecked
+				firstChecked = !firstChecked
 				allChecked = firstChecked && secondChecked
-			},
-			onLinkClicked = { onLinkClicked("https://www.naver.com") }
+			}
 		)
 
 		PolicyAgreeChildRow(
 			text = stringResource(R.string.policy_screen_agree_to_privacy_rule),
+			link = "https://www.google.com",
 			checked = secondChecked,
 			onCheckedChange = {
 				secondChecked = !secondChecked
 				allChecked = firstChecked && secondChecked
-			},
-			onLinkClicked = { onLinkClicked("https://www.google.com") }
+			}
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
 
-		PolicyCompleteButton(allChecked)
+		PolicyCompleteButton(allChecked) {
+			navigator.navigate(LyfeScreens.LoginComplete.name)
+		}
 	}
 }
 
@@ -155,7 +140,7 @@ private fun PolicyAgreeHeaderRow(
 			.padding(start = 10.dp, end = 12.dp, top = 7.dp, bottom = 7.dp),
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		LyfeCheckbox(
+		PolicyCheckbox(
 			modifier = Modifier
 				.size(32.dp)
 				.padding(6.dp),
@@ -180,17 +165,19 @@ private fun PolicyAgreeHeaderRow(
 @Composable
 private fun PolicyAgreeChildRow(
 	text: String,
+	link: String,
 	checked: Boolean,
-	onCheckedChange: (Boolean) -> Unit,
-	onLinkClicked: (Int) -> Unit
+	onCheckedChange: (Boolean) -> Unit
 ) {
+	val uriHandler = LocalUriHandler.current
+
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(start = 10.dp, end = 12.dp, top = 7.dp, bottom = 7.dp),
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		LyfeCheckbox(
+		PolicyCheckbox(
 			modifier = Modifier
 				.size(32.dp)
 				.padding(6.dp),
@@ -209,38 +196,15 @@ private fun PolicyAgreeChildRow(
 				fontFamily = pretenard,
 				textDecoration = TextDecoration.Underline
 			),
-			onClick = onLinkClicked
+			onClick = { uriHandler.openUri(link) }
 		)
 	}
 }
 
 @Composable
-private fun PolicyWebView(
-	url: String
-) {
-	val webViewState = rememberWebViewState(url)
-	val webViewClient = AccompanistWebViewClient()
-	val webChromeClient = AccompanistWebChromeClient()
-
-	WebView(
-		state = webViewState,
-		client = webViewClient,
-		chromeClient = webChromeClient,
-		onCreated = { webView ->
-			with(webView) {
-				settings.run {
-					javaScriptEnabled = false
-					domStorageEnabled = true
-					javaScriptCanOpenWindowsAutomatically = false
-				}
-			}
-		}
-	)
-}
-
-@Composable
 private fun PolicyCompleteButton(
-	allChecked: Boolean
+	allChecked: Boolean,
+	onClick: () -> Unit
 ) {
 	LyfeButton(
 		modifier = Modifier
@@ -254,14 +218,12 @@ private fun PolicyCompleteButton(
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
 		text = stringResource(id = R.string.complete),
-		onClick = {
-			// 회원가입 절차 시작 (API 연동)
-		}
+		onClick = onClick
 	)
 }
 
 @Composable
-private fun LyfeCheckbox(
+private fun PolicyCheckbox(
 	modifier: Modifier,
 	checked: Boolean = false,
 	onCheckedChange: (Boolean) -> Unit

@@ -83,5 +83,6 @@
 	<string name="policy_screen_agree_all">아래의 약관에 모두 동의합니다.</string>
 	<string name="policy_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
 	<string name="policy_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
+	<string name="login_complete_start">시작하기</string>
 
 </resources>

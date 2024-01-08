@@ -61,9 +61,6 @@ kakao-sdk = "2.10.0"
 # Firebase SDK
 firebase = "32.6.0"
 
-# Accompanist
-accompanist-webview ="0.24.13-rc"
-
 [plugins]
 # build.gradle (project module)
 android-application-gradle = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -132,9 +129,6 @@ firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analy
 # Google Play Services
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
 
-# Accompanist
-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist-webview" }
-
 [bundles]
 # Android
 android-library = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx"]
@@ -169,6 +163,3 @@ firebase = ["firebase-auth-ktx", "firebase-analytics-ktx"]
 
 # Google Play Services
 play-services = ["play-services-auth"]
-
-# Accompanist
-accompanist = ["accompanist-webview"]
