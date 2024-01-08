@@ -32,19 +32,22 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.core.navigation.LyfeScreens
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.profileedit.NicknameInvalidState
 import com.lyfe.android.feature.profileedit.ProfileEditUiState
 import com.lyfe.android.feature.profileedit.ProfileEditViewModel
 
 @Composable
 fun NicknameScreen(
+	navigator: LyfeNavigator,
 	viewModel: ProfileEditViewModel = hiltViewModel()
 ) {
 	val context = LocalContext.current
 
 	Column(
 		modifier = Modifier
-			.padding(top = 40.dp, bottom = 16.dp, start = 24.dp, end = 24.dp)
+			.padding(top = 56.dp, bottom = 24.dp, start = 20.dp, end = 20.dp)
 			.fillMaxSize()
 	) {
 		Text(
@@ -57,10 +60,10 @@ fun NicknameScreen(
 			)
 		)
 
-		Spacer(modifier = Modifier.height(16.dp))
+		Spacer(modifier = Modifier.height(8.dp))
 
 		Text(
-			text = stringResource(R.string.set_user_nickname),
+			text = stringResource(R.string.nickname_screen_sub_title),
 			style = TextStyle(
 				fontSize = 14.sp,
 				fontWeight = FontWeight(weight = 600),
@@ -70,7 +73,10 @@ fun NicknameScreen(
 
 		Spacer(modifier = Modifier.height(40.dp))
 
-		NicknameEnterContent(viewModel)
+		NicknameEnterContent(
+			navigator = navigator,
+			viewModel = viewModel
+		)
 
 		when (viewModel.uiState) {
 			is ProfileEditUiState.IDLE -> { }
@@ -95,6 +101,7 @@ fun NicknameScreen(
 
 @Composable
 private fun NicknameEnterContent(
+	navigator: LyfeNavigator,
 	viewModel: ProfileEditViewModel
 ) {
 	val nicknameState = remember { mutableStateOf("") }
@@ -123,7 +130,8 @@ private fun NicknameEnterContent(
 
 			NicknameCompleteButton(
 				viewModel = viewModel,
-				nickname = nicknameState.value
+				nickname = nicknameState.value,
+				onClick = { navigator.navigate(LyfeScreens.Policy.name) }
 			)
 		}
 	}
@@ -229,7 +237,8 @@ private fun NicknameConditionText(
 @Composable
 private fun NicknameCompleteButton(
 	viewModel: ProfileEditViewModel,
-	nickname: String
+	nickname: String,
+	onClick: () -> Unit
 ) {
 	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT &&
 		viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT &&
@@ -249,9 +258,7 @@ private fun NicknameCompleteButton(
 		text = stringResource(id = R.string.next),
 		onClick = {
 			// 중복 닉네임 체크 API 추후 연결
-			if (isNicknameEnable) {
-				viewModel.checkNicknameDuplicate(nickname = nickname)
-			}
+			if (isNicknameEnable) { onClick() }
 		}
 	)
 }
