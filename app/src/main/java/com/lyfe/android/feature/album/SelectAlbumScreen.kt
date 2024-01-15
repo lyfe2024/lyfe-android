@@ -56,9 +56,9 @@ import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.GalleryImage
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.ui.theme.BtnDarkColor
-import com.lyfe.android.ui.theme.BtnLightGrayColor
-import com.lyfe.android.ui.theme.DisabledBtnTextColor
+import com.lyfe.android.core.common.ui.theme.BtnDarkColor
+import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
+import com.lyfe.android.core.common.ui.theme.DisabledBtnTextColor
 
 const val SelectImageKey = "Select Image"
 
@@ -112,7 +112,7 @@ fun SelectAlbumScreen(
 						navigator.navigateBackWithResult(
 							key = SelectImageKey,
 							result = selectedImageUri,
-							route = LyfeScreens.Post.name
+							route = LyfeScreens.PostCreate.name
 						)
 					}
 				}

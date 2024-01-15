@@ -2,6 +2,7 @@ package com.lyfe.android.core.common.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,16 +28,17 @@ import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.util.clickableSingle
 
 @Composable
-fun DefaultButton(
+fun LyfeButton(
 	modifier: Modifier = Modifier,
 	verticalPadding: Dp = 8.dp,
 	horizontalPadding: Dp = 24.dp,
 	cornerSize: Dp = 6.dp,
 	isClearIconShow: Boolean = true,
-	buttonType: LyfeButtonType = LyfeButtonType.DISABLED,
+	buttonType: LyfeButtonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
 	text: String,
 	fontSize: Int = 16,
 	lineHeight: Int = 24,
+	fontWeight: FontWeight = FontWeight.W700,
 	onClose: () -> Unit = {},
 	onClick: () -> Unit
 ) {
@@ -45,7 +47,13 @@ fun DefaultButton(
 			.background(
 				shape = RoundedCornerShape(size = cornerSize),
 				color = buttonType.bgColor
-			).clickableSingle {
+			)
+			.border(
+				width = buttonType.borderWidth,
+				color = buttonType.strokeColor,
+				shape = RoundedCornerShape(size = cornerSize)
+			)
+			.clickableSingle {
 				onClick()
 			}
 			.padding(vertical = verticalPadding, horizontal = horizontalPadding),
@@ -57,7 +65,7 @@ fun DefaultButton(
 				modifier = Modifier
 					.size(20.dp)
 					.clickableSingle { onClose() },
-				painter = painterResource(id = buttonType.icon),
+				painter = painterResource(id = buttonType.closeIcon),
 				contentDescription = "circle_close_icon"
 			)
 
@@ -69,7 +77,7 @@ fun DefaultButton(
 			style = TextStyle(
 				fontSize = fontSize.sp,
 				lineHeight = lineHeight.sp,
-				fontWeight = FontWeight.W700,
+				fontWeight = fontWeight,
 				color = buttonType.textColor
 			)
 		)
@@ -78,28 +86,28 @@ fun DefaultButton(
 
 @Preview
 @Composable
-fun Preview_LyfeButton() {
+private fun Preview_LyfeButtons() {
 	Column {
-		DefaultButton(
+		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.DISABLED
+			buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 		) {}
 
 		Spacer(modifier = Modifier.height(20.dp))
 
-		DefaultButton(
+		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.MAIN_500
+			buttonType = LyfeButtonType.TC_GREY200_BG_GREY50_SC_GREY200
 		) {}
 
 		Spacer(modifier = Modifier.height(20.dp))
 
-		DefaultButton(
+		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
 			text = "버튼",
-			buttonType = LyfeButtonType.WHITE
+			buttonType = LyfeButtonType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
 		) {}
 	}
 }

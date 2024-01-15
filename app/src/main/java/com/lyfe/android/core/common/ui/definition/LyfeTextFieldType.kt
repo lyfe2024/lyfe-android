@@ -3,9 +3,10 @@ package com.lyfe.android.core.common.ui.definition
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
-import com.lyfe.android.ui.theme.DEFAULT
-import com.lyfe.android.ui.theme.Error
-import com.lyfe.android.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.Error
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey900
 
 /**
  * TC: TextColor, BC: BgColor, SC: strokeColor
@@ -21,5 +22,6 @@ enum class LyfeTextFieldType(
 	TC_ERROR_BG_TRANSPARENT_SC_ERROR(Error, Color.Transparent, Error),
 	TC_GREY200_BG_WHITE_SC_TRANSPARENT(Grey200, Color.White, Color.Transparent, R.drawable.ic_circle_close_grey_200),
 	TC_DEFAULT_BG_WHITE_SC_TRANSPARENT(DEFAULT, Color.White, Color.Transparent, R.drawable.ic_circle_close_grey_200),
-	TC_DEFAULT_BG_WHITE_SC_DEFAULT(DEFAULT, Color.White, DEFAULT, R.drawable.ic_circle_close_grey_200)
+	TC_DEFAULT_BG_WHITE_SC_DEFAULT(DEFAULT, Color.White, DEFAULT, R.drawable.ic_circle_close_grey_200),
+	TC_BLACK_BG_WHITE_SC_GREY900(Color.Black, Color.White, Grey900, null)
 }

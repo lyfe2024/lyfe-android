@@ -3,7 +3,6 @@ package com.lyfe.android.core.common.ui.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,13 +22,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.util.clickableSingle
-import com.lyfe.android.ui.theme.Grey400
 
 @Composable
 fun LyfeTextField(
@@ -41,6 +44,9 @@ fun LyfeTextField(
 	textFieldType: LyfeTextFieldType = LyfeTextFieldType.TC_DEFAULT_BG_WHITE_SC_TRANSPARENT,
 	isActivateCloseIcon: Boolean = true,
 	text: String,
+	hintText: String = "",
+	fontSize: TextUnit = 16.sp,
+	lineHeight: TextUnit = TextUnit.Unspecified,
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
 ) {
@@ -60,18 +66,32 @@ fun LyfeTextField(
 			singleLine = singleLine,
 			maxLines = maxLines,
 			value = text,
+			textStyle = TextStyle(
+				color = textFieldType.textColor,
+				fontSize = fontSize,
+				fontWeight = FontWeight.W600,
+				lineHeight = lineHeight
+			),
 			onValueChange = onTextChange
-		) {
+		) { innerTextField ->
 			Row(
-				horizontalArrangement = Arrangement.SpaceAround,
 				verticalAlignment = Alignment.CenterVertically
 			) {
-				Text(
-					modifier = Modifier.weight(1f),
-					text = text,
-					color = textFieldType.textColor,
-					fontWeight = FontWeight.W600
-				)
+				Box(
+					modifier = Modifier.weight(1f)
+				) {
+					if (text.isEmpty()) {
+						Text(
+							text = hintText,
+							style = TextStyle(
+								color = Grey200,
+								fontSize = fontSize,
+								fontWeight = FontWeight.W600
+							)
+						)
+					}
+					innerTextField()
+				}
 
 				if (isActivateCloseIcon && textFieldType.closeIcon != null) {
 					Spacer(modifier = Modifier.width(8.dp))
@@ -106,7 +126,7 @@ fun Preview_LyfeTextFields() {
 		Spacer(modifier = Modifier.height(20.dp))
 
 		LyfeTextField(
-			text = "사용불가능한 닉네임",
+			text = "사용불가능한 닉네임 사용불가능한 닉네임 사용불가능한 닉네임 ",
 			textFieldType = LyfeTextFieldType.TC_DEFAULT_BG_TRANSPARENT_SC_DEFAULT,
 			onTextChange = {}
 		)

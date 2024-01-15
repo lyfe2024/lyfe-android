@@ -11,6 +11,7 @@ fun LyfeNavHost(
 	modifier: Modifier = Modifier,
 	navHostController: NavHostController,
 	navigator: LyfeNavigator,
+	onScroll: (Boolean) -> Unit,
 	selectedScreen: (route: String) -> Unit
 ) {
 	NavHost(
@@ -21,6 +22,7 @@ fun LyfeNavHost(
 		lyfeHomeNavigation(
 			lyfeNavigator = navigator,
 			navHostController = navHostController,
+			onScroll = onScroll,
 			selectedScreen = selectedScreen
 		)
 	}

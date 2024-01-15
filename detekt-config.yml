@@ -1,6 +1,8 @@
 complexity:
     LongParameterList:
         active: false
+    LongMethod:
+        active: false
 
 style:
     MagicNumber:
@@ -8,12 +10,12 @@ style:
         ignoreLocalVariableDeclaration: true
         ignoreCompanionObjectPropertyDeclaration: true
     UnusedPrivateMember:
-        ignoreAnnotated: [ 'preview' ]
+        ignoreAnnotated: [ 'Preview' ]
     NewLineAtEndOfFile:
         active: false
 
 naming:
     TopLevelPropertyNaming:
-        constantPattern: '[A-Z][A-Za-z0-9]*'
+        constantPattern: '[A-Z][_A-Za-z0-9]*'
     FunctionNaming:
         ignoreAnnotated: [ 'Composable' ]
