@@ -2,8 +2,6 @@ package com.lyfe.android.core.data.datasource.di
 
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
-import com.lyfe.android.core.data.datasource.TestDataSource
-import com.lyfe.android.core.data.datasource.TestDataSourceImpl
 import com.lyfe.android.core.data.datasource.UserDataSource
 import com.lyfe.android.core.data.datasource.UserDataSourceImpl
 import dagger.Binds
@@ -21,12 +19,6 @@ interface DataSourceModule {
 	fun bindsDeviceGalleryImageDataSource(
 		deviceGalleryImageDataSourceImpl: DeviceGalleryDataSourceImpl
 	): DeviceGalleryDataSource
-
-	@Singleton
-	@Binds
-	fun bindsTestDataSource(
-		testDataSourceImpl: TestDataSourceImpl
-	): TestDataSource
 
 	@Singleton
 	@Binds
