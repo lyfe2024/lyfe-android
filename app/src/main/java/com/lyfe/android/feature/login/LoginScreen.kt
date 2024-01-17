@@ -45,7 +45,7 @@ fun LoginScreen(
 	) {
 		Image(
 			modifier = Modifier.weight(1f),
-			painter = painterResource(id = R.drawable.ic_main_logo),
+			painter = painterResource(id = R.drawable.ic_logo),
 			contentDescription = "앱 메인 로고"
 		)
 

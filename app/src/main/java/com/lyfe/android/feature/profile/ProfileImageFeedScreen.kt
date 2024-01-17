@@ -36,7 +36,7 @@ fun ProfileImageFeedScreen(
 	) {
 		items(feeds) { imageFeed ->
 			key(imageFeed.feedId) {
-				FeedScreenCardView(
+				ProfileScreenImageFeedView(
 					modifier = Modifier,
 					feed = imageFeed,
 					onClick = onFeedClick

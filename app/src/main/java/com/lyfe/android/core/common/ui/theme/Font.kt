@@ -16,3 +16,7 @@ val pretenard = FontFamily(
 	Font(R.font.pretendard_light, FontWeight.Light, FontStyle.Normal),
 	Font(R.font.pretendard_thin, FontWeight.Thin, FontStyle.Normal)
 )
+
+val think = FontFamily(
+	Font(R.font.think_regular)
+)
