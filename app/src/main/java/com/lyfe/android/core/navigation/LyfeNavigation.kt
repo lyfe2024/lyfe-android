@@ -27,7 +27,10 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	selectedScreen: (route: String) -> Unit
 ) {
 	composable(route = LyfeScreens.Home.name) {
-		HomeScreen(navigator = lyfeNavigator)
+		HomeScreen(
+			navigator = lyfeNavigator,
+			onScroll = onScroll
+		)
 		selectedScreen(LyfeScreens.Home.name)
 	}
 

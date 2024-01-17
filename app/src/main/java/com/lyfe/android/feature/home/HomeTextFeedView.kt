@@ -1,102 +1,52 @@
-package com.lyfe.android.feature.profile
+package com.lyfe.android.feature.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
-import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
-import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
-import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.TempColor
+import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 
 @Composable
-fun ProfileScreenImageFeedView(
+fun HomeTextFeedView(
 	modifier: Modifier = Modifier,
-	feed: Feed
-) {
-	Column(
-		modifier = modifier
-	) {
-		LyfeFeedCardView(
-			modifier = Modifier.wrapContentSize(),
-			feed = feed,
-			designType = LyfeCardViewDesignType.PROFILE_SCREEN_CARD
-		)
-		Spacer(modifier = Modifier.height(4.dp))
-		ProfileFeedScoreRow(
-			modifier = Modifier.fillMaxWidth(),
-			whiskyCnt = feed.whiskyCount,
-			commentCnt = feed.commentCount
-		)
-	}
-}
-
-@Composable
-fun ProfileScreenTextFeedView(
-	modifier: Modifier,
 	feed: Feed,
 	onClick: () -> Unit = {}
 ) {
 	Column(
 		modifier = modifier
+			.padding(vertical = 8.dp)
 			.clickableSingle {
 				onClick()
-			}
+			},
+		verticalArrangement = Arrangement.spacedBy(4.dp)
 	) {
-		ProfileTextFeed(
-			modifier = Modifier.wrapContentSize(),
-			feed = feed
-		)
-
-		Spacer(modifier = Modifier.height(4.dp))
-
-		ProfileFeedScoreRow(
-			modifier = Modifier.fillMaxWidth(),
-			whiskyCnt = feed.whiskyCount,
-			commentCnt = feed.commentCount
-		)
-	}
-}
-
-@Composable
-fun ProfileTextFeed(
-	modifier: Modifier = Modifier,
-	feed: Feed
-) {
-	Column(
-		modifier = modifier,
-		horizontalAlignment = Alignment.Start
-	) {
-		Text(
-			text = feed.date,
-			fontSize = 10.sp,
-			color = Grey300,
-			fontWeight = FontWeight.W400,
-			lineHeight = 16.sp
-		)
-
-		Spacer(modifier = Modifier.height(4.dp))
+		HomeTextFeedProfile(feed)
 
 		Text(
 			text = feed.title,
@@ -106,20 +56,66 @@ fun ProfileTextFeed(
 			lineHeight = 24.sp
 		)
 
-		Spacer(modifier = Modifier.height(4.dp))
-
 		Text(
 			text = feed.content,
 			fontSize = 14.sp,
 			color = Color.Black,
 			fontWeight = FontWeight.W500,
+			overflow = TextOverflow.Ellipsis,
 			maxLines = 2
+		)
+
+		HomeTextFeedScoreRow(
+			whiskyCnt = feed.whiskyCount,
+			commentCnt = feed.commentCount
+		)
+	}
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun HomeTextFeedProfile(
+	feed: Feed
+) {
+	Row(
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.spacedBy(8.dp)
+	) {
+		GlideImage(
+			modifier = Modifier
+				.size(32.dp)
+				.clip(CircleShape),
+			model = feed.userProfileImgUrl,
+			contentDescription = "feed_profile_image",
+			contentScale = ContentScale.Crop
+		)
+
+		Text(
+			text = feed.userName,
+			style = TextStyle(
+				color = Color.Black,
+				fontSize = 14.sp,
+				fontWeight = FontWeight.W700,
+				fontFamily = pretenard
+			),
+			overflow = TextOverflow.Ellipsis,
+			maxLines = 1
+		)
+
+		Text(
+			text = feed.date,
+			style = TextStyle(
+				color = TempColor.CCCCCC,
+				fontSize = 10.sp,
+				fontWeight = FontWeight.W400,
+				fontFamily = pretenard
+			)
 		)
 	}
 }
 
 @Composable
-private fun ProfileFeedScoreRow(
+private fun HomeTextFeedScoreRow(
 	modifier: Modifier = Modifier,
 	whiskyCnt: Int,
 	commentCnt: Int
@@ -172,30 +168,27 @@ private fun ProfileFeedScoreRow(
 	}
 }
 
+
 @Preview
 @Composable
-private fun Preview_ProfileFeedView() {
+private fun Preview_HomeTextFeedView() {
 	val feed = Feed(
 		feedId = 1L,
-		title = "타이틀1",
-		content = "컨텐츠1",
+		title = "여기 텍스트 기반 피드 제목 들어옵니다. ",
+		content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
 		feedImageUrl = "https://picsum.photos/700/700",
 		date = "2021-01-01",
 		userId = 2L,
-		userName = "홍길동",
+		userName = "유저이름",
 		userProfileImgUrl = "https://picsum.photos/700/700",
 		whiskyCount = 1,
 		commentCount = 1,
 		isLike = false
 	)
 
-	ProfileScreenImageFeedView(
+	HomeTextFeedView(
 		modifier = Modifier.fillMaxSize(),
-		feed = feed
-	)
-
-	ProfileScreenTextFeedView(
-		modifier = Modifier.fillMaxWidth(),
-		feed = feed
+		feed = feed,
+		onClick = {}
 	)
 }
