@@ -49,14 +49,14 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 	}
 
 	fun fetchTextFeedList() {
-		_textFeedList.compareAndSet(textFeedList.value, fakeFeedList + fakeFeedList2)
+		_textFeedList.compareAndSet(textFeedList.value, fakeFeedList2)
 	}
 
 	private val fakeFeedList = listOf(
 		Feed(
 			feedId = 1L,
-			title = "타이틀1\n타이틀2",
-			content = "컨텐츠1",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
 			feedImageUrl = "https://picsum.photos/270/358",
 			date = "2021-01-01",
 			userId = 2L,
@@ -68,8 +68,8 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 3L,
-			title = "타이틀1",
-			content = "컨텐츠1",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
 			feedImageUrl = "https://picsum.photos/270/359",
 			date = "2021-01-01",
 			userId = 4L,
@@ -81,8 +81,8 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 5L,
-			title = "타이틀1",
-			content = "컨텐츠1",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
 			feedImageUrl = "https://picsum.photos/270/360",
 			date = "2021-01-01",
 			userId = 6L,
@@ -94,8 +94,8 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 7L,
-			title = "타이틀1",
-			content = "컨텐츠1",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
 			feedImageUrl = "https://picsum.photos/270/361",
 			date = "2021-01-01",
 			userId = 8L,
@@ -110,9 +110,9 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 	private val fakeFeedList2 = listOf(
 		Feed(
 			feedId = 9L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
 			date = "2021-01-01",
 			userId = 10L,
 			userName = "홍길동",
@@ -123,9 +123,9 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 11L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
 			date = "2021-01-01",
 			userId = 12L,
 			userName = "홍길동",
@@ -136,9 +136,9 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 13L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
 			date = "2021-01-01",
 			userId = 14L,
 			userName = "홍길동",
@@ -149,9 +149,9 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 15L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
 			date = "2021-01-01",
 			userId = 16L,
 			userName = "홍길동",
@@ -162,9 +162,9 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 17L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
 			date = "2021-01-01",
 			userId = 18L,
 			userName = "홍길동",
@@ -175,9 +175,74 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		),
 		Feed(
 			feedId = 19L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
+			date = "2021-01-01",
+			userId = 20L,
+			userName = "홍길동",
+			userProfileImgUrl = "https://picsum.photos/700/700",
+			whiskyCount = 1,
+			commentCount = 1,
+			isLike = false
+		),
+		Feed(
+			feedId = 21L,
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
+			date = "2021-01-01",
+			userId = 20L,
+			userName = "홍길동",
+			userProfileImgUrl = "https://picsum.photos/700/700",
+			whiskyCount = 1,
+			commentCount = 1,
+			isLike = false
+		),
+		Feed(
+			feedId = 23L,
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
+			date = "2021-01-01",
+			userId = 20L,
+			userName = "홍길동",
+			userProfileImgUrl = "https://picsum.photos/700/700",
+			whiskyCount = 1,
+			commentCount = 1,
+			isLike = false
+		),
+		Feed(
+			feedId = 25L,
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
+			date = "2021-01-01",
+			userId = 20L,
+			userName = "홍길동",
+			userProfileImgUrl = "https://picsum.photos/700/700",
+			whiskyCount = 1,
+			commentCount = 1,
+			isLike = false
+		),
+		Feed(
+			feedId = 27L,
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
+			date = "2021-01-01",
+			userId = 20L,
+			userName = "홍길동",
+			userProfileImgUrl = "https://picsum.photos/700/700",
+			whiskyCount = 1,
+			commentCount = 1,
+			isLike = false
+		),
+		Feed(
+			feedId = 29L,
+			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
+			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
+			feedImageUrl = "",
 			date = "2021-01-01",
 			userId = 20L,
 			userName = "홍길동",
