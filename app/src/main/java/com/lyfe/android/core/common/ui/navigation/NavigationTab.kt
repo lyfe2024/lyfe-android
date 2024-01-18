@@ -1,12 +1,16 @@
 package com.lyfe.android.core.common.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -41,6 +45,7 @@ import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.feature.BottomNavItem
+import com.lyfe.android.feature.ChildNavItem
 
 @Composable
 fun NavigationTab(
@@ -48,7 +53,8 @@ fun NavigationTab(
 	selectedItemIndex: Int,
 	items: List<BottomNavItem>,
 	isNeedIndicatorAnimation: Boolean = true,
-	onClick: (index: Int) -> Unit
+	onClick: (index: Int) -> Unit,
+	onChildClick: (index: Int, childIndex: Int) -> Unit
 ) {
 	val density = LocalDensity.current
 	var width by remember { mutableStateOf(0.dp) } // 너비 정보를 저장할 변수
@@ -65,48 +71,83 @@ fun NavigationTab(
 		label = ""
 	)
 
-	Box(
-		modifier = modifier
-			.background(color = DEFAULT, shape = RoundedCornerShape(20.dp))
-			.height(56.dp)
-			.padding(vertical = 8.dp, horizontal = 20.dp)
-			.onGloballyPositioned {
-				width = with(density) { it.size.width.toDp() }
+	Column {
+		if (selectedItemIndex in items.indices) {
+			val childItems = items[selectedItemIndex].childItems
+			AnimatedVisibility(
+				visible = childItems.isNotEmpty(),
+				enter = expandVertically(
+					// Expand from the top.
+					expandFrom = Alignment.Bottom,
+					animationSpec = tween(
+						durationMillis = 300,
+						delayMillis = 200,
+						easing = FastOutLinearInEasing
+					)
+				),
+			) {
+				Column(
+					modifier = Modifier.offset(
+						x = (width * selectedItemIndex) / 5
+					),
+					horizontalAlignment = Alignment.CenterHorizontally
+				) {
+					childItems.forEachIndexed { index, childItem ->
+						MyChildTabItem(
+							onClick = { onChildClick(selectedItemIndex, index) },
+							item = childItem
+						)
+						Spacer(modifier = Modifier.height(8.dp))
+					}
+				}
 			}
-	) {
-		MyTabIndicator(
-			indicatorWidth = tabWidth,
-			indicatorOffset = indicatorOffset,
-			indicatorColor = Main500
-		)
+		}
 
-		Row(
-			modifier = Modifier
-				.fillMaxSize(),
-			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.CenterVertically
+		Spacer(modifier = Modifier.height(8.dp))
+
+		Box(
+			modifier = modifier
+				.background(color = DEFAULT, shape = RoundedCornerShape(20.dp))
+				.height(56.dp)
+				.padding(vertical = 8.dp, horizontal = 20.dp)
+				.onGloballyPositioned {
+					width = with(density) { it.size.width.toDp() }
+				}
 		) {
-			List(items.size) { index ->
-				val isSelected = index == selectedItemIndex
+			MyTabIndicator(
+				indicatorWidth = tabWidth,
+				indicatorOffset = indicatorOffset,
+				indicatorColor = Main500
+			)
 
-				MyTabItem(
-					modifier = Modifier.onGloballyPositioned {
-						if (isSelected) {
-							indicatorPosition = with(density) {
-								it.positionInWindow().x.toDp() - 40.dp
+			Row(
+				modifier = Modifier
+					.fillMaxSize(),
+				horizontalArrangement = Arrangement.SpaceBetween,
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				List(items.size) { index ->
+					val isSelected = index == selectedItemIndex
+
+					MyTabItem(
+						modifier = Modifier.onGloballyPositioned {
+							if (isSelected) {
+								indicatorPosition = with(density) {
+									it.positionInWindow().x.toDp() - 40.dp
+								}
+								tabWidth = with(density) {
+									it.size.width.toDp()
+								}
 							}
-							tabWidth = with(density) {
-								it.size.width.toDp()
-							}
-						}
-					},
-					isSelected = isSelected,
-					navigationShowType = navigationShowType,
-					onClick = {
-						onClick(index)
-					},
-					item = items[index]
-				)
+						},
+						isSelected = isSelected,
+						navigationShowType = navigationShowType,
+						onClick = {
+							onClick(index)
+						},
+						item = items[index]
+					)
+				}
 			}
 		}
 	}
@@ -166,5 +207,46 @@ private fun MyTabItem(
 				)
 			)
 		}
+	}
+}
+
+@Composable
+private fun MyChildTabItem(
+	modifier: Modifier = Modifier,
+	onClick: () -> Unit,
+	item: ChildNavItem
+) {
+	Row(
+		modifier = modifier
+			.background(
+				color = Main500,
+				shape = RoundedCornerShape(12.dp)
+			)
+			.padding(vertical = 6.dp, horizontal = 16.dp)
+			.clickableSingle {
+				onClick()
+			},
+		verticalAlignment = Alignment.CenterVertically,
+		horizontalArrangement = Arrangement.Center
+	) {
+		Image(
+			painter = painterResource(id = item.iconRes),
+			contentDescription = item.description
+		)
+
+		Spacer(modifier = Modifier.width(8.dp))
+
+		Text(
+			text = stringResource(id = item.title),
+			color = Color.White,
+			textAlign = TextAlign.Center,
+			style = TextStyle(
+				fontSize = 14.sp,
+				lineHeight = 22.sp,
+				fontWeight = FontWeight.W700,
+				color = Color.White,
+				textAlign = TextAlign.Center
+			)
+		)
 	}
 }

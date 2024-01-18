@@ -12,6 +12,8 @@
     <string name="btm_nav_post">게시</string>
     <string name="btm_nav_alarm">알림</string>
     <string name="btm_nav_profile">프로필</string>
+	<string name="btm_nav_post_image">사진 신청하기</string>
+	<string name="btm_nav_post_text">고민글 신청하기</string>
 
 	<string name="request_photo_reaction">신청 사진 반응</string>
 	<string name="photo_comments">사진 댓글 알림</string>

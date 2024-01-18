@@ -114,6 +114,9 @@ fun LyfeApp(
 					onClick = { index ->
 						selected = index
 						navigator.navigate(bottomNavItems[index].screenRoute)
+					},
+					onChildClick = { index, childIndex ->
+						navigator.navigate(bottomNavItems[index].childItems[childIndex].screenRoute)
 					}
 				)
 			}
@@ -126,7 +129,8 @@ sealed class BottomNavItem(
 	@DrawableRes val defaultIconRes: Int,
 	@DrawableRes val selectedIconRes: Int,
 	val description: String,
-	val screenRoute: String
+	val screenRoute: String,
+	val childItems: List<ChildNavItem> = listOf()
 ) {
 	object Home : BottomNavItem(
 		title = R.string.btm_nav_home,
@@ -149,7 +153,11 @@ sealed class BottomNavItem(
 		defaultIconRes = R.drawable.ic_btm_navi_post_default,
 		selectedIconRes = R.drawable.ic_btm_navi_post_selected,
 		description = "게시 아이콘",
-		screenRoute = LyfeScreens.Post.name
+		screenRoute = LyfeScreens.Post.name,
+		childItems = listOf(
+			ChildNavItem.PostImage,
+			ChildNavItem.PostText
+		)
 	)
 
 	object Alarm : BottomNavItem(
@@ -173,4 +181,25 @@ sealed class BottomNavItem(
 	} else {
 		defaultIconRes
 	}
+}
+
+sealed class ChildNavItem(
+	@StringRes val title: Int,
+	@DrawableRes val iconRes: Int,
+	val description: String,
+	val screenRoute: String
+) {
+	object PostImage : ChildNavItem(
+		title = R.string.btm_nav_post_image,
+		iconRes = R.drawable.ic_picture,
+		description = "사진 신청 아이콘",
+		screenRoute = LyfeScreens.PostCreate.name
+	)
+
+	object PostText : ChildNavItem(
+		title = R.string.btm_nav_post_text,
+		iconRes = R.drawable.ic_text,
+		description = "고민글 신청 아이콘",
+		screenRoute = LyfeScreens.PostCreate.name
+	)
 }
