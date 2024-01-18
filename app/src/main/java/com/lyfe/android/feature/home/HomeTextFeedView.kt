@@ -53,7 +53,9 @@ fun HomeTextFeedView(
 			fontSize = 16.sp,
 			color = Color.Black,
 			fontWeight = FontWeight.W700,
-			lineHeight = 24.sp
+			lineHeight = 24.sp,
+			maxLines = 1,
+			overflow = TextOverflow.Ellipsis
 		)
 
 		Text(

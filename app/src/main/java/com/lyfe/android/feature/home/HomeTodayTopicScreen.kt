@@ -223,7 +223,7 @@ private fun HomeTodayTopicImageFeedList(
 				LyfeFeedCardView(
 					modifier = Modifier,
 					feed = feed,
-					designType = LyfeCardViewDesignType.HOME_SCREEN_CARD
+					designType = LyfeCardViewDesignType.FEED_SCREEN_CARD
 				)
 			}
 		}
