@@ -79,7 +79,7 @@ fun HomePastBestScreen(
 		verticalArrangement = Arrangement.spacedBy(16.dp),
 		contentPadding = PaddingValues(horizontal = 20.dp),
 		state = scrollState
-		) {
+	) {
 		items(
 			count = 10,
 			key = { it }
@@ -158,7 +158,7 @@ private fun HomePastBestFeeds(
 	navigator: LyfeNavigator,
 	feeds: List<Feed>
 ) {
-	val pages = feeds.subList(0,3)
+	val pages = feeds.subList(0, 3)
 	val pagerState = rememberPagerState { pages.size }
 	var indicatorIdx by remember { mutableIntStateOf(0) }
 
@@ -245,9 +245,7 @@ private fun HomePostPastPager(
 			// 이미지 피드
 			LyfeFeedCardView(
 				modifier = Modifier
-					.clickableSingle {
-						onItemClick()
-				    },
+					.clickableSingle { onItemClick() },
 				feed = feed
 			)
 		}
@@ -258,7 +256,7 @@ fun Modifier.shadow(
 	color: Color = Color.Black,
 	offsetX: Dp = 0.dp,
 	offsetY: Dp = 0.dp,
-	blurRadius: Dp = 0.dp,
+	blurRadius: Dp = 0.dp
 ) = then(
 	drawBehind {
 		drawIntoCanvas { canvas ->
@@ -279,7 +277,7 @@ fun Modifier.shadow(
 				top = topPixel,
 				right = rightPixel,
 				bottom = bottomPixel,
-				paint = paint,
+				paint = paint
 			)
 		}
 	}

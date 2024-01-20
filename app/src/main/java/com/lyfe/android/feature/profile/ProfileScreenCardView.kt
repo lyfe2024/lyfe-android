@@ -161,7 +161,6 @@ private fun ProfileScoreRow(
 	}
 }
 
-
 @Preview
 @Composable
 private fun Preview_ProfileFeedView() {

@@ -29,6 +29,8 @@ import com.lyfe.android.feature.home.model.HomeFeedType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+private const val SCREEN_DATE_TEXT_ALPHA = 0.05f
+
 @Composable
 fun HomeScreen(
 	navigator: LyfeNavigator,
@@ -43,7 +45,7 @@ fun HomeScreen(
 			modifier = Modifier
 				.align(Alignment.TopEnd)
 				.padding(top = 4.dp, end = 20.dp)
-				.alpha(0.05f),
+				.alpha(SCREEN_DATE_TEXT_ALPHA),
 			text = LocalDateTime.now().format(
 				DateTimeFormatter.ofPattern("MM.dd.")
 			),

@@ -170,7 +170,6 @@ private fun HomeTextFeedScoreRow(
 	}
 }
 
-
 @Preview
 @Composable
 private fun Preview_HomeTextFeedView() {
