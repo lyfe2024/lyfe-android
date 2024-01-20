@@ -22,12 +22,14 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.Grey100
@@ -74,7 +76,8 @@ fun HomeTodayTopicScreen(
 		) { index, feed ->
 			if (index == 0) {
 				Text(
-					modifier = Modifier.fillMaxWidth()
+					modifier = Modifier
+						.fillMaxWidth()
 						.padding(horizontal = 20.dp),
 					text = "여름과 가을 사이",
 					style = TextStyle(
@@ -91,7 +94,7 @@ fun HomeTodayTopicScreen(
 
 				HomeSwipeableFeeds(
 					modifier = Modifier.padding(horizontal = 20.dp),
-					feeds = imageFeeds.reversed().toMutableList(),
+					feeds = imageFeeds.reversed(),
 					onClick = { navigator.navigate(LyfeScreens.FeedDetail.name) }
 				)
 
@@ -105,7 +108,7 @@ fun HomeTodayTopicScreen(
 							viewModel.updateFeedFetchingType(it)
 						}
 					)
-				} else if (index % 5 == 0) {
+				} else if (index == 10) {
 					HomeTodayTopicImageFeedList(
 						modifier = Modifier.padding(vertical = 16.dp),
 						feeds = imageFeeds,
@@ -143,7 +146,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
-			text = "고민글",
+			text = stringResource(R.string.home_text_feed),
 			style = TextStyle(
 				color = Color.Black,
 				fontFamily = pretenard,
@@ -159,7 +162,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 			modifier = Modifier.clickableSingle {
 				onFetchingTypeChanged(FeedFetchingType.LATEST)
 			},
-			text = "최신순",
+			text = stringResource(R.string.home_filter_latest),
 			style = TextStyle.getTextStyle(fetchingType == FeedFetchingType.LATEST)
 		)
 
@@ -168,14 +171,14 @@ private fun HomeTodayTopicTextFeedTopBar(
 				.fillMaxHeight()
 				.padding(horizontal = 4.dp),
 			text = "|",
-			color = Grey200,
+			color = Grey200
 		)
 
 		Text(
 			modifier = Modifier.clickableSingle {
 				onFetchingTypeChanged(FeedFetchingType.POPULAR)
 			},
-			text = "인기순",
+			text = stringResource(R.string.home_filter_popular),
 			style = TextStyle.getTextStyle(fetchingType == FeedFetchingType.POPULAR)
 		)
 	}
@@ -185,7 +188,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 private fun HomeTodayTopicImageFeedList(
 	modifier: Modifier,
 	feeds: List<Feed>,
-	contentPadding: PaddingValues,
+	contentPadding: PaddingValues
 ) {
 	Column(
 		modifier = modifier.fillMaxWidth()
@@ -193,7 +196,7 @@ private fun HomeTodayTopicImageFeedList(
 		Row(
 			modifier = Modifier.padding(horizontal = 20.dp),
 			verticalAlignment = Alignment.CenterVertically
-		){
+		) {
 			Text(
 				modifier = Modifier.weight(1f),
 				text = "댓글이 많이 달린",
@@ -204,7 +207,7 @@ private fun HomeTodayTopicImageFeedList(
 			)
 
 			Text(
-				text = "더보기",
+				text = stringResource(R.string.home_feed_more),
 				color = Color.Black,
 				fontSize = 12.sp,
 				fontWeight = FontWeight.W400,
@@ -218,7 +221,7 @@ private fun HomeTodayTopicImageFeedList(
 		) {
 			itemsIndexed(
 				items = feeds,
-				key = { _, feed -> feed.feedId}
+				key = { _, feed -> feed.feedId }
 			) { index, feed ->
 				LyfeFeedCardView(
 					modifier = Modifier,
