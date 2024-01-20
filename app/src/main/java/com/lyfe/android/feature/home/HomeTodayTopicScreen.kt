@@ -42,6 +42,8 @@ import com.lyfe.android.core.model.FeedFetchingType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
+private const val IMAGE_FEED_INDEXING = 5
+
 @Composable
 fun HomeTodayTopicScreen(
 	viewModel: HomeViewModel = hiltViewModel(),
@@ -108,7 +110,9 @@ fun HomeTodayTopicScreen(
 							viewModel.updateFeedFetchingType(it)
 						}
 					)
-				} else if (index == 10) {
+				}
+
+				if (index % IMAGE_FEED_INDEXING == 0) {
 					HomeTodayTopicImageFeedList(
 						modifier = Modifier.padding(vertical = 16.dp),
 						feeds = imageFeeds,
