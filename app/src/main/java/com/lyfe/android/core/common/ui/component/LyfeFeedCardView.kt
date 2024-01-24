@@ -98,10 +98,12 @@ fun LyfeFeedCardView(
 						Spacer(modifier = Modifier.height(4.dp))
 						Text(
 							text = feed.date,
-							color = Color.White,
-							fontSize = 10.sp,
-							fontWeight = FontWeight.W400,
-							fontFamily = pretenard
+							style = TextStyle(
+								color = Color.White,
+								fontSize = 10.sp,
+								fontWeight = FontWeight.W400,
+								fontFamily = pretenard
+							)
 						)
 					}
 				}

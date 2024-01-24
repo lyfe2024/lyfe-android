@@ -50,19 +50,23 @@ fun HomeTextFeedView(
 
 		Text(
 			text = feed.title,
-			fontSize = 16.sp,
-			color = Color.Black,
-			fontWeight = FontWeight.W700,
-			lineHeight = 24.sp,
+			style = TextStyle(
+				fontSize = 16.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W700,
+				lineHeight = 24.sp
+			),
 			maxLines = 1,
 			overflow = TextOverflow.Ellipsis
 		)
 
 		Text(
 			text = feed.content,
-			fontSize = 14.sp,
-			color = Color.Black,
-			fontWeight = FontWeight.W500,
+			style = TextStyle(
+				color = Color.Black,
+				fontSize = 14.sp,
+				fontWeight = FontWeight.W500
+			),
 			overflow = TextOverflow.Ellipsis,
 			maxLines = 2
 		)

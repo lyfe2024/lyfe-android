@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -119,11 +120,13 @@ private fun HomePastBestItem(
 				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Start,
 			text = "여기에 과거 주제 내용\n" + "문장 들어갑니다.",
-			color = Color.Black,
-			fontSize = 20.sp,
-			fontWeight = FontWeight.W700,
-			lineHeight = 32.sp,
-			fontFamily = pretenard,
+			style = TextStyle(
+				color = Color.Black,
+				fontSize = 20.sp,
+				fontWeight = FontWeight.W700,
+				lineHeight = 32.sp,
+				fontFamily = pretenard
+			),
 			maxLines = 2,
 			overflow = TextOverflow.Ellipsis
 		)

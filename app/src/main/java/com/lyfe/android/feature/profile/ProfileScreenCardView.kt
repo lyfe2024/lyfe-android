@@ -72,29 +72,35 @@ fun ProfileScreenTextFeedView(
 	) {
 		Text(
 			text = feed.date,
-			fontSize = 10.sp,
-			color = Grey300,
-			fontWeight = FontWeight.W400,
-			lineHeight = 16.sp
+			style = TextStyle(
+				fontSize = 10.sp,
+				color = Grey300,
+				fontWeight = FontWeight.W400,
+				lineHeight = 16.sp
+			)
 		)
 
 		Spacer(modifier = Modifier.height(4.dp))
 
 		Text(
 			text = feed.title,
-			fontSize = 16.sp,
-			color = Color.Black,
-			fontWeight = FontWeight.W700,
-			lineHeight = 24.sp
+			style = TextStyle(
+				fontSize = 16.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W700,
+				lineHeight = 24.sp
+			)
 		)
 
 		Spacer(modifier = Modifier.height(4.dp))
 
 		Text(
 			text = feed.content,
-			fontSize = 14.sp,
-			color = Color.Black,
-			fontWeight = FontWeight.W500,
+			style = TextStyle(
+				fontSize = 14.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W500,
+			),
 			maxLines = 2
 		)
 

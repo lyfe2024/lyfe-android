@@ -104,9 +104,11 @@ private fun HomeTopContent(
 
 		Text(
 			text = viewModel.homeFeedType.content,
-			color = Color.Black,
-			fontSize = 14.sp,
-			fontWeight = FontWeight.W700
+			style = TextStyle(
+				color = Color.Black,
+				fontSize = 14.sp,
+				fontWeight = FontWeight.W700
+			)
 		)
 	}
 }
