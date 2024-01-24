@@ -99,7 +99,7 @@ fun ProfileScreenTextFeedView(
 			style = TextStyle(
 				fontSize = 14.sp,
 				color = Color.Black,
-				fontWeight = FontWeight.W500,
+				fontWeight = FontWeight.W500
 			),
 			maxLines = 2
 		)
