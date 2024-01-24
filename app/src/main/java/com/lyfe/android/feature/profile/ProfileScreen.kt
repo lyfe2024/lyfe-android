@@ -149,10 +149,12 @@ private fun ProfileUserInfo(
 		) {
 			Text(
 				text = userInfo.name,
-				fontSize = 20.sp,
-				fontWeight = FontWeight.W700,
-				lineHeight = 32.sp,
-				color = Color.Black
+				style = TextStyle(
+					color = Color.Black,
+					fontSize = 20.sp,
+					fontWeight = FontWeight.W700,
+					lineHeight = 32.sp
+				)
 			)
 
 			if (userInfo.id <= 0) {
@@ -273,11 +275,13 @@ private fun ProfileGuestLoginView(
 
 		Text(
 			text = stringResource(R.string.profile_screen_guest_login_title),
-			fontSize = 18.sp,
-			fontWeight = FontWeight.W700,
-			lineHeight = 28.sp,
-			color = Grey900,
-			textAlign = TextAlign.Center
+			style = TextStyle(
+				color = Grey900,
+				fontSize = 18.sp,
+				fontWeight = FontWeight.W700,
+				lineHeight = 28.sp,
+				textAlign = TextAlign.Center
+			)
 		)
 
 		Spacer(modifier = Modifier.height(40.dp))

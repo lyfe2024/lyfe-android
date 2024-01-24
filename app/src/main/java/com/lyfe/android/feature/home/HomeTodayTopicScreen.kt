@@ -204,18 +204,22 @@ private fun HomeTodayTopicImageFeedList(
 			Text(
 				modifier = Modifier.weight(1f),
 				text = "댓글이 많이 달린",
-				color = Color.Black,
-				fontSize = 20.sp,
-				fontWeight = FontWeight.W700,
-				fontFamily = pretenard
+				style = TextStyle(
+					color = Color.Black,
+					fontSize = 20.sp,
+					fontWeight = FontWeight.W700,
+					fontFamily = pretenard
+				)
 			)
 
 			Text(
 				text = stringResource(R.string.home_feed_more),
-				color = Color.Black,
-				fontSize = 12.sp,
-				fontWeight = FontWeight.W400,
-				fontFamily = pretenard
+				style = TextStyle(
+					color = Color.Black,
+					fontSize = 12.sp,
+					fontWeight = FontWeight.W400,
+					fontFamily = pretenard
+				)
 			)
 		}
 
