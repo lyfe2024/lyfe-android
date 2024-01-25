@@ -13,7 +13,6 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.lyfe.android.feature.feed.FeedScreenCardView
 
 @Composable
 fun ProfileImageFeedScreen(
@@ -36,7 +35,7 @@ fun ProfileImageFeedScreen(
 	) {
 		items(feeds) { imageFeed ->
 			key(imageFeed.feedId) {
-				FeedScreenCardView(
+				ProfileScreenImageFeedView(
 					modifier = Modifier,
 					feed = imageFeed,
 					onClick = onFeedClick

@@ -33,28 +33,6 @@ import com.lyfe.android.core.model.Feed
 @Composable
 fun ProfileScreenImageFeedView(
 	modifier: Modifier = Modifier,
-	feed: Feed
-) {
-	Column(
-		modifier = modifier
-	) {
-		LyfeFeedCardView(
-			modifier = Modifier.wrapContentSize(),
-			feed = feed,
-			designType = LyfeCardViewDesignType.PROFILE_SCREEN_CARD
-		)
-		Spacer(modifier = Modifier.height(4.dp))
-		ProfileFeedScoreRow(
-			modifier = Modifier.fillMaxWidth(),
-			whiskyCnt = feed.whiskyCount,
-			commentCnt = feed.commentCount
-		)
-	}
-}
-
-@Composable
-fun ProfileScreenTextFeedView(
-	modifier: Modifier,
 	feed: Feed,
 	onClick: () -> Unit = {}
 ) {
@@ -64,14 +42,15 @@ fun ProfileScreenTextFeedView(
 				onClick()
 			}
 	) {
-		ProfileTextFeed(
+		LyfeFeedCardView(
 			modifier = Modifier.wrapContentSize(),
-			feed = feed
+			feed = feed,
+			designType = LyfeCardViewDesignType.PROFILE_SCREEN_CARD
 		)
 
 		Spacer(modifier = Modifier.height(4.dp))
 
-		ProfileFeedScoreRow(
+		ProfileScoreRow(
 			modifier = Modifier.fillMaxWidth(),
 			whiskyCnt = feed.whiskyCount,
 			commentCnt = feed.commentCount
@@ -80,46 +59,62 @@ fun ProfileScreenTextFeedView(
 }
 
 @Composable
-fun ProfileTextFeed(
+fun ProfileScreenTextFeedView(
 	modifier: Modifier = Modifier,
-	feed: Feed
+	feed: Feed,
+	onClick: () -> Unit
 ) {
 	Column(
-		modifier = modifier,
-		horizontalAlignment = Alignment.Start
+		modifier = modifier
+			.clickableSingle {
+				onClick()
+			}
 	) {
 		Text(
 			text = feed.date,
-			fontSize = 10.sp,
-			color = Grey300,
-			fontWeight = FontWeight.W400,
-			lineHeight = 16.sp
+			style = TextStyle(
+				fontSize = 10.sp,
+				color = Grey300,
+				fontWeight = FontWeight.W400,
+				lineHeight = 16.sp
+			)
 		)
 
 		Spacer(modifier = Modifier.height(4.dp))
 
 		Text(
 			text = feed.title,
-			fontSize = 16.sp,
-			color = Color.Black,
-			fontWeight = FontWeight.W700,
-			lineHeight = 24.sp
+			style = TextStyle(
+				fontSize = 16.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W700,
+				lineHeight = 24.sp
+			)
 		)
 
 		Spacer(modifier = Modifier.height(4.dp))
 
 		Text(
 			text = feed.content,
-			fontSize = 14.sp,
-			color = Color.Black,
-			fontWeight = FontWeight.W500,
+			style = TextStyle(
+				fontSize = 14.sp,
+				color = Color.Black,
+				fontWeight = FontWeight.W500
+			),
 			maxLines = 2
+		)
+
+		Spacer(modifier = Modifier.height(4.dp))
+
+		ProfileScoreRow(
+			whiskyCnt = feed.whiskyCount,
+			commentCnt = feed.commentCount
 		)
 	}
 }
 
 @Composable
-private fun ProfileFeedScoreRow(
+private fun ProfileScoreRow(
 	modifier: Modifier = Modifier,
 	whiskyCnt: Int,
 	commentCnt: Int
@@ -148,7 +143,7 @@ private fun ProfileFeedScoreRow(
 			)
 		)
 
-		Spacer(modifier = Modifier.width(16.dp))
+		Spacer(modifier = Modifier.width(8.dp))
 
 		Image(
 			modifier = Modifier
@@ -191,11 +186,6 @@ private fun Preview_ProfileFeedView() {
 
 	ProfileScreenImageFeedView(
 		modifier = Modifier.fillMaxSize(),
-		feed = feed
-	)
-
-	ProfileScreenTextFeedView(
-		modifier = Modifier.fillMaxWidth(),
 		feed = feed
 	)
 }

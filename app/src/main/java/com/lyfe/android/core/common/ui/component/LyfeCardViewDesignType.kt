@@ -28,6 +28,7 @@ enum class LyfeCardViewDesignType(
 	val userNameTextStyle: TextStyle,
 	val cardContentTextStyle: TextStyle,
 	val contentPadding: PaddingValues,
+	val userProfileGap: Dp,
 	val ratio: Float
 ) {
 	HOME_SCREEN_CARD(
@@ -47,6 +48,7 @@ enum class LyfeCardViewDesignType(
 			fontFamily = pretenard
 		),
 		contentPadding = PaddingValues(vertical = 12.dp, horizontal = 16.dp),
+		userProfileGap = 8.dp,
 		ratio = MAIN_CARD_WIDTH / MAIN_CARD_HEIGHT
 	),
 	FEED_SCREEN_CARD(
@@ -66,6 +68,7 @@ enum class LyfeCardViewDesignType(
 			fontFamily = pretenard
 		),
 		contentPadding = PaddingValues(all = 10.dp),
+		userProfileGap = 4.dp,
 		ratio = FEED_CARD_WIDTH / FEED_CARD_HEIGHT
 	),
 	PROFILE_SCREEN_CARD(
@@ -85,6 +88,7 @@ enum class LyfeCardViewDesignType(
 			fontFamily = pretenard
 		),
 		contentPadding = PaddingValues(all = 10.dp),
+		userProfileGap = 4.dp,
 		ratio = PROFILE_CARD_WIDTH / PROFILE_CARD_HEIGHT
 	)
 }
