@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -81,15 +82,31 @@ fun LyfeFeedCardView(
 					contentScale = ContentScale.Crop
 				)
 
-				Spacer(modifier = Modifier.width(4.dp))
+				Spacer(modifier = Modifier.width(designType.userProfileGap))
 
-				Text(
-					modifier = Modifier.weight(1f),
-					text = feed.userName,
-					style = designType.userNameTextStyle,
-					overflow = TextOverflow.Ellipsis,
-					maxLines = 1
-				)
+				Column(
+					modifier = Modifier.weight(1f)
+				) {
+					Text(
+						text = feed.userName,
+						style = designType.userNameTextStyle,
+						overflow = TextOverflow.Ellipsis,
+						maxLines = 1
+					)
+
+					if (designType == LyfeCardViewDesignType.HOME_SCREEN_CARD) {
+						Spacer(modifier = Modifier.height(4.dp))
+						Text(
+							text = feed.date,
+							style = TextStyle(
+								color = Color.White,
+								fontSize = 10.sp,
+								fontWeight = FontWeight.W400,
+								fontFamily = pretenard
+							)
+						)
+					}
+				}
 			}
 
 			Column(
