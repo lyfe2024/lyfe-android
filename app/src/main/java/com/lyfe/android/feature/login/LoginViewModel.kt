@@ -29,21 +29,21 @@ class LoginViewModel @Inject constructor(
 		identityToken: String,
 		fcmToken: String
 	) {
+		uiState = LoginUiState.Loading
 		viewModelScope.launch {
-			authUserUseCase(socialType, authorizationCode, identityToken, fcmToken).collect {
-				when(it) {
-					is Result.Success -> {
-						// TODO 소셜 로그인 성공 (유저 토큰)
-					}
-					is Result.Failure -> {
-						// TODO 소셜 로그인 실패
-					}
-					is Result.NetworkError -> {
-						// TODO 네트워크 에러
-					}
-					is Result.Unexpected -> {
-						// TODO 예상치 못한 오류
-					}
+			val response = authUserUseCase(socialType, authorizationCode, identityToken, fcmToken)
+			when(response) {
+				is Result.Success -> {
+					// TODO 소셜 로그인 성공 (유저 토큰)
+				}
+				is Result.Failure -> {
+					// TODO 소셜 로그인 실패
+				}
+				is Result.NetworkError -> {
+					// TODO 네트워크 에러
+				}
+				is Result.Unexpected -> {
+					// TODO 예상치 못한 오류
 				}
 			}
 		}

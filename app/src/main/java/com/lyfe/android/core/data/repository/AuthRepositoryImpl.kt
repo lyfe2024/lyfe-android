@@ -9,9 +9,6 @@ import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.AuthRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -19,20 +16,20 @@ class AuthRepositoryImpl @Inject constructor(
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : AuthRepository {
 
-	override fun postUser(userToken: String, nickname: String): Flow<Result<PostUserResponse>> = flow {
-		emit(authDataSource.postUser(userToken, nickname))
-	}.flowOn(ioDispatcher)
+	override suspend fun postUser(userToken: String, nickname: String): Result<PostUserResponse> {
+		return authDataSource.postUser(userToken, nickname)
+	}
 
-	override fun authUser(
+	override suspend fun authUser(
 		socialType: String,
 		authorizationCode: String,
 		identityToken: String,
 		fcmToken: String
-	): Flow<Result<AuthUserResponse>> = flow {
-		emit(authDataSource.authUser(socialType, authorizationCode, identityToken, fcmToken))
-	}.flowOn(ioDispatcher)
+	): Result<AuthUserResponse> {
+		return authDataSource.authUser(socialType, authorizationCode, identityToken, fcmToken)
+	}
 
-	override fun reissueToken(token: String): Flow<Result<ReissueTokenResponse>> = flow {
-		emit(authDataSource.reissueToken(token))
-	}.flowOn(ioDispatcher)
+	override suspend fun reissueToken(token: String): Result<ReissueTokenResponse> {
+		return authDataSource.reissueToken(token)
+	}
 }

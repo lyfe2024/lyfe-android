@@ -7,5 +7,5 @@ class SignUpUserUseCase @Inject constructor(
 	private val authRepository: AuthRepository
 ) {
 	// 회원가입
-	operator fun invoke(userToken: String, nickname: String) = authRepository.postUser(userToken, nickname)
+	suspend operator fun invoke(userToken: String, nickname: String) = authRepository.postUser(userToken, nickname)
 }

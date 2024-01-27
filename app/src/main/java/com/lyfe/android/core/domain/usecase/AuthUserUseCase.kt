@@ -7,7 +7,7 @@ class AuthUserUseCase @Inject constructor(
 	private val authRepository: AuthRepository
 ) {
 	// 소셜 로그인
-	operator fun invoke(
+	suspend operator fun invoke(
 		socialType: String,
 		authorizationCode: String,
 		identityToken: String,
