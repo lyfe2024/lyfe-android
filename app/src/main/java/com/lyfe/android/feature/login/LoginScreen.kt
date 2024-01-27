@@ -3,7 +3,6 @@ package com.lyfe.android.feature.login
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -98,7 +97,11 @@ private fun kakaoLogin(
 			viewModel.updateUiState(LoginUiState.Loading)
 			KakaoLoginManager.startKakaoLogin(
 				context = context,
-				onTokenReceived = { viewModel.updateUiState(LoginUiState.Success) },
+				onTokenReceived = { oAuthToken ->
+					// TODO
+					viewModel.updateUiState(LoginUiState.Success)
+//					viewModel.authUser()
+				},
 				onFailure = { viewModel.updateUiState(LoginUiState.Failure(it?.message ?: "에러메세지가 존재하지 않습니다.")) }
 			)
 		}
@@ -112,13 +115,10 @@ private fun googleLogin(
 ): () -> Unit {
 	val launcher = rememberGoogleSignInLauncher(
 		onSignInComplete = {
-			val idToken = GoogleLoginManager.handleSignInResult(it)
-			if (idToken == null) {
-				LogUtil.e("onSignInFailure", "ID Token is null")
-			} else {
-				Toast.makeText(context, "구글 로그인이 완료되었습니다!", Toast.LENGTH_SHORT).show()
-				viewModel.updateUiState(LoginUiState.Success)
-			}
+			val account = GoogleLoginManager.handleSignInResult(it)
+			// TODO
+//			account.idToken
+//			account.serverAuthCode
 		},
 		onSignInFailure = {
 			LogUtil.e("onSignInFailure", "Error Code is $it")

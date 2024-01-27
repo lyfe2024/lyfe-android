@@ -3,6 +3,7 @@ package com.lyfe.android.core.data.network.di
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
 import com.lyfe.android.core.data.network.converter.asConverterFactory
+import com.lyfe.android.core.data.network.service.AuthService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -55,5 +56,11 @@ object NetworkModule {
 	@Singleton
 	fun providesUserService(retrofit: Retrofit): UserService {
 		return retrofit.create(UserService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesAuthService(retrofit: Retrofit): AuthService {
+		return retrofit.create(AuthService::class.java)
 	}
 }
