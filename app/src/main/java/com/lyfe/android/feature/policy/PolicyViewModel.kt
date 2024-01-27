@@ -29,26 +29,25 @@ class PolicyViewModel @Inject constructor(
 		nickname: String
 	) = viewModelScope.launch {
 		uiState = PolicyUiState.Loading
-		signUpUserUseCase(userToken, nickname).collect {
-			when(it) {
-				is Result.Success -> {
-					val result = it.body?.result
-					if (result == null) {
-						uiState = PolicyUiState.Failure()
-					} else {
-						saveUserTokenInfo(result) // 토큰 저장
-						uiState = PolicyUiState.Success
-					}
+		val response = signUpUserUseCase(userToken, nickname)
+		when(response) {
+			is Result.Success -> {
+				val result = response.body?.result
+				if (result == null) {
+					uiState = PolicyUiState.Failure()
+				} else {
+					saveUserTokenInfo(result) // 토큰 저장
+					uiState = PolicyUiState.Success
 				}
-				is Result.Failure -> {
-					// TODO
-				}
-				is Result.NetworkError -> {
-					// TODO
-				}
-				is Result.Unexpected -> {
-					// TODO
-				}
+			}
+			is Result.Failure -> {
+				// TODO
+			}
+			is Result.NetworkError -> {
+				// TODO
+			}
+			is Result.Unexpected -> {
+				// TODO
 			}
 		}
 	}

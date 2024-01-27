@@ -4,23 +4,22 @@ import com.lyfe.android.core.data.model.AuthUserResponse
 import com.lyfe.android.core.data.model.PostUserResponse
 import com.lyfe.android.core.data.model.ReissueTokenResponse
 import com.lyfe.android.core.data.network.model.Result
-import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
 
-	fun postUser(
+	suspend fun postUser(
 		userToken: String,
 		nickname: String
-	): Flow<Result<PostUserResponse>>
+	): Result<PostUserResponse>
 
-	fun authUser(
+	suspend fun authUser(
 		socialType: String,
 		authorizationCode: String,
 		identityToken: String,
 		fcmToken: String
-	): Flow<Result<AuthUserResponse>>
+	): Result<AuthUserResponse>
 
-	fun reissueToken(
+	suspend fun reissueToken(
 		token: String
-	): Flow<Result<ReissueTokenResponse>>
+	): Result<ReissueTokenResponse>
 }
