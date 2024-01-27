@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
@@ -45,7 +46,8 @@ import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
 fun PolicyScreen(
-	navigator: LyfeNavigator
+	navigator: LyfeNavigator,
+	viewModel: PolicyViewModel = hiltViewModel()
 ) {
 	Column(
 		modifier = Modifier
@@ -73,13 +75,26 @@ fun PolicyScreen(
 			)
 		)
 
-		PolicyAgreeContent(navigator)
+		PolicyAgreeContent()
+	}
+
+	when(viewModel.uiState) {
+		PolicyUiState.Success -> {
+			navigator.navigate(LyfeScreens.LoginComplete.name)
+		}
+		is PolicyUiState.Failure -> {
+			// TODO 실패 토스트 매세지 띄우기
+		}
+		PolicyUiState.IDLE -> {}
+		PolicyUiState.Loading -> {
+			// TODO 로딩창 띄우기
+		}
 	}
 }
 
 @Composable
 private fun PolicyAgreeContent(
-	navigator: LyfeNavigator
+	viewModel: PolicyViewModel = hiltViewModel()
 ) {
 	var allChecked by remember { mutableStateOf(false) }
 	var firstChecked by remember { mutableStateOf(false) }
@@ -118,7 +133,8 @@ private fun PolicyAgreeContent(
 		Spacer(modifier = Modifier.weight(1f))
 
 		PolicyCompleteButton(allChecked) {
-			navigator.navigate(LyfeScreens.LoginComplete.name)
+			// 회원가입
+			viewModel.postUser("token", "nickname")
 		}
 	}
 }

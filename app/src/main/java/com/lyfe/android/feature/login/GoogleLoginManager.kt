@@ -21,9 +21,9 @@ object GoogleLoginManager {
 		.requestEmail()
 		.build()
 
-	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): String? {
+	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): GoogleSignInAccount {
 		try {
-			return completedTask.getResult(ApiException::class.java)?.idToken
+			return completedTask.getResult(ApiException::class.java)
 		} catch (e: ApiException) {
 			LogUtil.w(TAG, "handleSignInResult: error" + e.statusCode)
 			throw e

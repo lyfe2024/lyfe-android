@@ -1,5 +1,7 @@
 package com.lyfe.android.core.data.datasource.di
 
+import com.lyfe.android.core.data.datasource.AuthDataSource
+import com.lyfe.android.core.data.datasource.AuthDataSourceImpl
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
 import com.lyfe.android.core.data.datasource.UserDataSource
@@ -25,4 +27,10 @@ interface DataSourceModule {
 	fun bindsUserDataSource(
 		userDataSourceImpl: UserDataSourceImpl
 	): UserDataSource
+
+	@Singleton
+	@Binds
+	fun bindsAuthDataSource(
+		authDataSourceImpl: AuthDataSourceImpl
+	): AuthDataSource
 }
