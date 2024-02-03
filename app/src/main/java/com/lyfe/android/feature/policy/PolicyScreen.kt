@@ -134,7 +134,7 @@ private fun PolicyAgreeContent(
 
 		PolicyCompleteButton(allChecked) {
 			// 회원가입
-			viewModel.postUser("token", "nickname")
+			viewModel.postUser( "nickname")
 		}
 	}
 }

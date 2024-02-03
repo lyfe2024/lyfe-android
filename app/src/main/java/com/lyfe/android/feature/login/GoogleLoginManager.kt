@@ -18,6 +18,7 @@ object GoogleLoginManager {
 
 	private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 		.requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+		.requestServerAuthCode(BuildConfig.GOOGLE_WEB_CLIENT_ID)
 		.requestEmail()
 		.build()
 

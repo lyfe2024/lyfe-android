@@ -9,5 +9,7 @@ data class AuthUserResponse(
 
 @Serializable
 data class AuthUserResult(
-	val sample: String
+	val userToken: String = "",
+	val accessToken: String = "",
+	val refreshToken: String = ""
 )

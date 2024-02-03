@@ -98,9 +98,12 @@ private fun kakaoLogin(
 			KakaoLoginManager.startKakaoLogin(
 				context = context,
 				onTokenReceived = { oAuthToken ->
-					// TODO
-					viewModel.updateUiState(LoginUiState.Success)
-//					viewModel.authUser()
+					// 소셜 로그인 접근
+					viewModel.authUser(
+						socialType = "KAKAO",
+						identityToken = oAuthToken.accessToken,
+						fcmToken = ""
+					)
 				},
 				onFailure = { viewModel.updateUiState(LoginUiState.Failure(it?.message ?: "에러메세지가 존재하지 않습니다.")) }
 			)
@@ -116,9 +119,12 @@ private fun googleLogin(
 	val launcher = rememberGoogleSignInLauncher(
 		onSignInComplete = {
 			val account = GoogleLoginManager.handleSignInResult(it)
-			// TODO
-//			account.idToken
-//			account.serverAuthCode
+			// 소셜 로그인 접근
+			viewModel.authUser(
+				socialType = "GOOGLE",
+				authorizationCode = account.serverAuthCode.orEmpty(),
+				fcmToken = ""
+			)
 		},
 		onSignInFailure = {
 			LogUtil.e("onSignInFailure", "Error Code is $it")
