@@ -9,5 +9,6 @@ data class ReissueTokenResponse(
 
 @Serializable
 data class ReissueTokenResult(
-	val sample: String
+	val accessToken: String,
+	val refreshToken: String
 )

@@ -2,7 +2,9 @@ package com.lyfe.android.core.data.network.di
 
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
+import com.lyfe.android.core.data.network.authenticator.AuthAuthenticator
 import com.lyfe.android.core.data.network.converter.asConverterFactory
+import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
 import com.lyfe.android.core.data.network.service.AuthService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
@@ -28,7 +30,7 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesLyfeOkHttpClient(): OkHttpClient =
+	fun providesLyfeOkHttpClient(tokenInterceptor: TokenInterceptor, authAuthenticator: AuthAuthenticator): OkHttpClient =
 		OkHttpClient.Builder()
 			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
 			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
@@ -37,7 +39,10 @@ object NetworkModule {
 				HttpLoggingInterceptor().apply {
 					level = HttpLoggingInterceptor.Level.BODY
 				}
-			).build()
+			)
+			.addInterceptor(tokenInterceptor)
+			.authenticator(authAuthenticator)
+			.build()
 
 	@Provides
 	@Singleton

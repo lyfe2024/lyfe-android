@@ -8,8 +8,9 @@ import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.AuthUserUseCase
-import com.lyfe.android.core.domain.usecase.SaveAccessTokenUseCase
-import com.lyfe.android.core.domain.usecase.SaveRefreshTokenUseCase
+import com.lyfe.android.core.domain.usecase.UpdateAccessTokenUseCase
+import com.lyfe.android.core.domain.usecase.UpdateRefreshTokenUseCase
+import com.lyfe.android.core.domain.usecase.UpdateSignUpTokenUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,8 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
 	private val authUserUseCase: AuthUserUseCase,
-	private val saveAccessTokenUseCase: SaveAccessTokenUseCase,
-	private val saveRefreshTokenUseCase: SaveRefreshTokenUseCase
+	private val updateSignUpTokenUseCase: UpdateSignUpTokenUseCase,
+	private val updateAccessTokenUseCase: UpdateAccessTokenUseCase,
+	private val updateRefreshTokenUseCase: UpdateRefreshTokenUseCase
 ) : ViewModel() {
 
 	var uiState by mutableStateOf<LoginUiState>(LoginUiState.IDLE)
@@ -40,8 +42,17 @@ class LoginViewModel @Inject constructor(
 				is Result.Success -> {
 					// 소셜 로그인 성공 (유저 토큰)
 					LogUtil.d("authUser", response.body.toString())
-					saveAccessTokenUseCase(response.body!!.result.userToken)
-					uiState = LoginUiState.Success
+					val result = response.body!!.result
+					uiState = if (result.userToken.isEmpty()) {
+						// 이미 회원가입 되어있는 계정
+						updateAccessTokenUseCase(result.accessToken)
+						updateRefreshTokenUseCase(result.refreshToken)
+						LoginUiState.SignedIn
+					} else {
+						// 이제 회원가입하는 계정
+						updateSignUpTokenUseCase(result.userToken)
+						LoginUiState.Success
+					}
 				}
 				is Result.Failure -> {
 					// 소셜 로그인 실패
