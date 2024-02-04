@@ -1,6 +1,6 @@
 package com.lyfe.android.core.data.repository
 
-import com.lyfe.android.core.data.datasource.LocalUserDataSource
+import com.lyfe.android.core.data.datasource.LocalTokenDataSource
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
 import com.lyfe.android.core.data.model.CheckNicknameResponse
 import com.lyfe.android.core.data.network.model.Result
@@ -10,26 +10,42 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
 	private val remoteUserDataSource: RemoteUserDataSource,
-	private val localUserDataSource: LocalUserDataSource
+	private val localTokenDataSource: LocalTokenDataSource
 ) : UserRepository {
 
 	override suspend fun fetchIsNicknameDuplicated(nickname: String): Result<CheckNicknameResponse> {
 		return remoteUserDataSource.checkNicknameDuplicated(nickname)
 	}
 
-	override suspend fun saveUserAccessToken(accessToken: String) {
-		localUserDataSource.saveUserAccessToken(accessToken)
+	override suspend fun updateSignUpToken(signUpToken: String) {
+		localTokenDataSource.updateSignUpToken(signUpToken)
 	}
 
-	override suspend fun saveUserRefreshToken(refreshToken: String) {
-		localUserDataSource.saveUserRefreshToken(refreshToken)
+	override suspend fun updateAccessToken(accessToken: String) {
+		localTokenDataSource.updateAccessToken(accessToken)
 	}
 
-	override fun getUserAccessToken(): Flow<String> {
-		return localUserDataSource.getUserAccessToken()
+	override suspend fun updateRefreshToken(refreshToken: String) {
+		localTokenDataSource.updateRefreshToken(refreshToken)
 	}
 
-	override fun getUserRefreshToken(): Flow<String> {
-		return localUserDataSource.getUserRefreshToken()
+	override fun getSignUpToken(): Flow<String> {
+		return localTokenDataSource.getSignUpToken()
+	}
+
+	override fun getAccessToken(): Flow<String> {
+		return localTokenDataSource.getAccessToken()
+	}
+
+	override fun getRefreshToken(): Flow<String> {
+		return localTokenDataSource.getRefreshToken()
+	}
+
+	override suspend fun deleteSignUpToken() {
+		localTokenDataSource.deleteSignUpToken()
+	}
+
+	override suspend fun deleteAllToken() {
+		localTokenDataSource.deleteAllToken()
 	}
 }

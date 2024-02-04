@@ -50,9 +50,23 @@ fun LoginScreen(
 
 		LoginButtonArea(viewModel = viewModel)
 
-		if (viewModel.uiState == LoginUiState.Success) {
-			navigator.navigate(LyfeScreens.Nickname.name)
-			viewModel.updateUiState(LoginUiState.IDLE)
+		when(viewModel.uiState) {
+			is LoginUiState.Loading -> {
+				// 로딩중 표시
+			}
+			is LoginUiState.Failure -> {
+				// 실패 토스트 메세지 표시
+			}
+			is LoginUiState.SignedIn -> {
+				// 기존 유저 로그인 -> 홈 화면으로 이동
+				navigator.navigateAndroidClearBackStack(LyfeScreens.Home.name)
+			}
+			is LoginUiState.Success -> {
+				// 회원가입 절차 진행
+				navigator.navigate(LyfeScreens.Nickname.name)
+				viewModel.updateUiState(LoginUiState.IDLE)
+			}
+			else -> {}
 		}
 	}
 }

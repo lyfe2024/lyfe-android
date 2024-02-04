@@ -4,8 +4,8 @@ import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.datasource.AuthDataSourceImpl
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
-import com.lyfe.android.core.data.datasource.LocalUserDataSource
-import com.lyfe.android.core.data.datasource.LocalUserDataSourceImpl
+import com.lyfe.android.core.data.datasource.LocalTokenDataSource
+import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
 import com.lyfe.android.core.data.datasource.RemoteUserDataSourceImpl
 import dagger.Binds
@@ -32,9 +32,9 @@ interface DataSourceModule {
 
 	@Singleton
 	@Binds
-	fun bindsLocalUserDataSource(
-		localUserDataSourceImpl: LocalUserDataSourceImpl
-	): LocalUserDataSource
+	fun bindsLocalTokenDataSource(
+		localTokenDataSourceImpl: LocalTokenDataSourceImpl
+	): LocalTokenDataSource
 
 	@Singleton
 	@Binds
