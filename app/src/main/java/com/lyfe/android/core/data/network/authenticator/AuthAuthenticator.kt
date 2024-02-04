@@ -18,12 +18,13 @@ import okhttp3.Response
 import okhttp3.Route
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import java.net.HttpURLConnection.HTTP_UNAUTHORIZED
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class AuthAuthenticator @Inject constructor(
 	private val localTokenDataSource: LocalTokenDataSource
-): Authenticator {
+) : Authenticator {
 
 	private companion object {
 		private const val ConnectTimeout = 15L
@@ -32,29 +33,27 @@ class AuthAuthenticator @Inject constructor(
 		private val contentType = "application/json".toMediaType()
 	}
 
-	override fun authenticate(route: Route?, response: Response): Request? {
-		if (response.code == 401) {
-			val refreshToken = runBlocking {
+	override fun authenticate(route: Route?, response: Response): Request {
+		if (response.code == HTTP_UNAUTHORIZED) {
+			val token = runBlocking {
 				localTokenDataSource.getRefreshToken().first()
 			}
 			// The access token is expired. Refresh the credentials.
 			synchronized(this) {
 				// Make sure only one coroutine refreshes the token at a time.
 				return runBlocking {
-					try {
-						val newTokenResult = getNewToken(refreshToken)
-						if (newTokenResult is Result.Success) {
-							// Update the access token in your storage.
-							localTokenDataSource.updateRefreshToken(newTokenResult.body!!.result.refreshToken)
-							localTokenDataSource.updateAccessToken(newTokenResult.body.result.accessToken)
-						}
+					val newTokenResult = getNewToken(token)
+					if (newTokenResult is Result.Success) {
+						val accessToken = newTokenResult.body!!.result.accessToken
+						val refreshToken = newTokenResult.body.result.refreshToken
+						// Update the access token in your storage.
+						localTokenDataSource.updateAccessToken(accessToken)
+						localTokenDataSource.updateRefreshToken(refreshToken)
 						return@runBlocking response.request.newBuilder()
-							.header("Authorization", "Bearer ${localTokenDataSource.getAccessToken()}")
+							.header("Authorization", "Bearer $accessToken")
 							.build()
-
-					} catch (e: Exception) {
-						// The refresh process failed. Give up on retrying the request.
-						return@runBlocking null
+					} else {
+						return@runBlocking response.request
 					}
 				}
 			}
