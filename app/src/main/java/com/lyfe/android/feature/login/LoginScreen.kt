@@ -50,7 +50,7 @@ fun LoginScreen(
 
 		LoginButtonArea(viewModel = viewModel)
 
-		when(viewModel.uiState) {
+		when (viewModel.uiState) {
 			is LoginUiState.Loading -> {
 				// 로딩중 표시
 			}

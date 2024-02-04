@@ -33,7 +33,7 @@ class PolicyViewModel @Inject constructor(
 	) = viewModelScope.launch {
 		uiState = PolicyUiState.Loading
 		val userToken = getSignUpTokenUseCase().first()
-		when(val response = signUpUserUseCase(userToken, nickname)) {
+		when (val response = signUpUserUseCase(userToken, nickname)) {
 			is Result.Success -> {
 				val result = response.body?.result
 				uiState = if (result == null) {

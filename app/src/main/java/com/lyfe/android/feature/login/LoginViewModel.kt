@@ -38,7 +38,7 @@ class LoginViewModel @Inject constructor(
 	) {
 		uiState = LoginUiState.Loading
 		viewModelScope.launch {
-			when(val response = authUserUseCase(socialType, authorizationCode, identityToken, fcmToken)) {
+			when (val response = authUserUseCase(socialType, authorizationCode, identityToken, fcmToken)) {
 				is Result.Success -> {
 					// 소셜 로그인 성공 (유저 토큰)
 					LogUtil.d("authUser", response.body.toString())

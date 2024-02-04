@@ -78,7 +78,7 @@ fun PolicyScreen(
 		PolicyAgreeContent()
 	}
 
-	when(viewModel.uiState) {
+	when (viewModel.uiState) {
 		PolicyUiState.Success -> {
 			navigator.navigate(LyfeScreens.LoginComplete.name)
 		}
@@ -134,7 +134,7 @@ private fun PolicyAgreeContent(
 
 		PolicyCompleteButton(allChecked) {
 			// 회원가입
-			viewModel.postUser( "nickname")
+			viewModel.postUser("nickname")
 		}
 	}
 }
