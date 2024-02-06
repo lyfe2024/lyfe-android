@@ -13,6 +13,28 @@ interface UserRepository {
 		nickname: String
 	): Result<CheckNicknameResponse>
 
+	suspend fun updateSignUpToken(
+		signUpToken: String
+	)
+
+	suspend fun updateAccessToken(
+		accessToken: String
+	)
+
+	suspend fun updateRefreshToken(
+		refreshToken: String
+	)
+
+	fun getSignUpToken(): Flow<String>
+
+	fun getAccessToken(): Flow<String>
+
+	fun getRefreshToken(): Flow<String>
+
+	suspend fun deleteSignUpToken()
+
+	suspend fun deleteAllToken()
+
 	fun getUserInfo(): Flow<User>
 
 	suspend fun putUserInfo(

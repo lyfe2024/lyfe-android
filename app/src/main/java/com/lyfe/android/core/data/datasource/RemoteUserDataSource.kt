@@ -6,7 +6,7 @@ import com.lyfe.android.core.data.model.GetUserInfoResponse
 import com.lyfe.android.core.data.model.PutUserInfoResponse
 import com.lyfe.android.core.data.network.model.Result
 
-interface UserDataSource {
+interface RemoteUserDataSource {
 	suspend fun checkNicknameDuplicated(nickname: String): Result<CheckNicknameResponse>
 
 	suspend fun getUserInfo(): Result<GetUserInfoResponse>

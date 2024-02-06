@@ -49,6 +49,7 @@
 					android:host="oauth"
 					android:scheme="${KAKAO_REDIRECTION_SCHEME}" />
 			</intent-filter>
+
 		</activity>
     </application>
 

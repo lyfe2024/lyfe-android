@@ -53,28 +53,26 @@ class ProfileEditViewModel @Inject constructor(
 		}
 	}
 
-	fun checkNicknameDuplicate(nickname: String) {
-		viewModelScope.launch {
-			val result = userRepository.fetchIsNicknameDuplicated(nickname = nickname)
-			when (result) {
-				is Result.Success -> {
-					uiState = ProfileEditUiState.Success(nickname = nickname)
-				}
-				is Result.Failure -> {
-					uiState = ProfileEditUiState.Failure(
-						message = result.error ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."
-					)
-				}
-				is Result.NetworkError -> {
-					uiState = ProfileEditUiState.Failure(
-						message = "네트워크 연결에 실패했습니다."
-					)
-				}
-				is Result.Unexpected -> {
-					uiState = ProfileEditUiState.Failure(
-						message = "예기치 못한 오류가 발생했습니다."
-					)
-				}
+	fun checkNicknameDuplicate(nickname: String) = viewModelScope.launch {
+		val result = userRepository.fetchIsNicknameDuplicated(nickname = nickname)
+		when (result) {
+			is Result.Success -> {
+				uiState = ProfileEditUiState.Success(nickname = nickname)
+			}
+			is Result.Failure -> {
+				uiState = ProfileEditUiState.Failure(
+					message = result.error ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."
+				)
+			}
+			is Result.NetworkError -> {
+				uiState = ProfileEditUiState.Failure(
+					message = "네트워크 연결에 실패했습니다."
+				)
+			}
+			is Result.Unexpected -> {
+				uiState = ProfileEditUiState.Failure(
+					message = "예기치 못한 오류가 발생했습니다."
+				)
 			}
 		}
 	}
