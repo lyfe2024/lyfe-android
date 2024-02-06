@@ -1,6 +1,7 @@
 package com.lyfe.android.core.data.repository
 
-import com.lyfe.android.core.data.datasource.UserDataSource
+import com.lyfe.android.core.data.datasource.LocalTokenDataSource
+import com.lyfe.android.core.data.datasource.RemoteUserDataSource
 import com.lyfe.android.core.data.mapper.toDomain
 import com.lyfe.android.core.data.model.CheckNicknameResponse
 import com.lyfe.android.core.data.model.PutUserInfoResponse
@@ -19,15 +20,48 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-	private val userDataSource: UserDataSource
+	private val remoteUserDataSource: RemoteUserDataSource,
+	private val localTokenDataSource: LocalTokenDataSource
 ) : UserRepository {
 
 	override suspend fun fetchIsNicknameDuplicated(nickname: String): Result<CheckNicknameResponse> {
-		return userDataSource.checkNicknameDuplicated(nickname)
+		return remoteUserDataSource.checkNicknameDuplicated(nickname)
+	}
+
+	override suspend fun updateSignUpToken(signUpToken: String) {
+		localTokenDataSource.updateSignUpToken(signUpToken)
+	}
+
+	override suspend fun updateAccessToken(accessToken: String) {
+		localTokenDataSource.updateAccessToken(accessToken)
+	}
+
+	override suspend fun updateRefreshToken(refreshToken: String) {
+		localTokenDataSource.updateRefreshToken(refreshToken)
+	}
+
+	override fun getSignUpToken(): Flow<String> {
+		return localTokenDataSource.getSignUpToken()
+	}
+
+	override fun getAccessToken(): Flow<String> {
+		return localTokenDataSource.getAccessToken()
+	}
+
+	override fun getRefreshToken(): Flow<String> {
+		return localTokenDataSource.getRefreshToken()
+	}
+
+	override suspend fun deleteSignUpToken() {
+		localTokenDataSource.deleteSignUpToken()
+	}
+
+	override suspend fun deleteAllToken() {
+		localTokenDataSource.deleteAllToken()
 	}
 
 	override fun getUserInfo(): Flow<User> = flow {
-		when (val response = userDataSource.getUserInfo()) {
+		when (val response = remoteUserDataSource.getUserInfo()) {
 			is Result.Success -> {
 				emit(response.body!!.result.toDomain())
 			}
@@ -49,11 +83,11 @@ class UserRepositoryImpl @Inject constructor(
 		width: Int,
 		height: Int
 	): Result<PutUserInfoResponse> {
-		return userDataSource.putUserInfo(nickname, profileUrl, width, height)
+		return remoteUserDataSource.putUserInfo(nickname, profileUrl, width, height)
 	}
 
 	override fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>> = flow {
-		when (val response = userDataSource.getUserBoard(lastId)) {
+		when (val response = remoteUserDataSource.getUserBoard(lastId)) {
 			is Result.Success -> {
 				val result = response.body!!.result
 				emit(Pair(result.boardPictureList.map { it.toDomain() }, result.page.toDomain()))

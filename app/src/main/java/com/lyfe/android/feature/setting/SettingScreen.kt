@@ -114,6 +114,7 @@ fun SettingContent(
 				isClearIconShow = false
 			) {
 				// TODO 로그아웃
+				navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
 			}
 		}
 
