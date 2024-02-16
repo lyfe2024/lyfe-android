@@ -3,8 +3,6 @@ package com.lyfe.android.core.data.repository
 import com.lyfe.android.core.data.datasource.LocalTokenDataSource
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
 import com.lyfe.android.core.data.mapper.toDomain
-import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.model.PutUserInfoResponse
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.Result
@@ -23,10 +21,6 @@ class UserRepositoryImpl @Inject constructor(
 	private val remoteUserDataSource: RemoteUserDataSource,
 	private val localTokenDataSource: LocalTokenDataSource
 ) : UserRepository {
-
-	override suspend fun fetchIsNicknameDuplicated(nickname: String): Result<CheckNicknameResponse> {
-		return remoteUserDataSource.checkNicknameDuplicated(nickname)
-	}
 
 	override suspend fun updateSignUpToken(signUpToken: String) {
 		localTokenDataSource.updateSignUpToken(signUpToken)
@@ -77,13 +71,43 @@ class UserRepositoryImpl @Inject constructor(
 		}
 	}.flowOn(ioDispatcher)
 
+	override suspend fun fetchIsNicknameDuplicated(nickname: String) = flow {
+		when (val response = remoteUserDataSource.checkNicknameDuplicated(nickname)) {
+			is Result.Success -> {
+				emit(response.body!!.result.isAvailable)
+			}
+			is Result.Failure -> {
+				throw RuntimeException(response.error)
+			}
+			is Result.NetworkError -> {
+				throw RuntimeException(response.exception)
+			}
+			is Result.Unexpected -> {
+				throw Exception(response.t)
+			}
+		}
+	}
+
 	override suspend fun putUserInfo(
 		nickname: String,
 		profileUrl: String,
 		width: Int,
 		height: Int
-	): Result<PutUserInfoResponse> {
-		return remoteUserDataSource.putUserInfo(nickname, profileUrl, width, height)
+	) = flow {
+		when (val response = remoteUserDataSource.putUserInfo(nickname, profileUrl, width, height)) {
+			is Result.Success -> {
+				emit(response.body!!.result.toDomain())
+			}
+			is Result.Failure -> {
+				throw RuntimeException(response.error)
+			}
+			is Result.NetworkError -> {
+				throw RuntimeException(response.exception)
+			}
+			is Result.Unexpected -> {
+				throw RuntimeException(response.t)
+			}
+		}
 	}
 
 	override fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>> = flow {
@@ -99,7 +123,7 @@ class UserRepositoryImpl @Inject constructor(
 				throw RuntimeException(response.exception)
 			}
 			is Result.Unexpected -> {
-				throw RuntimeException(response.t)
+				throw Exception(response.t)
 			}
 		}
 	}.flowOn(ioDispatcher)

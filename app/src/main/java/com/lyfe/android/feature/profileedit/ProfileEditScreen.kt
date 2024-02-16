@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.profileedit
 
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,8 +47,8 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
-import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
 fun ProfileEditScreen(
@@ -87,22 +86,28 @@ private fun ProfileEditContentArea(
 	when (viewModel.uiState) {
 		is ProfileEditUiState.IDLE -> {
 			// 처음 화면에 보일 닉네임은 로컬 저장소에서 가져옴.
-			ProfileEditContent(viewModel = viewModel, nickname = "Guest")
+			ProfileEditContent(
+				viewModel = viewModel,
+				navigator = navigator,
+				nickname = viewModel.user.name
+			)
 		}
 		is ProfileEditUiState.Success -> {
 			// 프로필 변경 완료하면 토스트 메세지 띄우고 이전 화면으로
 			Toast.makeText(context, stringResource(R.string.edit_nickname_complete), Toast.LENGTH_SHORT).show()
 			navigator.navigateUp()
 		}
-
 		is ProfileEditUiState.Failure -> {
 			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
 			val error = viewModel.uiState as ProfileEditUiState.Failure
-			ProfileEditContent(viewModel = viewModel, nickname = "Guest")
+			ProfileEditContent(
+				viewModel = viewModel,
+				navigator = navigator,
+				nickname = viewModel.user.name
+			)
 
 			Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
 		}
-
 		is ProfileEditUiState.Loading -> {
 			// 로딩하는 동안 Progressbar 보여주기
 		}
@@ -112,6 +117,7 @@ private fun ProfileEditContentArea(
 @Composable
 private fun ProfileEditContent(
 	viewModel: ProfileEditViewModel,
+	navigator: LyfeNavigator,
 	nickname: String
 ) {
 	var nicknameState by remember { mutableStateOf(nickname) }
@@ -124,7 +130,7 @@ private fun ProfileEditContent(
 			modifier = Modifier.fillMaxSize(),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			ProfileEditThumbnailContent()
+			ProfileEditThumbnailContent(viewModel)
 
 			Spacer(modifier = Modifier.height(40.dp))
 
@@ -144,6 +150,7 @@ private fun ProfileEditContent(
 
 			ProfileEditCompleteButton(
 				viewModel = viewModel,
+				navigator = navigator,
 				nickname = nicknameState
 			)
 		}
@@ -152,22 +159,38 @@ private fun ProfileEditContent(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun ProfileEditThumbnailContent() {
-	// 썸네일 변경하는 부분
-	var imageUri by remember { mutableStateOf<Uri?>(null) }
+private fun ProfileEditThumbnailContent(
+	viewModel: ProfileEditViewModel
+) {
+	val context = LocalContext.current
+	// 프로필 이미지 변경하는 부분
 	Box(
 		modifier = Modifier.size(92.dp)
 	) {
 		// Gallery Launcher
 		val galleryLauncher = rememberLauncherForActivityResult(
 			contract = ActivityResultContracts.GetContent(),
-			onResult = { imageUri = it }
+			onResult = {
+				if (it == null) {
+					return@rememberLauncherForActivityResult
+				}
+				val cursor = context.contentResolver.query(it, null, null, null, null)
+				if (cursor?.moveToNext() == true) {
+					val path = cursor.getString(cursor.getColumnIndexOrThrow("_data"))
+					viewModel.updateProfileImageFilePath(path)
+				}
+				cursor?.close()
+			}
 		)
 		// 클릭하면 앨범으로 이동
 		val onClick = { galleryLauncher.launch("image/*") }
 
 		GlideImage(
-			model = imageUri,
+			model = if (viewModel.path == null) {
+				viewModel.user.profileImage
+			} else {
+				viewModel.path
+			},
 			contentDescription = "프로필 이미지",
 			contentScale = ContentScale.Crop,
 			modifier = Modifier
@@ -286,6 +309,7 @@ private fun NicknameConditionText(
 @Composable
 private fun ProfileEditCompleteButton(
 	viewModel: ProfileEditViewModel,
+	navigator: LyfeNavigator,
 	nickname: String
 ) {
 	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT &&
@@ -305,8 +329,12 @@ private fun ProfileEditCompleteButton(
 		},
 		text = stringResource(id = R.string.complete),
 		onClick = {
-			if (isNicknameEnable) {
+			if (isNicknameEnable && nickname != viewModel.user.name) {
 				viewModel.checkNicknameDuplicate(nickname = nickname)
+			} else if (viewModel.path != null) {
+				viewModel.uploadProfileImage()
+			} else {
+				navigator.navigateUp()
 			}
 		}
 	)

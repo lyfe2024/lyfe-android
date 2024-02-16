@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.domain.usecase.GetUserBoardUseCase
 import com.lyfe.android.core.domain.usecase.GetUserInfoUseCase
 import com.lyfe.android.core.model.Feed
@@ -14,8 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,41 +27,34 @@ class ProfileViewModel @Inject constructor(
 	var uiState by mutableStateOf<ProfileUiState>(ProfileUiState.Loading)
 		private set
 
-	private val _user = mutableStateOf(User())
-	val userInfo get() = _user.value
+	private val _user = MutableStateFlow(User())
+	val user get() = _user.value
 
 	private val _feedList = MutableStateFlow<List<Feed>>(emptyList())
 	val feedList get() = _feedList.asStateFlow()
 
 	private var lastPage: Page? = null
 
-	init {
-		getUserInfo()
-		fetchFeedList()
-	}
-
-	fun getUserInfo() {
-		getUserInfoUseCase().onStart {
+	fun getUserInfo() = viewModelScope.launch {
+		getUserInfoUseCase().onEach {
 			uiState = ProfileUiState.Loading
-		}.onEach {
-			_user.value = it
-			uiState = ProfileUiState.UserSuccess
 		}.catch {
 			uiState = ProfileUiState.Failure
+		}.collect {
+			_user.value = it
+			uiState = ProfileUiState.UserSuccess
 		}
 	}
 
-	fun fetchFeedList() {
-		getUserBoardUseCase(lastPage?.number).onStart {
-			uiState = ProfileUiState.Loading
-		}.onEach { result ->
+	fun fetchFeedList() = viewModelScope.launch {
+		getUserBoardUseCase(lastPage?.number).catch {
+			// TODO
+		}.collect { result ->
 			val feeds = result.first
 			lastPage = result.second
 			_feedList.update {
 				it.plus(feeds)
 			}
-		}.catch {
-			uiState = ProfileUiState.Failure
 		}
 	}
 }

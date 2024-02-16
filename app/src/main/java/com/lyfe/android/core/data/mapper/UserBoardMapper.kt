@@ -9,7 +9,7 @@ internal fun BoardPicture.toDomain(): Feed =
 	Feed(
 		feedId = this.id,
 		title = this.title,
-//		content = this.content ? "",
+		// content = this.content ? "",
 		content = "",
 		feedImageUrl = this.picture.pictureUrl,
 		date = this.date,
@@ -18,7 +18,7 @@ internal fun BoardPicture.toDomain(): Feed =
 		userProfileImgUrl = this.user.profile,
 		whiskyCount = this.whiskyCount,
 		commentCount = this.commentCount,
-		isLike = this.isLike,
+		isLike = this.isLike
 	)
 
 internal fun PageInfo.toDomain(): Page =

@@ -4,6 +4,8 @@ import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.datasource.AuthDataSourceImpl
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
+import com.lyfe.android.core.data.datasource.ImageDataSource
+import com.lyfe.android.core.data.datasource.ImageDataSourceImpl
 import com.lyfe.android.core.data.datasource.LocalTokenDataSource
 import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
@@ -41,4 +43,10 @@ interface DataSourceModule {
 	fun bindsAuthDataSource(
 		authDataSourceImpl: AuthDataSourceImpl
 	): AuthDataSource
+
+	@Singleton
+	@Binds
+	fun bindsImageDataSource(
+		imageDataSourceImpl: ImageDataSourceImpl
+	): ImageDataSource
 }
