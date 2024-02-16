@@ -93,13 +93,17 @@ private fun ProfileContentArea(
 	viewModel: ProfileViewModel,
 	navigator: LyfeNavigator
 ) {
+	LaunchedEffect(Unit) {
+		viewModel.getUserInfo()
+	}
+
 	when (viewModel.uiState) {
 		is ProfileUiState.GuestSuccess,
 		is ProfileUiState.UserSuccess -> {
 			val isGuest = viewModel.uiState is ProfileUiState.GuestSuccess
 			ProfileUserInfo(
 				navigator = navigator,
-				user = viewModel.userInfo
+				user = viewModel.user
 			)
 
 			Spacer(modifier = Modifier.height(16.dp))
@@ -157,7 +161,7 @@ private fun ProfileUserInfo(
 				)
 			)
 
-			if (user.id <= 0) {
+			if (user.id > 0) {
 				ClickableText(
 					text = AnnotatedString(stringResource(id = R.string.profile_edit_title)),
 					style = TextStyle(

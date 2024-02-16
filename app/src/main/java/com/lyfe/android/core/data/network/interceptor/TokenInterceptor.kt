@@ -26,7 +26,7 @@ class TokenInterceptor @Inject constructor(
 
 	private fun Request.putTokenHeader(accessToken: String): Request {
 		return this.newBuilder()
-			.addHeader(AUTHORIZATION, "Bearer\n$accessToken")
+			.addHeader(AUTHORIZATION, "Bearer $accessToken")
 			.build()
 	}
 

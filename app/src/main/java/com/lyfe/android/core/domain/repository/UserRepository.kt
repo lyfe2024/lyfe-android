@@ -1,18 +1,11 @@
 package com.lyfe.android.core.domain.repository
 
-import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.model.PutUserInfoResponse
-import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.Page
 import com.lyfe.android.core.model.User
 import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-	suspend fun fetchIsNicknameDuplicated(
-		nickname: String
-	): Result<CheckNicknameResponse>
-
 	suspend fun updateSignUpToken(
 		signUpToken: String
 	)
@@ -37,12 +30,16 @@ interface UserRepository {
 
 	fun getUserInfo(): Flow<User>
 
+	suspend fun fetchIsNicknameDuplicated(
+		nickname: String
+	): Flow<Boolean>
+
 	suspend fun putUserInfo(
 		nickname: String,
 		profileUrl: String,
 		width: Int,
 		height: Int
-	): Result<PutUserInfoResponse>
+	): Flow<User>
 
 	fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>>
 }

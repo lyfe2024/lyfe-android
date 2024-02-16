@@ -3,6 +3,7 @@ package com.lyfe.android.core.data.datasource
 import com.lyfe.android.core.data.model.CheckNicknameResponse
 import com.lyfe.android.core.data.model.GetUserBoardResponse
 import com.lyfe.android.core.data.model.GetUserInfoResponse
+import com.lyfe.android.core.data.model.PutUserInfoRequest
 import com.lyfe.android.core.data.model.PutUserInfoResponse
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.UserService
@@ -26,12 +27,7 @@ class RemoteUserDataSourceImpl @Inject constructor(
 		width: Int,
 		height: Int
 	): Result<PutUserInfoResponse> {
-		val body = mapOf(
-			"nickname" to nickname,
-			"profileUrl" to profileUrl,
-			"width" to width,
-			"height" to height
-		)
+		val body = PutUserInfoRequest(nickname, profileUrl, width, height)
 		return userService.putUserInfo(body)
 	}
 

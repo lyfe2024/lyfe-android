@@ -3,6 +3,7 @@ package com.lyfe.android.core.data.network.service
 import com.lyfe.android.core.data.model.CheckNicknameResponse
 import com.lyfe.android.core.data.model.GetUserBoardResponse
 import com.lyfe.android.core.data.model.GetUserInfoResponse
+import com.lyfe.android.core.data.model.PutUserInfoRequest
 import com.lyfe.android.core.data.model.PutUserInfoResponse
 import com.lyfe.android.core.data.network.model.Result
 import retrofit2.http.Body
@@ -23,7 +24,7 @@ interface UserService {
 
 	@PUT("/v1/users/me")
 	suspend fun putUserInfo(
-		@Body body: Map<String, Any>
+		@Body body: PutUserInfoRequest
 	): Result<PutUserInfoResponse>
 
 	@GET("/v1/users/me/boards")

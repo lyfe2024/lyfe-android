@@ -3,8 +3,8 @@ package com.lyfe.android.core.domain.usecase
 import com.lyfe.android.core.domain.repository.UserRepository
 import javax.inject.Inject
 
-class EditUserInfoUseCase @Inject constructor(
-	private val repository: UserRepository
+class EditProfileUseCase @Inject constructor(
+	private val userRepository: UserRepository
 ) {
 
 	suspend operator fun invoke(
@@ -12,5 +12,5 @@ class EditUserInfoUseCase @Inject constructor(
 		profileUrl: String,
 		width: Int,
 		height: Int
-	) = repository.putUserInfo(nickname, profileUrl, width, height)
+	) = userRepository.putUserInfo(nickname, profileUrl, width, height)
 }

@@ -1,13 +1,14 @@
 package com.lyfe.android.feature.profileedit
 
+import com.lyfe.android.core.model.User
+
 sealed interface ProfileEditUiState {
 
 	object IDLE : ProfileEditUiState
 	object Loading : ProfileEditUiState
 
 	data class Success(
-		val thumbnail: String = "",
-		val nickname: String
+		val user: User
 	) : ProfileEditUiState
 
 	data class Failure(
