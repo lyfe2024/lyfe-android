@@ -6,9 +6,10 @@ import com.lyfe.android.core.data.model.ReissueTokenResponse
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.AuthService
 import javax.inject.Inject
+import javax.inject.Named
 
 class AuthDataSourceImpl @Inject constructor(
-	private val authService: AuthService
+	@Named("lyfe") private val authService: AuthService
 ) : AuthDataSource {
 
 	override suspend fun postUser(
