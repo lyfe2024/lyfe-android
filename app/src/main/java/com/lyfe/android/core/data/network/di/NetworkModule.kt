@@ -31,7 +31,10 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesLyfeOkHttpClient(tokenInterceptor: TokenInterceptor, tokenAuthenticator: TokenAuthenticator): OkHttpClient =
+	fun providesLyfeOkHttpClient(
+		tokenInterceptor: TokenInterceptor,
+		tokenAuthenticator: TokenAuthenticator
+	): OkHttpClient =
 		OkHttpClient.Builder()
 			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
 			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
