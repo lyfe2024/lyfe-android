@@ -2,7 +2,7 @@ package com.lyfe.android.core.data.network.di
 
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
-import com.lyfe.android.core.data.network.authenticator.AuthAuthenticator
+import com.lyfe.android.core.data.network.authenticator.TokenAuthenticator
 import com.lyfe.android.core.data.network.converter.asConverterFactory
 import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
 import com.lyfe.android.core.data.network.service.AWSService
@@ -33,7 +33,10 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesLyfeOkHttpClient(tokenInterceptor: TokenInterceptor, authAuthenticator: AuthAuthenticator): OkHttpClient =
+	fun providesLyfeOkHttpClient(
+		tokenInterceptor: TokenInterceptor,
+		tokenAuthenticator: TokenAuthenticator
+	): OkHttpClient =
 		OkHttpClient.Builder()
 			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
 			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
@@ -44,7 +47,7 @@ object NetworkModule {
 				}
 			)
 			.addInterceptor(tokenInterceptor)
-			.authenticator(authAuthenticator)
+			.authenticator(tokenAuthenticator)
 			.build()
 
 	@Provides
@@ -83,6 +86,39 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
+	@Named("lyfe")
+	fun providesLyfeAuthService(retrofit: Retrofit): AuthService {
+		return retrofit.create(AuthService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	@Named("authenticator")
+	fun providesAuthenticatorAuthService(): AuthService {
+		val jsonConfig = Json { isLenient = true }
+
+		val okHttpClient = OkHttpClient.Builder()
+			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
+			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
+			.readTimeout(ReadTimeout, TimeUnit.SECONDS)
+			.addInterceptor(
+				HttpLoggingInterceptor().apply {
+					level = HttpLoggingInterceptor.Level.BODY
+				}
+			)
+			.build()
+
+		val retrofit = Retrofit.Builder()
+			.baseUrl(BuildConfig.BASE_URL)
+			.addConverterFactory(jsonConfig.asConverterFactory(contentType))
+			.addCallAdapterFactory(ResultCallAdapterFactory())
+			.client(okHttpClient)
+			.build()
+
+		return retrofit.create(AuthService::class.java)
+	}
+
+
 	fun providesAuthService(@Named("Lyfe") retrofit: Retrofit): AuthService {
 		return retrofit.create(AuthService::class.java)
 	}
