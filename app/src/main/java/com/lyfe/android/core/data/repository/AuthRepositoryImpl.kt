@@ -1,8 +1,11 @@
 package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.AuthDataSource
+import com.lyfe.android.core.data.model.AuthUserRequest
 import com.lyfe.android.core.data.model.AuthUserResponse
+import com.lyfe.android.core.data.model.PostUserRequest
 import com.lyfe.android.core.data.model.PostUserResponse
+import com.lyfe.android.core.data.model.ReissueTokenRequest
 import com.lyfe.android.core.data.model.ReissueTokenResponse
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.AuthRepository
@@ -13,7 +16,8 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
 	override suspend fun postUser(userToken: String, nickname: String): Result<PostUserResponse> {
-		return authDataSource.postUser(userToken, nickname)
+		val requestBody = PostUserRequest(userToken, nickname)
+		return authDataSource.postUser(requestBody)
 	}
 
 	override suspend fun authUser(
@@ -22,10 +26,12 @@ class AuthRepositoryImpl @Inject constructor(
 		identityToken: String,
 		fcmToken: String
 	): Result<AuthUserResponse> {
-		return authDataSource.authUser(socialType, authorizationCode, identityToken, fcmToken)
+		val requestBody = AuthUserRequest(socialType, authorizationCode, identityToken, fcmToken)
+		return authDataSource.authUser(requestBody)
 	}
 
 	override suspend fun reissueToken(token: String): Result<ReissueTokenResponse> {
-		return authDataSource.reissueToken(token)
+		val requestBody = ReissueTokenRequest(token)
+		return authDataSource.reissueToken(requestBody)
 	}
 }
