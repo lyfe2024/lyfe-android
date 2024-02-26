@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.profileedit
 
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
@@ -44,6 +43,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
@@ -53,7 +53,8 @@ import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 @Composable
 fun ProfileEditScreen(
 	navigator: LyfeNavigator,
-	viewModel: ProfileEditViewModel = hiltViewModel()
+	viewModel: ProfileEditViewModel = hiltViewModel(),
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -72,16 +73,20 @@ fun ProfileEditScreen(
 
 		Spacer(modifier = Modifier.height(21.dp))
 
-		ProfileEditContentArea(navigator, viewModel)
+		ProfileEditContentArea(
+			navigator = navigator,
+			viewModel = viewModel,
+			onShowSnackBar = onShowSnackBar
+		)
 	}
 }
 
 @Composable
 private fun ProfileEditContentArea(
 	navigator: LyfeNavigator,
-	viewModel: ProfileEditViewModel
+	viewModel: ProfileEditViewModel,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
-	val context = LocalContext.current
 	// ViewModel uiState 에 따라서 화면 표시 여부 달라짐
 	when (viewModel.uiState) {
 		is ProfileEditUiState.IDLE -> {
@@ -94,19 +99,24 @@ private fun ProfileEditContentArea(
 		}
 		is ProfileEditUiState.Success -> {
 			// 프로필 변경 완료하면 토스트 메세지 띄우고 이전 화면으로
-			Toast.makeText(context, stringResource(R.string.edit_nickname_complete), Toast.LENGTH_SHORT).show()
+			onShowSnackBar(
+				LyfeSnackBarIconType.SUCCESS,
+				stringResource(id = R.string.edit_nickname_complete)
+			)
 			navigator.navigateUp()
 		}
 		is ProfileEditUiState.Failure -> {
 			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
 			val error = viewModel.uiState as ProfileEditUiState.Failure
+			onShowSnackBar(
+				LyfeSnackBarIconType.ERROR,
+				error.message
+			)
 			ProfileEditContent(
 				viewModel = viewModel,
 				navigator = navigator,
 				nickname = viewModel.user.name
 			)
-
-			Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
 		}
 		is ProfileEditUiState.Loading -> {
 			// 로딩하는 동안 Progressbar 보여주기

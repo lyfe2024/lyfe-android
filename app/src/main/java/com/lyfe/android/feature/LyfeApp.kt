@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,12 +32,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeSnackBar
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarVisuals
+import com.lyfe.android.core.common.ui.navigation.NavigationTab
 import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.core.common.ui.navigation.NavigationTab
 
-@OptIn(ExperimentalAnimationApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun LyfeApp(
 	navigator: LyfeNavigator
@@ -42,6 +47,8 @@ fun LyfeApp(
 	val density = LocalDensity.current
 	val navController = rememberNavController()
 	val scrollState = rememberScrollState()
+	var snackBarVisuals by remember { mutableStateOf(LyfeSnackBarVisuals()) }
+	val snackBarState = remember { SnackbarHostState() }
 
 	var isNavigationBarHide by remember { mutableStateOf(false) }
 	var isNeedNavigationTabIndicatorAnimation by remember { mutableStateOf(false) }
@@ -51,6 +58,10 @@ fun LyfeApp(
 			.collect {
 				isNavigationBarHide = it
 			}
+	}
+
+	LaunchedEffect(snackBarVisuals) {
+		snackBarState.showSnackbar(snackBarVisuals)
 	}
 	
 	LaunchedEffect(isNavigationBarHide) {
@@ -82,6 +93,12 @@ fun LyfeApp(
 			navigator = navigator,
 			onScroll = {
 				isNavigationBarHide = it
+			},
+			onShowSnackBar = { iconType, message ->
+				snackBarVisuals = LyfeSnackBarVisuals(
+					iconType = iconType,
+					message = message
+				)
 			}
 		) { route ->
 			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
@@ -117,6 +134,17 @@ fun LyfeApp(
 					}
 				)
 			}
+		}
+
+		SnackbarHost(
+			modifier = Modifier.align(Alignment.BottomCenter),
+			hostState = snackBarState
+		) { snackBarData ->
+			val visuals = snackBarData.visuals as LyfeSnackBarVisuals
+			LyfeSnackBar(
+				iconType = visuals.iconType,
+				message = visuals.message
+			)
 		}
 	}
 }

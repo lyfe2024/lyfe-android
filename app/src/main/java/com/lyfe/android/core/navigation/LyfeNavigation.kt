@@ -3,6 +3,7 @@ package com.lyfe.android.core.navigation
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.album.SelectAlbumScreen
@@ -24,6 +25,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
 	navHostController: NavHostController,
 	onScroll: (Boolean) -> Unit,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit,
 	selectedScreen: (route: String) -> Unit
 ) {
 	composable(route = LyfeScreens.Home.name) {
@@ -78,7 +80,10 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
-		ProfileEditScreen(navigator = lyfeNavigator)
+		ProfileEditScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
 		selectedScreen(LyfeScreens.ProfileEdit.name)
 	}
 
