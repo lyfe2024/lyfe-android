@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class AuthDataSourceImpl @Inject constructor(
-	@Named("lyfe") private val authService: AuthService
+	@Named("Lyfe") private val authService: AuthService
 ) : AuthDataSource {
 
 	override suspend fun postUser(

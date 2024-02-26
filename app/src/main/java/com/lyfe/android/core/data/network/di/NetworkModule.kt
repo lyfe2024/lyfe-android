@@ -86,8 +86,8 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	@Named("lyfe")
-	fun providesLyfeAuthService(retrofit: Retrofit): AuthService {
+	@Named("Lyfe")
+	fun providesLyfeAuthService(@Named("Lyfe") retrofit: Retrofit): AuthService {
 		return retrofit.create(AuthService::class.java)
 	}
 
@@ -115,11 +115,6 @@ object NetworkModule {
 			.client(okHttpClient)
 			.build()
 
-		return retrofit.create(AuthService::class.java)
-	}
-
-
-	fun providesAuthService(@Named("Lyfe") retrofit: Retrofit): AuthService {
 		return retrofit.create(AuthService::class.java)
 	}
 
