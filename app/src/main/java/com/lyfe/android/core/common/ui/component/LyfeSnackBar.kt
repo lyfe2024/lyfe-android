@@ -28,7 +28,6 @@ fun LyfeSnackBar(
 ) {
 	Row(
 		modifier = Modifier
-			.wrapContentWidth()
 			.background(
 				color = DEFAULT.copy(0.8f),
 				shape = RoundedCornerShape(10.dp)

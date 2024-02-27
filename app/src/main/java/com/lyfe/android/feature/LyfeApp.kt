@@ -11,8 +11,11 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +64,9 @@ fun LyfeApp(
 	}
 
 	LaunchedEffect(snackBarVisuals) {
-		snackBarState.showSnackbar(snackBarVisuals)
+		if (snackBarVisuals.message.isNotEmpty()) {
+			snackBarState.showSnackbar(snackBarVisuals)
+		}
 	}
 	
 	LaunchedEffect(isNavigationBarHide) {
@@ -141,10 +146,14 @@ fun LyfeApp(
 			hostState = snackBarState
 		) { snackBarData ->
 			val visuals = snackBarData.visuals as LyfeSnackBarVisuals
-			LyfeSnackBar(
-				iconType = visuals.iconType,
-				message = visuals.message
-			)
+			Column {
+				LyfeSnackBar(
+					iconType = visuals.iconType,
+					message = visuals.message
+				)
+
+				Spacer(modifier = Modifier.height(80.dp))
+			}
 		}
 	}
 }
