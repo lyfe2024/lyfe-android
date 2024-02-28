@@ -127,6 +127,7 @@ kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakao-sdk"}
 
 # Firebase SDK
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebase" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx" }
 
@@ -163,7 +164,7 @@ compose-debug = ["compose-ui-tooling-debug", "compose-ui-test-manifest"]
 kakao = ["kakao-user"]
 
 # Firebase
-firebase = ["firebase-auth-ktx", "firebase-analytics-ktx"]
+firebase = ["firebase-auth", "firebase-auth-ktx", "firebase-analytics-ktx"]
 
 # Google Play Services
 play-services = ["play-services-auth"]

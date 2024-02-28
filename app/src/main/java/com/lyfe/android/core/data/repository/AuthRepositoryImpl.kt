@@ -2,6 +2,7 @@ package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.model.AuthUserResponse
+import com.lyfe.android.core.data.model.DeleteAccountResponse
 import com.lyfe.android.core.data.model.PostUserResponse
 import com.lyfe.android.core.data.model.ReissueTokenResponse
 import com.lyfe.android.core.data.network.model.Result
@@ -27,5 +28,9 @@ class AuthRepositoryImpl @Inject constructor(
 
 	override suspend fun reissueToken(token: String): Result<ReissueTokenResponse> {
 		return authDataSource.reissueToken(token)
+	}
+
+	override suspend fun revoke(): Result<DeleteAccountResponse> {
+		return authDataSource.revoke()
 	}
 }

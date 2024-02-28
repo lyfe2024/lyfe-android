@@ -88,7 +88,10 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Setting.name) {
-		SettingScreen(navigator = lyfeNavigator)
+		SettingScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
 		selectedScreen(LyfeScreens.Setting.name)
 	}
 

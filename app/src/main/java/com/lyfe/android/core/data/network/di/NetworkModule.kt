@@ -47,7 +47,7 @@ object NetworkModule {
 				}
 			)
 			.addInterceptor(tokenInterceptor)
-			.authenticator(tokenAuthenticator)
+//			.authenticator(tokenAuthenticator)
 			.build()
 
 	@Provides

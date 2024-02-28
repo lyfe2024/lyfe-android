@@ -40,11 +40,24 @@ object AppleLoginManager {
 		}
 	}
 
-	fun signOut(): Boolean {
-		auth.signOut().runCatching {
-			return false
+	fun signOut(
+		onFailure: (Throwable?) -> Unit,
+		onSuccess: () -> Unit
+	) {
+		auth.addAuthStateListener {
+			if (it.currentUser == null) {
+				// Logout Complete
+				LogUtil.i(TAG, "로그아웃 성공.")
+				onSuccess()
+			}
 		}
-		return true
+		try {
+			// 로그아웃
+			auth.signOut()
+		} catch (e: Exception) {
+			LogUtil.e(TAG, "로그아웃 실패. ${e.message ?: ""}")
+			onFailure(e)
+		}
 	}
 
 	fun signIn(

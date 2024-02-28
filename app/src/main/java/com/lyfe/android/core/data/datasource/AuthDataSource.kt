@@ -3,6 +3,7 @@ package com.lyfe.android.core.data.datasource
 import com.lyfe.android.core.data.model.AuthUserResponse
 import com.lyfe.android.core.data.model.PostUserResponse
 import com.lyfe.android.core.data.model.ReissueTokenResponse
+import com.lyfe.android.core.data.model.DeleteAccountResponse
 import com.lyfe.android.core.data.network.model.Result
 
 interface AuthDataSource {
@@ -22,4 +23,6 @@ interface AuthDataSource {
 	suspend fun reissueToken(
 		token: String
 	): Result<ReissueTokenResponse>
+
+	suspend fun revoke(): Result<DeleteAccountResponse>
 }

@@ -33,14 +33,28 @@ object GoogleLoginManager {
 
 	fun createSignInIntent(context: Context): Intent = GoogleSignIn.getClient(context, gso).signInIntent
 
-	suspend fun signOut(context: Context): Boolean = suspendCoroutine { continuation ->
-		val googleSignInClient = GoogleSignIn.getClient(context, gso)
-		googleSignInClient.signOut().addOnCompleteListener {
-			continuation.resume(it.isSuccessful)
+	fun signOut(
+		context: Context,
+		onFailure: (Throwable?) -> Unit,
+		onSuccess: () -> Unit
+	) {
+		if (isLogin(context)) {
+			val googleSignInClient = GoogleSignIn.getClient(context, gso)
+			googleSignInClient.signOut().addOnCompleteListener {
+				if (it.isSuccessful) {
+					LogUtil.i(TAG, "로그아웃 성공.")
+					onSuccess()
+				} else {
+					LogUtil.e(TAG, "로그아웃 실패. ${it.exception?.message ?: ""}")
+					onFailure(it.exception)
+				}
+			}
+		} else {
+			onSuccess()
 		}
 	}
 
-	fun isLogin(context: Context): Boolean {
+	private fun isLogin(context: Context): Boolean {
 		val account = GoogleSignIn.getLastSignedInAccount(context)
 		return account != null
 	}
