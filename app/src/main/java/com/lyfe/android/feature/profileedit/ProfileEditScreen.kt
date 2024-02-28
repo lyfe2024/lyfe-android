@@ -340,6 +340,7 @@ private fun ProfileEditCompleteButton(
 		text = stringResource(id = R.string.complete),
 		onClick = {
 			if (isNicknameEnable && nickname != viewModel.user.name) {
+				// 닉네임 변경
 				viewModel.checkNicknameDuplicate(nickname = nickname)
 			} else if (viewModel.path != null) {
 				viewModel.uploadProfileImage()

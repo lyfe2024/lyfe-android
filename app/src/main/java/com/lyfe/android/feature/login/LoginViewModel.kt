@@ -11,6 +11,7 @@ import com.lyfe.android.core.domain.usecase.AuthUserUseCase
 import com.lyfe.android.core.domain.usecase.UpdateAccessTokenUseCase
 import com.lyfe.android.core.domain.usecase.UpdateRefreshTokenUseCase
 import com.lyfe.android.core.domain.usecase.UpdateSignUpTokenUseCase
+import com.lyfe.android.core.domain.usecase.UpdateSocialTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,6 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
 	private val authUserUseCase: AuthUserUseCase,
+	private val updateSocialTypeUseCase: UpdateSocialTypeUseCase,
 	private val updateSignUpTokenUseCase: UpdateSignUpTokenUseCase,
 	private val updateAccessTokenUseCase: UpdateAccessTokenUseCase,
 	private val updateRefreshTokenUseCase: UpdateRefreshTokenUseCase
@@ -31,25 +33,29 @@ class LoginViewModel @Inject constructor(
 	}
 
 	fun authUser(
-		socialType: String,
+		socialType: SocialType,
 		authorizationCode: String = "",
 		identityToken: String = "",
 		fcmToken: String = ""
 	) {
 		uiState = LoginUiState.Loading
 		viewModelScope.launch {
-			when (val response = authUserUseCase(socialType, authorizationCode, identityToken, fcmToken)) {
+			when (val response = authUserUseCase(socialType.name, authorizationCode, identityToken, fcmToken)) {
 				is Result.Success -> {
 					// 소셜 로그인 성공 (유저 토큰)
-					LogUtil.d("authUser", response.body.toString())
-					val result = response.body!!.result
-					uiState = if (result.userToken.isEmpty()) {
+					val result = response.body?.result
+					uiState = if (result == null) {
+						LogUtil.e("authUser", "Failure message: ${"result is empty"}")
+						LoginUiState.Failure()
+					} else if (result.userToken.isEmpty()) {
 						// 이미 회원가입 되어있는 계정
+						updateSocialTypeUseCase(socialType.name)
 						updateAccessTokenUseCase(result.accessToken)
 						updateRefreshTokenUseCase(result.refreshToken)
 						LoginUiState.SignedIn
 					} else {
 						// 이제 회원가입하는 계정
+						updateSocialTypeUseCase(socialType.name)
 						updateSignUpTokenUseCase(result.userToken)
 						LoginUiState.Success
 					}

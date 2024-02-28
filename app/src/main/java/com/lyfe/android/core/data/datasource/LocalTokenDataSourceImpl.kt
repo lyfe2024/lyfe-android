@@ -2,6 +2,7 @@ package com.lyfe.android.core.data.datasource
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
@@ -10,6 +11,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl.PreferencesKeys.ACCESS_TOKEN_EXPIRATION_TIME
 import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl.PreferencesKeys.REFRESH_TOKEN_EXPIRATION_TIME
 import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl.PreferencesKeys.SIGN_UP_TOKEN_EXPIRATION_TIME
+import com.lyfe.android.feature.login.SocialType
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -23,6 +25,7 @@ class LocalTokenDataSourceImpl @Inject constructor(
 ) : LocalTokenDataSource {
 
 	private object PreferencesKeys {
+		val SOCIAL_TYPE = stringPreferencesKey("socialType")
 		val SIGN_UP_TOKEN_KEY = stringPreferencesKey("signUpToken")
 		val ACCESS_TOKEN_KEY = stringPreferencesKey("accessToken")
 		val REFRESH_TOKEN_KEY = stringPreferencesKey("refreshToken")
@@ -46,6 +49,12 @@ class LocalTokenDataSourceImpl @Inject constructor(
 		token[PreferencesKeys.ACCESS_TOKEN_EXPIRATION_TIME_KEY]
 	}
 
+	override suspend fun updateSocialType(socialType: String) {
+		context.dataStore.edit { token ->
+			token[PreferencesKeys.SOCIAL_TYPE] = socialType
+		}
+	}
+
 	override suspend fun updateSignUpToken(signUpToken: String) {
 		context.dataStore.edit { token ->
 			token[PreferencesKeys.SIGN_UP_TOKEN_KEY] = signUpToken
@@ -65,6 +74,10 @@ class LocalTokenDataSourceImpl @Inject constructor(
 			token[PreferencesKeys.REFRESH_TOKEN_KEY] = refreshToken
 			token[PreferencesKeys.REFRESH_TOKEN_EXPIRATION_TIME_KEY] = System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME
 		}
+	}
+
+	override fun getSocialType(): Flow<String> = context.dataStore.data.map { token ->
+		token[PreferencesKeys.SOCIAL_TYPE].orEmpty()
 	}
 
 	override fun getSignUpToken(): Flow<String> = context.dataStore.data.map { token ->
