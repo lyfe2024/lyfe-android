@@ -36,18 +36,22 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey900
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.common.ui.util.LogUtil
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
 fun PolicyScreen(
 	navigator: LyfeNavigator,
-	viewModel: PolicyViewModel = hiltViewModel()
+	viewModel: PolicyViewModel = hiltViewModel(),
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -75,7 +79,7 @@ fun PolicyScreen(
 			)
 		)
 
-		PolicyAgreeContent()
+		PolicyAgreeContent(navigator)
 	}
 
 	when (viewModel.uiState) {
@@ -83,7 +87,9 @@ fun PolicyScreen(
 			navigator.navigate(LyfeScreens.LoginComplete.name)
 		}
 		is PolicyUiState.Failure -> {
-			// TODO 실패 토스트 매세지 띄우기
+			// 토스트 매세지 띄우기
+			val message = (viewModel.uiState as PolicyUiState.Failure).errorMessage
+			onShowSnackBar(LyfeSnackBarIconType.ERROR, message)
 		}
 		PolicyUiState.IDLE -> {}
 		PolicyUiState.Loading -> {
@@ -94,6 +100,7 @@ fun PolicyScreen(
 
 @Composable
 private fun PolicyAgreeContent(
+	navigator: LyfeNavigator,
 	viewModel: PolicyViewModel = hiltViewModel()
 ) {
 	var allChecked by remember { mutableStateOf(false) }
@@ -112,22 +119,22 @@ private fun PolicyAgreeContent(
 
 		PolicyAgreeChildRow(
 			text = stringResource(id = R.string.policy_screen_agree_to_service_rule),
-			link = "https://www.naver.com",
 			checked = firstChecked,
 			onCheckedChange = {
 				firstChecked = !firstChecked
 				allChecked = firstChecked && secondChecked
-			}
+			},
+			onClick = { navigator.navigate(LyfeScreens.ServiceTerms.name) }
 		)
 
 		PolicyAgreeChildRow(
 			text = stringResource(R.string.policy_screen_agree_to_privacy_rule),
-			link = "https://www.google.com",
 			checked = secondChecked,
 			onCheckedChange = {
 				secondChecked = !secondChecked
 				allChecked = firstChecked && secondChecked
-			}
+			},
+			onClick = { navigator.navigate(LyfeScreens.PersonalInfoAgreementsScreen.name) }
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
@@ -181,12 +188,10 @@ private fun PolicyAgreeHeaderRow(
 @Composable
 private fun PolicyAgreeChildRow(
 	text: String,
-	link: String,
 	checked: Boolean,
-	onCheckedChange: (Boolean) -> Unit
+	onCheckedChange: (Boolean) -> Unit,
+	onClick: () -> Unit
 ) {
-	val uriHandler = LocalUriHandler.current
-
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -203,7 +208,8 @@ private fun PolicyAgreeChildRow(
 
 		Spacer(modifier = Modifier.width(8.dp))
 
-		ClickableText(
+		Text(
+			modifier = Modifier.clickableSingle { onClick() },
 			text = AnnotatedString(text),
 			style = TextStyle(
 				fontSize = 14.sp,
@@ -211,8 +217,7 @@ private fun PolicyAgreeChildRow(
 				color = Grey900,
 				fontFamily = pretenard,
 				textDecoration = TextDecoration.Underline
-			),
-			onClick = { uriHandler.openUri(link) }
+			)
 		)
 	}
 }
