@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.DeleteSignUpTokenUseCase
+import com.lyfe.android.core.domain.usecase.GetPersonalInfoAgreementsUseCase
+import com.lyfe.android.core.domain.usecase.GetServiceTermsUseCase
 import com.lyfe.android.core.domain.usecase.GetSignUpTokenUseCase
 import com.lyfe.android.core.domain.usecase.SignUpUserUseCase
 import com.lyfe.android.core.domain.usecase.UpdateAccessTokenUseCase

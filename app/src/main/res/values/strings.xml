@@ -90,5 +90,7 @@
 	<string name="policy_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
 	<string name="policy_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
 	<string name="login_complete_start">시작하기</string>
+	<string name="service_terms">이용약관</string>
+    <string name="personal_info_agreements">개인정보 수집 및 이용</string>
 
 </resources>

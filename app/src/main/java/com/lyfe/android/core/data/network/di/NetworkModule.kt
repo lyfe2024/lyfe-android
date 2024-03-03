@@ -8,6 +8,7 @@ import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.AuthService
 import com.lyfe.android.core.data.network.service.ImageService
+import com.lyfe.android.core.data.network.service.PolicyService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -47,7 +48,7 @@ object NetworkModule {
 				}
 			)
 			.addInterceptor(tokenInterceptor)
-//			.authenticator(tokenAuthenticator)
+			.authenticator(tokenAuthenticator)
 			.build()
 
 	@Provides
@@ -128,5 +129,11 @@ object NetworkModule {
 	@Singleton
 	fun providesAWSService(@Named("AWS") retrofit: Retrofit): AWSService {
 		return retrofit.create(AWSService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesPolicyService(@Named("Lyfe") retrofit: Retrofit): PolicyService {
+		return retrofit.create(PolicyService::class.java)
 	}
 }

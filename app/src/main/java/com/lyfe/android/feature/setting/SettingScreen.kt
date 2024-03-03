@@ -180,6 +180,7 @@ fun SettingContent(
 								onFailure = onFailure,
 								onSuccess = onSuccess
 							)
+						else -> navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
 					}
 				}
 			}
