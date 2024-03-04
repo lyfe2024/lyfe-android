@@ -18,12 +18,13 @@ object GoogleLoginManager {
 
 	private val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 		.requestIdToken(BuildConfig.GOOGLE_WEB_CLIENT_ID)
+		.requestServerAuthCode(BuildConfig.GOOGLE_WEB_CLIENT_ID)
 		.requestEmail()
 		.build()
 
-	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): String? {
+	fun handleSignInResult(completedTask: Task<GoogleSignInAccount>): GoogleSignInAccount {
 		try {
-			return completedTask.getResult(ApiException::class.java)?.idToken
+			return completedTask.getResult(ApiException::class.java)
 		} catch (e: ApiException) {
 			LogUtil.w(TAG, "handleSignInResult: error" + e.statusCode)
 			throw e

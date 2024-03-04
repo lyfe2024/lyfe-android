@@ -46,7 +46,7 @@ object KakaoLoginManager {
 	) {
 		UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
 			if (error != null) {
-				// 카카오톡으로 로그인 실패
+				// 토큰 발행 실패
 				if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
 					return@loginWithKakaoTalk
 				}
@@ -62,10 +62,7 @@ object KakaoLoginManager {
 		onTokenReceived: (OAuthToken) -> Unit,
 		onFailure: (Throwable?) -> Unit
 	) {
-		UserApiClient.instance.loginWithKakaoAccount(
-			context = context,
-			callback = getAccountLoginCallback(onTokenReceived, onFailure)
-		)
+		UserApiClient.instance.loginWithKakaoAccount(context, callback = getAccountLoginCallback(onTokenReceived, onFailure))
 	}
 }
 

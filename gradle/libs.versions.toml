@@ -24,6 +24,7 @@ android-material = "1.9.0"
 androidx-constraintlayout = "2.1.4"
 androidx-navigation = "2.5.3"
 androidx-splashscreen-version="1.0.0-alpha01"
+androidx-datastore-preferences = "1.0.0"
 
 activity-compose = "1.7.2"
 compose-ui = "1.3.3"
@@ -79,7 +80,8 @@ google-services = { id = "com.google.gms.google-services", version.ref = "google
 # Android Library
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime" }
-android-splash = { module="androidx.core:core-splashscreen", version.ref="androidx-splashscreen-version"}
+android-splash = { module = "androidx.core:core-splashscreen", version.ref = "androidx-splashscreen-version"}
+android-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore-preferences" }
 
 # Compose Library
 activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -133,7 +135,7 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 
 [bundles]
 # Android
-android-library = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx"]
+android-library = ["androidx-core-ktx", "androidx-lifecycle-runtime-ktx", "android-datastore-preferences"]
 compose-library = ["activity-compose", "compose-ui", "compose-ui-graphics", "compose-ui-tooling-preview",
 	"compose-material3", "compose-navigation", "compose-material", "compose-hilt-navigation",
 	"androidx-lifecycle-runtime-compose"]

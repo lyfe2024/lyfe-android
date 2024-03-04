@@ -8,6 +8,8 @@ sealed interface LoginUiState {
 
 	object Success : LoginUiState
 
+	object SignedIn : LoginUiState
+
 	data class Failure(
 		val errorMessage: String = "에러메세지가 존재하지 않습니다."
 	) : LoginUiState

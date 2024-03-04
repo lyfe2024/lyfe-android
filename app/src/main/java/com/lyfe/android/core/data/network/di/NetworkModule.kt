@@ -2,7 +2,10 @@ package com.lyfe.android.core.data.network.di
 
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
+import com.lyfe.android.core.data.network.authenticator.TokenAuthenticator
 import com.lyfe.android.core.data.network.converter.asConverterFactory
+import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
+import com.lyfe.android.core.data.network.service.AuthService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -14,6 +17,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -27,7 +31,10 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesLyfeOkHttpClient(): OkHttpClient =
+	fun providesLyfeOkHttpClient(
+		tokenInterceptor: TokenInterceptor,
+		tokenAuthenticator: TokenAuthenticator
+	): OkHttpClient =
 		OkHttpClient.Builder()
 			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
 			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
@@ -36,7 +43,10 @@ object NetworkModule {
 				HttpLoggingInterceptor().apply {
 					level = HttpLoggingInterceptor.Level.BODY
 				}
-			).build()
+			)
+			.addInterceptor(tokenInterceptor)
+			.authenticator(tokenAuthenticator)
+			.build()
 
 	@Provides
 	@Singleton
@@ -55,5 +65,39 @@ object NetworkModule {
 	@Singleton
 	fun providesUserService(retrofit: Retrofit): UserService {
 		return retrofit.create(UserService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	@Named("lyfe")
+	fun providesLyfeAuthService(retrofit: Retrofit): AuthService {
+		return retrofit.create(AuthService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	@Named("authenticator")
+	fun providesAuthenticatorAuthService(): AuthService {
+		val jsonConfig = Json { isLenient = true }
+
+		val okHttpClient = OkHttpClient.Builder()
+			.connectTimeout(ConnectTimeout, TimeUnit.SECONDS)
+			.writeTimeout(WriteTimeout, TimeUnit.SECONDS)
+			.readTimeout(ReadTimeout, TimeUnit.SECONDS)
+			.addInterceptor(
+				HttpLoggingInterceptor().apply {
+					level = HttpLoggingInterceptor.Level.BODY
+				}
+			)
+			.build()
+
+		val retrofit = Retrofit.Builder()
+			.baseUrl(BuildConfig.BASE_URL)
+			.addConverterFactory(jsonConfig.asConverterFactory(contentType))
+			.addCallAdapterFactory(ResultCallAdapterFactory())
+			.client(okHttpClient)
+			.build()
+
+		return retrofit.create(AuthService::class.java)
 	}
 }

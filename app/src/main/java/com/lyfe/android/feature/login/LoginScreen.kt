@@ -3,7 +3,6 @@ package com.lyfe.android.feature.login
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -51,9 +50,23 @@ fun LoginScreen(
 
 		LoginButtonArea(viewModel = viewModel)
 
-		if (viewModel.uiState == LoginUiState.Success) {
-			navigator.navigate(LyfeScreens.Nickname.name)
-			viewModel.updateUiState(LoginUiState.IDLE)
+		when (viewModel.uiState) {
+			is LoginUiState.Loading -> {
+				// 로딩중 표시
+			}
+			is LoginUiState.Failure -> {
+				// 실패 토스트 메세지 표시
+			}
+			is LoginUiState.SignedIn -> {
+				// 기존 유저 로그인 -> 홈 화면으로 이동
+				navigator.navigateAndroidClearBackStack(LyfeScreens.Home.name)
+			}
+			is LoginUiState.Success -> {
+				// 회원가입 절차 진행
+				navigator.navigate(LyfeScreens.Nickname.name)
+				viewModel.updateUiState(LoginUiState.IDLE)
+			}
+			else -> {}
 		}
 	}
 }
@@ -98,7 +111,14 @@ private fun kakaoLogin(
 			viewModel.updateUiState(LoginUiState.Loading)
 			KakaoLoginManager.startKakaoLogin(
 				context = context,
-				onTokenReceived = { viewModel.updateUiState(LoginUiState.Success) },
+				onTokenReceived = { oAuthToken ->
+					// 소셜 로그인 접근
+					viewModel.authUser(
+						socialType = "KAKAO",
+						identityToken = oAuthToken.accessToken,
+						fcmToken = ""
+					)
+				},
 				onFailure = { viewModel.updateUiState(LoginUiState.Failure(it?.message ?: "에러메세지가 존재하지 않습니다.")) }
 			)
 		}
@@ -112,13 +132,13 @@ private fun googleLogin(
 ): () -> Unit {
 	val launcher = rememberGoogleSignInLauncher(
 		onSignInComplete = {
-			val idToken = GoogleLoginManager.handleSignInResult(it)
-			if (idToken == null) {
-				LogUtil.e("onSignInFailure", "ID Token is null")
-			} else {
-				Toast.makeText(context, "구글 로그인이 완료되었습니다!", Toast.LENGTH_SHORT).show()
-				viewModel.updateUiState(LoginUiState.Success)
-			}
+			val account = GoogleLoginManager.handleSignInResult(it)
+			// 소셜 로그인 접근
+			viewModel.authUser(
+				socialType = "GOOGLE",
+				authorizationCode = account.serverAuthCode.orEmpty(),
+				fcmToken = ""
+			)
 		},
 		onSignInFailure = {
 			LogUtil.e("onSignInFailure", "Error Code is $it")
