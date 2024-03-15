@@ -3,6 +3,8 @@ package com.lyfe.android.core.common.ui.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,20 +29,28 @@ fun LyfeSnackBar(
 	iconType: LyfeSnackBarIconType,
 	message: String
 ) {
+	val paddingValues = if (iconType == LyfeSnackBarIconType.NONE) {
+		PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+	} else {
+		PaddingValues(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 16.dp)
+	}
+
 	Row(
 		modifier = Modifier
 			.background(
 				color = DEFAULT.copy(BACKGROUND_ALPHA),
 				shape = RoundedCornerShape(10.dp)
 			)
-			.padding(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 16.dp),
+			.padding(paddingValues),
 		verticalAlignment = Alignment.CenterVertically,
 		horizontalArrangement = Arrangement.Center
 	) {
-		Image(
-			painter = painterResource(id = iconType.icon),
-			contentDescription = null
-		)
+		if (iconType.icon != null) {
+			Image(
+				painter = painterResource(id = iconType.icon),
+				contentDescription = null
+			)
+		}
 
 		Text(
 			text = message,
@@ -57,8 +67,20 @@ fun LyfeSnackBar(
 @Preview
 @Composable
 fun LyfeSnackBar_Preview() {
-	LyfeSnackBar(
-		iconType = LyfeSnackBarIconType.ERROR,
-		message = "저장에 실패했어요. 잠시 후 다시 시도해주세요."
-	)
+	Column(
+		verticalArrangement = Arrangement.spacedBy(12.dp)
+	) {
+		LyfeSnackBar(
+			iconType = LyfeSnackBarIconType.NONE,
+			message = "저장에 실패했어요. 잠시 후 다시 시도해주세요."
+		)
+		LyfeSnackBar(
+			iconType = LyfeSnackBarIconType.ERROR,
+			message = "저장에 실패했어요. 잠시 후 다시 시도해주세요."
+		)
+		LyfeSnackBar(
+			iconType = LyfeSnackBarIconType.SUCCESS,
+			message = "저장에 실패했어요. 잠시 후 다시 시도해주세요."
+		)
+	}
 }
