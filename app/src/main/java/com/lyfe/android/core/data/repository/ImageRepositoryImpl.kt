@@ -5,6 +5,7 @@ import com.lyfe.android.core.data.mapper.toDomain
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.domain.repository.ImageRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flow
@@ -26,13 +27,13 @@ class ImageRepositoryImpl @Inject constructor(
 				emit(result.toDomain())
 			}
 			is Result.Failure -> {
-				throw RuntimeException(response.error)
+				throw ApiResultException(response.error)
 			}
 			is Result.NetworkError -> {
-				throw RuntimeException(response.exception)
+				throw response.exception
 			}
 			is Result.Unexpected -> {
-				throw RuntimeException(response.t)
+				throw response.t ?: ApiResultException()
 			}
 		}
 	}.flowOn(ioDispatcher)

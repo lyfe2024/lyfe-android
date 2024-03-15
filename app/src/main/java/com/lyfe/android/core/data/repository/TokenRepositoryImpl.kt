@@ -8,9 +8,6 @@ import javax.inject.Inject
 class TokenRepositoryImpl @Inject constructor(
 	private val localTokenDataSource: LocalTokenDataSource
 ) : TokenRepository {
-	override suspend fun updateSocialType(socialType: String) {
-		localTokenDataSource.updateSocialType(socialType)
-	}
 
 	override suspend fun updateSignUpToken(signUpToken: String) {
 		localTokenDataSource.updateSignUpToken(signUpToken)
@@ -22,10 +19,6 @@ class TokenRepositoryImpl @Inject constructor(
 
 	override suspend fun updateRefreshToken(refreshToken: String) {
 		localTokenDataSource.updateRefreshToken(refreshToken)
-	}
-
-	override fun getSocialType(): Flow<String> {
-		return localTokenDataSource.getSocialType()
 	}
 
 	override fun getSignUpToken(): Flow<String> {

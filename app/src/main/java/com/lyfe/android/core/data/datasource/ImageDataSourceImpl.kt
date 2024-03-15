@@ -20,22 +20,20 @@ class ImageDataSourceImpl @Inject constructor(
 	}
 
 	override suspend fun uploadImage(url: String, key: String, file: MultipartBody.Part): Result<Any> {
+		val queryMap: HashMap<String, String> = hashMapOf()
+
 		val splitKey = key.split("/")
 		val queryUrl = url.substring(url.indexOf('?') + 1)
-		val splitQueryUrl = queryUrl.split('&').map {
-			it.split('=')
+		queryUrl.split('&').map {
+			val split = it.split('=')
+			queryMap[split[0]] = split[1]
 		}
 
 		return awsService.putImage(
 			dev = splitKey[0],
 			path = splitKey[1],
 			fileName = splitKey[2],
-			algorithm = splitQueryUrl[0][1],
-			date = splitQueryUrl[1][1],
-			headers = splitQueryUrl[2][1],
-			expires = splitQueryUrl[3][1],
-			credential = splitQueryUrl[4][1],
-			signature = splitQueryUrl[5][1],
+			queryMap = queryMap,
 			body = file
 		)
 	}

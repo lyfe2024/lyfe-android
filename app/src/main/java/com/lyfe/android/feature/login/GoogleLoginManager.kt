@@ -9,8 +9,6 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.lyfe.android.BuildConfig
 import com.lyfe.android.core.common.ui.util.LogUtil
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 object GoogleLoginManager {
 
