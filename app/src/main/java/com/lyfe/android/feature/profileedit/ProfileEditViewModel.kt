@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.domain.usecase.CheckNicknameUseCase
 import com.lyfe.android.core.domain.usecase.EditProfileUseCase
 import com.lyfe.android.core.domain.usecase.GetImageUploadUrlUseCase

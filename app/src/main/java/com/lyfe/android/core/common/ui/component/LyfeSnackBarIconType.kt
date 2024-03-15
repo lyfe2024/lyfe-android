@@ -4,12 +4,9 @@ import androidx.annotation.DrawableRes
 import com.lyfe.android.R
 
 enum class LyfeSnackBarIconType(
-	@DrawableRes val icon: Int
+	@DrawableRes val icon: Int?
 ) {
-	ERROR(
-		icon = R.drawable.ic_error_rounded
-	),
-	SUCCESS(
-		icon = R.drawable.ic_check_filled
-	)
+	NONE(icon = null),
+	ERROR(icon = R.drawable.ic_error_rounded),
+	SUCCESS(icon = R.drawable.ic_check_filled)
 }
