@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +20,8 @@ import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.pretenard
 
+private const val BACKGROUND_ALPHA = 0.8f
+
 @Composable
 fun LyfeSnackBar(
 	iconType: LyfeSnackBarIconType,
@@ -29,7 +30,7 @@ fun LyfeSnackBar(
 	Row(
 		modifier = Modifier
 			.background(
-				color = DEFAULT.copy(0.8f),
+				color = DEFAULT.copy(BACKGROUND_ALPHA),
 				shape = RoundedCornerShape(10.dp)
 			)
 			.padding(top = 4.dp, bottom = 4.dp, start = 4.dp, end = 16.dp),

@@ -7,6 +7,12 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
 
+	suspend fun updateSocialType(
+		socialType: String
+	)
+
+	fun getSocialType(): Flow<String>
+
 	fun getUserInfo(): Flow<User>
 
 	suspend fun fetchIsNicknameDuplicated(

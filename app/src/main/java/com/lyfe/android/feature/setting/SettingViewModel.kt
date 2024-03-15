@@ -8,9 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.DeleteAccountUseCase
 import com.lyfe.android.core.domain.usecase.GetSocialTypeUseCase
-import com.lyfe.android.feature.login.GoogleLoginManager
-import com.lyfe.android.feature.login.KakaoLoginManager
-import com.lyfe.android.feature.login.SocialType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

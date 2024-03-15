@@ -4,15 +4,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface LocalTokenDataSource {
 
-	suspend fun updateSocialType(socialType: String)
-
 	suspend fun updateSignUpToken(signUpToken: String)
 
 	suspend fun updateAccessToken(accessToken: String)
 
 	suspend fun updateRefreshToken(refreshToken: String)
-
-	fun getSocialType(): Flow<String>
 
 	fun getSignUpToken(): Flow<String>
 

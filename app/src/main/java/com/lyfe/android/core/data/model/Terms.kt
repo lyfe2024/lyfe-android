@@ -7,5 +7,5 @@ data class Terms(
 	val title: String,
 	val content: String,
 	val version: String,
-	val policyType: String,
+	val policyType: String
 )

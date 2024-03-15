@@ -8,6 +8,8 @@ import com.lyfe.android.core.data.datasource.ImageDataSource
 import com.lyfe.android.core.data.datasource.ImageDataSourceImpl
 import com.lyfe.android.core.data.datasource.LocalTokenDataSource
 import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl
+import com.lyfe.android.core.data.datasource.LocalUserDataSource
+import com.lyfe.android.core.data.datasource.LocalUserDataSourceImpl
 import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyDataSourceImpl
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
@@ -39,6 +41,12 @@ interface DataSourceModule {
 	fun bindsLocalTokenDataSource(
 		localTokenDataSourceImpl: LocalTokenDataSourceImpl
 	): LocalTokenDataSource
+
+	@Singleton
+	@Binds
+	fun bindsLocalUserDataSource(
+		localUserDataSourceImpl: LocalUserDataSourceImpl
+	): LocalUserDataSource
 
 	@Singleton
 	@Binds

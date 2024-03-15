@@ -4,10 +4,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TokenRepository {
 
-	suspend fun updateSocialType(
-		socialType: String
-	)
-
 	suspend fun updateSignUpToken(
 		signUpToken: String
 	)
@@ -19,8 +15,6 @@ interface TokenRepository {
 	suspend fun updateRefreshToken(
 		refreshToken: String
 	)
-
-	fun getSocialType(): Flow<String>
 
 	fun getSignUpToken(): Flow<String>
 
