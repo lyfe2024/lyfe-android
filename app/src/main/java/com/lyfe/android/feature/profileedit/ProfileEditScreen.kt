@@ -106,7 +106,6 @@ private fun ProfileEditContentArea(
 			navigator.navigateUp()
 		}
 		is ProfileEditUiState.Failure -> {
-			// val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
 			val error = viewModel.uiState as ProfileEditUiState.Failure
 			onShowSnackBar(
 				LyfeSnackBarIconType.ERROR,
@@ -196,10 +195,10 @@ private fun ProfileEditThumbnailContent(
 		val onClick = { galleryLauncher.launch("image/*") }
 
 		GlideImage(
-			model = if (viewModel.path == null) {
+			model = if (viewModel.imagePath == null) {
 				viewModel.user.profileImage
 			} else {
-				viewModel.path
+				viewModel.imagePath
 			},
 			contentDescription = "프로필 이미지",
 			contentScale = ContentScale.Crop,
@@ -340,11 +339,14 @@ private fun ProfileEditCompleteButton(
 		text = stringResource(id = R.string.complete),
 		onClick = {
 			if (isNicknameEnable && nickname != viewModel.user.name) {
-				// 닉네임 변경
+				// 닉네임 사용 가능 여부 확인
+				// 확인 이후 프로필 이미지 업로드 -> 프로필 변경
 				viewModel.checkNicknameDuplicate(nickname = nickname)
-			} else if (viewModel.path != null) {
+			} else if (viewModel.imagePath != null) {
+				// 닉네임 변경 X 프로필 이미지만 바꼈으면 바로 이미지 업로드 진행
 				viewModel.uploadProfileImage()
 			} else {
+				// 둘 다 변경 없으면 뒤로 가기
 				navigator.navigateUp()
 			}
 		}

@@ -35,11 +35,11 @@ class ProfileEditViewModel @Inject constructor(
 	var uiState by mutableStateOf<ProfileEditUiState>(ProfileEditUiState.Loading)
 		private set
 
-	private val _user = MutableStateFlow(User())
+	private val _user = MutableStateFlow(User()) // 외부에서 가져온 유저 정보
 	val user get() = _user.value
 
-	private val _path = mutableStateOf<String?>(null)
-	val path get() = _path.value
+	private val _imagePath = mutableStateOf<String?>(null) // 사용자가 실시간으로 수정한 프로필 이미지 경로값
+	val imagePath get() = _imagePath.value
 
 	init {
 		getUserInfo()
@@ -54,7 +54,6 @@ class ProfileEditViewModel @Inject constructor(
 			)
 		}.collect {
 			_user.value = it
-			_path.value = it.profileImage
 			uiState = ProfileEditUiState.IDLE
 		}
 	}
@@ -67,20 +66,25 @@ class ProfileEditViewModel @Inject constructor(
 			uiState = ProfileEditUiState.Failure(
 				message = message
 			)
-			LogUtil.e("CheckNicknameError", message)
 		}.collect {
-			uiState = ProfileEditUiState.IDLE
-			editProfile(
-				nickname = nickname,
-				profileUrl = user.profileImage,
-				width = 120,
-				height = 120
-			)
+			if (imagePath != null) {
+				// 닉네임 중복 검사 문제 없으면 프로필 변경을 위해 이미지 업로드 실행
+				uploadProfileImage()
+			} else {
+				// 프로필 이미지 변경 없이 닉네임만 바꿨으면 바로 프로필 변경 실행
+				uiState = ProfileEditUiState.IDLE
+				editProfile(
+					nickname = nickname,
+					profileUrl = user.profileImage,
+					width = 120,
+					height = 120
+				)
+			}
 		}
 	}
 
 	fun uploadProfileImage() = viewModelScope.launch {
-		val file = path?.let { File(it) }
+		val file = imagePath?.let { File(it) }
 		val format = file?.getImageFormat()
 		getImageUploadUrlUseCase(format ?: "", "topic_picture").onEach {
 			uiState = ProfileEditUiState.Loading
@@ -151,7 +155,7 @@ class ProfileEditViewModel @Inject constructor(
 	}
 
 	fun updateProfileImageFilePath(path: String) {
-		_path.value = path
+		_imagePath.value = path
 	}
 
 	private fun File.getImageFormat(): String {
