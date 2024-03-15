@@ -1,7 +1,10 @@
 package com.lyfe.android.core.data.datasource
 
+import com.lyfe.android.core.data.model.AuthUserRequest
 import com.lyfe.android.core.data.model.AuthUserResponse
+import com.lyfe.android.core.data.model.PostUserRequest
 import com.lyfe.android.core.data.model.PostUserResponse
+import com.lyfe.android.core.data.model.ReissueTokenRequest
 import com.lyfe.android.core.data.model.ReissueTokenResponse
 import com.lyfe.android.core.data.model.DeleteAccountResponse
 import com.lyfe.android.core.data.network.model.Result
@@ -13,32 +16,16 @@ class AuthDataSourceImpl @Inject constructor(
 	@Named("Lyfe") private val authService: AuthService
 ) : AuthDataSource {
 
-	override suspend fun postUser(
-		userToken: String,
-		nickname: String
-	): Result<PostUserResponse> {
-		val body = mapOf("userToken" to userToken, "nickname" to nickname)
-		return authService.postUser(body = body)
+	override suspend fun postUser(requestBody: PostUserRequest): Result<PostUserResponse> {
+		return authService.postUser(body = requestBody)
 	}
 
-	override suspend fun authUser(
-		socialType: String,
-		authorizationCode: String,
-		identityToken: String,
-		fcmToken: String
-	): Result<AuthUserResponse> {
-		val body = mapOf(
-			"socialType" to socialType,
-			"authorizationCode" to authorizationCode,
-			"identityToken" to identityToken,
-			"fcmToken" to fcmToken
-		)
-		return authService.authUser(body = body)
+	override suspend fun authUser(requestBody: AuthUserRequest): Result<AuthUserResponse> {
+		return authService.authUser(body = requestBody)
 	}
 
-	override suspend fun reissueToken(token: String): Result<ReissueTokenResponse> {
-		val body = mapOf("token" to token)
-		return authService.reissueToken(body = body)
+	override suspend fun reissueToken(requestBody: ReissueTokenRequest): Result<ReissueTokenResponse> {
+		return authService.reissueToken(body = requestBody)
 	}
 
 	override suspend fun revoke(): Result<DeleteAccountResponse> {
