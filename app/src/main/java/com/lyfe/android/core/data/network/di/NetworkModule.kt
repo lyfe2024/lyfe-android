@@ -5,7 +5,11 @@ import com.lyfe.android.core.data.network.adapter.ResultCallAdapterFactory
 import com.lyfe.android.core.data.network.authenticator.TokenAuthenticator
 import com.lyfe.android.core.data.network.converter.asConverterFactory
 import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
+import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.AuthService
+import com.lyfe.android.core.data.network.service.FeedbackService
+import com.lyfe.android.core.data.network.service.ImageService
+import com.lyfe.android.core.data.network.service.PolicyService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -50,6 +54,7 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
+	@Named("Lyfe")
 	fun providesLyfeRetrofit(okHttpClient: OkHttpClient): Retrofit {
 		val jsonConfig = Json { isLenient = true }
 
@@ -63,14 +68,28 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
-	fun providesUserService(retrofit: Retrofit): UserService {
+	@Named("AWS")
+	fun providesAWSRetrofit(okHttpClient: OkHttpClient): Retrofit {
+		val jsonConfig = Json { isLenient = true }
+
+		return Retrofit.Builder()
+			.baseUrl(BuildConfig.AWS_BASE_URL)
+			.client(okHttpClient)
+			.addConverterFactory(jsonConfig.asConverterFactory(contentType))
+			.addCallAdapterFactory(ResultCallAdapterFactory())
+			.build()
+	}
+
+	@Provides
+	@Singleton
+	fun providesUserService(@Named("Lyfe") retrofit: Retrofit): UserService {
 		return retrofit.create(UserService::class.java)
 	}
 
 	@Provides
 	@Singleton
-	@Named("lyfe")
-	fun providesLyfeAuthService(retrofit: Retrofit): AuthService {
+	@Named("Lyfe")
+	fun providesLyfeAuthService(@Named("Lyfe") retrofit: Retrofit): AuthService {
 		return retrofit.create(AuthService::class.java)
 	}
 
@@ -99,5 +118,29 @@ object NetworkModule {
 			.build()
 
 		return retrofit.create(AuthService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesImageService(@Named("Lyfe") retrofit: Retrofit): ImageService {
+		return retrofit.create(ImageService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesAWSService(@Named("AWS") retrofit: Retrofit): AWSService {
+		return retrofit.create(AWSService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesPolicyService(@Named("Lyfe") retrofit: Retrofit): PolicyService {
+		return retrofit.create(PolicyService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesFeedbackService(@Named("Lyfe") retrofit: Retrofit): FeedbackService {
+		return retrofit.create(FeedbackService::class.java)
 	}
 }

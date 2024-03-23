@@ -2,6 +2,7 @@ package com.lyfe.android.feature.login
 
 import android.app.Activity
 import android.content.Context
+import com.google.firebase.FirebaseException
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
@@ -40,11 +41,24 @@ object AppleLoginManager {
 		}
 	}
 
-	fun signOut(): Boolean {
-		auth.signOut().runCatching {
-			return false
+	fun signOut(
+		onFailure: (Throwable?) -> Unit,
+		onSuccess: () -> Unit
+	) {
+		auth.addAuthStateListener {
+			if (it.currentUser == null) {
+				// Logout Complete
+				LogUtil.i(TAG, "로그아웃 성공.")
+				onSuccess()
+			}
 		}
-		return true
+		try {
+			// 로그아웃
+			auth.signOut()
+		} catch (e: FirebaseException) {
+			LogUtil.e(TAG, "로그아웃 실패. ${e.message ?: ""}")
+			onFailure(e)
+		}
 	}
 
 	fun signIn(

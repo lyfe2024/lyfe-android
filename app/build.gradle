@@ -35,6 +35,7 @@ android {
 
 		if (localProperties.exists()) {
 			buildConfigField "String", "BASE_URL", properties['base-url']
+            buildConfigField "String", "AWS_BASE_URL", properties['aws-base-url']
 			buildConfigField "String", "GOOGLE_WEB_CLIENT_ID", properties['google-web-client-id']
 			buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties["kakao_native_app_key"]
 			manifestPlaceholders = [KAKAO_REDIRECTION_SCHEME: properties["kakao_redirection_scheme"]]
