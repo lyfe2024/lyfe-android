@@ -7,6 +7,7 @@ import com.lyfe.android.core.data.network.converter.asConverterFactory
 import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.AuthService
+import com.lyfe.android.core.data.network.service.FeedbackService
 import com.lyfe.android.core.data.network.service.ImageService
 import com.lyfe.android.core.data.network.service.PolicyService
 import com.lyfe.android.core.data.network.service.UserService
@@ -135,5 +136,11 @@ object NetworkModule {
 	@Singleton
 	fun providesPolicyService(@Named("Lyfe") retrofit: Retrofit): PolicyService {
 		return retrofit.create(PolicyService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesFeedbackService(@Named("Lyfe") retrofit: Retrofit): FeedbackService {
+		return retrofit.create(FeedbackService::class.java)
 	}
 }
