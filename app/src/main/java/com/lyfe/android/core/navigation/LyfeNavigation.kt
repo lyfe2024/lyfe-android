@@ -9,6 +9,7 @@ import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.album.SelectAlbumScreen
 import com.lyfe.android.feature.detail.FeedDetailScreen
 import com.lyfe.android.feature.feed.FeedScreen
+import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.NicknameScreen
@@ -21,7 +22,6 @@ import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.setting.SettingScreen
-import com.lyfe.android.feature.userexperience.UserExperienceScreen
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
@@ -97,9 +97,12 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.Setting.name)
 	}
 
-	composable(route = LyfeScreens.UserExperience.name) {
-		UserExperienceScreen()
-		selectedScreen(LyfeScreens.UserExperience.name)
+	composable(route = LyfeScreens.Feedback.name) {
+		FeedbackScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
+		selectedScreen(LyfeScreens.Feedback.name)
 	}
 
 	composable(route = LyfeScreens.Login.name) {

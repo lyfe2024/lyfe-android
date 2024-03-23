@@ -4,6 +4,8 @@ import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.datasource.AuthDataSourceImpl
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
+import com.lyfe.android.core.data.datasource.FeedbackDataSource
+import com.lyfe.android.core.data.datasource.FeedbackDataSourceImpl
 import com.lyfe.android.core.data.datasource.ImageDataSource
 import com.lyfe.android.core.data.datasource.ImageDataSourceImpl
 import com.lyfe.android.core.data.datasource.LocalTokenDataSource
@@ -65,4 +67,10 @@ interface DataSourceModule {
 	fun bindsPolicyDataSource(
 		policyDataSourceImpl: PolicyDataSourceImpl
 	): PolicyDataSource
+
+	@Singleton
+	@Binds
+	fun bindsFeedbackDataSource(
+		feedbackDataSourceImpl: FeedbackDataSourceImpl
+	): FeedbackDataSource
 }

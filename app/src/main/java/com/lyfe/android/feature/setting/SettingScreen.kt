@@ -136,8 +136,8 @@ fun SettingContent(
 							// TODO
 						}
 					}
-					Setting.USER_EXPERIENCE -> SettingButtonRow(stringResource(R.string.user_experience_title)) {
-						navigator.navigate(LyfeScreens.UserExperience.route)
+					Setting.USER_EXPERIENCE -> SettingButtonRow(stringResource(R.string.feedback_title)) {
+						navigator.navigate(LyfeScreens.Feedback.route)
 					}
 					Setting.PRIVACY_POLICY -> SettingButtonRow(stringResource(R.string.setting_screen_privacy_policy)) {
 						// TODO
