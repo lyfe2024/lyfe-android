@@ -29,7 +29,7 @@ sealed class LyfeScreens(
 
 	object Login : LyfeScreens("login")
 
-	object Nickname : LyfeScreens("nickname")
+	object CreateNickname : LyfeScreens("nickname")
 
 	object Policy : LyfeScreens("policy")
 
