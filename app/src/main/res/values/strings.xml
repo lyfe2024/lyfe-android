@@ -46,6 +46,7 @@
 	<!-- NicknameScreen -->
 	<string name="nickname_screen_title">닉네임 설정</string>
 	<string name="nickname_screen_sub_title">원하는 닉네임을 설정해주세요.</string>
+	<string name="nickname_screen_textfield_hint">닉네임을 입력해주세요</string>
 	<string name="nickname_comb_incorrect_text">한글/영문+숫자 조합으로만 설정가능해요</string>
 	<string name="nickname_comb_empty_text">한글/영문+숫자 조합으로 설정해주세요</string>
 	<string name="nickname_comb_correct_text">한글/영문+숫자 조합</string>

@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.theme.DEFAULT
-import com.lyfe.android.core.common.ui.theme.Error
+import com.lyfe.android.core.common.ui.theme.Red50
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey900
 
@@ -19,7 +19,7 @@ enum class LyfeTextFieldType(
 ) {
 	TC_GREY200_BG_TRANSPARENT_SC_GREY200(Grey200, Color.Transparent, Grey200, null),
 	TC_DEFAULT_BG_TRANSPARENT_SC_DEFAULT(DEFAULT, Color.Transparent, Color.Black, R.drawable.ic_circle_close_grey_200),
-	TC_ERROR_BG_TRANSPARENT_SC_ERROR(Error, Color.Transparent, Error),
+	TC_ERROR_BG_TRANSPARENT_SC_ERROR(Red50, Color.Transparent, Red50, R.drawable.ic_circle_close_grey_200),
 	TC_GREY200_BG_WHITE_SC_TRANSPARENT(Grey200, Color.White, Color.Transparent, R.drawable.ic_circle_close_grey_200),
 	TC_DEFAULT_BG_WHITE_SC_TRANSPARENT(DEFAULT, Color.White, Color.Transparent, R.drawable.ic_circle_close_grey_200),
 	TC_DEFAULT_BG_WHITE_SC_DEFAULT(DEFAULT, Color.White, DEFAULT, R.drawable.ic_circle_close_grey_200),

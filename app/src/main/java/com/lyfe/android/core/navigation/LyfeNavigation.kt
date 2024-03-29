@@ -10,7 +10,7 @@ import com.lyfe.android.feature.detail.FeedDetailScreen
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
-import com.lyfe.android.feature.nickname.NicknameScreen
+import com.lyfe.android.feature.nickname.CreateNicknameScreen
 import com.lyfe.android.feature.policy.LoginCompleteScreen
 import com.lyfe.android.feature.policy.PolicyScreen
 import com.lyfe.android.feature.post.PostScreen
@@ -97,9 +97,9 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.Login.name)
 	}
 
-	composable(route = LyfeScreens.Nickname.name) {
-		NicknameScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.Nickname.name)
+	composable(route = LyfeScreens.CreateNickname.name) {
+		CreateNicknameScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.CreateNickname.name)
 	}
 
 	composable(route = LyfeScreens.Policy.name) {
