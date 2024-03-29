@@ -3,9 +3,9 @@ package com.lyfe.android.feature.profileedit
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.graphics.Color
 import com.lyfe.android.R
-import com.lyfe.android.core.common.ui.theme.Error
+import com.lyfe.android.core.common.ui.theme.Green50
 import com.lyfe.android.core.common.ui.theme.Grey200
-import com.lyfe.android.core.common.ui.theme.Success
+import com.lyfe.android.core.common.ui.theme.Red50
 
 enum class NicknameInvalidState(
 	val color: Color,
@@ -16,11 +16,11 @@ enum class NicknameInvalidState(
 		icon = R.drawable.ic_check_gray
 	),
 	CORRECT(
-		color = Success,
+		color = Green50,
 		icon = R.drawable.ic_check_blue
 	),
 	INCORRECT(
-		color = Error,
+		color = Red50,
 		icon = R.drawable.ic_error
 	)
 }
