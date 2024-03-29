@@ -46,6 +46,7 @@
 	<!-- NicknameScreen -->
 	<string name="nickname_screen_title">닉네임 설정</string>
 	<string name="nickname_screen_sub_title">원하는 닉네임을 설정해주세요.</string>
+	<string name="nickname_screen_textfield_hint">닉네임을 입력해주세요</string>
 	<string name="nickname_comb_incorrect_text">한글/영문+숫자 조합으로만 설정가능해요</string>
 	<string name="nickname_comb_empty_text">한글/영문+숫자 조합으로 설정해주세요</string>
 	<string name="nickname_comb_correct_text">한글/영문+숫자 조합</string>
@@ -53,6 +54,8 @@
 	<string name="nickname_special_letter_correct_text">특수문자 사용 X</string>
 	<string name="nickname_length_incorrect_text">최대 10글자로 설정해주세요</string>
 	<string name="nickname_length_correct_text">최대 10글자</string>
+	<string name="nickname_button_text">다음</string>
+
 
 	<!-- ProfileEditScreen -->
 	<string name="profile_edit_title">프로필 수정</string>
