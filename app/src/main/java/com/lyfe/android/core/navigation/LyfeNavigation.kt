@@ -2,7 +2,9 @@ package com.lyfe.android.core.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.AlarmScreen
 import com.lyfe.android.feature.album.SelectAlbumScreen
@@ -12,7 +14,7 @@ import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
 import com.lyfe.android.feature.policy.LoginCompleteScreen
-import com.lyfe.android.feature.policy.PolicyScreen
+import com.lyfe.android.feature.policy.SignUpTermsPolicyScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
@@ -102,9 +104,17 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.CreateNickname.name)
 	}
 
-	composable(route = LyfeScreens.Policy.name) {
-		PolicyScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.Policy.name)
+	composable(
+		route = "${LyfeScreens.SignUpTermsPolicy.name}/{nickname}",
+		arguments = listOf(
+			navArgument("nickname") {
+				type = NavType.StringType
+				defaultValue = ""
+			}
+		)
+	) {
+		SignUpTermsPolicyScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.SignUpTermsPolicy.name)
 	}
 
 	composable(route = LyfeScreens.LoginComplete.name) {

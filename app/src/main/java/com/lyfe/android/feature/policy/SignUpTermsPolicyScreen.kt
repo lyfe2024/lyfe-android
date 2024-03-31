@@ -2,7 +2,7 @@ package com.lyfe.android.feature.policy
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,17 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -34,115 +32,140 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.theme.Body3
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey900
+import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
-import com.lyfe.android.core.navigation.LyfeScreens
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun PolicyScreen(
+fun SignUpTermsPolicyScreen(
 	navigator: LyfeNavigator,
-	viewModel: PolicyViewModel = hiltViewModel()
+	viewModel: SignUpTermsPolicyViewModel = hiltViewModel()
+) {
+	val signUpTermsPolicyUiState by viewModel.signUpTermsPolicyUiState.collectAsStateWithLifecycle()
+	val checkBoxUiState by viewModel.checkBoxUiState.collectAsStateWithLifecycle()
+
+	LaunchedEffect(signUpTermsPolicyUiState) {
+		if (signUpTermsPolicyUiState is SignUpTermsPolicyUiState.Success) {
+			// navigator.navigate()
+			viewModel.clear()
+		}
+		// TODO Loading
+	}
+
+	Column(
+		modifier = Modifier.fillMaxSize()
+	) {
+		SignUpTermsPolicyTopTitleBar(
+			onNavigateUp = navigator::navigateUp
+		)
+
+		/**
+		 * TODO 각 정책 이동 화면 필요
+		 */
+		PolicyAgreeContent(
+			modifier = Modifier
+				.padding(top = 40.dp, start = 20.dp, end = 20.dp)
+				.weight(1f),
+			servicePolicyChecked = checkBoxUiState.servicePolicy,
+			userInfoPolicyChecked = checkBoxUiState.userInfoPolicy,
+			toggleAllPolicyAgree = viewModel::toggleAllPolicyAgree,
+			toggleServicePolicy = viewModel::toggleServicePolicy,
+			toggleUserInfoPolicy = viewModel::toggleUserInfoPolicy,
+			clickServicePolicyText = {},
+			clickUserInfoPolicyText = {}
+		)
+
+		PolicyCompleteButton(
+			validation = checkBoxUiState.validation(),
+			onPolicyComplete = viewModel::postUser
+		)
+	}
+}
+
+@Composable
+private fun SignUpTermsPolicyTopTitleBar(
+	onNavigateUp: () -> Unit
 ) {
 	Column(
 		modifier = Modifier
-			.padding(top = 56.dp, bottom = 24.dp, start = 20.dp, end = 20.dp)
-			.fillMaxSize()
+			.fillMaxWidth()
+			.padding(horizontal = 20.dp, vertical = 16.dp)
 	) {
+		Icon(
+			modifier = Modifier
+				.size(24.dp)
+				.clickableSingle { onNavigateUp() },
+			painter = painterResource(id = R.drawable.ic_arrow_back),
+			contentDescription = "arrow_back",
+			tint = Color.Black
+		)
+
+		Spacer(modifier = Modifier.height(16.dp))
+
 		Text(
 			text = stringResource(R.string.policy_screen_title),
-			style = TextStyle(
-				fontSize = 24.sp,
-				lineHeight = 36.sp,
-				fontWeight = FontWeight(weight = 700),
-				color = Color.Black
-			)
+			style = H3,
+			color = Color.Black
 		)
 
 		Spacer(modifier = Modifier.height(8.dp))
 
 		Text(
 			text = stringResource(R.string.policy_screen_sub_title),
-			style = TextStyle(
-				fontSize = 14.sp,
-				fontWeight = FontWeight(weight = 600),
-				color = Color.Black
-			)
+			style = Body3,
+			color = Color.Black
 		)
-
-		PolicyAgreeContent()
-	}
-
-	when (viewModel.uiState) {
-		PolicyUiState.Success -> {
-			navigator.navigate(LyfeScreens.LoginComplete.name)
-		}
-		is PolicyUiState.Failure -> {
-			// TODO 실패 토스트 매세지 띄우기
-		}
-		PolicyUiState.IDLE -> {}
-		PolicyUiState.Loading -> {
-			// TODO 로딩창 띄우기
-		}
 	}
 }
 
 @Composable
 private fun PolicyAgreeContent(
-	viewModel: PolicyViewModel = hiltViewModel()
+	modifier: Modifier = Modifier,
+	servicePolicyChecked: Boolean,
+	userInfoPolicyChecked: Boolean,
+	toggleAllPolicyAgree: () -> Unit,
+	toggleServicePolicy: () -> Unit,
+	toggleUserInfoPolicy: () -> Unit,
+	clickServicePolicyText: () -> Unit,
+	clickUserInfoPolicyText: () -> Unit
 ) {
-	var allChecked by remember { mutableStateOf(false) }
-	var firstChecked by remember { mutableStateOf(false) }
-	var secondChecked by remember { mutableStateOf(false) }
-
-	Column(modifier = Modifier.padding(top = 56.dp)) {
+	Column(
+		modifier = modifier
+	) {
 		PolicyAgreeHeaderRow(
-			checked = allChecked,
-			onCheckedChange = {
-				allChecked = !allChecked
-				firstChecked = allChecked
-				secondChecked = allChecked
-			}
+			checked = servicePolicyChecked && userInfoPolicyChecked,
+			toggleChecked = toggleAllPolicyAgree
 		)
 
 		PolicyAgreeChildRow(
 			text = stringResource(id = R.string.policy_screen_agree_to_service_rule),
-			link = "https://www.naver.com",
-			checked = firstChecked,
-			onCheckedChange = {
-				firstChecked = !firstChecked
-				allChecked = firstChecked && secondChecked
-			}
+			checked = servicePolicyChecked,
+			toggleChecked = toggleServicePolicy,
+			clickText = clickServicePolicyText
 		)
 
 		PolicyAgreeChildRow(
 			text = stringResource(R.string.policy_screen_agree_to_privacy_rule),
-			link = "https://www.google.com",
-			checked = secondChecked,
-			onCheckedChange = {
-				secondChecked = !secondChecked
-				allChecked = firstChecked && secondChecked
-			}
+			checked = userInfoPolicyChecked,
+			toggleChecked = toggleUserInfoPolicy,
+			clickText = clickUserInfoPolicyText
 		)
-
-		Spacer(modifier = Modifier.weight(1f))
-
-		PolicyCompleteButton(allChecked) {
-			// 회원가입
-			viewModel.postUser("nickname")
-		}
 	}
 }
 
 @Composable
 private fun PolicyAgreeHeaderRow(
 	checked: Boolean,
-	onCheckedChange: (Boolean) -> Unit
+	toggleChecked: () -> Unit
 ) {
 	Row(
 		modifier = Modifier
@@ -153,7 +176,7 @@ private fun PolicyAgreeHeaderRow(
 				color = if (checked) Main500 else Grey200,
 				shape = RoundedCornerShape(8.dp)
 			)
-			.padding(start = 10.dp, end = 12.dp, top = 7.dp, bottom = 7.dp),
+			.padding(vertical = 7.dp, horizontal = 10.dp),
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		PolicyCheckbox(
@@ -161,7 +184,7 @@ private fun PolicyAgreeHeaderRow(
 				.size(32.dp)
 				.padding(6.dp),
 			checked = checked,
-			onCheckedChange = onCheckedChange
+			toggleChecked = toggleChecked
 		)
 
 		Spacer(modifier = Modifier.width(8.dp))
@@ -181,12 +204,10 @@ private fun PolicyAgreeHeaderRow(
 @Composable
 private fun PolicyAgreeChildRow(
 	text: String,
-	link: String,
 	checked: Boolean,
-	onCheckedChange: (Boolean) -> Unit
+	toggleChecked: () -> Unit,
+	clickText: () -> Unit
 ) {
-	val uriHandler = LocalUriHandler.current
-
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -198,7 +219,7 @@ private fun PolicyAgreeChildRow(
 				.size(32.dp)
 				.padding(6.dp),
 			checked = checked,
-			onCheckedChange = onCheckedChange
+			toggleChecked = toggleChecked
 		)
 
 		Spacer(modifier = Modifier.width(8.dp))
@@ -212,52 +233,55 @@ private fun PolicyAgreeChildRow(
 				fontFamily = pretenard,
 				textDecoration = TextDecoration.Underline
 			),
-			onClick = { uriHandler.openUri(link) }
+			onClick = { _ -> clickText() }
 		)
 	}
 }
 
 @Composable
 private fun PolicyCompleteButton(
-	allChecked: Boolean,
-	onClick: () -> Unit
+	validation: Boolean = false,
+	onPolicyComplete: () -> Unit
 ) {
-	LyfeButton(
+	Box(
 		modifier = Modifier
 			.fillMaxWidth()
-			.height(48.dp),
-		cornerSize = 10.dp,
-		isClearIconShow = false,
-		buttonType = if (allChecked) {
-			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
-		} else {
-			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
-		},
-		text = stringResource(id = R.string.complete),
-		onClick = onClick
-	)
+			.padding(top = 16.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
+	) {
+		LyfeButton(
+			modifier = Modifier.fillMaxWidth(),
+			cornerSize = 10.dp,
+			isClearIconShow = false,
+			horizontalPadding = 24.dp,
+			verticalPadding = 12.dp,
+			buttonType = if (validation) {
+				LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
+			} else {
+				LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
+			},
+			text = stringResource(id = R.string.signup_terms_policy_screen_finish),
+			onClick = onPolicyComplete
+		)
+	}
 }
 
 @Composable
 private fun PolicyCheckbox(
 	modifier: Modifier,
 	checked: Boolean = false,
-	onCheckedChange: (Boolean) -> Unit
+	toggleChecked: () -> Unit
 ) {
-	var isChecked by remember { mutableStateOf(checked) }
-
 	Image(
 		modifier = modifier
 			.clip(RoundedCornerShape(4.dp))
-			.clickable {
-				isChecked = !isChecked
-				onCheckedChange(isChecked)
+			.clickableSingle {
+				toggleChecked()
 			},
 		painter = if (checked) {
 			painterResource(id = R.drawable.ic_checkbox_checked)
 		} else {
 			painterResource(id = R.drawable.ic_checkbox_unchecked)
 		},
-		contentDescription = ""
+		contentDescription = "policy_checkbox"
 	)
 }

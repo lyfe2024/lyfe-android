@@ -31,7 +31,7 @@ sealed class LyfeScreens(
 
 	object CreateNickname : LyfeScreens("nickname")
 
-	object Policy : LyfeScreens("policy")
+	object SignUpTermsPolicy : LyfeScreens("policy/signup")
 
 	object LoginComplete : LyfeScreens("loginComplete")
 
