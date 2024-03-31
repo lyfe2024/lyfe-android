@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.userexperience
+package com.lyfe.android.feature.feedback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,24 +30,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.Grey800
 import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun UserExperienceScreen() {
+fun FeedbackScreen(
+	viewModel: FeedbackViewModel = hiltViewModel(),
+	navigator: LyfeNavigator,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
+) {
 	Column(
 		modifier = Modifier
 			.padding(vertical = 16.dp, horizontal = 20.dp)
 			.fillMaxSize()
 	) {
 		Text(
-			text = stringResource(R.string.user_experience_title),
+			text = stringResource(R.string.feedback_title),
 			style = TextStyle(
 				fontSize = 24.sp,
 				lineHeight = 36.sp,
@@ -59,7 +66,7 @@ fun UserExperienceScreen() {
 		Spacer(modifier = Modifier.height(8.dp))
 
 		Text(
-			text = stringResource(R.string.user_experience_sub_title),
+			text = stringResource(R.string.feedback_sub_title),
 			style = TextStyle(
 				fontSize = 14.sp,
 				lineHeight = 22.sp,
@@ -70,18 +77,35 @@ fun UserExperienceScreen() {
 
 		Spacer(modifier = Modifier.height(16.dp))
 
-		UserExperienceContent()
+		FeedbackContent()
+	}
+
+	when (val uiState = viewModel.uiState) {
+		FeedbackUiState.IDLE -> {}
+		FeedbackUiState.Success -> {
+			onShowSnackBar(LyfeSnackBarIconType.SUCCESS, "피드백이 성공적으로 전송되었습니다.")
+			navigator.navigateUp()
+		}
+		is FeedbackUiState.Failure -> {
+			onShowSnackBar(LyfeSnackBarIconType.ERROR, uiState.errorMessage)
+		}
+		FeedbackUiState.Loading -> {
+			// 로딩창 띄우기
+		}
 	}
 }
 
 private const val MAX_LENGTH = 300
 
 @Composable
-fun UserExperienceContent() {
+fun FeedbackContent(
+	viewModel: FeedbackViewModel = hiltViewModel()
+) {
 	Column(modifier = Modifier.fillMaxHeight()) {
 		var text by remember { mutableStateOf("") }
+
 		// 유저 경험 작성 텍스트 필드
-		UserExperienceTextField(
+		FeedbackTextField(
 			modifier = Modifier
 				.fillMaxWidth()
 				.heightIn(min = 120.dp, max = 192.dp),
@@ -95,6 +119,7 @@ fun UserExperienceContent() {
 		)
 
 		Spacer(modifier = Modifier.height(4.dp))
+
 		// 글자수 표시 텍스트
 		Text(
 			modifier = Modifier.align(Alignment.End),
@@ -111,6 +136,7 @@ fun UserExperienceContent() {
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
+
 		// 피드백 보내기 버튼
 		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),
@@ -123,14 +149,16 @@ fun UserExperienceContent() {
 			text = stringResource(R.string.send_feedback),
 			isClearIconShow = false
 		) {
-			if (text.isEmpty()) return@LyfeButton
-			// TODO 피드백 보내기
+			if (text.isEmpty()) {
+				return@LyfeButton
+			}
+			viewModel.sendFeedback(text)
 		}
 	}
 }
 
 @Composable
-fun UserExperienceTextField(
+fun FeedbackTextField(
 	modifier: Modifier,
 	text: String,
 	textFieldType: LyfeTextFieldType,

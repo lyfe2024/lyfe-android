@@ -55,7 +55,7 @@ import com.lyfe.android.core.common.ui.theme.Grey500
 import com.lyfe.android.core.common.ui.theme.Grey900
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
-import com.lyfe.android.core.model.UserInfo
+import com.lyfe.android.core.model.User
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
@@ -93,13 +93,17 @@ private fun ProfileContentArea(
 	viewModel: ProfileViewModel,
 	navigator: LyfeNavigator
 ) {
+	LaunchedEffect(Unit) {
+		viewModel.getUserInfo()
+	}
+
 	when (viewModel.uiState) {
 		is ProfileUiState.GuestSuccess,
 		is ProfileUiState.UserSuccess -> {
 			val isGuest = viewModel.uiState is ProfileUiState.GuestSuccess
 			ProfileUserInfo(
 				navigator = navigator,
-				userInfo = viewModel.userInfo
+				user = viewModel.user
 			)
 
 			Spacer(modifier = Modifier.height(16.dp))
@@ -123,7 +127,7 @@ private fun ProfileContentArea(
 @Composable
 private fun ProfileUserInfo(
 	navigator: LyfeNavigator,
-	userInfo: UserInfo
+	user: User
 ) {
 	Row(
 		modifier = Modifier
@@ -135,7 +139,7 @@ private fun ProfileUserInfo(
 				.fillMaxHeight()
 				.aspectRatio(1.0f)
 				.clip(CircleShape),
-			model = userInfo.profileImage,
+			model = user.profileImage,
 			failure = placeholder(R.drawable.ic_profile_default),
 			contentDescription = "profile image"
 		)
@@ -148,7 +152,7 @@ private fun ProfileUserInfo(
 			verticalArrangement = Arrangement.Center
 		) {
 			Text(
-				text = userInfo.name,
+				text = user.name,
 				style = TextStyle(
 					color = Color.Black,
 					fontSize = 20.sp,
@@ -157,7 +161,7 @@ private fun ProfileUserInfo(
 				)
 			)
 
-			if (userInfo.id <= 0) {
+			if (user.id > 0) {
 				ClickableText(
 					text = AnnotatedString(stringResource(id = R.string.profile_edit_title)),
 					style = TextStyle(
@@ -212,7 +216,6 @@ private fun ProfileUserPostTabContent(
 		if (isGuest) {
 			// 게스트는 로그인 유도창 띄우기
 			ProfileGuestLoginView(
-				viewModel = viewModel,
 				navigator = navigator
 			)
 		}
@@ -264,7 +267,6 @@ private fun ProfileTab(
 
 @Composable
 private fun ProfileGuestLoginView(
-	viewModel: ProfileViewModel,
 	navigator: LyfeNavigator
 ) {
 	Column(
@@ -296,7 +298,6 @@ private fun ProfileGuestLoginView(
 		) {
 			// TODO 로그인 화면으로
 // 			navigator.navigate(route = LyfeScreens.Login.route)
-			viewModel.updateToUserMode()
 		}
 
 		Spacer(modifier = Modifier.height(8.dp))

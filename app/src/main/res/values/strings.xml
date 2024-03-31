@@ -62,9 +62,9 @@
 	<!-- FeedDetailScreen -->
 	<string name="comment_reply_text">답글 달기</string>
 
-	<!-- UserExperienceScreen -->
-    <string name="user_experience_title">사용경험</string>
-	<string name="user_experience_sub_title">Lyfe에서의 경험을 편하게 말씀해주세요.\n긍정/부정 적인 피드백 무엇이든 괜찮아요.</string>
+	<!-- FeedbackScreen -->
+    <string name="feedback_title">사용경험</string>
+	<string name="feedback_sub_title">Lyfe에서의 경험을 편하게 말씀해주세요.\n긍정/부정 적인 피드백 무엇이든 괜찮아요.</string>
 	<string name="send_feedback">피드백 보내기</string>
 	<string name="enter_feedback">피드백 내용을 입력해주세요</string>
 
@@ -90,5 +90,7 @@
 	<string name="policy_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
 	<string name="policy_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
 	<string name="login_complete_start">시작하기</string>
+	<string name="service_terms">이용약관</string>
+    <string name="personal_info_agreements">개인정보 수집 및 이용</string>
 
 </resources>

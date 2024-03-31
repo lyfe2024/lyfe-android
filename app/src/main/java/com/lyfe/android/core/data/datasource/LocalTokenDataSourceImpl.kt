@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
+private val Context.tokenDataStore: DataStore<Preferences> by preferencesDataStore(name = "token")
 
 class LocalTokenDataSourceImpl @Inject constructor(
 	@ApplicationContext private val context: Context
@@ -42,52 +42,52 @@ class LocalTokenDataSourceImpl @Inject constructor(
 		return accessTokenExpirationTime != null && currentTimeMillis >= accessTokenExpirationTime
 	}
 
-	private fun getAccessTokenExpirationTime(): Flow<Long?> = context.dataStore.data.map { token ->
+	private fun getAccessTokenExpirationTime(): Flow<Long?> = context.tokenDataStore.data.map { token ->
 		token[PreferencesKeys.ACCESS_TOKEN_EXPIRATION_TIME_KEY]
 	}
 
 	override suspend fun updateSignUpToken(signUpToken: String) {
-		context.dataStore.edit { token ->
+		context.tokenDataStore.edit { token ->
 			token[PreferencesKeys.SIGN_UP_TOKEN_KEY] = signUpToken
 			token[PreferencesKeys.SIGN_UP_TOKEN_EXPIRATION_TIME_KEY] = System.currentTimeMillis() + SIGN_UP_TOKEN_EXPIRATION_TIME
 		}
 	}
 
 	override suspend fun updateAccessToken(accessToken: String) {
-		context.dataStore.edit { token ->
+		context.tokenDataStore.edit { token ->
 			token[PreferencesKeys.ACCESS_TOKEN_KEY] = accessToken
 			token[PreferencesKeys.ACCESS_TOKEN_EXPIRATION_TIME_KEY] = System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME
 		}
 	}
 
 	override suspend fun updateRefreshToken(refreshToken: String) {
-		context.dataStore.edit { token ->
+		context.tokenDataStore.edit { token ->
 			token[PreferencesKeys.REFRESH_TOKEN_KEY] = refreshToken
 			token[PreferencesKeys.REFRESH_TOKEN_EXPIRATION_TIME_KEY] = System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME
 		}
 	}
 
-	override fun getSignUpToken(): Flow<String> = context.dataStore.data.map { token ->
+	override fun getSignUpToken(): Flow<String> = context.tokenDataStore.data.map { token ->
 		token[PreferencesKeys.SIGN_UP_TOKEN_KEY].orEmpty()
 	}
 
-	override fun getAccessToken(): Flow<String> = context.dataStore.data.map { token ->
+	override fun getAccessToken(): Flow<String> = context.tokenDataStore.data.map { token ->
 		token[PreferencesKeys.ACCESS_TOKEN_KEY].orEmpty()
 	}
 
-	override fun getRefreshToken(): Flow<String> = context.dataStore.data.map { token ->
+	override fun getRefreshToken(): Flow<String> = context.tokenDataStore.data.map { token ->
 		token[PreferencesKeys.REFRESH_TOKEN_KEY].orEmpty()
 	}
 
 	override suspend fun deleteSignUpToken() {
-		context.dataStore.edit { token ->
+		context.tokenDataStore.edit { token ->
 			token.remove(PreferencesKeys.SIGN_UP_TOKEN_KEY)
 			token.remove(PreferencesKeys.SIGN_UP_TOKEN_EXPIRATION_TIME_KEY)
 		}
 	}
 
 	override suspend fun deleteAllToken() {
-		context.dataStore.edit { token ->
+		context.tokenDataStore.edit { token ->
 			token.clear()
 		}
 	}
