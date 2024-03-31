@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -81,16 +80,14 @@ fun FeedbackScreen(
 		FeedbackContent()
 	}
 
-	val uiState by viewModel.uiState.collectAsState()
-	when (uiState) {
+	when (val uiState = viewModel.uiState) {
 		FeedbackUiState.IDLE -> {}
 		FeedbackUiState.Success -> {
 			onShowSnackBar(LyfeSnackBarIconType.SUCCESS, "피드백이 성공적으로 전송되었습니다.")
 			navigator.navigateUp()
 		}
 		is FeedbackUiState.Failure -> {
-			val errorMessage = (uiState as FeedbackUiState.Failure).errorMessage
-			onShowSnackBar(LyfeSnackBarIconType.ERROR, errorMessage)
+			onShowSnackBar(LyfeSnackBarIconType.ERROR, uiState.errorMessage)
 		}
 		FeedbackUiState.Loading -> {
 			// 로딩창 띄우기
