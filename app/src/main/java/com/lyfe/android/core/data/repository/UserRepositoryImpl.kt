@@ -88,22 +88,4 @@ class UserRepositoryImpl @Inject constructor(
 			}
 		}
 	}
-
-	override fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>> = flow {
-		when (val response = remoteUserDataSource.getUserBoard(lastId)) {
-			is Result.Success -> {
-				val result = response.body?.result ?: throw ApiResultException()
-				emit(Pair(result.boardPictureList.map { it.toDomain() }, result.page.toDomain()))
-			}
-			is Result.Failure -> {
-				throw ApiResultException(response.error)
-			}
-			is Result.NetworkError -> {
-				throw response.exception
-			}
-			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
-			}
-		}
-	}.flowOn(ioDispatcher)
 }

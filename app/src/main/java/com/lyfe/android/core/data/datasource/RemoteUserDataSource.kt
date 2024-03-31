@@ -1,7 +1,7 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.model.GetUserBoardResponse
+import com.lyfe.android.core.data.model.GetUserBoardListResponse
 import com.lyfe.android.core.data.model.GetUserInfoResponse
 import com.lyfe.android.core.data.model.PutUserInfoResponse
 import com.lyfe.android.core.data.network.model.Result
@@ -17,6 +17,4 @@ interface RemoteUserDataSource {
 		width: Int,
 		height: Int
 	): Result<PutUserInfoResponse>
-
-	suspend fun getUserBoard(lastId: Int?): Result<GetUserBoardResponse>
 }

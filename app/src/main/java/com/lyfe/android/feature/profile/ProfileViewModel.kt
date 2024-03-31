@@ -30,10 +30,14 @@ class ProfileViewModel @Inject constructor(
 	private val _user = MutableStateFlow(User())
 	val user get() = _user.value
 
-	private val _feedList = MutableStateFlow<List<Feed>>(emptyList())
-	val feedList get() = _feedList.asStateFlow()
+	private val _textFeedList = MutableStateFlow<List<Feed>>(emptyList())
+	val textFeedList get() = _textFeedList.asStateFlow()
 
-	private var lastPage: Page? = null
+	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
+	val imageFeedList get() = _imageFeedList.asStateFlow()
+
+	private var imageCursorId: Long? = null
+	private var textCursorId: Long? = null
 
 	fun getUserInfo() = viewModelScope.launch {
 		getUserInfoUseCase().onEach {
@@ -46,13 +50,33 @@ class ProfileViewModel @Inject constructor(
 		}
 	}
 
-	fun fetchFeedList() = viewModelScope.launch {
-		getUserBoardUseCase(lastPage?.number).catch {
-			// TODO
-		}.collect { result ->
-			val feeds = result.first
-			lastPage = result.second
-			_feedList.update {
+	fun fetchImageFeedList() = viewModelScope.launch {
+		getUserBoardUseCase(
+			userId = _user.value.id,
+			boardType = "BOARD_PICTURE",
+			cursorId = imageCursorId
+		).catch {
+			uiState = ProfileUiState.Failure
+		}.collect { it ->
+			val feeds = it.first
+			imageCursorId = feeds.first().feedId
+			_imageFeedList.update {
+				it.plus(feeds)
+			}
+		}
+	}
+
+	fun fetchTextFeedList() = viewModelScope.launch {
+		getUserBoardUseCase(
+			userId = _user.value.id,
+			boardType = "BOARD",
+			cursorId = textCursorId
+		).catch {
+			uiState = ProfileUiState.Failure
+		}.collect { it ->
+			val feeds = it.first
+			textCursorId = feeds.first().feedId
+			_textFeedList.update {
 				it.plus(feeds)
 			}
 		}

@@ -2,6 +2,8 @@ package com.lyfe.android.core.data.datasource.di
 
 import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.datasource.AuthDataSourceImpl
+import com.lyfe.android.core.data.datasource.BoardDataSource
+import com.lyfe.android.core.data.datasource.BoardDataSourceImpl
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
 import com.lyfe.android.core.data.datasource.FeedbackDataSource
@@ -16,6 +18,8 @@ import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyDataSourceImpl
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
 import com.lyfe.android.core.data.datasource.RemoteUserDataSourceImpl
+import com.lyfe.android.core.data.datasource.TopicDataSource
+import com.lyfe.android.core.data.datasource.TopicDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -73,4 +77,16 @@ interface DataSourceModule {
 	fun bindsFeedbackDataSource(
 		feedbackDataSourceImpl: FeedbackDataSourceImpl
 	): FeedbackDataSource
+
+	@Singleton
+	@Binds
+	fun bindsTopicDataSource(
+		topicDataSourceImpl: TopicDataSourceImpl
+	): TopicDataSource
+
+	@Singleton
+	@Binds
+	fun bindsBoardDataSource(
+		boardDataSourceImpl: BoardDataSourceImpl
+	): BoardDataSource
 }

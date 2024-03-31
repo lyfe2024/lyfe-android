@@ -1,0 +1,14 @@
+package com.lyfe.android.core.data.model
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class GetTodayTopicResponse(
+	val result: GetTodayTopicResult
+)
+
+@Serializable
+data class GetTodayTopicResult(
+	val id: Int,
+	val content: String
+)

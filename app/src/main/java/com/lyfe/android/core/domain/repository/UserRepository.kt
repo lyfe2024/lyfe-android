@@ -25,6 +25,4 @@ interface UserRepository {
 		width: Int,
 		height: Int
 	): Flow<User>
-
-	fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>>
 }

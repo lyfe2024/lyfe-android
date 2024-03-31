@@ -81,7 +81,7 @@ fun HomeTodayTopicScreen(
 					modifier = Modifier
 						.fillMaxWidth()
 						.padding(horizontal = 20.dp),
-					text = "여름과 가을 사이",
+					text = viewModel.todayTopic,
 					style = TextStyle(
 						fontSize = 28.sp,
 						fontWeight = FontWeight.W700,
