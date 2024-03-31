@@ -114,7 +114,7 @@ private fun kakaoLogin(
 				onTokenReceived = { oAuthToken ->
 					// 소셜 로그인 접근
 					viewModel.authUser(
-						socialType = "KAKAO",
+						socialType = SocialType.KAKAO,
 						identityToken = oAuthToken.accessToken,
 						fcmToken = ""
 					)
@@ -135,7 +135,7 @@ private fun googleLogin(
 			val account = GoogleLoginManager.handleSignInResult(it)
 			// 소셜 로그인 접근
 			viewModel.authUser(
-				socialType = "GOOGLE",
+				socialType = SocialType.GOOGLE,
 				authorizationCode = account.serverAuthCode.orEmpty(),
 				fcmToken = ""
 			)

@@ -33,11 +33,15 @@ sealed class LyfeScreens(
 
 	object Policy : LyfeScreens("policy")
 
+	object ServiceTerms : LyfeScreens("serviceTerms")
+
+	object PersonalInfoAgreementsScreen : LyfeScreens("personalInfoAgreements")
+
 	object LoginComplete : LyfeScreens("loginComplete")
 
 	object Setting : LyfeScreens("setting")
 
-	object UserExperience : LyfeScreens("userExperience")
+	object Feedback : LyfeScreens("feedback")
 }
 
 private fun String.appendArguments(navArguments: List<NamedNavArgument>): String {

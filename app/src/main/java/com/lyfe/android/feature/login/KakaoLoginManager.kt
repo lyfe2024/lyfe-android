@@ -18,6 +18,22 @@ object KakaoLoginManager {
 		}
 	}
 
+	fun logout(
+		onFailure: (Throwable?) -> Unit,
+		onSuccess: () -> Unit
+	) {
+		// 로그아웃
+		UserApiClient.instance.logout { error ->
+			if (error != null) {
+				LogUtil.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨 ${error.message ?: ""}")
+				onFailure(error)
+			} else {
+				LogUtil.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+				onSuccess()
+			}
+		}
+	}
+
 	private fun getKaKaoLoginState(context: Context): KaKaoLoginState =
 		if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
 			KaKaoLoginState.KAKAO_TALK_LOGIN
