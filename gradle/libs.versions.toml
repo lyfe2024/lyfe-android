@@ -9,6 +9,7 @@ google-services-plugin = "4.4.0"
 
 # Config Versions
 compileSdk = "34"
+markdownviewAndroid = "2.0.0"
 minSdk = "26"
 targetSdk = "34"
 versionCode = "1"
@@ -63,6 +64,9 @@ kakao-sdk = "2.10.0"
 # Firebase SDK
 firebase = "32.6.0"
 
+# Markdown (Markwon)
+markdown = "4.6.2"
+
 [plugins]
 # build.gradle (project module)
 android-application-gradle = { id = "com.android.application", version.ref = "android-gradle-plugin" }
@@ -99,11 +103,15 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
 
 # Network
+markdown-view = { module = "com.github.mukeshsolanki:MarkdownView-Android", version.ref = "markdownviewAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 
 # JsonParser
 kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+# Markdown (Markwon)
+markdown = { module = "io.noties.markwon:core", version.ref = "markdown" }
 
 # Test Library
 junit = { module = "junit:junit", version.ref = "junit" }

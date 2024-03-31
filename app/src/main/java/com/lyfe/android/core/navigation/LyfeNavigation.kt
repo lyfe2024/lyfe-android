@@ -14,6 +14,7 @@ import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
 import com.lyfe.android.feature.policy.LoginCompleteScreen
+import com.lyfe.android.feature.policy.ServicePolicyScreen
 import com.lyfe.android.feature.policy.SignUpTermsPolicyScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
@@ -115,6 +116,11 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	) {
 		SignUpTermsPolicyScreen(navigator = lyfeNavigator)
 		selectedScreen(LyfeScreens.SignUpTermsPolicy.name)
+	}
+
+	composable(route = LyfeScreens.ServicePolicy.name) {
+		ServicePolicyScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.ServicePolicy.name)
 	}
 
 	composable(route = LyfeScreens.LoginComplete.name) {

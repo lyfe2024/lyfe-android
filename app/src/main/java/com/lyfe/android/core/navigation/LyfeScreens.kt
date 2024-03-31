@@ -33,6 +33,10 @@ sealed class LyfeScreens(
 
 	object SignUpTermsPolicy : LyfeScreens("policy/signup")
 
+	object ServicePolicy : LyfeScreens("policy/service")
+
+	object UserInfoPolicy : LyfeScreens("policy/userinfo")
+
 	object LoginComplete : LyfeScreens("loginComplete")
 
 	object Setting : LyfeScreens("setting")

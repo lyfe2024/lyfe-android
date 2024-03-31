@@ -88,6 +88,8 @@ dependencies {
 	implementation(libs.bundles.imageloader)
 	ksp(libs.glide.compiler)
 
+	implementation(libs.markdown.view)
+
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.android.test)
     androidTestImplementation(libs.bundles.android.compose.test)
