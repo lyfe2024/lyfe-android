@@ -1,13 +1,13 @@
 package com.lyfe.android.feature.feedback
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.SendFeedbackUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,15 +16,15 @@ class FeedbackViewModel @Inject constructor(
 	private val sendFeedbackUseCase: SendFeedbackUseCase
 ) : ViewModel() {
 
-	private val _uiState = MutableStateFlow<FeedbackUiState>(FeedbackUiState.IDLE)
-	val uiState: StateFlow<FeedbackUiState> = _uiState.asStateFlow()
+	var uiState by mutableStateOf<FeedbackUiState>(FeedbackUiState.IDLE)
+		private set
 
 	fun sendFeedback(text: String) = viewModelScope.launch {
-		if (_uiState.value == FeedbackUiState.Loading) {
+		if (uiState == FeedbackUiState.Loading) {
 			return@launch
 		}
-		_uiState.value = FeedbackUiState.Loading
-		_uiState.value = when (val response = sendFeedbackUseCase(text)) {
+		uiState = FeedbackUiState.Loading
+		uiState = when (val response = sendFeedbackUseCase(text)) {
 			is Result.Success -> {
 				FeedbackUiState.Success
 			}

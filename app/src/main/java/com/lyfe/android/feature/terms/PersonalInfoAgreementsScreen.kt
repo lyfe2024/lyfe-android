@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,18 +66,13 @@ fun PersonalInfoAgreementsScreen(
 			)
 		}
 
-		val uiState by viewModel.uiState.collectAsState()
-
-		when (uiState) {
+		when (val uiState = viewModel.uiState) {
 			is TermsUiState.Success -> {
-				val state = (uiState as TermsUiState.Success)
-
-				MarkdownText(markdown = state.content)
+				MarkdownText(markdown = uiState.content)
 			}
 			is TermsUiState.Failure -> {
 				// 토스트 매세지 띄우기
-				val state = (uiState as TermsUiState.Failure)
-				onShowSnackBar(LyfeSnackBarIconType.ERROR, state.errorMessage)
+				onShowSnackBar(LyfeSnackBarIconType.ERROR, uiState.errorMessage)
 			}
 			TermsUiState.Loading -> {
 				// TODO 로딩창 띄우기
