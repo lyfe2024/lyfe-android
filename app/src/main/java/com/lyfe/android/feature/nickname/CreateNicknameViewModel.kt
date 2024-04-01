@@ -2,13 +2,13 @@ package com.lyfe.android.feature.nickname
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
@@ -67,10 +67,7 @@ class CreateNicknameViewModel @Inject constructor(
 		_createNicknameUiState.value = CreateNicknameUiState.Loading
 
 		viewModelScope.launch {
-			val result = userRepository.fetchIsNicknameDuplicated(nickname = nicknameFlow.value)
-			if (result is Result.Success) {
-				val isNotDuplicated = result.body?.result?.isAvailable ?: false
-
+			userRepository.fetchIsNicknameDuplicated(nickname = nicknameFlow.value).collectLatest { isNotDuplicated ->
 				_createNicknameUiState.value = if (isNotDuplicated) {
 					CreateNicknameUiState.Success
 				} else {
