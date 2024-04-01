@@ -1,15 +1,15 @@
 package com.lyfe.android.feature.policy
 
-sealed interface ServicePolicyUiState {
+sealed interface UserInfoPolicyUiState {
 
-	object Loading : ServicePolicyUiState
+	object Loading : UserInfoPolicyUiState
 
 	data class Success(
 		val title: String,
 		val content: String
-	) : ServicePolicyUiState
+	) : UserInfoPolicyUiState
 
 	data class Failure(
 		val message: String
-	) : ServicePolicyUiState
+	) : UserInfoPolicyUiState
 }

@@ -1,10 +1,11 @@
-package com.lyfe.android.feature.policy
+package com.lyfe.android.feature.policy.userinfo
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.PolicyRepository
-import com.lyfe.android.core.model.ServicePolicyResult
+import com.lyfe.android.core.model.UserInfoPolicyResult
+import com.lyfe.android.feature.policy.UserInfoPolicyUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -12,15 +13,15 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class ServicePolicyViewModel @Inject constructor(
+class UserInfoPolicyViewModel @Inject constructor(
 	private val policyRepository: PolicyRepository
 ) : ViewModel() {
 
-	val userInfoPolicyUiState = policyRepository.fetchServicePolicy()
+	val userInfoPolicyUiState = policyRepository.fetchUserInfoPolicy()
 		.map {
 			when (it) {
 				is Result.Success -> {
-					val servicePolicyResult = it.body ?: ServicePolicyResult()
+					val servicePolicyResult = it.body ?: UserInfoPolicyResult()
 					val title = servicePolicyResult.title
 					val content = servicePolicyResult.content
 					UserInfoPolicyUiState.Success(title = title, content = content)

@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.policy
+package com.lyfe.android.feature.policy.userinfo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,27 +27,30 @@ import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.core.navigation.navigator.LyfeNavigatorImpl
+import com.lyfe.android.feature.policy.UserInfoPolicyUiState
 import com.mukesh.MarkDown
 
 @Composable
-fun ServicePolicyScreen(
+fun UserInfoPolicyScreen(
 	navigator: LyfeNavigator = LyfeNavigatorImpl(),
-	viewModel: ServicePolicyViewModel = hiltViewModel()
+	viewModel: UserInfoPolicyViewModel = hiltViewModel()
 ) {
-	val servicePolicyUiState by viewModel.userInfoPolicyUiState.collectAsStateWithLifecycle()
+	val userInfoPolicyUiState by viewModel.userInfoPolicyUiState.collectAsStateWithLifecycle()
 
 	Box(
-		modifier = Modifier.fillMaxSize()
+		modifier = Modifier
+			.fillMaxSize()
 			.background(Color.White)
 	) {
-		when (servicePolicyUiState) {
+		when (userInfoPolicyUiState) {
 			is UserInfoPolicyUiState.Success -> {
-				ServicePolicyContent(
-					title = (servicePolicyUiState as UserInfoPolicyUiState.Success).title,
-					content = (servicePolicyUiState as UserInfoPolicyUiState.Success).content,
+				UserInfoPolicyContent(
+					title = (userInfoPolicyUiState as UserInfoPolicyUiState.Success).title,
+					content = (userInfoPolicyUiState as UserInfoPolicyUiState.Success).content,
 					onNavigateUp = navigator::navigateUp
 				)
 			}
+
 			is UserInfoPolicyUiState.Loading -> {
 
 			}
@@ -60,13 +63,13 @@ fun ServicePolicyScreen(
 }
 
 @Composable
-private fun ServicePolicyContent(
+private fun UserInfoPolicyContent(
 	title: String,
 	content: String,
 	onNavigateUp: () -> Unit
 ) {
 	Column {
-		ServicePolicyContentTopBar(
+		UserInfoPolicyContentTopBar(
 			title = title,
 			onNavigateUp = onNavigateUp
 		)
@@ -79,7 +82,7 @@ private fun ServicePolicyContent(
 }
 
 @Composable
-private fun ServicePolicyContentTopBar(
+private fun UserInfoPolicyContentTopBar(
 	title: String,
 	onNavigateUp: () -> Unit
 ) {
@@ -93,7 +96,8 @@ private fun ServicePolicyContentTopBar(
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Icon(
-				modifier = Modifier.size(24.dp)
+				modifier = Modifier
+					.size(24.dp)
 					.clickableSingle { onNavigateUp() },
 				painter = painterResource(id = R.drawable.ic_arrow_back),
 				contentDescription = "arrow_back",

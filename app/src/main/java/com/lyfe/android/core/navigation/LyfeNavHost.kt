@@ -17,7 +17,7 @@ fun LyfeNavHost(
 	NavHost(
 		modifier = modifier,
 		navController = navHostController,
-		startDestination = LyfeScreens.ServicePolicy.route
+		startDestination = LyfeScreens.Home.route
 	) {
 		lyfeHomeNavigation(
 			lyfeNavigator = navigator,
