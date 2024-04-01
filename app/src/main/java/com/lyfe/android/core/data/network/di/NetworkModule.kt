@@ -6,6 +6,7 @@ import com.lyfe.android.core.data.network.authenticator.TokenAuthenticator
 import com.lyfe.android.core.data.network.converter.asConverterFactory
 import com.lyfe.android.core.data.network.interceptor.TokenInterceptor
 import com.lyfe.android.core.data.network.service.AuthService
+import com.lyfe.android.core.data.network.service.PolicyService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -72,6 +73,12 @@ object NetworkModule {
 	@Named("lyfe")
 	fun providesLyfeAuthService(retrofit: Retrofit): AuthService {
 		return retrofit.create(AuthService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesPolicyService(retrofit: Retrofit): PolicyService {
+		return retrofit.create(PolicyService::class.java)
 	}
 
 	@Provides
