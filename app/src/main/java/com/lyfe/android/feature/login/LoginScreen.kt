@@ -63,7 +63,7 @@ fun LoginScreen(
 			}
 			is LoginUiState.Success -> {
 				// 회원가입 절차 진행
-				navigator.navigate(LyfeScreens.Nickname.name)
+				navigator.navigate(LyfeScreens.CreateNickname.name)
 				viewModel.updateUiState(LoginUiState.IDLE)
 			}
 			else -> {}
