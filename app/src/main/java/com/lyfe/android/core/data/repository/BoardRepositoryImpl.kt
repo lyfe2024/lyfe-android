@@ -1,16 +1,12 @@
 package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.BoardDataSource
-import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.mapper.toDomain
 import com.lyfe.android.core.data.model.GetBoardDetailResponse
-import com.lyfe.android.core.data.model.GetBoardDetailResult
-import com.lyfe.android.core.data.model.GetUserBoardResult
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.data.network.model.Result
-import com.lyfe.android.core.domain.repository.AlbumRepository
 import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.Page
@@ -36,7 +32,7 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getLatestBoards(cursorId, date, boardType)) {
 			is Result.Success -> {
-				val result = response.body?.result ?: throw ApiResultException()
+				val result = response.body?.result?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })
 			}
 			is Result.Failure -> {
@@ -58,7 +54,7 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getPopularBoards(whiskyCount, date, boardType)) {
 			is Result.Success -> {
-				val result = response.body?.result ?: throw ApiResultException()
+				val result = response.body?.result?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })
 			}
 			is Result.Failure -> {
@@ -74,14 +70,13 @@ class BoardRepositoryImpl @Inject constructor(
 	}.flowOn(ioDispatcher)
 
 	override fun getUserBoards(
-		userId: Long,
 		boardType: String?,
-		cursorId: Long?
-	): Flow<Pair<List<Feed>, Page>> = flow {
-		when (val response = boardDataSource.getUserBoards(userId, boardType, cursorId)) {
+		cursorId: Long
+	): Flow<List<Feed>> = flow {
+		when (val response = boardDataSource.getUserBoards(boardType, cursorId)) {
 			is Result.Success -> {
-				val result = response.body?.result ?: throw ApiResultException()
-				emit(Pair(result.boardPictureList.map { it.toDomain() }, result.page.toDomain()))
+				val result = response.body?.result?.list ?: throw ApiResultException()
+				emit(result.map { it.toDomain() })
 			}
 			is Result.Failure -> {
 				throw ApiResultException(response.error)

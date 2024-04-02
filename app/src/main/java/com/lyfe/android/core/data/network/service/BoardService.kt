@@ -2,7 +2,6 @@ package com.lyfe.android.core.data.network.service
 
 import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.model.GetBoardListResponse
-import com.lyfe.android.core.data.model.GetUserBoardListResponse
 import com.lyfe.android.core.data.network.model.Result
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -32,10 +31,9 @@ interface BoardService {
 	): Result<GetBoardListResponse>
 
 	// 자신이 작성한 글 조회
-	@GET("/v1/boards/popular/{userId}")
+	@GET("/v1/boards/me")
 	suspend fun getUserBoards(
-		@Path("userId") userId: Long,
 		@Query("type") boardType: String? = "BOARD",
-		@Query("cursorId") cursorId: Long?
-	): Result<GetUserBoardListResponse>
+		@Query("cursorId") cursorId: Long
+	): Result<GetBoardListResponse>
 }

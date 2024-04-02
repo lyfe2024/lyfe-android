@@ -72,7 +72,10 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.Profile.name) {
-		ProfileScreen(navigator = lyfeNavigator)
+		ProfileScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
 		selectedScreen(LyfeScreens.Profile.name)
 	}
 

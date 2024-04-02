@@ -2,7 +2,6 @@ package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.model.GetBoardListResponse
-import com.lyfe.android.core.data.model.GetUserBoardListResponse
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.BoardService
 import javax.inject.Inject
@@ -40,12 +39,10 @@ class BoardDataSourceImpl @Inject constructor(
 	}
 
 	override suspend fun getUserBoards(
-		userId: Long,
 		boardType: String?,
-		cursorId: Long?
-	): Result<GetUserBoardListResponse> {
+		cursorId: Long
+	): Result<GetBoardListResponse> {
 		return boardService.getUserBoards(
-			userId = userId,
 			boardType = boardType,
 			cursorId = cursorId
 		)

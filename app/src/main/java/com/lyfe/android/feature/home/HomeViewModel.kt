@@ -88,37 +88,37 @@ class HomeViewModel @Inject constructor(
 	}
 
 	fun fetchTextFeedList() = viewModelScope.launch {
-		val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-
-		val onEach: (List<Feed>) -> Unit = {
-			uiState = HomeUiState.Loading
-		}
-		val catcher: FlowCollector<List<Feed>>.(Throwable) -> Unit = {
-			uiState = HomeUiState.Failure(it.message ?: "")
-		}
-		val feedCollector: (List<Feed>) -> Unit = {
-			_textFeedList.compareAndSet(textFeedList.value, it)
-		}
-		when (textFeedFetchingType) {
-			FeedFetchingType.POPULAR -> {
-				getPopularBoardsUseCase(
-					date = date,
-					boardType = "BOARD"
-				).onEach(onEach)
-				.catch(catcher)
-				.collect(feedCollector)
-			}
-			FeedFetchingType.LATEST -> {
-				getLatestBoardsUseCase(
-					cursorId = 0,
-					date = date,
-					boardType = "BOARD"
-				).onEach(onEach)
-				.catch(catcher)
-				.collect(feedCollector)
-			}
-		}
-//		_textFeedList.compareAndSet(textFeedList.value, fakeFeedList2)
+//		val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+//
+//		val onEach: (List<Feed>) -> Unit = {
+//			uiState = HomeUiState.Loading
+//		}
+//		val catcher: FlowCollector<List<Feed>>.(Throwable) -> Unit = {
+//			uiState = HomeUiState.Failure(it.message ?: "")
+//		}
+//		val feedCollector: (List<Feed>) -> Unit = {
+//			_textFeedList.compareAndSet(textFeedList.value, it)
+//		}
+//		when (textFeedFetchingType) {
+//			FeedFetchingType.POPULAR -> {
+//				getPopularBoardsUseCase(
+//					date = date,
+//					boardType = "BOARD"
+//				).onEach(onEach)
+//				.catch(catcher)
+//				.collect(feedCollector)
+//			}
+//			FeedFetchingType.LATEST -> {
+//				getLatestBoardsUseCase(
+//					cursorId = 0,
+//					date = date,
+//					boardType = "BOARD"
+//				).onEach(onEach)
+//				.catch(catcher)
+//				.collect(feedCollector)
+//			}
+//		}
+		_textFeedList.compareAndSet(textFeedList.value, fakeFeedList2)
 	}
 
 	private val fakeFeedList = listOf(

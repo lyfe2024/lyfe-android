@@ -2,27 +2,13 @@ package com.lyfe.android.core.data.model
 
 import kotlinx.serialization.Serializable
 
-//"result": {
-//	"id": 1,
-//	"user": {
-//		"id": 1,
-//		"username": "홍길동",
-//		"profile": "https://picsum.photos/700/700"
-//	},
-//	"title": "타이틀",
-//	"content": "컨텐츠",
-//	"boardType": "BOARD_CONTENT",
-//	"whiskyCount": 1,
-//	"commentCount": 1,
-//	"updatedAt": "2021-01-01"
-//}
 @Serializable
 data class GetBoardDetailResponse(
-	val result: GetBoardDetailResult
+	val result: BoardDetail
 )
 
 @Serializable
-data class GetBoardDetailResult(
+data class BoardDetail(
 	val id: Long,
 	val user: UserInfo,
 	val title: String,

@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.domain.usecase.GetUserBoardUseCase
 import com.lyfe.android.core.domain.usecase.GetUserInfoUseCase
 import com.lyfe.android.core.model.Feed
@@ -36,8 +37,8 @@ class ProfileViewModel @Inject constructor(
 	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val imageFeedList get() = _imageFeedList.asStateFlow()
 
-	private var imageCursorId: Long? = null
-	private var textCursorId: Long? = null
+	private var imageCursorId = 0L
+	private var textCursorId = 0L
 
 	fun getUserInfo() = viewModelScope.launch {
 		getUserInfoUseCase().onEach {
@@ -52,13 +53,14 @@ class ProfileViewModel @Inject constructor(
 
 	fun fetchImageFeedList() = viewModelScope.launch {
 		getUserBoardUseCase(
-			userId = _user.value.id,
 			boardType = "BOARD_PICTURE",
 			cursorId = imageCursorId
 		).catch {
-			uiState = ProfileUiState.Failure
-		}.collect { it ->
-			val feeds = it.first
+			LogUtil.e("ProfileViewModel", it.message ?: "에러 메세지가 없습니다.")
+		}.collect { feeds ->
+			if (feeds.isEmpty()) {
+				return@collect
+			}
 			imageCursorId = feeds.first().feedId
 			_imageFeedList.update {
 				it.plus(feeds)
@@ -68,13 +70,14 @@ class ProfileViewModel @Inject constructor(
 
 	fun fetchTextFeedList() = viewModelScope.launch {
 		getUserBoardUseCase(
-			userId = _user.value.id,
 			boardType = "BOARD",
 			cursorId = textCursorId
 		).catch {
-			uiState = ProfileUiState.Failure
-		}.collect { it ->
-			val feeds = it.first
+			LogUtil.e("ProfileViewModel", it.message ?: "에러 메세지가 없습니다.")
+		}.collect { feeds ->
+			if (feeds.isEmpty()) {
+				return@collect
+			}
 			textCursorId = feeds.first().feedId
 			_textFeedList.update {
 				it.plus(feeds)

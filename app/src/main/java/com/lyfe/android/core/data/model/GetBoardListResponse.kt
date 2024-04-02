@@ -4,5 +4,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class GetBoardListResponse(
-	val result: List<GetBoardDetailResult>
+	val result: GetBoardListResult
+)
+
+@Serializable
+data class GetBoardListResult(
+	val list: List<BoardDetail>
 )

@@ -74,9 +74,7 @@ class ProfileEditViewModel @Inject constructor(
 				uiState = ProfileEditUiState.IDLE
 				editProfile(
 					nickname = nickname,
-					profileUrl = user.profileImage,
-					width = 120,
-					height = 120
+					profileUrl = user.profileImage
 				)
 			}
 		}
@@ -99,15 +97,11 @@ class ProfileEditViewModel @Inject constructor(
 
 	private fun editProfile(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	) = viewModelScope.launch {
 		editProfileUseCase(
 			nickname = nickname,
-			profileUrl = profileUrl,
-			width = width,
-			height = height
+			profileUrl = profileUrl
 		).onEach {
 			uiState = ProfileEditUiState.Loading
 		}.catch {

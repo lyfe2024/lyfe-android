@@ -1,7 +1,6 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.model.GetUserBoardListResponse
 import com.lyfe.android.core.data.model.GetUserInfoResponse
 import com.lyfe.android.core.data.model.PutUserInfoRequest
 import com.lyfe.android.core.data.model.PutUserInfoResponse
@@ -23,11 +22,9 @@ class RemoteUserDataSourceImpl @Inject constructor(
 
 	override suspend fun putUserInfo(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	): Result<PutUserInfoResponse> {
-		val body = PutUserInfoRequest(nickname, profileUrl, width, height)
+		val body = PutUserInfoRequest(nickname, profileUrl)
 		return userService.putUserInfo(body)
 	}
 }
