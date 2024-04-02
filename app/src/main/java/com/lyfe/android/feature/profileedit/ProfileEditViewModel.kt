@@ -6,11 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.common.ui.util.LogUtil
+import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.CheckNicknameUseCase
 import com.lyfe.android.core.domain.usecase.EditProfileUseCase
 import com.lyfe.android.core.domain.usecase.GetImageUploadUrlUseCase
 import com.lyfe.android.core.domain.usecase.GetUserInfoUseCase
 import com.lyfe.android.core.domain.usecase.UploadImageUseCase
+import com.lyfe.android.core.model.UploadImageUrl
 import com.lyfe.android.core.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,43 +60,62 @@ class ProfileEditViewModel @Inject constructor(
 		}
 	}
 
-	fun checkNicknameDuplicate(nickname: String) = viewModelScope.launch {
-		checkNicknameUseCase(nickname = nickname).onEach {
-			uiState = ProfileEditUiState.Loading
-		}.catch {
-			val message = it.message ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."
-			uiState = ProfileEditUiState.Failure(
-				message = message
-			)
-		}.collect {
-			if (imagePath != null) {
-				// 닉네임 중복 검사 문제 없으면 프로필 변경을 위해 이미지 업로드 실행
-				uploadProfileImage()
-			} else {
-				// 프로필 이미지 변경 없이 닉네임만 바꿨으면 바로 프로필 변경 실행
-				uiState = ProfileEditUiState.IDLE
-				editProfile(
-					nickname = nickname,
-					profileUrl = user.profileImage,
-					width = 120,
-					height = 120
+	fun checkNicknameDuplicate(nickname: String) {
+		uiState = ProfileEditUiState.Loading
+		viewModelScope.launch {
+			checkNicknameUseCase(nickname = nickname).catch {
+				val message = it.message ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."
+				uiState = ProfileEditUiState.Failure(
+					message = message
 				)
+			}.collect {
+				if (imagePath != null) {
+					// 닉네임 중복 검사 문제 없으면 프로필 변경을 위해 이미지 업로드 실행
+					getUploadImageUrl()
+				} else {
+					// 프로필 이미지 변경 없이 닉네임만 바꿨으면 바로 프로필 변경 실행
+					uiState = ProfileEditUiState.IDLE
+					editProfile(
+						nickname = nickname,
+						profileUrl = user.profileImage,
+						width = 120,
+						height = 120
+					)
+				}
 			}
 		}
 	}
 
-	fun uploadProfileImage() = viewModelScope.launch {
-		val file = imagePath?.let { File(it) }
-		val format = file?.getImageFormat()
-		getImageUploadUrlUseCase(format ?: "", "topic_picture").onEach {
-			uiState = ProfileEditUiState.Loading
-		}.catch {
-			val message = it.message ?: "오류로 인해 프로필 변경에 실패하였습니다."
-			uiState = ProfileEditUiState.Failure(
-				message = message
-			)
-		}.collect {
-			uploadImageUseCase(it.url, it.key, file!!)
+	fun getUploadImageUrl() {
+		uiState = ProfileEditUiState.Loading
+		viewModelScope.launch {
+			val file = imagePath?.let { File(it) }
+			val format = file?.getImageFormat()
+			getImageUploadUrlUseCase(format ?: "", "topic_picture").catch {
+				val message = it.message ?: "오류로 인해 프로필 변경에 실패했습니다."
+				uiState = ProfileEditUiState.Failure(message)
+			}.collect {
+				uploadProfileImage(it, file!!)
+			}
+		}
+	}
+
+	private suspend fun uploadProfileImage(uploadImageUrl: UploadImageUrl, file: File) {
+		when (val response = uploadImageUseCase(uploadImageUrl.url, uploadImageUrl.key, file)) {
+			is Result.Success -> {
+				LogUtil.d("UploadProfileImage", response.body.toString())
+				editProfile(_user.value.name, "url", 102, 102)
+			}
+
+			is Result.Failure -> {
+				LogUtil.e("UploadProfileImage", response.error.orEmpty())
+			}
+			is Result.NetworkError -> {
+				response.exception.printStackTrace()
+			}
+			is Result.Unexpected -> {
+				response.t?.printStackTrace()
+			}
 		}
 	}
 

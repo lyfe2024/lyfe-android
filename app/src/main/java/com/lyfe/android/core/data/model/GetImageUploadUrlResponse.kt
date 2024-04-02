@@ -11,5 +11,5 @@ data class GetImageUploadUrlResponse(
 data class UploadImageUrlResult(
 	val url: String,
 	val key: String,
-	val expiresAt: String
+	val expiresAt: String? = null
 )
