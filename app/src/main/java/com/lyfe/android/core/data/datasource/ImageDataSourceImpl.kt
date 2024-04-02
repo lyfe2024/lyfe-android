@@ -19,7 +19,7 @@ class ImageDataSourceImpl @Inject constructor(
 		return imageService.getUploadUrl(format, path)
 	}
 
-	override suspend fun uploadImage(url: String, key: String, file: MultipartBody.Part): Result<Any> {
+	override suspend fun uploadImage(url: String, key: String, file: MultipartBody.Part): Result<Void> {
 		val queryMap: HashMap<String, String> = hashMapOf()
 
 		val splitKey = key.split("/")

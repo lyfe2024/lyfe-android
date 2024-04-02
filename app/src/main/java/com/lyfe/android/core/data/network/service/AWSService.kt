@@ -20,5 +20,5 @@ interface AWSService {
 		@Path("fileName") fileName: String,
 		@QueryMap queryMap: HashMap<String, String>,
 		@Part body: MultipartBody.Part
-	): Result<GetUserInfoResponse>
+	): Result<Void>
 }

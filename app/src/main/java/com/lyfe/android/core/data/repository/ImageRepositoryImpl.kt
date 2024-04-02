@@ -38,7 +38,7 @@ class ImageRepositoryImpl @Inject constructor(
 		}
 	}.flowOn(ioDispatcher)
 
-	override suspend fun uploadImage(url: String, key: String, file: File): Result<Any> {
+	override suspend fun uploadImage(url: String, key: String, file: File): Result<Void> {
 		val requestBody = file.asRequestBody()
 		val part = MultipartBody.Part.createFormData(
 			"image",

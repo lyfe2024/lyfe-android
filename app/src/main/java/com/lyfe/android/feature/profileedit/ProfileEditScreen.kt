@@ -344,7 +344,7 @@ private fun ProfileEditCompleteButton(
 				viewModel.checkNicknameDuplicate(nickname = nickname)
 			} else if (viewModel.imagePath != null) {
 				// 닉네임 변경 X 프로필 이미지만 바꼈으면 바로 이미지 업로드 진행
-				viewModel.uploadProfileImage()
+				viewModel.getUploadImageUrl()
 			} else {
 				// 둘 다 변경 없으면 뒤로 가기
 				navigator.navigateUp()
