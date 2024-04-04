@@ -1,7 +1,7 @@
 package com.lyfe.android.core.data.network.authenticator
 
-import com.lyfe.android.core.data.datasource.LocalTokenDataSource
 import com.lyfe.android.core.data.model.ReissueTokenRequest
+import com.lyfe.android.core.data.network.TokenManager
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.AuthService
 import kotlinx.coroutines.delay
@@ -16,7 +16,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class TokenAuthenticator @Inject constructor(
-	private val localTokenDataSource: LocalTokenDataSource,
+	private val tokenManager: TokenManager,
 	@Named("authenticator")	private val authService: AuthService
 ) : Authenticator {
 
@@ -33,8 +33,10 @@ class TokenAuthenticator @Inject constructor(
 				// 여러 API요청으로 인해 중복으로 재발행되는 현상 방지
 				if (!tokenRefreshInProgress.get()) {
 					tokenRefreshInProgress.set(true)
+
 					// Token Refresh
-					val isRefreshed = refreshToken()
+					val refreshToken = tokenManager.getRefreshToken().first() ?: return@runBlocking null
+					val isRefreshed = reissueToken(refreshToken)
 
 					tokenRefreshInProgress.set(false)
 
@@ -55,11 +57,7 @@ class TokenAuthenticator @Inject constructor(
 		}
 	}
 
-	private suspend fun refreshToken(): Boolean {
-		val refreshToken = runBlocking {
-			localTokenDataSource.getRefreshToken().first()
-		}
-
+	private suspend fun reissueToken(refreshToken: String): Boolean {
 		val newTokenResult = authService.reissueToken(ReissueTokenRequest(refreshToken))
 		if (newTokenResult is Result.Success) {
 			val result = newTokenResult.body?.result
@@ -67,8 +65,8 @@ class TokenAuthenticator @Inject constructor(
 			val newRefreshToken = result?.refreshToken
 			if (newAccessToken != null && newRefreshToken != null) {
 				// Update the access token in your storage.
-				localTokenDataSource.updateAccessToken(newAccessToken)
-				localTokenDataSource.updateRefreshToken(newRefreshToken)
+				tokenManager.saveAccessToken(newAccessToken)
+				tokenManager.saveRefreshToken(newRefreshToken)
 
 				return true
 			}
@@ -92,15 +90,15 @@ class TokenAuthenticator @Inject constructor(
 	}
 
 	private suspend fun buildRequest(requestBuilder: Request.Builder): Request {
-		val accessToken = localTokenDataSource.getAccessToken().first()
+		val accessToken = tokenManager.getAccessToken().first()
 		return requestBuilder
 			.header(HEADER_AUTHORIZATION, HEADER_AUTHORIZATION_TYPE + accessToken)
 			.build()
 	}
 
 	companion object {
-		const val HEADER_AUTHORIZATION = "Authorization"
-		const val HEADER_AUTHORIZATION_TYPE = "Bearer "
+		private const val HEADER_AUTHORIZATION = "Authorization"
+		private const val HEADER_AUTHORIZATION_TYPE = "Bearer "
 		private const val MAX_REQUEST_COUNT = 3
 		private const val REFRESH_WAIT_DELAY = 200L
 	}
