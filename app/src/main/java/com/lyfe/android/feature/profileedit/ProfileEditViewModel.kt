@@ -116,7 +116,7 @@ class ProfileEditViewModel @Inject constructor(
 				editProfile()
 				return@launch
 			}
-			getImageUploadUrlUseCase(file.getImageFormat() ?: "", "topic_picture").catch {
+			getImageUploadUrlUseCase(file.getImageFormat(), "topic_picture").catch {
 				val message = it.message ?: "오류로 인해 프로필 변경에 실패했습니다."
 				uiState = ProfileEditUiState.Failure(message)
 			}.collectLatest {
