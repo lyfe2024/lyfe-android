@@ -68,11 +68,9 @@ class UserRepositoryImpl @Inject constructor(
 
 	override suspend fun putUserInfo(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	) = flow {
-		when (val response = remoteUserDataSource.putUserInfo(nickname, profileUrl, width, height)) {
+		when (val response = remoteUserDataSource.putUserInfo(nickname, profileUrl)) {
 			is Result.Success -> {
 				val body = response.body ?: throw ApiResultException()
 				emit(body.result.toDomain())

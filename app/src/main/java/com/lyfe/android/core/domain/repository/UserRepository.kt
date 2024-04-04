@@ -21,9 +21,7 @@ interface UserRepository {
 
 	suspend fun putUserInfo(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	): Flow<User>
 
 	fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>>
