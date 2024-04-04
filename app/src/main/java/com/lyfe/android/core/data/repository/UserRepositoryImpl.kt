@@ -34,7 +34,7 @@ class UserRepositoryImpl @Inject constructor(
 		when (val response = remoteUserDataSource.getUserInfo()) {
 			is Result.Success -> {
 				val body = response.body ?: throw ApiResultException()
-				emit(body.result.toDomain())
+				emit(body.toDomain())
 			}
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
@@ -49,20 +49,9 @@ class UserRepositoryImpl @Inject constructor(
 	}.flowOn(ioDispatcher)
 
 	override suspend fun fetchIsNicknameDuplicated(nickname: String) = flow {
-		when (val response = remoteUserDataSource.checkNicknameDuplicated(nickname)) {
-			is Result.Success -> {
-				val body = response.body ?: throw ApiResultException()
-				emit(body.result.isAvailable)
-			}
-			is Result.Failure -> {
-				throw ApiResultException(response.error)
-			}
-			is Result.NetworkError -> {
-				throw response.exception
-			}
-			is Result.Unexpected -> {
-				throw ApiResultException()
-			}
+		val result = remoteUserDataSource.checkNicknameDuplicated(nickname)
+		if (result is Result.Success) {
+			emit(result.body?.isAvailable ?: false)
 		}
 	}
 
@@ -75,7 +64,7 @@ class UserRepositoryImpl @Inject constructor(
 		when (val response = remoteUserDataSource.putUserInfo(nickname, profileUrl, width, height)) {
 			is Result.Success -> {
 				val body = response.body ?: throw ApiResultException()
-				emit(body.result.toDomain())
+				emit(body.toDomain())
 			}
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
@@ -92,7 +81,7 @@ class UserRepositoryImpl @Inject constructor(
 	override fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>> = flow {
 		when (val response = remoteUserDataSource.getUserBoard(lastId)) {
 			is Result.Success -> {
-				val result = response.body?.result ?: throw ApiResultException()
+				val result = response.body ?: throw ApiResultException()
 				emit(Pair(result.boardPictureList.map { it.toDomain() }, result.page.toDomain()))
 			}
 			is Result.Failure -> {

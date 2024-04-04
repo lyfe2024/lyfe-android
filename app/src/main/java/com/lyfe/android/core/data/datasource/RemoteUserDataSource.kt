@@ -1,22 +1,21 @@
 package com.lyfe.android.core.data.datasource
 
-import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.model.GetUserBoardResponse
-import com.lyfe.android.core.data.model.GetUserInfoResponse
-import com.lyfe.android.core.data.model.PutUserInfoResponse
+import com.lyfe.android.core.data.model.CheckNicknameResult
+import com.lyfe.android.core.data.model.GetUserBoardResult
+import com.lyfe.android.core.data.model.UserInfo
 import com.lyfe.android.core.data.network.model.Result
 
 interface RemoteUserDataSource {
-	suspend fun checkNicknameDuplicated(nickname: String): Result<CheckNicknameResponse>
+	suspend fun checkNicknameDuplicated(nickname: String): Result<CheckNicknameResult>
 
-	suspend fun getUserInfo(): Result<GetUserInfoResponse>
+	suspend fun getUserInfo(): Result<UserInfo>
 
 	suspend fun putUserInfo(
 		nickname: String,
 		profileUrl: String,
 		width: Int,
 		height: Int
-	): Result<PutUserInfoResponse>
+	): Result<UserInfo>
 
-	suspend fun getUserBoard(lastId: Int?): Result<GetUserBoardResponse>
+	suspend fun getUserBoard(lastId: Int?): Result<GetUserBoardResult>
 }

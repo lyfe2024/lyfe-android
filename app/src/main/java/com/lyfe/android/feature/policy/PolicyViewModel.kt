@@ -35,7 +35,7 @@ class PolicyViewModel @Inject constructor(
 		val userToken = getSignUpTokenUseCase().first()
 		when (val response = signUpUserUseCase(userToken, nickname)) {
 			is Result.Success -> {
-				val result = response.body?.result
+				val result = response.body
 				uiState = if (result == null) {
 					PolicyUiState.Failure()
 				} else {

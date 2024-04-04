@@ -26,7 +26,7 @@ class ServiceTermsViewModel @Inject constructor(
 	private fun getServiceTerms() = viewModelScope.launch {
 		when (val response = getServiceTermsUseCase()) {
 			is Result.Success -> {
-				val terms = response.body?.result
+				val terms = response.body
 				uiState = if (terms == null) {
 					TermsUiState.Failure()
 				} else {

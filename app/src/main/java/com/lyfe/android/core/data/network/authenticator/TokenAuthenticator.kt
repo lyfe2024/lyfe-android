@@ -60,7 +60,7 @@ class TokenAuthenticator @Inject constructor(
 	private suspend fun reissueToken(refreshToken: String): Boolean {
 		val newTokenResult = authService.reissueToken(ReissueTokenRequest(refreshToken))
 		if (newTokenResult is Result.Success) {
-			val result = newTokenResult.body?.result
+			val result = newTokenResult.body
 			val newAccessToken = result?.accessToken
 			val newRefreshToken = result?.refreshToken
 			if (newAccessToken != null && newRefreshToken != null) {
