@@ -2,7 +2,6 @@ package com.lyfe.android.feature.profileedit
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,15 +38,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.core.common.ui.theme.Green50
 import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Red50
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
@@ -93,8 +96,7 @@ private fun ProfileEditContentArea(
 			// 처음 화면에 보일 닉네임은 로컬 저장소에서 가져옴.
 			ProfileEditContent(
 				viewModel = viewModel,
-				navigator = navigator,
-				nickname = viewModel.user.name
+				nickname = viewModel.nickname
 			)
 		}
 		is ProfileEditUiState.Success -> {
@@ -113,8 +115,7 @@ private fun ProfileEditContentArea(
 			)
 			ProfileEditContent(
 				viewModel = viewModel,
-				navigator = navigator,
-				nickname = viewModel.user.name
+				nickname = viewModel.nickname
 			)
 		}
 		is ProfileEditUiState.Loading -> {
@@ -126,10 +127,8 @@ private fun ProfileEditContentArea(
 @Composable
 private fun ProfileEditContent(
 	viewModel: ProfileEditViewModel,
-	navigator: LyfeNavigator,
 	nickname: String
 ) {
-	var nicknameState by remember { mutableStateOf(nickname) }
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -145,23 +144,16 @@ private fun ProfileEditContent(
 
 			ProfileEditNicknameTextField(
 				nickname = nickname,
-				onNicknameChanged = { nicknameState = it }
+				onNicknameChanged = { viewModel.setNickname(it) }
 			)
 
 			Spacer(modifier = Modifier.height(8.dp))
 
-			ProfileEditNicknameConditionTextArea(
-				viewModel = viewModel,
-				nickname = nicknameState
-			)
+			ProfileEditNicknameConditionTextArea(viewModel = viewModel)
 
 			Spacer(modifier = Modifier.weight(1f))
 
-			ProfileEditCompleteButton(
-				viewModel = viewModel,
-				navigator = navigator,
-				nickname = nicknameState
-			)
+			ProfileEditCompleteButton(viewModel = viewModel)
 		}
 	}
 }
@@ -196,7 +188,7 @@ private fun ProfileEditThumbnailContent(
 
 		GlideImage(
 			model = if (viewModel.imagePath == null) {
-				viewModel.user.profileImage
+				viewModel.profileImage
 			} else {
 				viewModel.imagePath
 			},
@@ -206,7 +198,8 @@ private fun ProfileEditThumbnailContent(
 				.align(Center)
 				.size(80.dp)
 				.clip(CircleShape)
-				.border(width = 1.dp, Grey200, CircleShape)
+				.border(width = 1.dp, Grey200, CircleShape),
+			failure = placeholder(painterResource(id = R.drawable.ic_profile_default))
 		)
 
 		Image(
@@ -226,23 +219,23 @@ private fun ProfileEditNicknameTextField(
 	nickname: String,
 	onNicknameChanged: (String) -> Unit
 ) {
-	var nicknameState by remember { mutableStateOf(nickname) }
+	var nicknameText by remember { mutableStateOf(nickname) }
 	Column {
 		LyfeTextField(
 			singleLine = true,
-			text = nicknameState,
-			textFieldType = if (nicknameState.isEmpty()) {
+			text = nicknameText,
+			textFieldType = if (nicknameText.isEmpty()) {
 				LyfeTextFieldType.TC_GREY200_BG_TRANSPARENT_SC_GREY200
 			} else {
 				LyfeTextFieldType.TC_DEFAULT_BG_TRANSPARENT_SC_DEFAULT
 			},
 			onTextClear = {
-				nicknameState = ""
+				nicknameText = ""
 				onNicknameChanged("")
 			},
 			onTextChange = {
-				nicknameState = it
-				onNicknameChanged(nicknameState)
+				nicknameText = it
+				onNicknameChanged(nicknameText)
 			}
 		)
 	}
@@ -250,45 +243,42 @@ private fun ProfileEditNicknameTextField(
 
 @Composable
 private fun ProfileEditNicknameConditionTextArea(
-	viewModel: ProfileEditViewModel,
-	nickname: String
+	viewModel: ProfileEditViewModel
 ) {
-	val nicknameLengthState = viewModel.isNicknameTooLong(nickname)
-	val nicknameSpecialLetterState = viewModel.isNicknameHasSpecialLetter(nickname)
-	val nicknameCombinationState = viewModel.isNicknameCombinationWrong(nickname)
+	val nicknameValidationUiState by viewModel.nicknameValidationUiState.collectAsStateWithLifecycle()
+	val validTextWithNum = nicknameValidationUiState.checkTextWithNum()
+	val validSpecialLetter = nicknameValidationUiState.checkNotSpecialLetter()
+	val validLength = nicknameValidationUiState.checkNotExceedMaxLength()
 
 	Column(
 		modifier = Modifier.fillMaxWidth(),
 		verticalArrangement = Arrangement.spacedBy(4.dp)
 	) {
 		NicknameConditionText(
-			text = when (nicknameCombinationState) {
-				NicknameInvalidState.EMPTY -> stringResource(R.string.nickname_comb_empty_text)
-				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_comb_incorrect_text)
-				else -> stringResource(R.string.nickname_comb_correct_text)
+			text = if (validTextWithNum) {
+				stringResource(id = R.string.nickname_comb_correct_text)
+			} else {
+				stringResource(id = R.string.nickname_comb_incorrect_text)
 			},
-			color = nicknameCombinationState.color,
-			icon = nicknameCombinationState.icon
+			isValid = validTextWithNum
 		)
 
 		NicknameConditionText(
-			text = when (nicknameSpecialLetterState) {
-				NicknameInvalidState.EMPTY,
-				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_special_letter_incorrect_text)
-				NicknameInvalidState.CORRECT -> stringResource(R.string.nickname_special_letter_correct_text)
+			text = if (validSpecialLetter) {
+				stringResource(id = R.string.nickname_special_letter_correct_text)
+			} else {
+				stringResource(id = R.string.nickname_special_letter_incorrect_text)
 			},
-			color = nicknameSpecialLetterState.color,
-			icon = nicknameSpecialLetterState.icon
+			isValid = validSpecialLetter
 		)
 
 		NicknameConditionText(
-			text = when (nicknameLengthState) {
-				NicknameInvalidState.EMPTY,
-				NicknameInvalidState.INCORRECT -> stringResource(R.string.nickname_length_incorrect_text)
-				NicknameInvalidState.CORRECT -> stringResource(R.string.nickname_length_correct_text)
+			text = if (validLength) {
+				stringResource(R.string.nickname_length_correct_text)
+			} else {
+				stringResource(R.string.nickname_length_incorrect_text)
 			},
-			color = nicknameLengthState.color,
-			icon = nicknameLengthState.icon
+			isValid = validLength
 		)
 	}
 }
@@ -296,20 +286,27 @@ private fun ProfileEditNicknameConditionTextArea(
 @Composable
 private fun NicknameConditionText(
 	text: String,
-	color: Color,
-	@DrawableRes icon: Int
+	isValid: Boolean
 ) {
 	Row {
 		Image(
-			painter = painterResource(id = icon),
-			contentDescription = "만족하면 파랑 아니면 회색"
+			painter = if (isValid) {
+				painterResource(id = R.drawable.ic_check_green)
+			} else {
+				painterResource(id = R.drawable.ic_check_red)
+			},
+			contentDescription = "만족하면 녹색 아니면 회색"
 		)
 
 		Spacer(modifier = Modifier.width(4.dp))
 
 		Text(
 			text = text,
-			color = color,
+			color = if (isValid) {
+				Green50
+			} else {
+				Red50
+			},
 			fontSize = 14.sp
 		)
 	}
@@ -317,38 +314,22 @@ private fun NicknameConditionText(
 
 @Composable
 private fun ProfileEditCompleteButton(
-	viewModel: ProfileEditViewModel,
-	navigator: LyfeNavigator,
-	nickname: String
+	viewModel: ProfileEditViewModel
 ) {
-	val isNicknameEnable = viewModel.isNicknameTooLong(nickname) == NicknameInvalidState.CORRECT &&
-		viewModel.isNicknameHasSpecialLetter(nickname) == NicknameInvalidState.CORRECT &&
-		viewModel.isNicknameCombinationWrong(nickname) == NicknameInvalidState.CORRECT
-
 	LyfeButton(
 		modifier = Modifier
 			.height(48.dp)
 			.fillMaxWidth(),
 		cornerSize = 10.dp,
 		isClearIconShow = false,
-		buttonType = if (isNicknameEnable) {
+		buttonType = if (viewModel.isValidNickname()) {
 			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
 		text = stringResource(id = R.string.complete),
 		onClick = {
-			if (isNicknameEnable && nickname != viewModel.user.name) {
-				// 닉네임 사용 가능 여부 확인
-				// 확인 이후 프로필 이미지 업로드 -> 프로필 변경
-				viewModel.checkNicknameDuplicate(nickname = nickname)
-			} else if (viewModel.imagePath != null) {
-				// 닉네임 변경 X 프로필 이미지만 바꼈으면 바로 이미지 업로드 진행
-				viewModel.getUploadImageUrl()
-			} else {
-				// 둘 다 변경 없으면 뒤로 가기
-				navigator.navigateUp()
-			}
+			viewModel.checkNicknameDuplicate()
 		}
 	)
 }

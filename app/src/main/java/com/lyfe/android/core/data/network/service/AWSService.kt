@@ -1,6 +1,5 @@
 package com.lyfe.android.core.data.network.service
 
-import com.lyfe.android.core.data.model.GetUserInfoResponse
 import com.lyfe.android.core.data.network.model.Result
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart
