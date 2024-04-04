@@ -77,9 +77,7 @@ class ProfileEditViewModel @Inject constructor(
 					uiState = ProfileEditUiState.IDLE
 					editProfile(
 						nickname = nickname,
-						profileUrl = user.profileImage,
-						width = 120,
-						height = 120
+						profileUrl = user.profileImage
 					)
 				}
 			}
@@ -104,7 +102,7 @@ class ProfileEditViewModel @Inject constructor(
 		when (val response = uploadImageUseCase(uploadImageUrl.url, uploadImageUrl.key, file)) {
 			is Result.Success -> {
 				LogUtil.d("UploadProfileImage", response.body.toString())
-				editProfile(_user.value.name, "url", 102, 102)
+				editProfile(_user.value.name, uploadImageUrl.url)
 			}
 
 			is Result.Failure -> {
@@ -121,18 +119,12 @@ class ProfileEditViewModel @Inject constructor(
 
 	private fun editProfile(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	) = viewModelScope.launch {
 		editProfileUseCase(
 			nickname = nickname,
-			profileUrl = profileUrl,
-			width = width,
-			height = height
-		).onEach {
-			uiState = ProfileEditUiState.Loading
-		}.catch {
+			profileUrl = profileUrl
+		).catch {
 			val message = it.message ?: "오류로 인해 프로필 변경에 실패하였습니다."
 			uiState = ProfileEditUiState.Failure(
 				message = message

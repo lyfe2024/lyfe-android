@@ -23,11 +23,9 @@ class RemoteUserDataSourceImpl @Inject constructor(
 
 	override suspend fun putUserInfo(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	): Result<PutUserInfoResponse> {
-		val body = PutUserInfoRequest(nickname, profileUrl, width, height)
+		val body = PutUserInfoRequest(nickname, profileUrl)
 		return userService.putUserInfo(body)
 	}
 
