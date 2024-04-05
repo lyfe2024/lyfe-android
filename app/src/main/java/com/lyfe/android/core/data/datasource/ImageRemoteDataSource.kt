@@ -1,13 +1,13 @@
 package com.lyfe.android.core.data.datasource
 
-import com.lyfe.android.core.data.model.GetImageUploadUrlResponse
+import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.ImageService
 import okhttp3.MultipartBody
 import javax.inject.Inject
 
-class ImageDataSourceImpl @Inject constructor(
+class ImageRemoteDataSource @Inject constructor(
 	private val imageService: ImageService,
 	private val awsService: AWSService
 ) : ImageDataSource {
@@ -15,7 +15,7 @@ class ImageDataSourceImpl @Inject constructor(
 	override suspend fun getImageUploadUrl(
 		format: String,
 		path: String
-	): Result<GetImageUploadUrlResponse> {
+	): Result<UploadImageUrlResult> {
 		return imageService.getUploadUrl(format, path)
 	}
 

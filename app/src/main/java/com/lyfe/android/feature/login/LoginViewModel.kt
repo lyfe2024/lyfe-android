@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(
 			when (val response = authUserUseCase(socialType.name, authorizationCode, identityToken, fcmToken)) {
 				is Result.Success -> {
 					// 소셜 로그인 성공 (유저 토큰)
-					val result = response.body?.result
+					val result = response.body
 					uiState = if (result == null) {
 						LogUtil.e("authUser", "Failure message: ${"result is empty"}")
 						LoginUiState.Failure()

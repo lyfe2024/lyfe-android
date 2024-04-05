@@ -7,6 +7,7 @@ import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.domain.repository.ImageRepository
+import com.lyfe.android.core.model.UploadImageUrl
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -23,7 +24,7 @@ class ImageRepositoryImpl @Inject constructor(
 	override fun getImageUploadUrl(format: String, path: String) = flow {
 		when (val response = imageDataSource.getImageUploadUrl(format, path)) {
 			is Result.Success -> {
-				val result = response.body!!.result
+				val result = response.body ?: throw ApiResultException("Empty Data")
 				emit(result.toDomain())
 			}
 			is Result.Failure -> {
