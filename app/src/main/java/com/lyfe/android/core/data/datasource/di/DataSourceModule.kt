@@ -8,14 +8,14 @@ import com.lyfe.android.core.data.datasource.FeedbackDataSource
 import com.lyfe.android.core.data.datasource.FeedbackDataSourceImpl
 import com.lyfe.android.core.data.datasource.ImageDataSource
 import com.lyfe.android.core.data.datasource.ImageDataSourceImpl
-import com.lyfe.android.core.data.datasource.LocalTokenDataSource
-import com.lyfe.android.core.data.datasource.LocalTokenDataSourceImpl
 import com.lyfe.android.core.data.datasource.LocalUserDataSource
 import com.lyfe.android.core.data.datasource.LocalUserDataSourceImpl
 import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyDataSourceImpl
 import com.lyfe.android.core.data.datasource.RemoteUserDataSource
 import com.lyfe.android.core.data.datasource.RemoteUserDataSourceImpl
+import com.lyfe.android.core.data.datasource.TokenDataSource
+import com.lyfe.android.core.data.datasource.TokenLocalDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -38,11 +38,10 @@ interface DataSourceModule {
 		remoteUserDataSourceImpl: RemoteUserDataSourceImpl
 	): RemoteUserDataSource
 
-	@Singleton
 	@Binds
-	fun bindsLocalTokenDataSource(
-		localTokenDataSourceImpl: LocalTokenDataSourceImpl
-	): LocalTokenDataSource
+	fun bindsTokenLocalDataSource(
+		tokenLocalDataSource: TokenLocalDataSource
+	): TokenDataSource
 
 	@Singleton
 	@Binds
