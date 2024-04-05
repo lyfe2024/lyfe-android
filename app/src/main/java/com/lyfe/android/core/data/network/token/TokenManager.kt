@@ -58,7 +58,7 @@ class TokenManager @Inject constructor(
 		}
 	}
 
-	override suspend fun updateAccessToken(accessToken: String){
+	override suspend fun updateAccessToken(accessToken: String) {
 		dataStore.edit { prefs ->
 			prefs[ACCESS_TOKEN_KEY] = accessToken
 			prefs[ACCESS_TOKEN_EXPIRATION_TIME_KEY] = System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME
@@ -85,7 +85,7 @@ class TokenManager @Inject constructor(
 		}
 	}
 
-	override suspend fun updateRefreshToken(refreshToken: String){
+	override suspend fun updateRefreshToken(refreshToken: String) {
 		dataStore.edit { prefs ->
 			prefs[REFRESH_TOKEN_KEY] = refreshToken
 			prefs[REFRESH_TOKEN_EXPIRATION_TIME_KEY] = System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME
@@ -100,6 +100,4 @@ class TokenManager @Inject constructor(
 			token.clear()
 		}
 	}
-
-
 }

@@ -10,7 +10,7 @@ import org.json.JSONObject
 import javax.inject.Inject
 
 class NetworkInterceptor @Inject constructor(
-	private val tokenManager: TokenManager,
+	private val tokenManager: TokenManager
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
@@ -26,7 +26,7 @@ class NetworkInterceptor @Inject constructor(
 
 		val response = chain.proceed(request)
 		val responseJson = response.extractResponseJson()
-		val dataPayload = if(responseJson.has(RESULT_KEY)) responseJson[RESULT_KEY] else responseJson
+		val dataPayload = if (responseJson.has(RESULT_KEY)) responseJson[RESULT_KEY] else responseJson
 
 		return response.newBuilder()
 			.body(dataPayload.toString().toResponseBody())
@@ -35,11 +35,7 @@ class NetworkInterceptor @Inject constructor(
 
 	private fun Response.extractResponseJson(): JSONObject {
 		val jsonString: String = this.body?.string() ?: BASE_JSON_FORMAT
-		return try {
-			JSONObject(jsonString)
-		} catch(exception: Exception) {
-			throw Exception(EXTRACT_JSON_ERROR)
-		}
+		return JSONObject(jsonString)
 	}
 
 	companion object {
@@ -47,6 +43,5 @@ class NetworkInterceptor @Inject constructor(
 		private const val HEADER_AUTHORIZATION_TYPE = "Bearer"
 		private const val RESULT_KEY = "result"
 		private const val BASE_JSON_FORMAT = "{}"
-		private const val EXTRACT_JSON_ERROR = "No Json Format"
 	}
 }

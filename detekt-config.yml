@@ -3,6 +3,8 @@ complexity:
         active: false
     LongMethod:
         active: false
+    TooManyFunctions:
+        active: false
 
 style:
     MagicNumber:

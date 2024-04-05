@@ -8,19 +8,18 @@ import com.lyfe.android.core.data.datasource.FeedbackDataSource
 import com.lyfe.android.core.data.datasource.FeedbackRemoteDataSource
 import com.lyfe.android.core.data.datasource.ImageDataSource
 import com.lyfe.android.core.data.datasource.ImageRemoteDataSource
-import com.lyfe.android.core.data.datasource.UserLocalDataSource
 import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyRemoteDataSource
-import com.lyfe.android.core.data.datasource.UserRemoteDataSource
-import com.lyfe.android.core.data.datasource.UserRemoteDataSourceImpl
 import com.lyfe.android.core.data.datasource.TokenDataSource
 import com.lyfe.android.core.data.datasource.TokenLocalDataSource
+import com.lyfe.android.core.data.datasource.UserLocalDataSource
 import com.lyfe.android.core.data.datasource.UserLocalDataSourceImpl
+import com.lyfe.android.core.data.datasource.UserRemoteDataSource
+import com.lyfe.android.core.data.datasource.UserRemoteDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
