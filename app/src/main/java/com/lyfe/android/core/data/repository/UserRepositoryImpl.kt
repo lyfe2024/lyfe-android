@@ -1,7 +1,7 @@
 package com.lyfe.android.core.data.repository
 
-import com.lyfe.android.core.data.datasource.LocalUserDataSource
-import com.lyfe.android.core.data.datasource.RemoteUserDataSource
+import com.lyfe.android.core.data.datasource.UserLocalDataSource
+import com.lyfe.android.core.data.datasource.UserRemoteDataSource
 import com.lyfe.android.core.data.mapper.toDomain
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
@@ -19,22 +19,22 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
-	private val remoteUserDataSource: RemoteUserDataSource,
-	private val localUserDataSource: LocalUserDataSource
+	private val userRemoteDataSource: UserRemoteDataSource,
+	private val userLocalDataSource: UserLocalDataSource
 ) : UserRepository {
 	override suspend fun updateSocialType(socialType: String) {
-		localUserDataSource.updateSocialType(socialType = socialType)
+		userLocalDataSource.updateSocialType(socialType = socialType)
 	}
 
 	override fun getSocialType(): Flow<String> {
-		return localUserDataSource.getSocialType()
+		return userLocalDataSource.getSocialType()
 	}
 
 	override fun getUserInfo(): Flow<User> = flow {
-		when (val response = remoteUserDataSource.getUserInfo()) {
+		when (val response = userRemoteDataSource.getUserInfo()) {
 			is Result.Success -> {
 				val body = response.body ?: throw ApiResultException()
-				emit(body.result.toDomain())
+				emit(body.toDomain())
 			}
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
@@ -49,20 +49,9 @@ class UserRepositoryImpl @Inject constructor(
 	}.flowOn(ioDispatcher)
 
 	override suspend fun fetchIsNicknameDuplicated(nickname: String) = flow {
-		when (val response = remoteUserDataSource.checkNicknameDuplicated(nickname)) {
-			is Result.Success -> {
-				val body = response.body ?: throw ApiResultException()
-				emit(body.result.isAvailable)
-			}
-			is Result.Failure -> {
-				throw ApiResultException(response.error)
-			}
-			is Result.NetworkError -> {
-				throw response.exception
-			}
-			is Result.Unexpected -> {
-				throw ApiResultException()
-			}
+		val result = userRemoteDataSource.checkNicknameDuplicated(nickname)
+		if (result is Result.Success) {
+			emit(result.body?.isAvailable ?: false)
 		}
 	}
 
@@ -72,10 +61,10 @@ class UserRepositoryImpl @Inject constructor(
 		width: Int,
 		height: Int
 	) = flow {
-		when (val response = remoteUserDataSource.putUserInfo(nickname, profileUrl, width, height)) {
+		when (val response = userRemoteDataSource.putUserInfo(nickname, profileUrl, width, height)) {
 			is Result.Success -> {
 				val body = response.body ?: throw ApiResultException()
-				emit(body.result.toDomain())
+				emit(body.toDomain())
 			}
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
@@ -90,9 +79,9 @@ class UserRepositoryImpl @Inject constructor(
 	}
 
 	override fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>> = flow {
-		when (val response = remoteUserDataSource.getUserBoard(lastId)) {
+		when (val response = userRemoteDataSource.getUserBoard(lastId)) {
 			is Result.Success -> {
-				val result = response.body?.result ?: throw ApiResultException()
+				val result = response.body ?: throw ApiResultException()
 				emit(Pair(result.boardPictureList.map { it.toDomain() }, result.page.toDomain()))
 			}
 			is Result.Failure -> {
