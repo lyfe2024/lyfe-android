@@ -28,5 +28,4 @@ interface TokenManagerFunc {
 	 * Util Function
 	 */
 	suspend fun deleteAllToken()
-
 }

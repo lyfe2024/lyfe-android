@@ -1,7 +1,6 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.network.token.TokenManager
-import com.lyfe.android.core.data.network.token.TokenManagerFunc
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -14,7 +13,7 @@ class TokenLocalDataSource @Inject constructor(
 	 */
 	override fun getSignUpToken() = tokenManager.getSignUpToken()
 
-	override suspend fun updateSignUpToken(signUpToken: String)  = tokenManager.updateSignUpToken(signUpToken)
+	override suspend fun updateSignUpToken(signUpToken: String) = tokenManager.updateSignUpToken(signUpToken)
 
 	override suspend fun deleteSignUpToken() = tokenManager.deleteAllToken()
 
