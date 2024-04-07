@@ -1,37 +1,28 @@
-package com.lyfe.android.core.domain.repository
+package com.lyfe.android.core.data.network.token
 
 import kotlinx.coroutines.flow.Flow
 
-interface TokenRepository {
+interface TokenManagerFunc {
 
 	/**
 	 * SignUpToken Function
 	 */
 	fun getSignUpToken(): Flow<String>
-
-	suspend fun updateSignUpToken(
-		signUpToken: String
-	)
-
+	suspend fun updateSignUpToken(signUpToken: String)
 	suspend fun deleteSignUpToken()
 
 	/**
 	 * AccessToken Function
 	 */
 	fun getAccessToken(): Flow<String>
-
-	suspend fun updateAccessToken(
-		accessToken: String
-	)
+	suspend fun updateAccessToken(accessToken: String)
+	suspend fun isAccessTokenExpired(): Boolean
 
 	/**
 	 * RefreshToken Function
 	 */
 	fun getRefreshToken(): Flow<String>
-
-	suspend fun updateRefreshToken(
-		refreshToken: String
-	)
+	suspend fun updateRefreshToken(refreshToken: String)
 
 	/**
 	 * Util Function

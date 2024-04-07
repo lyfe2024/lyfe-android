@@ -26,7 +26,7 @@ class PersonalInfoAgreementsViewModel @Inject constructor(
 	private fun getPersonalInfoAgreements() = viewModelScope.launch {
 		when (val response = getPersonalInfoAgreementsUseCase()) {
 			is Result.Success -> {
-				val terms = response.body?.result
+				val terms = response.body
 				uiState = if (terms == null) {
 					TermsUiState.Failure()
 				} else {

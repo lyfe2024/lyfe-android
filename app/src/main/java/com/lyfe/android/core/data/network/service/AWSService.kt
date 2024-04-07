@@ -1,5 +1,6 @@
 package com.lyfe.android.core.data.network.service
 
+import com.lyfe.android.core.data.model.UserInfo
 import com.lyfe.android.core.data.network.model.Result
 import okhttp3.MultipartBody
 import retrofit2.http.Multipart
@@ -19,5 +20,5 @@ interface AWSService {
 		@Path("fileName") fileName: String,
 		@QueryMap queryMap: HashMap<String, String>,
 		@Part body: MultipartBody.Part
-	): Result<Void>
+	): Result<UserInfo>
 }
