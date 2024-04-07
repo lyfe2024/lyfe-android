@@ -6,14 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
-import com.lyfe.android.core.domain.usecase.GetPersonalInfoAgreementsUseCase
+import com.lyfe.android.core.domain.usecase.GetPersonalInfoTermsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PersonalInfoAgreementsViewModel @Inject constructor(
-	private val getPersonalInfoAgreementsUseCase: GetPersonalInfoAgreementsUseCase
+class PersonalInfoTermsViewModel @Inject constructor(
+	private val getPersonalInfoTermsUseCase: GetPersonalInfoTermsUseCase
 ) : ViewModel() {
 
 	var uiState by mutableStateOf<TermsUiState>(TermsUiState.Loading)
@@ -24,7 +24,7 @@ class PersonalInfoAgreementsViewModel @Inject constructor(
 	}
 
 	private fun getPersonalInfoAgreements() = viewModelScope.launch {
-		when (val response = getPersonalInfoAgreementsUseCase()) {
+		when (val response = getPersonalInfoTermsUseCase()) {
 			is Result.Success -> {
 				val terms = response.body
 				uiState = if (terms == null) {
