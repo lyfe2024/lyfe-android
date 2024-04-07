@@ -6,7 +6,7 @@ import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.BoardService
 import javax.inject.Inject
 
-class BoardDataSourceImpl @Inject constructor(
+class BoardRemoteDataSource @Inject constructor(
 	private val boardService: BoardService
 ) : BoardDataSource {
 

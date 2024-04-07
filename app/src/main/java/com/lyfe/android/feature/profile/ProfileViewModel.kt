@@ -9,7 +9,6 @@ import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.domain.usecase.GetUserBoardUseCase
 import com.lyfe.android.core.domain.usecase.GetUserInfoUseCase
 import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.Page
 import com.lyfe.android.core.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

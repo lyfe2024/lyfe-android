@@ -6,7 +6,7 @@ import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.TopicService
 import javax.inject.Inject
 
-class TopicDataSourceImpl @Inject constructor(
+class TopicRemoteDataSource @Inject constructor(
 	private val topicService: TopicService
 ) : TopicDataSource {
 

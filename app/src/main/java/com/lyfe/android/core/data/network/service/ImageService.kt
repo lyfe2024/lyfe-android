@@ -1,6 +1,6 @@
 package com.lyfe.android.core.data.network.service
 
-import com.lyfe.android.core.data.model.GetImageUploadUrlResponse
+import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,5 +12,5 @@ interface ImageService {
 	suspend fun getUploadUrl(
 		@Query("format") format: String,
 		@Query("path") path: String
-	): Result<GetImageUploadUrlResponse>
+	): Result<UploadImageUrlResult>
 }
