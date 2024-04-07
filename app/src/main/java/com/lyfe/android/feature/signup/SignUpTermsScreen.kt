@@ -40,12 +40,10 @@ import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.theme.Body2
 import com.lyfe.android.core.common.ui.theme.Body3
-import com.lyfe.android.core.common.ui.theme.Green50
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey50
 import com.lyfe.android.core.common.ui.theme.Grey900
 import com.lyfe.android.core.common.ui.theme.H3
-import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
@@ -72,7 +70,8 @@ fun SignUpTermsPolicyScreen(
 	}
 
 	Column(
-		modifier = Modifier.fillMaxSize()
+		modifier = Modifier
+			.fillMaxSize()
 			.background(Color.White)
 	) {
 		SignUpTermsPolicyTopTitleBar(
@@ -182,7 +181,8 @@ private fun PolicyAgreeHeaderRow(
 		modifier = Modifier
 			.fillMaxWidth()
 			.background(
-				color = if(checked) Grey50 else Color.White, RoundedCornerShape(8.dp)
+				color = if (checked) Grey50 else Color.White,
+				RoundedCornerShape(8.dp)
 			)
 			.border(
 				width = 1.dp,
