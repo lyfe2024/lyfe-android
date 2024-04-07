@@ -47,7 +47,7 @@ fun CreateNicknameScreen(
 
 	LaunchedEffect(createNicknameUiState) {
 		if (createNicknameUiState is CreateNicknameUiState.Success) {
-			navigator.navigate(LyfeScreens.Policy.name)
+			navigator.navigate("${LyfeScreens.SignUpTerms.name}/${nicknameValidationUiState.nickName}")
 			viewModel.clear()
 		} else if (createNicknameUiState is CreateNicknameUiState.Loading) {
 			// Snackbar 필요
