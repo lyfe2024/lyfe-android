@@ -147,7 +147,6 @@ private fun ProfileEditContent(
 	onUpdateImagePath: (String) -> Unit,
 	onCompleteButtonClick: () -> Unit
 ) {
-
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()

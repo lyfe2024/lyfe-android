@@ -1,13 +1,11 @@
 package com.lyfe.android.core.data.network.interceptor
 
-import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.data.network.token.TokenManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
-import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
 
