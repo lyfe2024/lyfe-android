@@ -1,8 +1,6 @@
 package com.lyfe.android.feature.profileedit
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
@@ -17,11 +15,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -38,16 +39,15 @@ class ProfileEditViewModel @Inject constructor(
 	private val editProfileUseCase: EditProfileUseCase
 ) : ViewModel() {
 
-	var uiState by mutableStateOf<ProfileEditUiState>(ProfileEditUiState.Loading)
-		private set
+	private val _uiState = MutableStateFlow<ProfileEditUiState>(ProfileEditUiState.Loading)
+	val uiState get() = _uiState.asStateFlow()
 
-	private val user = mutableStateOf(User())
+	var user = User()
 
 	private val _nickname = MutableStateFlow("")
 	val nickname get() = _nickname.value
 
 	val nicknameValidationUiState = _nickname.flatMapMerge { nickname ->
-		uiState = ProfileEditUiState.IDLE
 		flowOf(
 			ValidationTextUiState.Validation(
 				nickName = nickname,
@@ -62,9 +62,6 @@ class ProfileEditViewModel @Inject constructor(
 		initialValue = ValidationTextUiState.Validation()
 	)
 
-	private val _profileImage = mutableStateOf("")
-	val profileImage get() = _profileImage.value
-
 	private val _imagePath = mutableStateOf<String?>(null) // 사용자가 실시간으로 수정한 프로필 이미지 경로값
 	val imagePath get() = _imagePath.value
 
@@ -73,34 +70,31 @@ class ProfileEditViewModel @Inject constructor(
 	}
 
 	private fun getUserInfo() {
-		uiState = ProfileEditUiState.Loading
 		viewModelScope.launch {
-			getUserInfoUseCase().catch {
-				uiState = ProfileEditUiState.Failure(
-					message = it.message ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."
-				)
+			getUserInfoUseCase().catch { e ->
+				_uiState.update {
+					ProfileEditUiState.Failure(message = e.message ?: "오류로 인해 닉네임 중복 검사에 실패했습니다.")
+				}
 			}.collect {
-				user.value = it
+				user = it
 				_nickname.value = it.name
-				_profileImage.value = it.profileImage
-				uiState = ProfileEditUiState.IDLE
+				_uiState.update { ProfileEditUiState.IDLE }
 			}
 		}
 	}
 
 	fun checkNicknameDuplicate() {
-		if (user.value.name == nickname) {
+		if (user.name == nickname) {
 			// 닉네임 변경하지 않았을 경우 바로 이미지 업로드 수행
 			uploadProfileImage()
 			return
 		}
-		uiState = ProfileEditUiState.Loading
 		viewModelScope.launch {
-			checkNicknameUseCase(nickname).catch {
+			checkNicknameUseCase(nickname).onStart {
+				_uiState.update { ProfileEditUiState.Loading }
+			}.catch {
 				val message = it.message ?: "오류로 인해 닉네임 중복 검사에 실패했습니다."
-				uiState = ProfileEditUiState.Failure(
-					message = message
-				)
+				_uiState.update { ProfileEditUiState.Failure(message = message) }
 			}.collectLatest {
 				// 닉네임 중복 검사 문제 없으면 프로필 변경을 위해 이미지 업로드 실행
 				uploadProfileImage()
@@ -109,7 +103,6 @@ class ProfileEditViewModel @Inject constructor(
 	}
 
 	private fun uploadProfileImage() {
-		uiState = ProfileEditUiState.Loading
 		viewModelScope.launch {
 			val file = imagePath?.let { File(it) }
 			if (file == null) {
@@ -118,22 +111,22 @@ class ProfileEditViewModel @Inject constructor(
 			}
 			getImageUploadUrlUseCase(file.getImageFormat(), "topic_picture").catch {
 				val message = it.message ?: "오류로 인해 프로필 변경에 실패했습니다."
-				uiState = ProfileEditUiState.Failure(message)
+				_uiState.update { ProfileEditUiState.Failure(message = message) }
 			}.collectLatest {
 				val url = it.url
 				when (val response = uploadImageUseCase(url, it.key, file)) {
 					is Result.Success -> {
-						_profileImage.value = url
+						user.profileImage = url
 						editProfile()
 					}
 					is Result.Failure -> {
-						uiState = ProfileEditUiState.Failure(response.error ?: "프로필 이미지 변경에 실패했습니다.")
+						_uiState.update { ProfileEditUiState.Failure(response.error ?: "프로필 이미지 변경에 실패했습니다.") }
 					}
 					is Result.NetworkError -> {
-						uiState = ProfileEditUiState.Failure(response.exception.localizedMessage ?: "프로필 이미지 변경에 실패했습니다.")
+						_uiState.update { ProfileEditUiState.Failure(response.exception.localizedMessage ?: "프로필 이미지 변경에 실패했습니다.") }
 					}
 					is Result.Unexpected -> {
-						uiState = ProfileEditUiState.Failure(response.t?.localizedMessage ?: "프로필 이미지 변경에 실패했습니다.")
+						_uiState.update { ProfileEditUiState.Failure(response.t?.localizedMessage ?: "프로필 이미지 변경에 실패했습니다.") }
 					}
 				}
 			}
@@ -143,23 +136,17 @@ class ProfileEditViewModel @Inject constructor(
 	private fun editProfile() = viewModelScope.launch {
 		editProfileUseCase(
 			nickname = nickname,
-			profileUrl = _profileImage.value
+			profileUrl = user.profileImage
 		).catch {
 			val message = it.message ?: "오류로 인해 프로필 변경에 실패하였습니다."
-			uiState = ProfileEditUiState.Failure(
-				message = message
-			)
-		}.collect {
-			uiState = ProfileEditUiState.Success
+			_uiState.update { ProfileEditUiState.Failure(message = message) }
+		}.collectLatest {
+			_uiState.update { ProfileEditUiState.Success }
 		}
 	}
 
 	fun setNickname(nickname: String) {
 		_nickname.value = nickname
-	}
-
-	fun isValidNickname(): Boolean {
-		return checkTextWithNum() && checkExceedMaxLength() && checkSpecialLetter()
 	}
 
 	private fun checkTextWithNum(): Boolean {
