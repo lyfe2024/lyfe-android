@@ -75,11 +75,11 @@ object NetworkModule {
 	@Provides
 	@Singleton
 	@Named("AWS")
-	fun providesAWSRetrofit(okHttpClient: OkHttpClient): Retrofit {
+	fun providesAWSRetrofit(): Retrofit {
 		val jsonConfig = Json { isLenient = true }
 		return createRetrofit(
 			baseUrl = BuildConfig.AWS_BASE_URL,
-			okHttpClient = okHttpClient,
+			okHttpClient = createOkHttpClient(),
 			jsonConfig = jsonConfig
 		)
 	}

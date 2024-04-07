@@ -19,7 +19,7 @@ fun LyfeNavHost(
 	NavHost(
 		modifier = modifier,
 		navController = navHostController,
-		startDestination = LyfeScreens.CreateNickname.route
+		startDestination = LyfeScreens.Login.route
 	) {
 		lyfeHomeNavigation(
 			lyfeNavigator = navigator,
