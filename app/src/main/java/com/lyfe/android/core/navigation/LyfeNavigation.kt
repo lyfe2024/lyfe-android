@@ -2,7 +2,9 @@ package com.lyfe.android.core.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.AlarmScreen
@@ -13,9 +15,9 @@ import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
-import com.lyfe.android.feature.policy.LoginCompleteScreen
+import com.lyfe.android.feature.signup.SignUpCompleteScreen
 import com.lyfe.android.feature.terms.PersonalInfoAgreementsScreen
-import com.lyfe.android.feature.policy.PolicyScreen
+import com.lyfe.android.feature.signup.SignUpTermsPolicyScreen
 import com.lyfe.android.feature.terms.ServiceTermsScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
@@ -115,12 +117,20 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.CreateNickname.name)
 	}
 
-	composable(route = LyfeScreens.Policy.name) {
-		PolicyScreen(
+	composable(
+		route = "${LyfeScreens.SignUpTerms.name}/{nickname}",
+		arguments = listOf(
+			navArgument("nickname") {
+				type = NavType.StringType
+				defaultValue = ""
+			}
+		)
+	) {
+		SignUpTermsPolicyScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.Policy.name)
+		selectedScreen(LyfeScreens.SignUpTerms.name)
 	}
 
 	composable(route = LyfeScreens.ServiceTerms.name) {
@@ -131,16 +141,16 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.ServiceTerms.name)
 	}
 
-	composable(route = LyfeScreens.PersonalInfoAgreementsScreen.name) {
+	composable(route = LyfeScreens.PersonalInfoTermsScreen.name) {
 		PersonalInfoAgreementsScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.PersonalInfoAgreementsScreen.name)
+		selectedScreen(LyfeScreens.PersonalInfoTermsScreen.name)
 	}
 
-	composable(route = LyfeScreens.LoginComplete.name) {
-		LoginCompleteScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.LoginComplete.name)
+	composable(route = LyfeScreens.SignUpComplete.name) {
+		SignUpCompleteScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.SignUpComplete.name)
 	}
 }

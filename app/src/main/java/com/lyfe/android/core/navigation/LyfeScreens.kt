@@ -29,15 +29,15 @@ sealed class LyfeScreens(
 
 	object Login : LyfeScreens("login")
 
-	object CreateNickname : LyfeScreens("nickname")
+	object CreateNickname : LyfeScreens("nickname/create")
 
-	object Policy : LyfeScreens("policy")
+	object SignUpTerms : LyfeScreens("terms/signup")
 
-	object ServiceTerms : LyfeScreens("serviceTerms")
+	object ServiceTerms : LyfeScreens("terms/service")
 
-	object PersonalInfoAgreementsScreen : LyfeScreens("personalInfoAgreements")
+	object PersonalInfoTermsScreen : LyfeScreens("terms/personal-info")
 
-	object LoginComplete : LyfeScreens("loginComplete")
+	object SignUpComplete : LyfeScreens("signup/complete")
 
 	object Setting : LyfeScreens("setting")
 
