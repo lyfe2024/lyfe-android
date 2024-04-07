@@ -2,7 +2,7 @@ package com.lyfe.android.core.data.datasource
 
 import kotlinx.coroutines.flow.Flow
 
-interface LocalUserDataSource {
+interface UserLocalDataSource {
 
 	fun getSocialType(): Flow<String>
 

@@ -1,6 +1,6 @@
 package com.lyfe.android.core.data.datasource
 
-import com.lyfe.android.core.data.model.GetImageUploadUrlResponse
+import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
 import okhttp3.MultipartBody
 
@@ -9,7 +9,7 @@ interface ImageDataSource {
 	suspend fun getImageUploadUrl(
 		format: String,
 		path: String
-	): Result<GetImageUploadUrlResponse>
+	): Result<UploadImageUrlResult>
 
 	suspend fun uploadImage(
 		url: String,

@@ -1,9 +1,9 @@
 package com.lyfe.android.core.domain.repository
 
-import com.lyfe.android.core.data.model.AuthUserResponse
-import com.lyfe.android.core.data.model.PostUserResponse
-import com.lyfe.android.core.data.model.ReissueTokenResponse
-import com.lyfe.android.core.data.model.DeleteAccountResponse
+import com.lyfe.android.core.data.model.AuthUserResult
+import com.lyfe.android.core.data.model.PostUserResult
+import com.lyfe.android.core.data.model.ReissueTokenResult
+import com.lyfe.android.core.data.model.RevokeResult
 import com.lyfe.android.core.data.network.model.Result
 
 interface AuthRepository {
@@ -11,18 +11,18 @@ interface AuthRepository {
 	suspend fun postUser(
 		userToken: String,
 		nickname: String
-	): Result<PostUserResponse>
+	): Result<PostUserResult>
 
 	suspend fun authUser(
 		socialType: String,
 		authorizationCode: String,
 		identityToken: String,
 		fcmToken: String
-	): Result<AuthUserResponse>
+	): Result<AuthUserResult>
 
 	suspend fun reissueToken(
 		token: String
-	): Result<ReissueTokenResponse>
+	): Result<ReissueTokenResult>
 
-	suspend fun revoke(): Result<DeleteAccountResponse>
+	suspend fun revoke(): Result<RevokeResult>
 }
