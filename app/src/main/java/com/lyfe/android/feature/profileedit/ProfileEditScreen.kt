@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -52,11 +53,11 @@ import com.lyfe.android.core.common.ui.theme.Green50
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Red50
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.feature.nickname.ValidationTextUiState
 
 @Composable
 fun ProfileEditScreen(
 	navigator: LyfeNavigator,
-	viewModel: ProfileEditViewModel = hiltViewModel(),
 	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
@@ -78,7 +79,6 @@ fun ProfileEditScreen(
 
 		ProfileEditContentArea(
 			navigator = navigator,
-			viewModel = viewModel,
 			onShowSnackBar = onShowSnackBar
 		)
 	}
@@ -86,17 +86,26 @@ fun ProfileEditScreen(
 
 @Composable
 private fun ProfileEditContentArea(
+	viewModel: ProfileEditViewModel = hiltViewModel(),
 	navigator: LyfeNavigator,
-	viewModel: ProfileEditViewModel,
 	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	// ViewModel uiState 에 따라서 화면 표시 여부 달라짐
-	when (viewModel.uiState) {
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val nicknameValidationState by viewModel.nicknameValidationUiState.collectAsStateWithLifecycle()
+	val originImageUrl by remember { mutableStateOf(viewModel.user.profileImage) }
+
+	when (uiState) {
 		is ProfileEditUiState.IDLE -> {
 			// 처음 화면에 보일 닉네임은 로컬 저장소에서 가져옴.
 			ProfileEditContent(
-				viewModel = viewModel,
-				nickname = viewModel.nickname
+				nickname = viewModel.nickname,
+				nicknameValidationState = nicknameValidationState,
+				onNicknameChanged = { viewModel.setNickname(it) },
+				originImageUrl = originImageUrl,
+				selectedImagePath = viewModel.imagePath,
+				onUpdateImagePath = { viewModel.updateProfileImageFilePath(it) },
+				onCompleteButtonClick = { viewModel.checkNicknameDuplicate() }
 			)
 		}
 		is ProfileEditUiState.Success -> {
@@ -108,14 +117,18 @@ private fun ProfileEditContentArea(
 			navigator.navigateUp()
 		}
 		is ProfileEditUiState.Failure -> {
-			val error = viewModel.uiState as ProfileEditUiState.Failure
 			onShowSnackBar(
 				LyfeSnackBarIconType.ERROR,
-				error.message
+				(uiState as ProfileEditUiState.Failure).message
 			)
 			ProfileEditContent(
-				viewModel = viewModel,
-				nickname = viewModel.nickname
+				nickname = viewModel.nickname,
+				nicknameValidationState = nicknameValidationState,
+				onNicknameChanged = { viewModel.setNickname(it) },
+				originImageUrl = originImageUrl,
+				selectedImagePath = viewModel.imagePath,
+				onUpdateImagePath = { viewModel.updateProfileImageFilePath(it) },
+				onCompleteButtonClick = { viewModel.checkNicknameDuplicate() }
 			)
 		}
 		is ProfileEditUiState.Loading -> {
@@ -126,9 +139,15 @@ private fun ProfileEditContentArea(
 
 @Composable
 private fun ProfileEditContent(
-	viewModel: ProfileEditViewModel,
-	nickname: String
+	nickname: String,
+	nicknameValidationState: ValidationTextUiState.Validation,
+	onNicknameChanged: (String) -> Unit,
+	originImageUrl: String,
+	selectedImagePath: String?,
+	onUpdateImagePath: (String) -> Unit,
+	onCompleteButtonClick: () -> Unit
 ) {
+
 	Column(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -138,22 +157,29 @@ private fun ProfileEditContent(
 			modifier = Modifier.fillMaxSize(),
 			horizontalAlignment = Alignment.CenterHorizontally
 		) {
-			ProfileEditThumbnailContent(viewModel)
+			ProfileEditThumbnailContent(
+				originImageUrl = originImageUrl,
+				selectedImagePath = selectedImagePath,
+				onUpdateImagePath = onUpdateImagePath
+			)
 
 			Spacer(modifier = Modifier.height(40.dp))
 
 			ProfileEditNicknameTextField(
 				nickname = nickname,
-				onNicknameChanged = { viewModel.setNickname(it) }
+				onNicknameChanged = onNicknameChanged
 			)
 
 			Spacer(modifier = Modifier.height(8.dp))
 
-			ProfileEditNicknameConditionTextArea(viewModel = viewModel)
+			ProfileEditNicknameConditionTextArea(nicknameValidationState = nicknameValidationState)
 
 			Spacer(modifier = Modifier.weight(1f))
 
-			ProfileEditCompleteButton(viewModel = viewModel)
+			ProfileEditCompleteButton(
+				isValidNickname = nicknameValidationState.checkValidationSuccess(),
+				onButtonClick = onCompleteButtonClick
+			)
 		}
 	}
 }
@@ -161,7 +187,9 @@ private fun ProfileEditContent(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun ProfileEditThumbnailContent(
-	viewModel: ProfileEditViewModel
+	originImageUrl: String,
+	selectedImagePath: String?,
+	onUpdateImagePath: (String) -> Unit
 ) {
 	val context = LocalContext.current
 	// 프로필 이미지 변경하는 부분
@@ -178,7 +206,7 @@ private fun ProfileEditThumbnailContent(
 				val cursor = context.contentResolver.query(it, null, null, null, null)
 				if (cursor?.moveToNext() == true) {
 					val path = cursor.getString(cursor.getColumnIndexOrThrow("_data"))
-					viewModel.updateProfileImageFilePath(path)
+					onUpdateImagePath(path)
 				}
 				cursor?.close()
 			}
@@ -187,11 +215,7 @@ private fun ProfileEditThumbnailContent(
 		val onClick = { galleryLauncher.launch("image/*") }
 
 		GlideImage(
-			model = if (viewModel.imagePath == null) {
-				viewModel.profileImage
-			} else {
-				viewModel.imagePath
-			},
+			model = selectedImagePath ?: originImageUrl,
 			contentDescription = "프로필 이미지",
 			contentScale = ContentScale.Crop,
 			modifier = Modifier
@@ -243,12 +267,11 @@ private fun ProfileEditNicknameTextField(
 
 @Composable
 private fun ProfileEditNicknameConditionTextArea(
-	viewModel: ProfileEditViewModel
+	nicknameValidationState: ValidationTextUiState.Validation
 ) {
-	val nicknameValidationUiState by viewModel.nicknameValidationUiState.collectAsStateWithLifecycle()
-	val validTextWithNum = nicknameValidationUiState.checkTextWithNum()
-	val validSpecialLetter = nicknameValidationUiState.checkNotSpecialLetter()
-	val validLength = nicknameValidationUiState.checkNotExceedMaxLength()
+	val validTextWithNum = nicknameValidationState.checkTextWithNum()
+	val validSpecialLetter = nicknameValidationState.checkNotSpecialLetter()
+	val validLength = nicknameValidationState.checkNotExceedMaxLength()
 
 	Column(
 		modifier = Modifier.fillMaxWidth(),
@@ -314,7 +337,8 @@ private fun NicknameConditionText(
 
 @Composable
 private fun ProfileEditCompleteButton(
-	viewModel: ProfileEditViewModel
+	isValidNickname: Boolean,
+	onButtonClick: () -> Unit
 ) {
 	LyfeButton(
 		modifier = Modifier
@@ -322,14 +346,12 @@ private fun ProfileEditCompleteButton(
 			.fillMaxWidth(),
 		cornerSize = 10.dp,
 		isClearIconShow = false,
-		buttonType = if (viewModel.isValidNickname()) {
+		buttonType = if (isValidNickname) {
 			LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 		} else {
 			LyfeButtonType.TC_GREY500_BG_GREY50_SC_TRANSPARENT
 		},
 		text = stringResource(id = R.string.complete),
-		onClick = {
-			viewModel.checkNicknameDuplicate()
-		}
+		onClick = onButtonClick
 	)
 }
