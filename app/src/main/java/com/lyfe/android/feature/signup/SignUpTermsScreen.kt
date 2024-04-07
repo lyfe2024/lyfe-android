@@ -1,6 +1,7 @@
 package com.lyfe.android.feature.signup
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,8 +38,11 @@ import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.theme.Body2
 import com.lyfe.android.core.common.ui.theme.Body3
+import com.lyfe.android.core.common.ui.theme.Green50
 import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey50
 import com.lyfe.android.core.common.ui.theme.Grey900
 import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.Main500
@@ -69,6 +73,7 @@ fun SignUpTermsPolicyScreen(
 
 	Column(
 		modifier = Modifier.fillMaxSize()
+			.background(Color.White)
 	) {
 		SignUpTermsPolicyTopTitleBar(
 			onNavigateUp = navigator::navigateUp
@@ -176,10 +181,12 @@ private fun PolicyAgreeHeaderRow(
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.clip(RoundedCornerShape(8.dp))
+			.background(
+				color = if(checked) Grey50 else Color.White, RoundedCornerShape(8.dp)
+			)
 			.border(
 				width = 1.dp,
-				color = if (checked) Main500 else Grey200,
+				color = if (checked) Grey50 else Grey200,
 				shape = RoundedCornerShape(8.dp)
 			)
 			.padding(vertical = 7.dp, horizontal = 10.dp),
@@ -197,12 +204,8 @@ private fun PolicyAgreeHeaderRow(
 
 		Text(
 			text = stringResource(R.string.signup_terms_screen_agree_all),
-			style = TextStyle(
-				fontSize = 16.sp,
-				fontWeight = FontWeight.W600,
-				color = Color.Black,
-				fontFamily = pretenard
-			)
+			style = Body2,
+			color = Color.Black
 		)
 	}
 }
