@@ -1,27 +1,27 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.AuthUserRequest
-import com.lyfe.android.core.data.model.AuthUserResponse
+import com.lyfe.android.core.data.model.AuthUserResult
 import com.lyfe.android.core.data.model.PostUserRequest
-import com.lyfe.android.core.data.model.PostUserResponse
+import com.lyfe.android.core.data.model.PostUserResult
 import com.lyfe.android.core.data.model.ReissueTokenRequest
-import com.lyfe.android.core.data.model.ReissueTokenResponse
-import com.lyfe.android.core.data.model.DeleteAccountResponse
+import com.lyfe.android.core.data.model.ReissueTokenResult
+import com.lyfe.android.core.data.model.RevokeResult
 import com.lyfe.android.core.data.network.model.Result
 
 interface AuthDataSource {
 
 	suspend fun postUser(
 		requestBody: PostUserRequest
-	): Result<PostUserResponse>
+	): Result<PostUserResult>
 
 	suspend fun authUser(
 		requestBody: AuthUserRequest
-	): Result<AuthUserResponse>
+	): Result<AuthUserResult>
 
 	suspend fun reissueToken(
 		requestBody: ReissueTokenRequest
-	): Result<ReissueTokenResponse>
+	): Result<ReissueTokenResult>
 
-	suspend fun revoke(): Result<DeleteAccountResponse>
+	suspend fun revoke(): Result<RevokeResult>
 }

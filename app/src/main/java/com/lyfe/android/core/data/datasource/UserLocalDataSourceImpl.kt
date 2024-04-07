@@ -13,9 +13,9 @@ import javax.inject.Inject
 
 private val Context.userDataStore: DataStore<Preferences> by preferencesDataStore(name = "user")
 
-class LocalUserDataSourceImpl @Inject constructor(
+class UserLocalDataSourceImpl @Inject constructor(
 	@ApplicationContext private val context: Context
-) : LocalUserDataSource {
+) : UserLocalDataSource {
 
 	private object PreferencesKeys {
 		val SOCIAL_TYPE = stringPreferencesKey("socialType")

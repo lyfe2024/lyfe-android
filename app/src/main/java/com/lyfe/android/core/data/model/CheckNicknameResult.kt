@@ -3,6 +3,6 @@ package com.lyfe.android.core.data.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GetServiceTermsResponse(
-	val result: Terms
+data class CheckNicknameResult(
+	val isAvailable: Boolean
 )

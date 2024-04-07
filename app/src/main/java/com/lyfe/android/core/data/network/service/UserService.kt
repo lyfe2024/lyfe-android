@@ -1,10 +1,9 @@
 package com.lyfe.android.core.data.network.service
 
-import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.model.GetUserBoardResponse
-import com.lyfe.android.core.data.model.GetUserInfoResponse
+import com.lyfe.android.core.data.model.CheckNicknameResult
+import com.lyfe.android.core.data.model.GetUserBoardResult
 import com.lyfe.android.core.data.model.PutUserInfoRequest
-import com.lyfe.android.core.data.model.PutUserInfoResponse
+import com.lyfe.android.core.data.model.UserInfo
 import com.lyfe.android.core.data.network.model.Result
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,19 +16,19 @@ interface UserService {
 	@GET("/v1/users/check-nickname/{nickname}")
 	suspend fun checkNicknameDuplicated(
 		@Path("nickname") nickname: String
-	): Result<CheckNicknameResponse>
+	): Result<CheckNicknameResult>
 
 	@GET("/v1/users/me")
-	suspend fun getUserInfo(): Result<GetUserInfoResponse>
+	suspend fun getUserInfo(): Result<UserInfo>
 
 	@PUT("/v1/users/me")
 	suspend fun putUserInfo(
 		@Body body: PutUserInfoRequest
-	): Result<PutUserInfoResponse>
+	): Result<UserInfo>
 
 	@GET("/v1/users/me/boards")
 	suspend fun getUserBoard(
 		@Query("boardType") boardType: String = "BOARD_PICTURE",
 		@Query("lastId") lastId: Int?
-	): Result<GetUserBoardResponse>
+	): Result<GetUserBoardResult>
 }
