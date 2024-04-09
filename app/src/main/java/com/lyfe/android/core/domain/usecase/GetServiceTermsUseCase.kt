@@ -7,5 +7,5 @@ class GetServiceTermsUseCase @Inject constructor(
 	private val policyRepository: PolicyRepository
 ) {
 
-	suspend operator fun invoke() = policyRepository.getServiceTerms()
+	suspend operator fun invoke() = policyRepository.fetchServiceTerms()
 }

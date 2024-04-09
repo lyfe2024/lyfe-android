@@ -86,14 +86,16 @@
 	<string name="profile_screen_image_feeds">신청 사진</string>
 	<string name="profile_screen_text_feeds">고민 글</string>
 
-	<!-- PolicyScreen -->
-	<string name="policy_screen_title">회원가입 약관 동의</string>
-	<string name="policy_screen_sub_title">마지막 단계에요!</string>
-	<string name="policy_screen_agree_all">아래의 약관에 모두 동의합니다.</string>
-	<string name="policy_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
-	<string name="policy_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
-	<string name="login_complete_start">시작하기</string>
+	<!-- SignUpTermsScreen -->
+	<string name="signup_terms_screen_title">회원가입 약관 동의</string>
+	<string name="signup_terms_screen_sub_title">마지막 단계에요!</string>
+	<string name="signup_terms_screen_agree_all">아래의 약관에 모두 동의합니다.</string>
+	<string name="signup_terms_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
+	<string name="signup_terms_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
+	<string name="signup_complete_start">시작하기</string>
+
 	<string name="service_terms">이용약관</string>
-    <string name="personal_info_agreements">개인정보 수집 및 이용</string>
+    <string name="personal_info_terms">개인정보 수집 및 이용</string>
+	<string name="signup_terms_screen_finish">완료</string>
 
 </resources>
