@@ -8,11 +8,11 @@ import javax.inject.Inject
 class PolicyRemoteDataSource @Inject constructor(
 	private val policyService: PolicyService
 ) : PolicyDataSource {
-	override suspend fun getServiceTerms(): Result<Terms> {
-		return policyService.getServiceTerms()
+	override suspend fun fetchServiceTerms(): Result<Terms> {
+		return policyService.fetchServiceTerms()
 	}
 
-	override suspend fun getPersonalInfoAgreementsTerms(): Result<Terms> {
-		return policyService.getPersonalInfoAgreements()
+	override suspend fun fetchPersonalInfoTerms(): Result<Terms> {
+		return policyService.fetchPersonalInfoTerms()
 	}
 }

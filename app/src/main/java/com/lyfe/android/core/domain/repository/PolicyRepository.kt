@@ -5,7 +5,7 @@ import com.lyfe.android.core.data.network.model.Result
 
 interface PolicyRepository {
 
-	suspend fun getServiceTerms(): Result<Terms>
+	suspend fun fetchServiceTerms(): Result<Terms>
 
-	suspend fun getPersonalInfoAgreements(): Result<Terms>
+	suspend fun fetchPersonalInfoTerms(): Result<Terms>
 }

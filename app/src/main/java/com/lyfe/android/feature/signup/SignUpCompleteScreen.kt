@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.policy
+package com.lyfe.android.feature.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -19,7 +19,7 @@ import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
-fun LoginCompleteScreen(
+fun SignUpCompleteScreen(
 	navigator: LyfeNavigator
 ) {
 	Column(
@@ -40,7 +40,7 @@ fun LoginCompleteScreen(
 			cornerSize = 10.dp,
 			isClearIconShow = false,
 			buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
-			text = stringResource(R.string.login_complete_start),
+			text = stringResource(R.string.signup_complete_start),
 			onClick = {
 				navigator.navigateAndroidClearBackStack(LyfeScreens.Home.name)
 			}
