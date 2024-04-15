@@ -20,7 +20,7 @@ class TokenLocalDataSource @Inject constructor(
 	/**
 	 * AccessToken Function
 	 */
-	override fun getAccessToken(): Flow<String> = tokenManager.getAccessToken()
+	override fun getAccessToken(): Flow<String?> = tokenManager.getAccessToken()
 
 	override suspend fun updateAccessToken(accessToken: String) = tokenManager.updateAccessToken(accessToken)
 
@@ -29,7 +29,7 @@ class TokenLocalDataSource @Inject constructor(
 	/**
 	 * RefreshToken Function
 	 */
-	override fun getRefreshToken(): Flow<String> = tokenManager.getRefreshToken()
+	override fun getRefreshToken(): Flow<String?> = tokenManager.getRefreshToken()
 
 	override suspend fun updateRefreshToken(refreshToken: String) = tokenManager.updateRefreshToken(refreshToken)
 
