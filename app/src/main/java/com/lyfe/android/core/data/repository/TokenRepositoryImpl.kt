@@ -27,7 +27,7 @@ class TokenRepositoryImpl @Inject constructor(
 	/**
 	 * AccessToken Function
 	 */
-	override fun getAccessToken(): Flow<String> {
+	override fun getAccessToken(): Flow<String?> {
 		return tokenLocalDataSource.getAccessToken()
 	}
 
@@ -38,7 +38,7 @@ class TokenRepositoryImpl @Inject constructor(
 	/**
 	 * RefreshToken Function
 	 */
-	override fun getRefreshToken(): Flow<String> {
+	override fun getRefreshToken(): Flow<String?> {
 		return tokenLocalDataSource.getRefreshToken()
 	}
 
