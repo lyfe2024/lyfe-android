@@ -15,5 +15,5 @@ interface ImageDataSource {
 		url: String,
 		key: String,
 		file: MultipartBody.Part
-	): Result<Any>
+	): Result<Void>
 }

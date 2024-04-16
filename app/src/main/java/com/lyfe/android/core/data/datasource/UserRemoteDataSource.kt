@@ -12,9 +12,7 @@ interface UserRemoteDataSource {
 
 	suspend fun putUserInfo(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
+		profileUrl: String
 	): Result<UserInfo>
 
 	suspend fun getUserBoard(lastId: Int?): Result<GetUserBoardResult>
