@@ -8,8 +8,7 @@ class GetLatestBoardsUseCase @Inject constructor(
 ) {
 
 	operator fun invoke(
-		cursorId: Int?,
-		date: String?,
-		boardType: String?
-	) = boardRepository.getLatestBoards(cursorId, date, boardType)
+		cursorId: Int,
+		boardType: String
+	) = boardRepository.getLatestBoards(cursorId, boardType)
 }

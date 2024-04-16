@@ -9,7 +9,6 @@ import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.Page
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -26,11 +25,10 @@ class BoardRepositoryImpl @Inject constructor(
 	}
 
 	override fun getLatestBoards(
-		cursorId: Int?,
-		date: String?,
-		boardType: String?
+		cursorId: Int,
+		boardType: String
 	): Flow<List<Feed>> = flow {
-		when (val response = boardDataSource.getLatestBoards(cursorId, date, boardType)) {
+		when (val response = boardDataSource.getLatestBoards(cursorId, boardType)) {
 			is Result.Success -> {
 				val result = response.body?.result?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })
@@ -48,11 +46,11 @@ class BoardRepositoryImpl @Inject constructor(
 	}.flowOn(ioDispatcher)
 
 	override fun getPopularBoards(
-		whiskyCount: Int,
-		date: String?,
-		boardType: String?
+		cursorId: Int,
+		boardType: String?,
+		popularType: String
 	): Flow<List<Feed>> = flow {
-		when (val response = boardDataSource.getPopularBoards(whiskyCount, date, boardType)) {
+		when (val response = boardDataSource.getPopularBoards(cursorId, boardType, popularType)) {
 			is Result.Success -> {
 				val result = response.body?.result?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })

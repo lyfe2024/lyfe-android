@@ -8,8 +8,8 @@ class GetPopularBoardsUseCase @Inject constructor(
 ) {
 
 	operator fun invoke(
-		whiskyCount: Int = 0,
-		date: String?,
-		boardType: String?
-	) = boardRepository.getPopularBoards(whiskyCount, date, boardType)
+		cursorId: Int = 0,
+		boardType: String?,
+		popularType: String
+	) = boardRepository.getPopularBoards(cursorId, boardType, popularType)
 }

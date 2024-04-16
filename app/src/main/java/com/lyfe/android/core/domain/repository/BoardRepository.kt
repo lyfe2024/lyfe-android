@@ -11,15 +11,14 @@ interface BoardRepository {
 	suspend fun getBoardDetail(boardId: Long): Result<GetBoardDetailResponse>
 
 	fun getLatestBoards(
-		cursorId: Int?,
-		date: String?,
-		boardType: String?
+		cursorId: Int,
+		boardType: String
 	): Flow<List<Feed>>
 
 	fun getPopularBoards(
-		whiskyCount: Int = 0,
-		date: String?,
-		boardType: String?
+		cursorId: Int = 0,
+		boardType: String?,
+		popularType: String
 	): Flow<List<Feed>>
 
 	fun getUserBoards(

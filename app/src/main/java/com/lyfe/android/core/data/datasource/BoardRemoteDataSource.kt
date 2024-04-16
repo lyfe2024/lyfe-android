@@ -15,25 +15,22 @@ class BoardRemoteDataSource @Inject constructor(
 	}
 
 	override suspend fun getLatestBoards(
-		cursorId: Int?,
-		date: String?,
-		boardType: String?
+		cursorId: Int,
+		boardType: String
 	): Result<GetBoardListResponse> {
 		return boardService.getLatestBoards(
 			cursorId = cursorId,
-			date = date,
 			boardType = boardType
 		)
 	}
 
 	override suspend fun getPopularBoards(
-		whiskyCount: Int,
-		date: String?,
-		boardType: String?
+		cursorId: Int,
+		boardType: String?,
+		popularType: String
 	): Result<GetBoardListResponse> {
 		return boardService.getPopularBoards(
-			whiskyCount = whiskyCount,
-			date = date,
+			cursorId = cursorId,
 			boardType = boardType
 		)
 	}

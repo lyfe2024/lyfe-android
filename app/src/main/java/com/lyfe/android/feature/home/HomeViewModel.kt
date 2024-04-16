@@ -5,35 +5,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.GetLatestBoardsUseCase
-import com.lyfe.android.core.domain.usecase.GetPastTopicUseCase
 import com.lyfe.android.core.domain.usecase.GetPopularBoardsUseCase
 import com.lyfe.android.core.domain.usecase.GetTodayTopicUseCase
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.FeedFetchingType
+import com.lyfe.android.core.model.FeedType
+import com.lyfe.android.core.model.PopularType
 import com.lyfe.android.feature.home.model.HomeFeedType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
 	private val getTodayTopicUseCase: GetTodayTopicUseCase,
-	private val getPastTopicUseCase: GetPastTopicUseCase,
 	private val getLatestBoardsUseCase: GetLatestBoardsUseCase,
 	private val getPopularBoardsUseCase: GetPopularBoardsUseCase
 ) : ViewModel() {
 
-	var uiState by mutableStateOf<HomeUiState>(HomeUiState.TodayTopicSuccess)
-		private set
+	private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+	val uiState get() = _uiState.asStateFlow()
+
 	var homeFeedType by mutableStateOf(HomeFeedType.TODAY_TOPIC)
 		private set
 	var textFeedFetchingType by mutableStateOf(FeedFetchingType.LATEST)
@@ -53,22 +53,14 @@ class HomeViewModel @Inject constructor(
 	}
 
 	private fun getTodayTopic() = viewModelScope.launch {
-		delay(1000)
-		todayTopic = "오늘의 주제 로딩 완료"
-//		when (val response = getTodayTopicUseCase()) {
-//			is Result.Success -> {
-//				todayTopic = response.body?.result?.content ?: ""
-//			}
-//			is Result.Failure -> {
-//
-//			}
-//			is Result.NetworkError -> {
-//
-//			}
-//			is Result.Unexpected -> {
-//
-//			}
-//		}
+		when (val result = getTodayTopicUseCase()) {
+			is Result.Success -> {
+				todayTopic = result.body?.content.orEmpty()
+			}
+			else -> {
+				// TODO 토픽 실패 처리
+			}
+		}
 	}
 
 	fun changeFilterType() {
@@ -88,37 +80,35 @@ class HomeViewModel @Inject constructor(
 	}
 
 	fun fetchTextFeedList() = viewModelScope.launch {
-//		val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-//
-//		val onEach: (List<Feed>) -> Unit = {
-//			uiState = HomeUiState.Loading
-//		}
-//		val catcher: FlowCollector<List<Feed>>.(Throwable) -> Unit = {
-//			uiState = HomeUiState.Failure(it.message ?: "")
-//		}
-//		val feedCollector: (List<Feed>) -> Unit = {
-//			_textFeedList.compareAndSet(textFeedList.value, it)
-//		}
-//		when (textFeedFetchingType) {
-//			FeedFetchingType.POPULAR -> {
-//				getPopularBoardsUseCase(
-//					date = date,
-//					boardType = "BOARD"
-//				).onEach(onEach)
-//				.catch(catcher)
-//				.collect(feedCollector)
-//			}
-//			FeedFetchingType.LATEST -> {
-//				getLatestBoardsUseCase(
-//					cursorId = 0,
-//					date = date,
-//					boardType = "BOARD"
-//				).onEach(onEach)
-//				.catch(catcher)
-//				.collect(feedCollector)
-//			}
-//		}
-		_textFeedList.compareAndSet(textFeedList.value, fakeFeedList2)
+		val onEach: (List<Feed>) -> Unit = {
+			_uiState.update { HomeUiState.Loading }
+		}
+		val catcher: FlowCollector<List<Feed>>.(Throwable) -> Unit = { t ->
+			_uiState.update { HomeUiState.Failure(t.message ?: "") }
+		}
+		val feedCollector: (List<Feed>) -> Unit = {
+			_textFeedList.compareAndSet(textFeedList.value, it)
+			_uiState.update { HomeUiState.TodayTopicSuccess }
+		}
+		when (textFeedFetchingType) {
+			FeedFetchingType.POPULAR -> {
+				getPopularBoardsUseCase(
+					cursorId = 0,
+					boardType = FeedType.BOARD.name,
+					popularType = PopularType.WHISKY.name
+				).onEach(onEach)
+				.catch(catcher)
+				.collect(feedCollector)
+			}
+			FeedFetchingType.LATEST -> {
+				getLatestBoardsUseCase(
+					cursorId = 0,
+					boardType = FeedType.BOARD.name
+				).onEach(onEach)
+				.catch(catcher)
+				.collect(feedCollector)
+			}
+		}
 	}
 
 	private val fakeFeedList = listOf(

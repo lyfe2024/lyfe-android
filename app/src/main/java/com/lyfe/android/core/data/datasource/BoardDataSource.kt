@@ -11,15 +11,14 @@ interface BoardDataSource {
 	): Result<GetBoardDetailResponse>
 
 	suspend fun getLatestBoards(
-		cursorId: Int?,
-		date: String?,
-		boardType: String?
+		cursorId: Int,
+		boardType: String
 	): Result<GetBoardListResponse>
 
 	suspend fun getPopularBoards(
-		whiskyCount: Int = 0,
-		date: String?,
-		boardType: String?
+		cursorId: Int = 0,
+		boardType: String?,
+		popularType: String
 	): Result<GetBoardListResponse>
 
 	suspend fun getUserBoards(

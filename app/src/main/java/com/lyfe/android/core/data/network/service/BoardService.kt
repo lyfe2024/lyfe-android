@@ -15,19 +15,18 @@ interface BoardService {
 	): Result<GetBoardDetailResponse>
 
 	// 글 리스트 조회(최신순)
-	@GET("/v1/boards/{cursorId}")
+	@GET("/v1/boards/latest")
 	suspend fun getLatestBoards(
-		@Path("cursorId") cursorId: Int?,
-		@Query("date") date: String?,
+		@Query("cursorId") cursorId: Int = 0,
 		@Query("type") boardType: String? = "BOARD"
 	): Result<GetBoardListResponse>
 
 	// 글 리스트 조회(인기순)
-	@GET("/v1/boards/popular/{whiskyCount}")
+	@GET("/v1/boards/popular")
 	suspend fun getPopularBoards(
-		@Path("whiskyCount") whiskyCount: Int = 0,
-		@Query("date") date: String?,
-		@Query("type") boardType: String? = "BOARD"
+		@Query("cursorId") cursorId: Int = 0,
+		@Query("type") boardType: String? = "BOARD",
+		@Query("popularType") popularType: String = "WHISKY"
 	): Result<GetBoardListResponse>
 
 	// 자신이 작성한 글 조회
