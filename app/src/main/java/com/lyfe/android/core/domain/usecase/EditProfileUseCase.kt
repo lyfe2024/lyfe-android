@@ -9,8 +9,6 @@ class EditProfileUseCase @Inject constructor(
 
 	suspend operator fun invoke(
 		nickname: String,
-		profileUrl: String,
-		width: Int,
-		height: Int
-	) = userRepository.putUserInfo(nickname, profileUrl, width, height)
+		profileUrl: String
+	) = userRepository.putUserInfo(nickname, profileUrl)
 }

@@ -14,14 +14,12 @@ class NetworkInterceptor @Inject constructor(
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val token: String? = runBlocking {
+		val token: String = runBlocking {
 			tokenManager.getAccessToken().first()
 		}
 
 		val request = chain.request().newBuilder().apply {
-			if (token != null) {
-				this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
-			}
+			this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
 		}.build()
 
 		val response = chain.proceed(request)
@@ -35,7 +33,11 @@ class NetworkInterceptor @Inject constructor(
 
 	private fun Response.extractResponseJson(): JSONObject {
 		val jsonString: String = this.body?.string() ?: BASE_JSON_FORMAT
-		return JSONObject(jsonString)
+		return runCatching {
+			JSONObject(jsonString)
+		}.getOrElse {
+			JSONObject(BASE_JSON_FORMAT)
+		}
 	}
 
 	companion object {
