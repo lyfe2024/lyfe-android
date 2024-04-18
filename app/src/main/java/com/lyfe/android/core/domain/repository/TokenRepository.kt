@@ -18,7 +18,7 @@ interface TokenRepository {
 	/**
 	 * AccessToken Function
 	 */
-	fun getAccessToken(): Flow<String>
+	fun getAccessToken(): Flow<String?>
 
 	suspend fun updateAccessToken(
 		accessToken: String
@@ -27,7 +27,7 @@ interface TokenRepository {
 	/**
 	 * RefreshToken Function
 	 */
-	fun getRefreshToken(): Flow<String>
+	fun getRefreshToken(): Flow<String?>
 
 	suspend fun updateRefreshToken(
 		refreshToken: String

@@ -52,9 +52,9 @@ class TokenManager @Inject constructor(
 	/**
 	 * AccessToken Function
 	 */
-	override fun getAccessToken(): Flow<String> {
+	override fun getAccessToken(): Flow<String?> {
 		return dataStore.data.map { prefs ->
-			prefs[ACCESS_TOKEN_KEY].orEmpty()
+			prefs[ACCESS_TOKEN_KEY]
 		}
 	}
 
@@ -79,9 +79,9 @@ class TokenManager @Inject constructor(
 	/**
 	 * RefreshToken Function
 	 */
-	override fun getRefreshToken(): Flow<String> {
+	override fun getRefreshToken(): Flow<String?> {
 		return dataStore.data.map { prefs ->
-			prefs[REFRESH_TOKEN_KEY].orEmpty()
+			prefs[REFRESH_TOKEN_KEY]
 		}
 	}
 

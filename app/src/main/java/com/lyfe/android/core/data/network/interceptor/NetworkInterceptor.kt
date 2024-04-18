@@ -24,7 +24,16 @@ class NetworkInterceptor @Inject constructor(
 
 		val response = chain.proceed(request)
 		val responseJson = response.extractResponseJson()
-		val dataPayload = if (responseJson.has(RESULT_KEY)) responseJson[RESULT_KEY] else responseJson
+		val resultPayload = if (responseJson.has(RESULT_KEY)) responseJson[RESULT_KEY] else responseJson
+		val pagePayload = if (responseJson.has(PAGE_KEY)) responseJson[PAGE_KEY] else responseJson
+
+		val dataPayload = JSONObject().apply {
+			put(RESULT_KEY, resultPayload.toString())
+
+			if (pagePayload != BASE_JSON_FORMAT) {
+				put(PAGE_KEY, pagePayload)
+			}
+		}
 
 		return response.newBuilder()
 			.body(dataPayload.toString().toResponseBody())
@@ -44,6 +53,7 @@ class NetworkInterceptor @Inject constructor(
 		private const val HEADER_AUTHORIZATION = "Authorization"
 		private const val HEADER_AUTHORIZATION_TYPE = "Bearer"
 		private const val RESULT_KEY = "result"
+		private const val PAGE_KEY = "page"
 		private const val BASE_JSON_FORMAT = "{}"
 	}
 }

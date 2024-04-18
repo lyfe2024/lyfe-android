@@ -13,14 +13,14 @@ interface TokenDataSource {
 	/**
 	 * AccessToken Function
 	 */
-	fun getAccessToken(): Flow<String>
+	fun getAccessToken(): Flow<String?>
 	suspend fun updateAccessToken(accessToken: String)
 	suspend fun isAccessTokenExpired(): Boolean
 
 	/**
 	 * RefreshToken Function
 	 */
-	fun getRefreshToken(): Flow<String>
+	fun getRefreshToken(): Flow<String?>
 	suspend fun updateRefreshToken(refreshToken: String)
 
 	/**
