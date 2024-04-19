@@ -20,11 +20,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,14 +41,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
 import com.lyfe.android.core.model.Alarm
 import com.lyfe.android.core.common.ui.theme.TempColor
 import com.lyfe.android.core.model.Notification
 
 @Composable
-fun AlarmScreen(
+fun AlarmRoute(
 	viewModel: AlarmViewModel = hiltViewModel()
+) {
+	val notificationList by viewModel.notificationList.collectAsStateWithLifecycle()
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+	AlarmScreen(
+		notificationList = notificationList,
+		uiState = uiState,
+		fetchNextNotificationList = viewModel::fetchNextNotifications
+	)
+}
+
+@Composable
+fun AlarmScreen(
+	notificationList: List<Notification>,
+	uiState: AlarmUiState,
+	fetchNextNotificationList: () -> Unit
 ) {
 	val context = LocalContext.current
 
@@ -74,59 +93,100 @@ fun AlarmScreen(
 
 		Spacer(modifier = Modifier.height(21.dp))
 
-		AlarmContentArea(viewModel, context)
+		AlarmContentArea(
+			notificationList = notificationList,
+			uiState = uiState,
+			fetchNextNotificationList = fetchNextNotificationList
+		)
 	}
 }
 
 @Composable
 private fun AlarmContentArea(
-	viewModel: AlarmViewModel,
-	context: Context
+	notificationList: List<Notification>,
+	uiState: AlarmUiState,
+	fetchNextNotificationList: () -> Unit
 ) {
-	when (viewModel.uiState) {
-		is AlarmUiState.Success -> {
-			val notificationList = (viewModel.uiState as? AlarmUiState.Success)?.notificationList ?: emptyList()
-			Log.e("Test@@@", "notificationList: $notificationList")
-
-			if (notificationList.isNotEmpty()) {
-				AlarmContent(notificationList, context)
-			} else {
-				val noAlarmListMsg = context.getString(R.string.no_alarm_list)
-				NoAlarmListContent(message = noAlarmListMsg)
-			}
-		}
-
-		is AlarmUiState.Failure -> {
-			val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
-			NoAlarmListContent(message = dataLoadingFailureMsg)
-		}
-
-		is AlarmUiState.Loading -> {
-			// 로딩하는 동안 Progressbar 보여주기
-		}
+	if (notificationList.isNotEmpty()) {
+		AlarmContent(
+			notificationList = notificationList,
+			uiState = uiState,
+			fetchNextNotificationList = fetchNextNotificationList
+		)
+	} else {
+//		val noAlarmListMsg = context.getString(R.string.no_alarm_list)
+//		NoAlarmListContent(message = noAlarmListMsg)
 	}
+//	when (viewModel.uiState) {
+//		is AlarmUiState.Success -> {
+//			val notificationList = (viewModel.uiState as? AlarmUiState.Success)?.notificationList ?: emptyList()
+//			Log.e("Test@@@", "notificationList: $notificationList")
+//
+//			if (notificationList.isNotEmpty()) {
+//				AlarmContent(notificationList, context)
+//			} else {
+//				val noAlarmListMsg = context.getString(R.string.no_alarm_list)
+//				NoAlarmListContent(message = noAlarmListMsg)
+//			}
+//		}
+
+//		is AlarmUiState.Failure -> {
+//			val dataLoadingFailureMsg = context.getString(R.string.data_loading_failure)
+//			NoAlarmListContent(message = dataLoadingFailureMsg)
+//		}
+//
+//		is AlarmUiState.Loading -> {
+//			// 로딩하는 동안 Progressbar 보여주기
+//		}
+//	}
 }
 
 @Composable
 private fun AlarmContent(
 	notificationList: List<Notification>,
-	context: Context
+	uiState: AlarmUiState,
+	fetchNextNotificationList: () -> Unit
 ) {
-	LazyColumn {
-//		itemsIndexed(
+//	LazyColumn(
+//		verticalArrangement = Arrangement.spacedBy(4.dp)
+//	) {
+//		items(
 //			items = notificationList,
-//			key = { _, notific -> alarm.id }
-//		) { index, alarm ->
+//			key = { it.id }
+//		) { notification ->
 //			AlarmBox(
-//				modifier = Modifier
-//					.fillMaxWidth(),
-//				typeText = context.getString(alarm.type.stringRes),
-//				message = alarm.message,
-//				time = alarm.time
+//				modifier = Modifier.fillMaxWidth(),
+////				typeText = context.getString(alarm.type.stringRes),
+//				message = notification.content,
+//				time = notification.notifiedAt,
+//				typeText = "aa"
 //			)
-//
-//			if (index != 0) Spacer(Modifier.height(4.dp))
 //		}
+//	}
+	LazyColumn(
+		verticalArrangement = Arrangement.spacedBy(4.dp)
+	) {
+		itemsIndexed(
+			items = notificationList,
+		) { index, notification ->
+			Log.e("Test@@@", "index: $index")
+			Log.e("Test@@@", "index+10: ${index+1 >= notificationList.size}")
+			Log.e("Test@@@", "uiState: $uiState")
+			if ((index + 10) >= notificationList.size && uiState != AlarmUiState.Loading) {
+				Log.e("Test@@@", "Screen call fetch")
+				fetchNextNotificationList()
+			}
+
+			key(index) {
+				AlarmBox(
+					modifier = Modifier.fillMaxWidth(),
+//				typeText = context.getString(alarm.type.stringRes),
+					message = notification.content,
+					time = notification.notifiedAt,
+					typeText = "aa"
+				)
+			}
+		}
 	}
 }
 

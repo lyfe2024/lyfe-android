@@ -1,39 +1,46 @@
 package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.NotificationDataSource
-import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.data.network.Dispatcher
+import com.lyfe.android.core.data.network.LyfeDispatchers
+import com.lyfe.android.core.data.network.model.onException
+import com.lyfe.android.core.data.network.model.onFailure
+import com.lyfe.android.core.data.network.model.onSuccess
+import com.lyfe.android.core.data.network.model.onUnexpected
 import com.lyfe.android.core.domain.repository.NotificationRepository
-import com.lyfe.android.core.model.Notification
 import com.lyfe.android.core.model.Notifications
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
+import javax.inject.Named
 
 class NotificationRepositoryImpl @Inject constructor(
-	private val notificationDataSource: NotificationDataSource
+	@Named("fakedNoti") private val notificationDataSource: NotificationDataSource,
+	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : NotificationRepository {
 
-	override fun fetchNotifications(): Flow<Result<Notifications>> = flow {
-		val result: Result<Notifications> = when (
-			val response = notificationDataSource.fetchNotifications()
-		) {
-			is Result.Success -> {
-				Result.Success(response.body?.toDomain())
+	override fun fetchNotifications(
+		lastNotiId: Long,
+		onStart: () -> Unit,
+		onCompletion: () -> Unit,
+		onError: (String?) -> Unit
+	): Flow<Notifications> = flow {
+		notificationDataSource.fetchNotifications(lastNotiId)
+			.onSuccess { data ->
+				emit(data.toDomain())
 			}
-
-			is Result.Failure -> {
-				Result.Failure(code = response.code, error = response.error)
+			.onFailure { code, error ->
+				onError(error)
 			}
-
-			is Result.NetworkError -> {
-				Result.NetworkError(exception = response.exception)
+			.onException { exception ->
+				onError(exception.message)
 			}
-
-			is Result.Unexpected -> {
-				Result.Unexpected(t = response.t)
+			.onUnexpected { throwable ->
+				onError(throwable.message)
 			}
-		}
-
-		emit(result)
-	}
+	}.onStart { onStart() }.onCompletion { onCompletion() }.flowOn(ioDispatcher)
 }

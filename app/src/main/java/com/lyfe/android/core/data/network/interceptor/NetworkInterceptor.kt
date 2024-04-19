@@ -14,7 +14,7 @@ class NetworkInterceptor @Inject constructor(
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val token: String = runBlocking {
+		val token: String? = runBlocking {
 			tokenManager.getAccessToken().first()
 		}
 

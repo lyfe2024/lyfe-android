@@ -5,10 +5,7 @@ import com.lyfe.android.core.model.Notification
 sealed interface AlarmUiState {
 
 	object Loading : AlarmUiState
+	object IDLE : AlarmUiState
+	data class Error(val message: String?) : AlarmUiState
 
-	data class Success(
-		val notificationList: List<Notification>
-	) : AlarmUiState
-
-	object Failure : AlarmUiState
 }

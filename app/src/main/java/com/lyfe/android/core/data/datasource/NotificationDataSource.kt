@@ -5,5 +5,5 @@ import com.lyfe.android.core.data.network.model.Result
 
 interface NotificationDataSource {
 
-	suspend fun fetchNotifications(): Result<NotificationsResponse>
+	suspend fun fetchNotifications(lastNotiId: Long): Result<NotificationsResponse>
 }

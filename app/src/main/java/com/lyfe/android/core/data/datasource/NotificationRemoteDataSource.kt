@@ -8,7 +8,7 @@ import javax.inject.Inject
 class NotificationRemoteDataSource @Inject constructor(
 	private val notificationService: NotificationService
 ) : NotificationDataSource {
-	override suspend fun fetchNotifications(): Result<NotificationsResponse> {
-		return notificationService.fetchNotifications()
+	override suspend fun fetchNotifications(lastNotiId: Long): Result<NotificationsResponse> {
+		return notificationService.fetchNotifications(lastNotiId)
 	}
 }

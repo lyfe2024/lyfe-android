@@ -18,16 +18,17 @@ class ResultCall<T : Any>(private val call: Call<T>) : Call<Result<T>> {
 	override fun enqueue(callback: Callback<Result<T>>) {
 		call.enqueue(object : Callback<T> {
 			override fun onResponse(call: Call<T>, response: Response<T>) {
-				if (response.isSuccessful) {
+				if (response.isSuccessful && response.body() != null) {
+					val data = checkNotNull(response.body())
 					callback.onResponse(
 						this@ResultCall,
-						Response.success(Result.Success(response.body()))
+						Response.success(Result.Success(data))
 					)
 				} else {
 					callback.onResponse(
 						this@ResultCall,
 						Response.success(
-							Result.Failure(
+							Result.Failure<T>(
 								response.code(),
 								response.errorBody()?.string()
 							)
@@ -38,8 +39,8 @@ class ResultCall<T : Any>(private val call: Call<T>) : Call<Result<T>> {
 
 			override fun onFailure(call: Call<T>, t: Throwable) {
 				val networkResponse = when (t) {
-					is IOException -> Result.NetworkError(t)
-					else -> Result.Unexpected(t)
+					is IOException -> Result.NetworkError<T>(t)
+					else -> Result.Unexpected<T>(t)
 				}
 				callback.onResponse(this@ResultCall, Response.success(networkResponse))
 			}

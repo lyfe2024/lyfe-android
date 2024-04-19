@@ -9,6 +9,7 @@ import com.lyfe.android.core.data.datasource.FeedbackRemoteDataSource
 import com.lyfe.android.core.data.datasource.ImageDataSource
 import com.lyfe.android.core.data.datasource.ImageRemoteDataSource
 import com.lyfe.android.core.data.datasource.NotificationDataSource
+import com.lyfe.android.core.data.datasource.NotificationFakeDataSource
 import com.lyfe.android.core.data.datasource.NotificationRemoteDataSource
 import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyRemoteDataSource
@@ -22,6 +23,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -73,6 +75,13 @@ interface DataSourceModule {
 	@Binds
 	fun bindsNotificationDataSource(
 		notificationRemoteDataSource: NotificationRemoteDataSource
+	): NotificationDataSource
+
+	@Singleton
+	@Binds
+	@Named("fakedNoti")
+	fun bindsFakedNotificationDataSource(
+		notificationFakeDataSource: NotificationFakeDataSource
 	): NotificationDataSource
 
 	@Singleton
