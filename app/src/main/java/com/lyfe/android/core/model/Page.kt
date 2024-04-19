@@ -1,8 +1,8 @@
 package com.lyfe.android.core.model
 
 data class Page(
-	val size: Int,
-	val number: Int,
-	val totalElements: Int,
-	val totalPages: Int
+	val size: Int = 0,
+	val number: Int = 0,
+	val totalElements: Int = 0,
+	val totalPages: Int = 0
 )

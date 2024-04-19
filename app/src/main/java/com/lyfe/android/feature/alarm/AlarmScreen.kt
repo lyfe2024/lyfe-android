@@ -1,6 +1,7 @@
 package com.lyfe.android.feature.alarm
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.model.Alarm
 import com.lyfe.android.core.common.ui.theme.TempColor
+import com.lyfe.android.core.model.Notification
 
 @Composable
 fun AlarmScreen(
@@ -83,10 +85,11 @@ private fun AlarmContentArea(
 ) {
 	when (viewModel.uiState) {
 		is AlarmUiState.Success -> {
-			val alarmList = (viewModel.uiState as? AlarmUiState.Success)?.alarmList ?: emptyList()
+			val notificationList = (viewModel.uiState as? AlarmUiState.Success)?.notificationList ?: emptyList()
+			Log.e("Test@@@", "notificationList: $notificationList")
 
-			if (alarmList.isNotEmpty()) {
-				AlarmContent(alarmList, context)
+			if (notificationList.isNotEmpty()) {
+				AlarmContent(notificationList, context)
 			} else {
 				val noAlarmListMsg = context.getString(R.string.no_alarm_list)
 				NoAlarmListContent(message = noAlarmListMsg)
@@ -106,24 +109,24 @@ private fun AlarmContentArea(
 
 @Composable
 private fun AlarmContent(
-	alarmList: List<Alarm>,
+	notificationList: List<Notification>,
 	context: Context
 ) {
 	LazyColumn {
-		itemsIndexed(
-			items = alarmList,
-			key = { _, alarm -> alarm.id }
-		) { index, alarm ->
-			AlarmBox(
-				modifier = Modifier
-					.fillMaxWidth(),
-				typeText = context.getString(alarm.type.stringRes),
-				message = alarm.message,
-				time = alarm.time
-			)
-
-			if (index != 0) Spacer(Modifier.height(4.dp))
-		}
+//		itemsIndexed(
+//			items = notificationList,
+//			key = { _, notific -> alarm.id }
+//		) { index, alarm ->
+//			AlarmBox(
+//				modifier = Modifier
+//					.fillMaxWidth(),
+//				typeText = context.getString(alarm.type.stringRes),
+//				message = alarm.message,
+//				time = alarm.time
+//			)
+//
+//			if (index != 0) Spacer(Modifier.height(4.dp))
+//		}
 	}
 }
 
