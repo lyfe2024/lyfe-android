@@ -35,7 +35,7 @@ class TokenAuthenticator @Inject constructor(
 					tokenRefreshInProgress.set(true)
 
 					// Token Refresh
-					val refreshToken = tokenManager.getRefreshToken().first()
+					val refreshToken = tokenManager.getRefreshToken().first() ?: return@runBlocking null
 					val isRefreshed = reissueToken(refreshToken)
 
 					tokenRefreshInProgress.set(false)

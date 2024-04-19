@@ -14,12 +14,14 @@ class NetworkInterceptor @Inject constructor(
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val token: String = runBlocking {
+		val token: String? = runBlocking {
 			tokenManager.getAccessToken().first()
 		}
 
 		val request = chain.request().newBuilder().apply {
-			this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
+			if (token != null) {
+				this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
+			}
 		}.build()
 
 		val response = chain.proceed(request)
