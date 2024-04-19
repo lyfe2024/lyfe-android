@@ -26,14 +26,14 @@ class NetworkInterceptor @Inject constructor(
 
 		val response = chain.proceed(request)
 		val responseJson = response.extractResponseJson()
-		val resultPayload = if (responseJson.has(RESULT_KEY)) responseJson[RESULT_KEY] else responseJson
-		val pagePayload = if (responseJson.has(PAGE_KEY)) responseJson[PAGE_KEY] else responseJson
 
-		val dataPayload = JSONObject().apply {
-			put(RESULT_KEY, resultPayload.toString())
+		// result 키 존재 유무에 따른 json 생성
+		val resultPayload = if (responseJson.has(RESULT_KEY)) JSONObject(responseJson[RESULT_KEY].toString()) else responseJson
 
-			if (pagePayload != BASE_JSON_FORMAT) {
-				put(PAGE_KEY, pagePayload)
+		// page 키 존재 유무에 따른 key-value 추가
+		val dataPayload = resultPayload.apply {
+			if (responseJson.has(PAGE_KEY)) {
+				put(PAGE_KEY, responseJson[PAGE_KEY])
 			}
 		}
 
