@@ -1,6 +1,5 @@
 package com.lyfe.android.core.model
 
 data class Notifications(
-	val notificationList: List<Notification> = emptyList(),
-	val page: Page = Page()
+	val notificationList: List<Notification> = emptyList()
 )

@@ -32,6 +32,7 @@ class AlarmViewModel @Inject constructor(
 			onCompletion = { _uiState.value = AlarmUiState.IDLE },
 			onError = { _uiState.value = AlarmUiState.Error(it) }
 		).map {
+			Log.e("Test@@@", "it: ${it.notificationList}")
 			prevNotificationList.addAll(it.notificationList)
 			prevNotificationList.toList()
 		}

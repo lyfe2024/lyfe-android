@@ -54,6 +54,8 @@ fun AlarmRoute(
 	val notificationList by viewModel.notificationList.collectAsStateWithLifecycle()
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+	Log.e("Test@@@", "notificationList: $notificationList")
+	Log.e("Test@@@", "uiState: $uiState")
 	AlarmScreen(
 		notificationList = notificationList,
 		uiState = uiState,
@@ -172,7 +174,7 @@ private fun AlarmContent(
 			Log.e("Test@@@", "index: $index")
 			Log.e("Test@@@", "index+10: ${index+1 >= notificationList.size}")
 			Log.e("Test@@@", "uiState: $uiState")
-			if ((index + 10) >= notificationList.size && uiState != AlarmUiState.Loading) {
+			if ((index + 20) >= notificationList.size && uiState != AlarmUiState.Loading) {
 				Log.e("Test@@@", "Screen call fetch")
 				fetchNextNotificationList()
 			}

@@ -8,12 +8,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NotificationsResponse(
-	val notificationList: List<NotificationResult>,
-	val page: PageResult
+	@SerialName("list") val notificationList: List<NotificationResult>
 ) {
 	fun toDomain() = Notifications(
-		notificationList = notificationList.map { it.toDomain() },
-		page = page.toDomain()
+		notificationList = notificationList.map { it.toDomain() }
 	)
 }
 

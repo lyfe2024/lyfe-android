@@ -84,8 +84,7 @@ class NotificationFakeDataSource @Inject constructor(
 						content = "aaa",
 						notifiedAt = "12313"
 					)
-				),
-				page = PageResult(size = 10, number = 1, totalElements = 1, totalPages = 1)
+				)
 			)
 		)
 	}

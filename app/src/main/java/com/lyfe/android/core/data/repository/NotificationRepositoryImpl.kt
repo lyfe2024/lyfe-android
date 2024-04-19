@@ -1,5 +1,6 @@
 package com.lyfe.android.core.data.repository
 
+import android.util.Log
 import com.lyfe.android.core.data.datasource.NotificationDataSource
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
@@ -19,7 +20,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class NotificationRepositoryImpl @Inject constructor(
-	@Named("fakedNoti") private val notificationDataSource: NotificationDataSource,
+	private val notificationDataSource: NotificationDataSource,
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : NotificationRepository {
 
@@ -29,17 +30,22 @@ class NotificationRepositoryImpl @Inject constructor(
 		onCompletion: () -> Unit,
 		onError: (String?) -> Unit
 	): Flow<Notifications> = flow {
+		Log.e("Test@@@", "Repository fetch")
 		notificationDataSource.fetchNotifications(lastNotiId)
 			.onSuccess { data ->
+				Log.e("Test@@@", "Repository Success data: $data")
 				emit(data.toDomain())
 			}
 			.onFailure { code, error ->
+				Log.e("Test@@@", "Repository onFailure ${error}")
 				onError(error)
 			}
 			.onException { exception ->
+				Log.e("Test@@@", "Repository onException ${exception.message}")
 				onError(exception.message)
 			}
 			.onUnexpected { throwable ->
+				Log.e("Test@@@", "Repository onUnexcepted: ${throwable.message}")
 				onError(throwable.message)
 			}
 	}.onStart { onStart() }.onCompletion { onCompletion() }.flowOn(ioDispatcher)
