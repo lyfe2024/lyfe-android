@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,7 +18,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,16 +55,25 @@ fun HomeTodayTopicScreen(
 	navigator: LyfeNavigator,
 	onScroll: (Boolean) -> Unit
 ) {
-	// 백엔드랑 API 어떤식으로 처리할지 의논하고 로직 수정해야할 듯
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val feedFetchingType by viewModel.feedFetchingType.collectAsStateWithLifecycle()
+
+	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
+	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+
 	val scrollState = rememberLazyListState()
 
-	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
-	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
-
-	LaunchedEffect(Unit) {
-		viewModel.fetchLatestFeedList(FeedType.BOARD)
-		viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
+	LaunchedEffect(feedFetchingType) {
+		when (feedFetchingType) {
+			FeedFetchingType.POPULAR -> {
+				viewModel.fetchPopularFeedList(FeedType.BOARD)
+				viewModel.fetchPopularFeedList(FeedType.BOARD_PICTURE)
+			}
+			FeedFetchingType.LATEST -> {
+				viewModel.fetchLatestFeedList(FeedType.BOARD)
+				viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
+			}
+		}
 	}
 
 	LaunchedEffect(scrollState) {
@@ -84,18 +96,66 @@ fun HomeTodayTopicScreen(
 		}
 	}
 
+	HomeTodayTopicFeedList(
+		scrollState = scrollState,
+		todayTopic = viewModel.todayTopic,
+		feedFetchingType = feedFetchingType,
+		imageFeeds = imageFeeds,
+		textFeeds = textFeeds,
+		onFeedClick = {
+			navigator.navigate(LyfeScreens.FeedDetail.name)
+		},
+		onFetchingTypeChanged = {
+			viewModel.updateFeedFetchingType(it)
+		},
+		onReachedBottom = {
+			viewModel.fetchLatestFeedList(FeedType.BOARD)
+			viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
+		}
+	)
+}
+
+@Composable
+private fun HomeTodayTopicFeedList(
+	scrollState: LazyListState,
+	todayTopic: String,
+	feedFetchingType: FeedFetchingType,
+	imageFeeds: List<Feed>,
+	textFeeds: List<Feed>,
+	onFeedClick: (Feed) -> Unit,
+	onFetchingTypeChanged: (FeedFetchingType) -> Unit,
+	onReachedBottom: () -> Unit
+) {
+	// observe list scrolling
+	val reachedBottom: Boolean by remember {
+		derivedStateOf {
+			val lastVisibleItem = scrollState.layoutInfo.visibleItemsInfo.lastOrNull()
+			lastVisibleItem?.index != 0 && lastVisibleItem?.index == scrollState.layoutInfo.totalItemsCount - 1
+		}
+	}
+
+	LaunchedEffect(reachedBottom) {
+		if (reachedBottom) {
+			onReachedBottom()
+		}
+	}
+
 	LazyColumn(
 		state = scrollState
 	) {
 		item {
-			HomeTopicText(viewModel.todayTopic)
+			HomeTopicText(todayTopic)
 
 			Spacer(modifier = Modifier.height(8.dp))
 
 			HomeSwipeableFeeds(
 				modifier = Modifier.padding(horizontal = 20.dp),
-				feeds = imageFeeds.reversed(),
-				onClick = { navigator.navigate(LyfeScreens.FeedDetail.name) }
+				feeds = if (imageFeeds.size > 3) {
+					imageFeeds.subList(0,4)
+				} else {
+			        emptyList()
+			    },
+				onClick = { onFeedClick(it) }
 			)
 
 			Spacer(modifier = Modifier.height(24.dp))
@@ -104,9 +164,9 @@ fun HomeTodayTopicScreen(
 		item {
 			HomeTodayTopicTextFeedTopBar(
 				modifier = Modifier.padding(horizontal = 20.dp),
-				fetchingType = viewModel.feedFetchingType,
+				fetchingType = feedFetchingType,
 				onFetchingTypeChanged = {
-					viewModel.updateFeedFetchingType(it)
+					onFetchingTypeChanged(it)
 				}
 			)
 		}
@@ -128,8 +188,8 @@ fun HomeTodayTopicScreen(
 				thickness = 1.dp
 			)
 
-			if (index % IMAGE_FEED_INDEXING == 0) {
-				HomeTodayTopicImageFeedList(
+			if (index % IMAGE_FEED_INDEXING == IMAGE_FEED_INDEXING-1) {
+				HomeTodayTopicHorizontalImageFeedList(
 					modifier = Modifier.padding(vertical = 16.dp),
 					feeds = imageFeeds,
 					contentPadding = PaddingValues(
@@ -193,7 +253,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 }
 
 @Composable
-private fun HomeTodayTopicImageFeedList(
+private fun HomeTodayTopicHorizontalImageFeedList(
 	modifier: Modifier,
 	feeds: List<Feed>,
 	contentPadding: PaddingValues

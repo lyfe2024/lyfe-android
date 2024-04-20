@@ -1,7 +1,7 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.GetBoardDetailResponse
-import com.lyfe.android.core.data.model.GetBoardListResponse
+import com.lyfe.android.core.data.model.GetBoardListResult
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.BoardService
 import javax.inject.Inject
@@ -15,9 +15,9 @@ class BoardRemoteDataSource @Inject constructor(
 	}
 
 	override suspend fun getLatestBoards(
-		cursorId: Int,
+		cursorId: Long,
 		boardType: String
-	): Result<GetBoardListResponse> {
+	): Result<GetBoardListResult> {
 		return boardService.getLatestBoards(
 			cursorId = cursorId,
 			boardType = boardType
@@ -25,10 +25,10 @@ class BoardRemoteDataSource @Inject constructor(
 	}
 
 	override suspend fun getPopularBoards(
-		cursorId: Int,
+		cursorId: Long,
 		boardType: String?,
 		popularType: String
-	): Result<GetBoardListResponse> {
+	): Result<GetBoardListResult> {
 		return boardService.getPopularBoards(
 			cursorId = cursorId,
 			boardType = boardType
@@ -38,7 +38,7 @@ class BoardRemoteDataSource @Inject constructor(
 	override suspend fun getUserBoards(
 		boardType: String?,
 		cursorId: Long
-	): Result<GetBoardListResponse> {
+	): Result<GetBoardListResult> {
 		return boardService.getUserBoards(
 			boardType = boardType,
 			cursorId = cursorId

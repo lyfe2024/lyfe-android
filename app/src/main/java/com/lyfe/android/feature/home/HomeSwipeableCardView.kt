@@ -51,7 +51,7 @@ private const val MAXIMUM_CARD_RATIO = 0.85f
 fun HomeSwipeableFeeds(
 	modifier: Modifier,
 	feeds: List<Feed>,
-	onClick: () -> Unit
+	onClick: (Feed) -> Unit
 ) {
 	var feedList by remember { mutableStateOf(feeds) }
 
@@ -86,7 +86,7 @@ fun HomeSwipeableCard(
 	totalCount: Int,
 	feed: Feed,
 	onMoveToRemove: () -> Unit,
-	onClick: () -> Unit = {}
+	onClick: (Feed) -> Unit = {}
 ) {
 	val animatedScale by animateFloatAsState(
 		targetValue = 1f - (totalCount - order - 1) * 0.05f,
@@ -103,7 +103,7 @@ fun HomeSwipeableCard(
 				scaleX = animatedScale
 				scaleY = animatedScale
 			}
-			.clickableSingle { onClick() }
+			.clickableSingle { onClick(feed) }
 			.swipeToRemove(
 				isSwipeableOrder = order == totalCount - 1,
 				onMoveToRemove = onMoveToRemove

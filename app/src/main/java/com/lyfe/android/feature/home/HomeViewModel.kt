@@ -1,6 +1,7 @@
 package com.lyfe.android.feature.home
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -18,7 +19,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,14 +35,19 @@ class HomeViewModel @Inject constructor(
 
 	var homeFeedType by mutableStateOf(HomeFeedType.TODAY_TOPIC)
 		private set
-	var feedFetchingType by mutableStateOf(FeedFetchingType.LATEST)
-		private set
+
+	private val _feedFetchingType = MutableStateFlow(FeedFetchingType.LATEST)
+	val feedFetchingType get() = _feedFetchingType.asStateFlow()
 
 	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val imageFeedList get() = _imageFeedList.asStateFlow()
 
 	private val _textFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val textFeedList get() = _textFeedList.asStateFlow()
+
+	private var textFeedCursorId by mutableLongStateOf(0)
+
+	private var imageFeedCursorId by mutableLongStateOf(0)
 
 	var todayTopic by mutableStateOf("오늘의 주제")
 		private set
@@ -68,34 +73,50 @@ class HomeViewModel @Inject constructor(
 		} else {
 			HomeFeedType.TODAY_TOPIC
 		}
+		resetData()
 	}
 
 	fun updateFeedFetchingType(fetchingType: FeedFetchingType) {
-		if (feedFetchingType == fetchingType) {
+		if (feedFetchingType.value == fetchingType) {
 			return
 		}
-		feedFetchingType = fetchingType
+		_feedFetchingType.value = fetchingType
+		resetData()
 	}
 
 	fun fetchLatestFeedList(
 		feedType: FeedType
 	)  {
+		val cursorId = when (feedType) {
+			FeedType.BOARD -> textFeedCursorId
+			FeedType.BOARD_PICTURE -> imageFeedCursorId
+		}
 		_uiState.update {
 			HomeUiState.Loading
 		}
 		viewModelScope.launch {
 			getLatestBoardsUseCase(
-				cursorId = 0,
+				cursorId = cursorId,
 				boardType = feedType.name
 			).catch { t ->
 				_uiState.update { HomeUiState.Failure(t.message ?: "") }
 			}.collect {
 				when (feedType) {
 					FeedType.BOARD -> {
-						_textFeedList.compareAndSet(_textFeedList.value, it)
+						_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
+						textFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							textFeedCursorId
+						}
 					}
 					FeedType.BOARD_PICTURE -> {
-						_imageFeedList.compareAndSet(_imageFeedList.value, it)
+						_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
+						imageFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							imageFeedCursorId
+						}
 					}
 				}
 			}
@@ -119,12 +140,30 @@ class HomeViewModel @Inject constructor(
 				when (feedType) {
 					FeedType.BOARD -> {
 						_textFeedList.compareAndSet(textFeedList.value, it)
+						textFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							textFeedCursorId
+						}
 					}
 					FeedType.BOARD_PICTURE -> {
 						_imageFeedList.compareAndSet(imageFeedList.value, it)
+						imageFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							imageFeedCursorId
+						}
 					}
 				}
 			}
 		}
+	}
+
+	private fun resetData() {
+		_textFeedList.compareAndSet(_textFeedList.value, emptyList())
+		_imageFeedList.compareAndSet(_imageFeedList.value, emptyList())
+
+		textFeedCursorId = 0
+		imageFeedCursorId = 0
 	}
 }

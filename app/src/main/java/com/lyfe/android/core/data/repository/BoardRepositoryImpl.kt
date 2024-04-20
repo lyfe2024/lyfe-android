@@ -25,12 +25,12 @@ class BoardRepositoryImpl @Inject constructor(
 	}
 
 	override fun getLatestBoards(
-		cursorId: Int,
+		cursorId: Long,
 		boardType: String
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getLatestBoards(cursorId, boardType)) {
 			is Result.Success -> {
-				val result = response.body?.result?.list ?: throw ApiResultException()
+				val result = response.body?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })
 			}
 			is Result.Failure -> {
@@ -46,13 +46,13 @@ class BoardRepositoryImpl @Inject constructor(
 	}.flowOn(ioDispatcher)
 
 	override fun getPopularBoards(
-		cursorId: Int,
+		cursorId: Long,
 		boardType: String?,
 		popularType: String
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getPopularBoards(cursorId, boardType, popularType)) {
 			is Result.Success -> {
-				val result = response.body?.result?.list ?: throw ApiResultException()
+				val result = response.body?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })
 			}
 			is Result.Failure -> {
@@ -73,7 +73,7 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getUserBoards(boardType, cursorId)) {
 			is Result.Success -> {
-				val result = response.body?.result?.list ?: throw ApiResultException()
+				val result = response.body?.list ?: throw ApiResultException()
 				emit(result.map { it.toDomain() })
 			}
 			is Result.Failure -> {

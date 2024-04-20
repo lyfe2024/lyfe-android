@@ -11,7 +11,8 @@ internal fun BoardDetail.toDomain(): Feed =
 		feedId = this.id,
 		title = this.title,
 		content = this.content,
-		feedImageUrl = "",
+		topic = this.topic,
+		feedImageUrl = this.imageUrl,
 		date = this.updatedAt,
 		userId = this.user.id,
 		userName = this.user.username,
@@ -19,22 +20,6 @@ internal fun BoardDetail.toDomain(): Feed =
 		whiskyCount = this.whiskyCount,
 		commentCount = this.commentCount,
 		isLike = false
-	)
-
-internal fun BoardPicture.toDomain(): Feed =
-	Feed(
-		feedId = this.id,
-		title = this.title,
-		// content = this.content ? "",
-		content = "",
-		feedImageUrl = this.picture.pictureUrl,
-		date = this.date,
-		userId = this.user.id,
-		userName = this.user.username,
-		userProfileImgUrl = this.user.profile,
-		whiskyCount = this.whiskyCount,
-		commentCount = this.commentCount,
-		isLike = this.isLike
 	)
 
 internal fun PageInfo.toDomain(): Page =
