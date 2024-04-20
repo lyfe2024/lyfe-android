@@ -33,6 +33,7 @@ private const val SCREEN_DATE_TEXT_ALPHA = 0.05f
 
 @Composable
 fun HomeScreen(
+	viewModel: HomeViewModel = hiltViewModel(),
 	navigator: LyfeNavigator,
 	onScroll: (Boolean) -> Unit
 ) {
@@ -61,12 +62,18 @@ fun HomeScreen(
 		Column(
 			modifier = Modifier.fillMaxSize()
 		) {
-			HomeTopContent()
+			HomeTopContent(
+				feedType = viewModel.homeFeedType,
+				onChangeFilter = {
+					viewModel.changeFilterType()
+				}
+			)
 
 			Spacer(modifier = Modifier.height(8.dp))
 
 			HomeFeedArea(
 				navigator = navigator,
+				feedType = viewModel.homeFeedType,
 				onScroll = onScroll
 			)
 		}
@@ -75,7 +82,8 @@ fun HomeScreen(
 
 @Composable
 private fun HomeTopContent(
-	viewModel: HomeViewModel = hiltViewModel()
+	feedType: HomeFeedType,
+	onChangeFilter: () -> Unit
 ) {
 	Image(
 		modifier = Modifier
@@ -91,7 +99,7 @@ private fun HomeTopContent(
 		modifier = Modifier
 			.padding(horizontal = 20.dp)
 			.clickableSingle {
-				viewModel.changeFilterType()
+				onChangeFilter()
 			},
 		verticalAlignment = Alignment.CenterVertically
 	) {
@@ -103,7 +111,7 @@ private fun HomeTopContent(
 		Spacer(modifier = Modifier.width(10.dp))
 
 		Text(
-			text = viewModel.homeFeedType.content,
+			text = feedType.content,
 			style = TextStyle(
 				color = Color.Black,
 				fontSize = 14.sp,
@@ -115,12 +123,12 @@ private fun HomeTopContent(
 
 @Composable
 private fun HomeFeedArea(
-	viewModel: HomeViewModel = hiltViewModel(),
 	navigator: LyfeNavigator,
+	feedType: HomeFeedType,
 	onScroll: (Boolean) -> Unit
 ) {
 	// 나중에 UI State로 변경
-	when (viewModel.homeFeedType) {
+	when (feedType) {
 		HomeFeedType.TODAY_TOPIC -> {
 			HomeTodayTopicScreen(
 				navigator = navigator,

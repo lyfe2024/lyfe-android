@@ -60,13 +60,13 @@ fun HomePastBestScreen(
 	onScroll: (Boolean) -> Unit
 ) {
 	// 백엔드랑 API 어떤식으로 처리할지 의논하고 로직 수정해야할 듯
-	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
-	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
+//	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+//	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
 	val scrollState = rememberLazyListState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchImageFeedList()
-		viewModel.fetchTextFeedList()
+//		viewModel.fetchImageFeedList()
+//		viewModel.fetchTextFeedList()
 	}
 
 	LaunchedEffect(scrollState) {
@@ -76,22 +76,22 @@ fun HomePastBestScreen(
 			}
 	}
 
-	LazyColumn(
-		verticalArrangement = Arrangement.spacedBy(16.dp),
-		contentPadding = PaddingValues(horizontal = 20.dp),
-		state = scrollState
-	) {
-		items(
-			count = 10,
-			key = { it }
-		) { _ ->
-			HomePastBestItem(
-				navigator = navigator,
-				imageFeeds = imageFeeds,
-				textFeeds = textFeeds
-			)
-		}
-	}
+//	LazyColumn(
+//		verticalArrangement = Arrangement.spacedBy(16.dp),
+//		contentPadding = PaddingValues(horizontal = 20.dp),
+//		state = scrollState
+//	) {
+//		items(
+//			count = 10,
+//			key = { it }
+//		) { _ ->
+//			HomePastBestItem(
+//				navigator = navigator,
+//				imageFeeds = imageFeeds,
+//				textFeeds = textFeeds
+//			)
+//		}
+//	}
 }
 
 @Composable

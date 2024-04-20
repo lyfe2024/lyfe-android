@@ -36,9 +36,11 @@ import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.FeedFetchingType
+import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
@@ -51,13 +53,15 @@ fun HomeTodayTopicScreen(
 	onScroll: (Boolean) -> Unit
 ) {
 	// 백엔드랑 API 어떤식으로 처리할지 의논하고 로직 수정해야할 듯
-	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
-	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val scrollState = rememberLazyListState()
 
+	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
+
 	LaunchedEffect(Unit) {
-		viewModel.fetchImageFeedList()
-		viewModel.fetchTextFeedList()
+		viewModel.fetchLatestFeedList(FeedType.BOARD)
+		viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
 	}
 
 	LaunchedEffect(scrollState) {
@@ -67,71 +71,71 @@ fun HomeTodayTopicScreen(
 			}
 	}
 
+	when (uiState) {
+		HomeUiState.Success -> {
+			LogUtil.i("UiState", "Home Success!!!")
+		}
+		HomeUiState.Loading -> {
+			LogUtil.i("UiState", "Home Loading...")
+		}
+		is HomeUiState.Failure -> {
+			val message = (uiState as HomeUiState.Failure).errorMessage
+			LogUtil.e("UiState", "Home Failed: $message")
+		}
+	}
+
 	LazyColumn(
 		state = scrollState
 	) {
+		item {
+			HomeTopicText(viewModel.todayTopic)
+
+			Spacer(modifier = Modifier.height(8.dp))
+
+			HomeSwipeableFeeds(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				feeds = imageFeeds.reversed(),
+				onClick = { navigator.navigate(LyfeScreens.FeedDetail.name) }
+			)
+
+			Spacer(modifier = Modifier.height(24.dp))
+		}
+
+		item {
+			HomeTodayTopicTextFeedTopBar(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				fetchingType = viewModel.feedFetchingType,
+				onFetchingTypeChanged = {
+					viewModel.updateFeedFetchingType(it)
+				}
+			)
+		}
+
 		itemsIndexed(
 			items = textFeeds,
 			key = { _, feed ->
 				feed.feedId
 			}
 		) { index, feed ->
-			if (index == 0) {
-				Text(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(horizontal = 20.dp),
-					text = viewModel.todayTopic,
-					style = TextStyle(
-						fontSize = 28.sp,
-						fontWeight = FontWeight.W700,
-						lineHeight = 38.sp,
-						color = Main500,
-						fontFamily = pretenard
-					),
-					maxLines = 2
-				)
+			HomeTextFeedView(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				feed = feed
+			)
 
-				Spacer(modifier = Modifier.height(8.dp))
+			Divider(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				color = Grey100,
+				thickness = 1.dp
+			)
 
-				HomeSwipeableFeeds(
-					modifier = Modifier.padding(horizontal = 20.dp),
-					feeds = imageFeeds.reversed(),
-					onClick = { navigator.navigate(LyfeScreens.FeedDetail.name) }
-				)
-
-				Spacer(modifier = Modifier.height(24.dp))
-			} else {
-				if (index == 1) {
-					HomeTodayTopicTextFeedTopBar(
-						modifier = Modifier.padding(horizontal = 20.dp),
-						fetchingType = viewModel.textFeedFetchingType,
-						onFetchingTypeChanged = {
-							viewModel.updateFeedFetchingType(it)
-						}
+			if (index % IMAGE_FEED_INDEXING == 0) {
+				HomeTodayTopicImageFeedList(
+					modifier = Modifier.padding(vertical = 16.dp),
+					feeds = imageFeeds,
+					contentPadding = PaddingValues(
+						horizontal = 20.dp,
+						vertical = 16.dp
 					)
-				}
-
-				if (index % IMAGE_FEED_INDEXING == 0) {
-					HomeTodayTopicImageFeedList(
-						modifier = Modifier.padding(vertical = 16.dp),
-						feeds = imageFeeds,
-						contentPadding = PaddingValues(
-							horizontal = 20.dp,
-							vertical = 16.dp
-						)
-					)
-				}
-
-				HomeTextFeedView(
-					modifier = Modifier.padding(horizontal = 20.dp),
-					feed = feed
-				)
-
-				Divider(
-					modifier = Modifier.padding(horizontal = 20.dp),
-					color = Grey100,
-					thickness = 1.dp
 				)
 			}
 		}
@@ -239,6 +243,24 @@ private fun HomeTodayTopicImageFeedList(
 			}
 		}
 	}
+}
+
+@Composable
+private fun HomeTopicText(text: String) {
+	Text(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = 20.dp),
+		text = text,
+		style = TextStyle(
+			fontSize = 28.sp,
+			fontWeight = FontWeight.W700,
+			lineHeight = 38.sp,
+			color = Main500,
+			fontFamily = pretenard
+		),
+		maxLines = 2
+	)
 }
 
 @Composable

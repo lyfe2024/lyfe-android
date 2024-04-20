@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.SNSLoginButton
 import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
 import com.lyfe.android.core.common.ui.util.LogUtil
@@ -34,7 +35,8 @@ import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 @Composable
 fun LoginScreen(
 	navigator: LyfeNavigator,
-	viewModel: LoginViewModel = hiltViewModel()
+	viewModel: LoginViewModel = hiltViewModel(),
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -55,7 +57,10 @@ fun LoginScreen(
 				// 로딩중 표시
 			}
 			is LoginUiState.Failure -> {
-				// 실패 토스트 메세지 표시
+				// 실패 토스트 메세지 표시'
+				val message = ((viewModel.uiState) as LoginUiState.Failure).errorMessage
+				onShowSnackBar(LyfeSnackBarIconType.ERROR, "소셜 로그인 실패 $message")
+				navigator.navigateAndroidClearBackStack(LyfeScreens.Home.name)
 			}
 			is LoginUiState.SignedIn -> {
 				// 기존 유저 로그인 -> 홈 화면으로 이동
