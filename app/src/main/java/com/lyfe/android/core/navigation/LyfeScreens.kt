@@ -17,7 +17,7 @@ sealed class LyfeScreens(
 
 	object Post : LyfeScreens("post")
 
-	object Alarm : LyfeScreens("Alarm")
+	object NotificationList : LyfeScreens("Alarm")
 
 	object Profile : LyfeScreens("profile")
 

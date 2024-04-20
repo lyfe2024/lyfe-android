@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.feature.alarm.AlarmScreen
+import com.lyfe.android.feature.alarm.NotificationListRoute
 import com.lyfe.android.feature.album.SelectAlbumScreen
 import com.lyfe.android.feature.detail.FeedDetailScreen
 import com.lyfe.android.feature.feed.FeedScreen
@@ -68,9 +68,9 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.PostCreate.name)
 	}
 
-	composable(route = LyfeScreens.Alarm.name) {
-		AlarmScreen()
-		selectedScreen(LyfeScreens.Alarm.name)
+	composable(route = LyfeScreens.NotificationList.name) {
+		NotificationListRoute()
+		selectedScreen(LyfeScreens.NotificationList.name)
 	}
 
 	composable(route = LyfeScreens.Profile.name) {
