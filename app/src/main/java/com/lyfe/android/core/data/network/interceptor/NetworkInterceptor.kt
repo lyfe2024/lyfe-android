@@ -28,7 +28,11 @@ class NetworkInterceptor @Inject constructor(
 		val responseJson = response.extractResponseJson()
 
 		// result 키 존재 유무에 따른 json 생성
-		val resultPayload = if (responseJson.has(RESULT_KEY)) JSONObject(responseJson[RESULT_KEY].toString()) else responseJson
+		val resultPayload = if (responseJson.has(RESULT_KEY)) {
+			JSONObject(responseJson[RESULT_KEY].toString())
+		} else {
+			responseJson
+		}
 
 		// page 키 존재 유무에 따른 key-value 추가
 		val dataPayload = resultPayload.apply {
