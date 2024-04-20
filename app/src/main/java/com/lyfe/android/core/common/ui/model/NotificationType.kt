@@ -4,12 +4,12 @@ import androidx.annotation.StringRes
 import com.lyfe.android.R
 
 enum class NotificationType(val value: String, @StringRes val stringRes: Int) {
-	BOARD_CONTENT("BOARD_CONTENT", R.string.noti_list_picture_type_text),
-	COMMENT("COMMENT", R.string.noti_list_comments_type_text),
-	WHISKY("WHISKY", R.string.noti_list_whisky_type_text),
-	BOARD_PICTURE("BOARD_PICTURE", R.string.noti_list_board_type_text);
+	BOARD_COMMENT("BOARD_COMMENT", R.string.noti_list_board_comment_text),
+	BOARD_WHISKY("BOARD_WHISKY", R.string.noti_list_board_whisky_text),
+	PICTURE_COMMENT("BOARD_PICTURE_COMMENT", R.string.noti_list_picture_comment_type_text),
+	PICTURE_WHISKY("BOARD_PICTURE_WHISKY", R.string.noti_list_picture_whisky_type_text);
 
 	companion object {
-		fun findByValue(value: String) = values().firstOrNull { it.value == value } ?: BOARD_CONTENT
+		fun findByValue(value: String) = values().firstOrNull { it.value == value } ?: BOARD_COMMENT
 	}
 }

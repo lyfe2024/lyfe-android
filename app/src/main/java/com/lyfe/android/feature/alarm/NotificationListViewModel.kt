@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.alarm
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.domain.usecase.GetNotificationsUseCase

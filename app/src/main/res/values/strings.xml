@@ -37,10 +37,10 @@
 	<string name="noti_list_read_all_text">모두 읽음</string>
 	<string name="noti_list_data_empty">\&quot;새로운 알림이 없어요\&quot;</string>
 	<!-- TODO 서버와 text 맞춘 후 수정이 필요함	-->
-	<string name="noti_list_picture_type_text">신청 사진 반응</string>
-	<string name="noti_list_comments_type_text">사진 댓글 알림</string>
-	<string name="noti_list_whisky_type_text">글 반응 알림</string>
-	<string name="noti_list_board_type_text">글 댓글 알림</string>
+	<string name="noti_list_picture_whisky_type_text">사진 반응 알림</string>
+	<string name="noti_list_picture_comment_type_text">사진 댓글 알림</string>
+	<string name="noti_list_board_whisky_text">글 반응 알림</string>
+	<string name="noti_list_board_comment_text">글 댓글 알림</string>
 
 	<!-- LoginScreen -->
 	<string name="kakao_button_text">카카오로 3초만에 시작하기</string>
