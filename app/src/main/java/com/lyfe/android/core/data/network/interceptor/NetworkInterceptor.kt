@@ -14,17 +14,28 @@ class NetworkInterceptor @Inject constructor(
 ) : Interceptor {
 
 	override fun intercept(chain: Interceptor.Chain): Response {
-		val token: String = runBlocking {
+		val token: String? = runBlocking {
 			tokenManager.getAccessToken().first()
 		}
 
 		val request = chain.request().newBuilder().apply {
-			this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
+			if (token != null) {
+				this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
+			}
 		}.build()
 
 		val response = chain.proceed(request)
 		val responseJson = response.extractResponseJson()
-		val dataPayload = if (responseJson.has(RESULT_KEY)) responseJson[RESULT_KEY] else responseJson
+
+		// result 키 존재 유무에 따른 json 생성
+		val resultPayload = if (responseJson.has(RESULT_KEY)) JSONObject(responseJson[RESULT_KEY].toString()) else responseJson
+
+		// page 키 존재 유무에 따른 key-value 추가
+		val dataPayload = resultPayload.apply {
+			if (responseJson.has(PAGE_KEY)) {
+				put(PAGE_KEY, responseJson[PAGE_KEY])
+			}
+		}
 
 		return response.newBuilder()
 			.body(dataPayload.toString().toResponseBody())
@@ -44,6 +55,7 @@ class NetworkInterceptor @Inject constructor(
 		private const val HEADER_AUTHORIZATION = "Authorization"
 		private const val HEADER_AUTHORIZATION_TYPE = "Bearer"
 		private const val RESULT_KEY = "result"
+		private const val PAGE_KEY = "page"
 		private const val BASE_JSON_FORMAT = "{}"
 	}
 }
