@@ -33,10 +33,14 @@
 	<string name="feed_screen_popular_tab_text">인기</string>
 
 	<!-- AlarmScreen -->
-	<string name="no_alarm_list">새로운 알림이 없어요</string>
-	<string name="data_loading_failure">데이터를 호출하는 데 실패했습니다</string>
-	<string name="alarm_read_all_text">모두 읽음</string>
-	<string name="alarm_screen_title">알림</string>
+	<string name="noti_list_screen_title">알림</string>
+	<string name="noti_list_read_all_text">모두 읽음</string>
+	<string name="noti_list_data_empty">\&quot;새로운 알림이 없어요\&quot;</string>
+	<!-- TODO 서버와 text 맞춘 후 수정이 필요함	-->
+	<string name="noti_list_picture_whisky_type_text">사진 반응 알림</string>
+	<string name="noti_list_picture_comment_type_text">사진 댓글 알림</string>
+	<string name="noti_list_board_whisky_text">글 반응 알림</string>
+	<string name="noti_list_board_comment_text">글 댓글 알림</string>
 
 	<!-- LoginScreen -->
 	<string name="kakao_button_text">카카오로 3초만에 시작하기</string>
