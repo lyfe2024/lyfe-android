@@ -4,6 +4,7 @@ import com.lyfe.android.core.data.repository.AlbumRepositoryImpl
 import com.lyfe.android.core.data.repository.AuthRepositoryImpl
 import com.lyfe.android.core.data.repository.FeedbackRepositoryImpl
 import com.lyfe.android.core.data.repository.ImageRepositoryImpl
+import com.lyfe.android.core.data.repository.NotificationRepositoryImpl
 import com.lyfe.android.core.data.repository.PolicyRepositoryImpl
 import com.lyfe.android.core.data.repository.TokenRepositoryImpl
 import com.lyfe.android.core.data.repository.UserRepositoryImpl
@@ -13,6 +14,7 @@ import com.lyfe.android.core.domain.repository.AuthRepository
 import com.lyfe.android.core.domain.repository.FeedbackRepository
 import com.lyfe.android.core.domain.repository.ImageRepository
 import com.lyfe.android.core.domain.repository.LyfeRepository
+import com.lyfe.android.core.domain.repository.NotificationRepository
 import com.lyfe.android.core.domain.repository.PolicyRepository
 import com.lyfe.android.core.domain.repository.TokenRepository
 import com.lyfe.android.core.domain.repository.UserRepository
@@ -74,4 +76,10 @@ interface DataModule {
 	fun bindsFeedbackRepository(
 		feedbackRepositoryImpl: FeedbackRepositoryImpl
 	): FeedbackRepository
+
+	@Singleton
+	@Binds
+	fun bindsNotificationRepository(
+		notificationRepositoryImpl: NotificationRepositoryImpl
+	): NotificationRepository
 }
