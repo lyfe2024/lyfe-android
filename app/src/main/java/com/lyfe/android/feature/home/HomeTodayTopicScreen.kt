@@ -48,6 +48,7 @@ import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 private const val IMAGE_FEED_INDEXING = 5
+private const val TODAY_TOPIC_CARDS_COUNT = 4
 
 @Composable
 fun HomeTodayTopicScreen(
@@ -150,8 +151,8 @@ private fun HomeTodayTopicFeedList(
 
 			HomeSwipeableFeeds(
 				modifier = Modifier.padding(horizontal = 20.dp),
-				feeds = if (imageFeeds.size > 3) {
-					imageFeeds.subList(0,4)
+				feeds = if (imageFeeds.size > TODAY_TOPIC_CARDS_COUNT-1) {
+					imageFeeds.subList(0, TODAY_TOPIC_CARDS_COUNT)
 				} else {
 			        emptyList()
 			    },
