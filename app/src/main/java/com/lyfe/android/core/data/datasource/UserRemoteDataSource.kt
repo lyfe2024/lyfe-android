@@ -1,7 +1,6 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.CheckNicknameResult
-import com.lyfe.android.core.data.model.GetUserBoardResult
 import com.lyfe.android.core.data.model.UserInfo
 import com.lyfe.android.core.data.network.model.Result
 

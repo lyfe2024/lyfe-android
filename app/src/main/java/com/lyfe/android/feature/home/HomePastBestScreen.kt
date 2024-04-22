@@ -55,6 +55,8 @@ import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import kotlin.math.min
 
+private const val PAST_BEST_FEED_COUNT = 3
+
 @Composable
 fun HomePastBestScreen(
 	viewModel: HomeViewModel = hiltViewModel(),
@@ -84,7 +86,7 @@ fun HomePastBestScreen(
 		state = scrollState
 	) {
 		items(
-			count = imageFeeds.size / 3,
+			count = imageFeeds.size / PAST_BEST_FEED_COUNT,
 			key = { it }
 		) { _ ->
 			HomePastBestItem(

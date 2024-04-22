@@ -8,8 +8,6 @@ import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.UserRepository
-import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.Page
 import com.lyfe.android.core.model.User
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

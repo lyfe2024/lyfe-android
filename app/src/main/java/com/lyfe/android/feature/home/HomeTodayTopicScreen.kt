@@ -151,11 +151,11 @@ private fun HomeTodayTopicFeedList(
 
 			HomeSwipeableFeeds(
 				modifier = Modifier.padding(horizontal = 20.dp),
-				feeds = if (imageFeeds.size > TODAY_TOPIC_CARDS_COUNT-1) {
+				feeds = if (imageFeeds.size > TODAY_TOPIC_CARDS_COUNT - 1) {
 					imageFeeds.subList(0, TODAY_TOPIC_CARDS_COUNT)
 				} else {
-			        emptyList()
-			    },
+					emptyList()
+				},
 				onClick = { onFeedClick(it) }
 			)
 
@@ -189,7 +189,7 @@ private fun HomeTodayTopicFeedList(
 				thickness = 1.dp
 			)
 
-			if (index % IMAGE_FEED_INDEXING == IMAGE_FEED_INDEXING-1) {
+			if (index % IMAGE_FEED_INDEXING == IMAGE_FEED_INDEXING - 1) {
 				HomeTodayTopicHorizontalImageFeedList(
 					modifier = Modifier.padding(vertical = 16.dp),
 					feeds = imageFeeds,

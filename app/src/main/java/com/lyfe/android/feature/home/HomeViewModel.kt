@@ -86,7 +86,7 @@ class HomeViewModel @Inject constructor(
 
 	fun fetchLatestFeedList(
 		feedType: FeedType
-	)  {
+	) {
 		val cursorId = when (feedType) {
 			FeedType.BOARD -> textFeedCursorId
 			FeedType.BOARD_PICTURE -> imageFeedCursorId
@@ -125,7 +125,7 @@ class HomeViewModel @Inject constructor(
 
 	fun fetchPopularFeedList(
 		feedType: FeedType
-	)  {
+	) {
 		_uiState.update {
 			HomeUiState.Loading
 		}

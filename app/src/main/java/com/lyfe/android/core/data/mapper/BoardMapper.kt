@@ -1,6 +1,5 @@
 package com.lyfe.android.core.data.mapper
 
-import com.lyfe.android.core.data.model.BoardPicture
 import com.lyfe.android.core.data.model.BoardDetail
 import com.lyfe.android.core.data.model.PageInfo
 import com.lyfe.android.core.model.Feed
