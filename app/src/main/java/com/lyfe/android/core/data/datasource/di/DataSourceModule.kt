@@ -10,6 +10,8 @@ import com.lyfe.android.core.data.datasource.FeedbackDataSource
 import com.lyfe.android.core.data.datasource.FeedbackRemoteDataSource
 import com.lyfe.android.core.data.datasource.ImageDataSource
 import com.lyfe.android.core.data.datasource.ImageRemoteDataSource
+import com.lyfe.android.core.data.datasource.NotificationDataSource
+import com.lyfe.android.core.data.datasource.NotificationRemoteDataSource
 import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyRemoteDataSource
 import com.lyfe.android.core.data.datasource.TokenDataSource
@@ -70,6 +72,12 @@ interface DataSourceModule {
 	fun bindsPolicyDataSource(
 		policyRemoteDataSource: PolicyRemoteDataSource
 	): PolicyDataSource
+
+	@Singleton
+	@Binds
+	fun bindsNotificationDataSource(
+		notificationRemoteDataSource: NotificationRemoteDataSource
+	): NotificationDataSource
 
 	@Singleton
 	@Binds

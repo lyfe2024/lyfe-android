@@ -14,6 +14,7 @@ import com.lyfe.android.core.data.network.service.AuthService
 import com.lyfe.android.core.data.network.service.BoardService
 import com.lyfe.android.core.data.network.service.FeedbackService
 import com.lyfe.android.core.data.network.service.ImageService
+import com.lyfe.android.core.data.network.service.NotificationService
 import com.lyfe.android.core.data.network.service.PolicyService
 import com.lyfe.android.core.data.network.service.TopicService
 import com.lyfe.android.core.data.network.service.UserService
@@ -141,6 +142,12 @@ object NetworkModule {
 	@Singleton
 	fun providesFeedbackService(retrofit: Retrofit): FeedbackService {
 		return retrofit.create(FeedbackService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesNotificationService(retrofit: Retrofit): NotificationService {
+		return retrofit.create(NotificationService::class.java)
 	}
 
 	@Provides

@@ -197,7 +197,7 @@ sealed class BottomNavItem(
 		defaultIconRes = R.drawable.ic_btm_navi_alarm_default,
 		selectedIconRes = R.drawable.ic_btm_navi_alarm_selected,
 		description = "알림 아이콘",
-		screenRoute = LyfeScreens.Alarm.name
+		screenRoute = LyfeScreens.NotificationList.name
 	)
 
 	object Profile : BottomNavItem(
