@@ -32,7 +32,10 @@ val Grey50 = Color(0xFFF5F5F5)
 val Grey10 = Color(0xFFF9F9F9)
 
 val DEFAULT = Color(0xFF363636)
-val Error = Color(0xFFF75B2B)
+val Red50 = Color(0xFFFF95454)
+val Yellow50 = Color(0xFFFFC55B)
+val Green50 = Color(0xFF199F3E)
+val Blue50 = Color(0xFF2D7BF9)
 
 val BtnDarkColor = Color(0xFF202124)
 val BtnLightGrayColor = Color(0xFFF2F3F4)
@@ -40,5 +43,6 @@ val DisabledBtnTextColor = Color(0xFF8C8C8C)
 val TextFieldBgColor = Color(0xFFC4C4C4)
 
 val ScrollTrackColor = Color(0x99FFFFFF)
-
 val BlackTransparent30 = Color(0x4D000000)
+
+val KakaoYelowColor = Color(0xFFFEE500)

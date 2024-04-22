@@ -1,0 +1,87 @@
+package com.lyfe.android.feature.login
+
+import android.content.Context
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
+import com.lyfe.android.core.common.ui.util.LogUtil
+
+object KakaoLoginManager {
+
+	private const val TAG = "KakaoLoginManager"
+
+	fun startKakaoLogin(context: Context, onTokenReceived: (OAuthToken) -> Unit, onFailure: (Throwable?) -> Unit) {
+		when (getKaKaoLoginState(context)) {
+			KaKaoLoginState.KAKAO_TALK_LOGIN -> onKakaoTalkLogin(context, onTokenReceived, onFailure)
+			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN -> onKakaoAccountLogin(context, onTokenReceived, onFailure)
+		}
+	}
+
+	fun logout(
+		onFailure: (Throwable?) -> Unit,
+		onSuccess: () -> Unit
+	) {
+		// 로그아웃
+		UserApiClient.instance.logout { error ->
+			if (error != null) {
+				LogUtil.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨 ${error.message ?: ""}")
+				onFailure(error)
+			} else {
+				LogUtil.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+				onSuccess()
+			}
+		}
+	}
+
+	private fun getKaKaoLoginState(context: Context): KaKaoLoginState =
+		if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+			KaKaoLoginState.KAKAO_TALK_LOGIN
+		} else {
+			KaKaoLoginState.KAKAO_ACCOUNT_LOGIN
+		}
+
+	private fun getAccountLoginCallback(
+		onTokenReceived: (OAuthToken) -> Unit,
+		onFailure: (Throwable?) -> Unit
+	): (OAuthToken?, Throwable?) -> Unit {
+		return { token, error ->
+			if (error != null) {
+				LogUtil.e(TAG, "${error.message} 카카오 계정으로 로그인 실패")
+				onFailure(error)
+			} else if (token != null) {
+				onTokenReceived(token)
+			}
+		}
+	}
+
+	private fun onKakaoTalkLogin(
+		context: Context,
+		onTokenReceived: (OAuthToken) -> Unit,
+		onFailure: (Throwable?) -> Unit
+	) {
+		UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+			if (error != null) {
+				// 토큰 발행 실패
+				if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+					return@loginWithKakaoTalk
+				}
+				onKakaoAccountLogin(context, onTokenReceived, onFailure)
+			} else if (token != null) {
+				onTokenReceived(token)
+			}
+		}
+	}
+
+	private fun onKakaoAccountLogin(
+		context: Context,
+		onTokenReceived: (OAuthToken) -> Unit,
+		onFailure: (Throwable?) -> Unit
+	) {
+		UserApiClient.instance.loginWithKakaoAccount(context, callback = getAccountLoginCallback(onTokenReceived, onFailure))
+	}
+}
+
+private enum class KaKaoLoginState {
+	KAKAO_TALK_LOGIN, KAKAO_ACCOUNT_LOGIN
+}

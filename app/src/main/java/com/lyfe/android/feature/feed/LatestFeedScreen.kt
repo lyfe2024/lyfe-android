@@ -22,7 +22,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun LatestFeedScreen(
 	modifier: Modifier = Modifier,
 	viewModel: FeedViewModel = viewModel(),
-	isScroll: (Boolean) -> Unit = {}
+	onScroll: (Boolean) -> Unit = {},
+	onFeedClick: () -> Unit = {}
 ) {
 	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
@@ -34,7 +35,7 @@ fun LatestFeedScreen(
 	LaunchedEffect(lazyGridState) {
 		snapshotFlow { lazyGridState.isScrollInProgress }
 			.collect {
-				isScroll(it)
+				onScroll(it)
 			}
 	}
 
@@ -50,7 +51,9 @@ fun LatestFeedScreen(
 		) {
 			items(feedList) { feed ->
 				key(feed.feedId) {
-					FeedScreenCardView(feed = feed)
+					FeedScreenCardView(feed = feed) {
+						onFeedClick()
+					}
 				}
 			}
 		}

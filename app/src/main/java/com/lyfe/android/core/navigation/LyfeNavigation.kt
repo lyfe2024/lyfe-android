@@ -2,35 +2,57 @@ package com.lyfe.android.core.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.feature.alarm.AlarmScreen
+import com.lyfe.android.feature.alarm.NotificationListRoute
 import com.lyfe.android.feature.album.SelectAlbumScreen
+import com.lyfe.android.feature.detail.FeedDetailScreen
 import com.lyfe.android.feature.feed.FeedScreen
+import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
+import com.lyfe.android.feature.login.LoginScreen
+import com.lyfe.android.feature.nickname.CreateNicknameScreen
+import com.lyfe.android.feature.signup.SignUpCompleteScreen
+import com.lyfe.android.feature.terms.PersonalInfoAgreementsScreen
+import com.lyfe.android.feature.signup.SignUpTermsPolicyScreen
+import com.lyfe.android.feature.terms.ServiceTermsScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
-import com.lyfe.android.feature.profileedit.ProfileEditViewModel
+import com.lyfe.android.feature.setting.SettingScreen
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
 	navHostController: NavHostController,
-	isScroll: (Boolean) -> Unit,
+	onScroll: (Boolean) -> Unit,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit,
 	selectedScreen: (route: String) -> Unit
 ) {
 	composable(route = LyfeScreens.Home.name) {
-		HomeScreen(navigator = lyfeNavigator)
+		HomeScreen(
+			navigator = lyfeNavigator,
+			onScroll = onScroll
+		)
 		selectedScreen(LyfeScreens.Home.name)
 	}
 
 	composable(route = LyfeScreens.Feed.name) {
 		FeedScreen(
 			navigator = lyfeNavigator,
-			isScroll = isScroll
+			onScroll = onScroll
 		)
 		selectedScreen(LyfeScreens.Feed.name)
+	}
+
+	composable(route = LyfeScreens.FeedDetail.name) {
+		FeedDetailScreen(
+			navigator = lyfeNavigator
+		)
+		selectedScreen(LyfeScreens.FeedDetail.name)
 	}
 
 	composable(route = LyfeScreens.Post.name) {
@@ -46,9 +68,9 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.PostCreate.name)
 	}
 
-	composable(route = LyfeScreens.Alarm.name) {
-		AlarmScreen()
-		selectedScreen(LyfeScreens.Alarm.name)
+	composable(route = LyfeScreens.NotificationList.name) {
+		NotificationListRoute()
+		selectedScreen(LyfeScreens.NotificationList.name)
 	}
 
 	composable(route = LyfeScreens.Profile.name) {
@@ -62,7 +84,73 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
-		ProfileEditScreen(viewModel = ProfileEditViewModel())
+		ProfileEditScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
 		selectedScreen(LyfeScreens.ProfileEdit.name)
+	}
+
+	composable(route = LyfeScreens.Setting.name) {
+		SettingScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
+		selectedScreen(LyfeScreens.Setting.name)
+	}
+
+	composable(route = LyfeScreens.Feedback.name) {
+		FeedbackScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
+		selectedScreen(LyfeScreens.Feedback.name)
+	}
+
+	composable(route = LyfeScreens.Login.name) {
+		LoginScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.Login.name)
+	}
+
+	composable(route = LyfeScreens.CreateNickname.name) {
+		CreateNicknameScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.CreateNickname.name)
+	}
+
+	composable(
+		route = "${LyfeScreens.SignUpTerms.name}/{nickname}",
+		arguments = listOf(
+			navArgument("nickname") {
+				type = NavType.StringType
+				defaultValue = ""
+			}
+		)
+	) {
+		SignUpTermsPolicyScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
+		selectedScreen(LyfeScreens.SignUpTerms.name)
+	}
+
+	composable(route = LyfeScreens.ServiceTerms.name) {
+		ServiceTermsScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
+		selectedScreen(LyfeScreens.ServiceTerms.name)
+	}
+
+	composable(route = LyfeScreens.PersonalInfoTermsScreen.name) {
+		PersonalInfoAgreementsScreen(
+			navigator = lyfeNavigator,
+			onShowSnackBar = onShowSnackBar
+		)
+		selectedScreen(LyfeScreens.PersonalInfoTermsScreen.name)
+	}
+
+	composable(route = LyfeScreens.SignUpComplete.name) {
+		SignUpCompleteScreen(navigator = lyfeNavigator)
+		selectedScreen(LyfeScreens.SignUpComplete.name)
 	}
 }

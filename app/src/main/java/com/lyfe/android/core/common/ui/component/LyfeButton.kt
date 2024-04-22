@@ -86,7 +86,7 @@ fun LyfeButton(
 
 @Preview
 @Composable
-private fun Preview_LyfeButton() {
+private fun Preview_LyfeButtons() {
 	Column {
 		LyfeButton(
 			modifier = Modifier.fillMaxWidth(),

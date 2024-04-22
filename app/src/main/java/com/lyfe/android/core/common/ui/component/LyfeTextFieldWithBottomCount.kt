@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 
 @Composable
@@ -29,6 +30,7 @@ fun LyfeTextFieldWithBottomCount(
 	isActivateCloseIcon: Boolean = true,
 	maxLength: Int,
 	text: String,
+	hintText: String = "",
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
 ) {
@@ -44,6 +46,8 @@ fun LyfeTextFieldWithBottomCount(
 			textFieldType = textFieldType,
 			isActivateCloseIcon = isActivateCloseIcon,
 			text = text,
+			hintText = hintText,
+			lineHeight = 24.sp,
 			onTextClear = onTextClear,
 			onTextChange = {
 				if (it.length > maxLength) return@LyfeTextField
@@ -62,11 +66,12 @@ fun LyfeTextFieldWithBottomCount(
 @Preview
 @Composable
 fun Preview_LyfeTextFieldWithBottomCount() {
-	var text by remember { mutableStateOf("") }
+	var text by remember { mutableStateOf("텍스트 필드 테스트 메세지") }
 
 	LyfeTextFieldWithBottomCount(
 		modifier = Modifier.fillMaxWidth(),
 		text = text,
+		hintText = "피드백 내용을 입력해주세요.",
 		onTextClear = { text = "" },
 		onTextChange = {
 			text = it

@@ -36,7 +36,8 @@ import com.lyfe.android.feature.feed.model.FeedSortType
 fun PopularFeedScreen(
 	modifier: Modifier = Modifier,
 	viewModel: FeedViewModel = viewModel(),
-	isScroll: (Boolean) -> Unit = {}
+	onScroll: (Boolean) -> Unit = {},
+	onFeedClick: () -> Unit = {}
 ) {
 	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
@@ -48,7 +49,7 @@ fun PopularFeedScreen(
 	LaunchedEffect(lazyGridState) {
 		snapshotFlow { lazyGridState.isScrollInProgress }
 			.collect {
-				isScroll(it)
+				onScroll(it)
 			}
 	}
 
@@ -72,7 +73,9 @@ fun PopularFeedScreen(
 		) {
 			items(feedList) { feed ->
 				key(feed.feedId) {
-					FeedScreenCardView(feed = feed)
+					FeedScreenCardView(feed = feed) {
+						onFeedClick()
+					}
 				}
 			}
 		}

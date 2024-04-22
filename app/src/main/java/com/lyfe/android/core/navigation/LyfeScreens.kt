@@ -12,9 +12,12 @@ sealed class LyfeScreens(
 
 	object Feed : LyfeScreens("feed")
 
+	// 나중에 id값으로 변경 예정
+	object FeedDetail : LyfeScreens("feed/detail")
+
 	object Post : LyfeScreens("post")
 
-	object Alarm : LyfeScreens("Alarm")
+	object NotificationList : LyfeScreens("Alarm")
 
 	object Profile : LyfeScreens("profile")
 
@@ -23,6 +26,22 @@ sealed class LyfeScreens(
 	object SelectAlbum : LyfeScreens("album/select")
 
 	object ProfileEdit : LyfeScreens("profileEdit")
+
+	object Login : LyfeScreens("login")
+
+	object CreateNickname : LyfeScreens("nickname/create")
+
+	object SignUpTerms : LyfeScreens("terms/signup")
+
+	object ServiceTerms : LyfeScreens("terms/service")
+
+	object PersonalInfoTermsScreen : LyfeScreens("terms/personal-info")
+
+	object SignUpComplete : LyfeScreens("signup/complete")
+
+	object Setting : LyfeScreens("setting")
+
+	object Feedback : LyfeScreens("feedback")
 }
 
 private fun String.appendArguments(navArguments: List<NamedNavArgument>): String {
