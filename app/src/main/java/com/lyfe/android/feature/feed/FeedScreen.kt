@@ -30,19 +30,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.model.TabItem
+import com.lyfe.android.core.common.ui.theme.Button1
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey50
+import com.lyfe.android.core.common.ui.theme.H3
+import com.lyfe.android.core.common.ui.theme.H5
+import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.core.common.ui.theme.Grey200
-import com.lyfe.android.core.common.ui.theme.Grey50
-import com.lyfe.android.core.common.ui.theme.Main500
+
+private const val LATEST_FEED = 0
+private const val POPULAR_FEED = 1
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -89,46 +92,13 @@ fun FeedScreen(
 				}
 			}
 	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.padding(horizontal = 20.dp, vertical = 10.dp),
-			horizontalArrangement = Arrangement.SpaceBetween,
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			Text(
-				text = stringResource(id = R.string.feed_screen_title),
-				style = TextStyle(
-					fontSize = 24.sp,
-					lineHeight = 36.sp,
-					fontWeight = FontWeight.W700,
-					color = Color.Black
-				)
-			)
-
-			Text(
-				modifier = Modifier
-					.clickableSingle {
-						navigator.navigate(LyfeScreens.Home.name)
-					},
-				text = stringResource(id = R.string.feed_screen_request_photo),
-				style = TextStyle(
-					fontSize = 16.sp,
-					lineHeight = 24.sp,
-					fontWeight = FontWeight.W600,
-					color = Main500
-				)
-			)
-		}
-
-		FeedTab(
-			modifier = Modifier.width(width = width),
-			tabs = tabItemList,
-			currentPage = pagerState.currentPage,
+		FeedTopBar(
+			tabWidth = width,
+			tabItemList = tabItemList,
+			selectedTabIndex = pagerState.currentPage,
 			tabIdx = tabIdx,
-			onTabClick = { index ->
-				tabIdx = index
-			}
+			onChangeTabIdx = { index -> tabIdx = index },
+			onNavigateToRequestPhoto = {},
 		)
 
 		HorizontalPager(
@@ -136,27 +106,69 @@ fun FeedScreen(
 			state = pagerState
 		) { page ->
 			when (page) {
-				0 -> LatestFeedScreen(
-					onScroll = onScroll
-				) {
-					navigator.navigate(LyfeScreens.FeedDetail.name)
+				LATEST_FEED -> {
+					LatestFeedScreen(
+						onScroll = onScroll
+					) {
+						navigator.navigate(LyfeScreens.FeedDetail.name)
+					}
 				}
-
-				1 -> PopularFeedScreen(
-					onScroll = onScroll
-				) {
-					navigator.navigate(LyfeScreens.FeedDetail.name)
+				POPULAR_FEED -> {
+					PopularFeedScreen(
+						onScroll = onScroll
+					) {
+						navigator.navigate(LyfeScreens.FeedDetail.name)
+					}
 				}
 			}
 		}
 	}
+}
+@Composable
+private fun FeedTopBar(
+	tabWidth: Dp,
+	tabItemList: List<TabItem>,
+	selectedTabIndex: Int,
+	tabIdx: Int,
+	onChangeTabIdx: (tabIdx: Int) -> Unit,
+	onNavigateToRequestPhoto: () -> Unit
+) {
+	Row(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = 20.dp, vertical = 10.dp),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(
+			text = stringResource(id = R.string.feed_screen_title),
+			style = H3,
+			color = Color.Black
+		)
+
+		Text(
+			modifier = Modifier
+				.clickableSingle { onNavigateToRequestPhoto() },
+			text = stringResource(id = R.string.feed_screen_request_photo),
+			style = Button1,
+			color = Main500
+		)
+	}
+
+	FeedTab(
+		modifier = Modifier.width(width = tabWidth),
+		tabs = tabItemList,
+		selectedTabIndex = selectedTabIndex,
+		tabIdx = tabIdx,
+		onTabClick = onChangeTabIdx
+	)
 }
 
 @Composable
 private fun FeedTab(
 	modifier: Modifier = Modifier,
 	tabs: List<TabItem>,
-	currentPage: Int,
+	selectedTabIndex: Int,
 	tabIdx: Int,
 	onTabClick: (index: Int) -> Unit
 ) {
@@ -170,9 +182,10 @@ private fun FeedTab(
 					it.size.width.toDp() / tabs.size
 				}
 			},
-		selectedTabIndex = currentPage,
+		selectedTabIndex = selectedTabIndex,
 		edgePadding = 0.dp,
 		containerColor = Grey50,
+		divider = {},
 		indicator = { tabPositions ->
 			TabRowDefaults.Indicator(
 				modifier = Modifier.tabIndicatorOffset(tabPositions[tabIdx]),
@@ -187,13 +200,8 @@ private fun FeedTab(
 					Text(
 						modifier = Modifier,
 						text = item.text,
-						style = TextStyle(
-							fontSize = 18.sp,
-							lineHeight = 28.sp,
-							fontWeight = FontWeight.W700,
-							color = getTabTextColor(tabIdx, index),
-							textAlign = TextAlign.Center
-						)
+						style = H5,
+						color = getTabTextColor(tabIdx, index),
 					)
 				},
 				selected = tabIdx == index,
