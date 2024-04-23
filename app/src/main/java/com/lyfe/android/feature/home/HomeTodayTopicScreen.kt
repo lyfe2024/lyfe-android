@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -17,7 +18,9 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,13 +39,16 @@ import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.FeedFetchingType
+import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 private const val IMAGE_FEED_INDEXING = 5
+private const val TODAY_TOPIC_CARDS_COUNT = 4
 
 @Composable
 fun HomeTodayTopicScreen(
@@ -50,14 +56,25 @@ fun HomeTodayTopicScreen(
 	navigator: LyfeNavigator,
 	onScroll: (Boolean) -> Unit
 ) {
-	// 백엔드랑 API 어떤식으로 처리할지 의논하고 로직 수정해야할 듯
-	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	val feedFetchingType by viewModel.feedFetchingType.collectAsStateWithLifecycle()
+
 	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
+	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+
 	val scrollState = rememberLazyListState()
 
-	LaunchedEffect(Unit) {
-		viewModel.fetchImageFeedList()
-		viewModel.fetchTextFeedList()
+	LaunchedEffect(feedFetchingType) {
+		when (feedFetchingType) {
+			FeedFetchingType.POPULAR -> {
+				viewModel.fetchPopularFeedList(FeedType.BOARD)
+				viewModel.fetchPopularFeedList(FeedType.BOARD_PICTURE)
+			}
+			FeedFetchingType.LATEST -> {
+				viewModel.fetchLatestFeedList(FeedType.BOARD)
+				viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
+			}
+		}
 	}
 
 	LaunchedEffect(scrollState) {
@@ -67,71 +84,119 @@ fun HomeTodayTopicScreen(
 			}
 	}
 
+	when (uiState) {
+		HomeUiState.Success -> {
+			LogUtil.i("UiState", "Home Success!!!")
+		}
+		HomeUiState.Loading -> {
+			LogUtil.i("UiState", "Home Loading...")
+		}
+		is HomeUiState.Failure -> {
+			val message = (uiState as HomeUiState.Failure).errorMessage
+			LogUtil.e("UiState", "Home Failed: $message")
+		}
+	}
+
+	HomeTodayTopicFeedList(
+		scrollState = scrollState,
+		todayTopic = viewModel.todayTopic,
+		feedFetchingType = feedFetchingType,
+		imageFeeds = imageFeeds,
+		textFeeds = textFeeds,
+		onFeedClick = {
+			navigator.navigate(LyfeScreens.FeedDetail.name)
+		},
+		onFetchingTypeChanged = {
+			viewModel.updateFeedFetchingType(it)
+		},
+		onReachedBottom = {
+			viewModel.fetchLatestFeedList(FeedType.BOARD)
+			viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
+		}
+	)
+}
+
+@Composable
+private fun HomeTodayTopicFeedList(
+	scrollState: LazyListState,
+	todayTopic: String,
+	feedFetchingType: FeedFetchingType,
+	imageFeeds: List<Feed>,
+	textFeeds: List<Feed>,
+	onFeedClick: (Feed) -> Unit,
+	onFetchingTypeChanged: (FeedFetchingType) -> Unit,
+	onReachedBottom: () -> Unit
+) {
+	// observe list scrolling
+	val reachedBottom: Boolean by remember {
+		derivedStateOf {
+			val lastVisibleItem = scrollState.layoutInfo.visibleItemsInfo.lastOrNull()
+			lastVisibleItem?.index != 0 && lastVisibleItem?.index == scrollState.layoutInfo.totalItemsCount - 1
+		}
+	}
+
+	LaunchedEffect(reachedBottom) {
+		if (reachedBottom) {
+			onReachedBottom()
+		}
+	}
+
 	LazyColumn(
 		state = scrollState
 	) {
+		item {
+			HomeTopicText(todayTopic)
+
+			Spacer(modifier = Modifier.height(8.dp))
+
+			HomeSwipeableFeeds(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				feeds = if (imageFeeds.size > TODAY_TOPIC_CARDS_COUNT - 1) {
+					imageFeeds.subList(0, TODAY_TOPIC_CARDS_COUNT)
+				} else {
+					emptyList()
+				},
+				onClick = { onFeedClick(it) }
+			)
+
+			Spacer(modifier = Modifier.height(24.dp))
+		}
+
+		item {
+			HomeTodayTopicTextFeedTopBar(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				fetchingType = feedFetchingType,
+				onFetchingTypeChanged = {
+					onFetchingTypeChanged(it)
+				}
+			)
+		}
+
 		itemsIndexed(
 			items = textFeeds,
 			key = { _, feed ->
 				feed.feedId
 			}
 		) { index, feed ->
-			if (index == 0) {
-				Text(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(horizontal = 20.dp),
-					text = "여름과 가을 사이",
-					style = TextStyle(
-						fontSize = 28.sp,
-						fontWeight = FontWeight.W700,
-						lineHeight = 38.sp,
-						color = Main500,
-						fontFamily = pretenard
-					),
-					maxLines = 2
-				)
+			HomeTextFeedView(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				feed = feed
+			)
 
-				Spacer(modifier = Modifier.height(8.dp))
+			Divider(
+				modifier = Modifier.padding(horizontal = 20.dp),
+				color = Grey100,
+				thickness = 1.dp
+			)
 
-				HomeSwipeableFeeds(
-					modifier = Modifier.padding(horizontal = 20.dp),
-					feeds = imageFeeds.reversed(),
-					onClick = { navigator.navigate(LyfeScreens.FeedDetail.name) }
-				)
-
-				Spacer(modifier = Modifier.height(24.dp))
-			} else {
-				if (index == 1) {
-					HomeTodayTopicTextFeedTopBar(
-						modifier = Modifier.padding(horizontal = 20.dp),
-						fetchingType = viewModel.textFeedFetchingType,
-						onFetchingTypeChanged = {
-							viewModel.updateFeedFetchingType(it)
-						}
+			if (index % IMAGE_FEED_INDEXING == IMAGE_FEED_INDEXING - 1) {
+				HomeTodayTopicHorizontalImageFeedList(
+					modifier = Modifier.padding(vertical = 16.dp),
+					feeds = imageFeeds,
+					contentPadding = PaddingValues(
+						horizontal = 20.dp,
+						vertical = 16.dp
 					)
-				}
-
-				if (index % IMAGE_FEED_INDEXING == 0) {
-					HomeTodayTopicImageFeedList(
-						modifier = Modifier.padding(vertical = 16.dp),
-						feeds = imageFeeds,
-						contentPadding = PaddingValues(
-							horizontal = 20.dp,
-							vertical = 16.dp
-						)
-					)
-				}
-
-				HomeTextFeedView(
-					modifier = Modifier.padding(horizontal = 20.dp),
-					feed = feed
-				)
-
-				Divider(
-					modifier = Modifier.padding(horizontal = 20.dp),
-					color = Grey100,
-					thickness = 1.dp
 				)
 			}
 		}
@@ -189,7 +254,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 }
 
 @Composable
-private fun HomeTodayTopicImageFeedList(
+private fun HomeTodayTopicHorizontalImageFeedList(
 	modifier: Modifier,
 	feeds: List<Feed>,
 	contentPadding: PaddingValues
@@ -239,6 +304,24 @@ private fun HomeTodayTopicImageFeedList(
 			}
 		}
 	}
+}
+
+@Composable
+private fun HomeTopicText(text: String) {
+	Text(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(horizontal = 20.dp),
+		text = text,
+		style = TextStyle(
+			fontSize = 28.sp,
+			fontWeight = FontWeight.W700,
+			lineHeight = 38.sp,
+			color = Main500,
+			fontFamily = pretenard
+		),
+		maxLines = 2
+	)
 }
 
 @Composable

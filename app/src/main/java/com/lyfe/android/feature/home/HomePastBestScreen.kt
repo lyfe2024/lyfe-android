@@ -50,8 +50,12 @@ import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import kotlin.math.min
+
+private const val PAST_BEST_FEED_COUNT = 3
 
 @Composable
 fun HomePastBestScreen(
@@ -65,8 +69,8 @@ fun HomePastBestScreen(
 	val scrollState = rememberLazyListState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchImageFeedList()
-		viewModel.fetchTextFeedList()
+		viewModel.fetchLatestFeedList(FeedType.BOARD)
+		viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
 	}
 
 	LaunchedEffect(scrollState) {
@@ -82,7 +86,7 @@ fun HomePastBestScreen(
 		state = scrollState
 	) {
 		items(
-			count = 10,
+			count = imageFeeds.size / PAST_BEST_FEED_COUNT,
 			key = { it }
 		) { _ ->
 			HomePastBestItem(
@@ -161,7 +165,7 @@ private fun HomePastBestFeeds(
 	navigator: LyfeNavigator,
 	feeds: List<Feed>
 ) {
-	val pages = feeds.subList(0, 3)
+	val pages = feeds.subList(0, min(feeds.size, 3))
 	val pagerState = rememberPagerState { pages.size }
 	var indicatorIdx by remember { mutableIntStateOf(0) }
 

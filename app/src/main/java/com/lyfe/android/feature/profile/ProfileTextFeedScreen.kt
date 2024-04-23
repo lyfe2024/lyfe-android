@@ -22,11 +22,11 @@ fun ProfileTextFeedScreen(
 	viewModel: ProfileViewModel,
 	onFeedClick: () -> Unit
 ) {
-	val feeds by viewModel.feedList.collectAsStateWithLifecycle()
+	val feeds by viewModel.textFeedList.collectAsStateWithLifecycle()
 	val lazyListState = rememberLazyListState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchFeedList()
+		viewModel.fetchTextFeedList()
 	}
 
 	LazyColumn(

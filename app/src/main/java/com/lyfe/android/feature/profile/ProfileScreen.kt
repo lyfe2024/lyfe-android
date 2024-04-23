@@ -47,6 +47,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.model.TabItem
 import com.lyfe.android.core.common.ui.theme.Grey200
@@ -62,7 +63,8 @@ import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 @Composable
 fun ProfileScreen(
 	viewModel: ProfileViewModel = hiltViewModel(),
-	navigator: LyfeNavigator
+	navigator: LyfeNavigator,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -84,14 +86,15 @@ fun ProfileScreen(
 
 		Spacer(modifier = Modifier.height(16.dp))
 
-		ProfileContentArea(viewModel, navigator)
+		ProfileContentArea(viewModel, navigator, onShowSnackBar)
 	}
 }
 
 @Composable
 private fun ProfileContentArea(
 	viewModel: ProfileViewModel,
-	navigator: LyfeNavigator
+	navigator: LyfeNavigator,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	LaunchedEffect(Unit) {
 		viewModel.getUserInfo()
@@ -116,6 +119,7 @@ private fun ProfileContentArea(
 		}
 		is ProfileUiState.Failure -> {
 			// 로딩 실패
+			onShowSnackBar(LyfeSnackBarIconType.ERROR, "로딩 실패")
 		}
 		is ProfileUiState.Loading -> {
 			// 로딩 중 표시

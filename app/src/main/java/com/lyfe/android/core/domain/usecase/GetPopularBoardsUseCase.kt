@@ -3,12 +3,13 @@ package com.lyfe.android.core.domain.usecase
 import com.lyfe.android.core.domain.repository.BoardRepository
 import javax.inject.Inject
 
-class GetUserBoardUseCase @Inject constructor(
+class GetPopularBoardsUseCase @Inject constructor(
 	private val boardRepository: BoardRepository
 ) {
 
 	operator fun invoke(
+		cursorId: Long = 0,
 		boardType: String?,
-		cursorId: Long = 0
-	) = boardRepository.getUserBoards(boardType, cursorId)
+		popularType: String
+	) = boardRepository.getPopularBoards(cursorId, boardType, popularType)
 }

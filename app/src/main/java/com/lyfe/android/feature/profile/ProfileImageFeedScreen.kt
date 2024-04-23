@@ -19,11 +19,11 @@ fun ProfileImageFeedScreen(
 	viewModel: ProfileViewModel,
 	onFeedClick: () -> Unit
 ) {
-	val feeds by viewModel.feedList.collectAsStateWithLifecycle()
+	val feeds by viewModel.textFeedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchFeedList()
+		viewModel.fetchTextFeedList()
 	}
 
 	LazyVerticalGrid(

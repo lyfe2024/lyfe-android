@@ -1,7 +1,5 @@
 package com.lyfe.android.core.domain.repository
 
-import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.Page
 import com.lyfe.android.core.model.User
 import kotlinx.coroutines.flow.Flow
 
@@ -23,6 +21,4 @@ interface UserRepository {
 		nickname: String,
 		profileUrl: String
 	): Flow<User>
-
-	fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>>
 }

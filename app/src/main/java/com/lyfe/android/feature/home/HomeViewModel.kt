@@ -1,26 +1,43 @@
 package com.lyfe.android.feature.home
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.domain.usecase.GetLatestBoardsUseCase
+import com.lyfe.android.core.domain.usecase.GetPopularBoardsUseCase
+import com.lyfe.android.core.domain.usecase.GetTodayTopicUseCase
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.FeedFetchingType
+import com.lyfe.android.core.model.FeedType
+import com.lyfe.android.core.model.PopularType
 import com.lyfe.android.feature.home.model.HomeFeedType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
+class HomeViewModel @Inject constructor(
+	private val getTodayTopicUseCase: GetTodayTopicUseCase,
+	private val getLatestBoardsUseCase: GetLatestBoardsUseCase,
+	private val getPopularBoardsUseCase: GetPopularBoardsUseCase
+) : ViewModel() {
 
-	var uiState by mutableStateOf<HomeUiState>(HomeUiState.TodayTopicSuccess)
-		private set
+	private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+	val uiState get() = _uiState.asStateFlow()
+
 	var homeFeedType by mutableStateOf(HomeFeedType.TODAY_TOPIC)
 		private set
-	var textFeedFetchingType by mutableStateOf(FeedFetchingType.LATEST)
-		private set
+
+	private val _feedFetchingType = MutableStateFlow(FeedFetchingType.LATEST)
+	val feedFetchingType get() = _feedFetchingType.asStateFlow()
 
 	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val imageFeedList get() = _imageFeedList.asStateFlow()
@@ -28,8 +45,26 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 	private val _textFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val textFeedList get() = _textFeedList.asStateFlow()
 
-	fun updateUiState(uiState: HomeUiState) {
-		this.uiState = uiState
+	private var textFeedCursorId by mutableLongStateOf(0)
+
+	private var imageFeedCursorId by mutableLongStateOf(0)
+
+	var todayTopic by mutableStateOf("오늘의 주제")
+		private set
+
+	init {
+		getTodayTopic()
+	}
+
+	private fun getTodayTopic() = viewModelScope.launch {
+		when (val result = getTodayTopicUseCase()) {
+			is Result.Success -> {
+				todayTopic = result.body?.content.orEmpty()
+			}
+			else -> {
+				// TODO 토픽 실패 처리
+			}
+		}
 	}
 
 	fun changeFilterType() {
@@ -38,218 +73,97 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 		} else {
 			HomeFeedType.TODAY_TOPIC
 		}
+		resetData()
 	}
 
 	fun updateFeedFetchingType(fetchingType: FeedFetchingType) {
-		textFeedFetchingType = fetchingType
+		if (feedFetchingType.value == fetchingType) {
+			return
+		}
+		_feedFetchingType.value = fetchingType
+		resetData()
 	}
 
-	fun fetchImageFeedList() {
-		_imageFeedList.compareAndSet(imageFeedList.value, fakeFeedList)
+	fun fetchLatestFeedList(
+		feedType: FeedType
+	) {
+		val cursorId = when (feedType) {
+			FeedType.BOARD -> textFeedCursorId
+			FeedType.BOARD_PICTURE -> imageFeedCursorId
+		}
+		_uiState.update {
+			HomeUiState.Loading
+		}
+		viewModelScope.launch {
+			getLatestBoardsUseCase(
+				cursorId = cursorId,
+				boardType = feedType.name
+			).catch { t ->
+				_uiState.update { HomeUiState.Failure(t.message ?: "") }
+			}.collect {
+				when (feedType) {
+					FeedType.BOARD -> {
+						_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
+						textFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							textFeedCursorId
+						}
+					}
+					FeedType.BOARD_PICTURE -> {
+						_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
+						imageFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							imageFeedCursorId
+						}
+					}
+				}
+			}
+		}
 	}
 
-	fun fetchTextFeedList() {
-		_textFeedList.compareAndSet(textFeedList.value, fakeFeedList2)
+	fun fetchPopularFeedList(
+		feedType: FeedType
+	) {
+		_uiState.update {
+			HomeUiState.Loading
+		}
+		viewModelScope.launch {
+			getPopularBoardsUseCase(
+				cursorId = 0,
+				boardType = feedType.name,
+				popularType = PopularType.WHISKY.name
+			).catch { t ->
+				_uiState.update { HomeUiState.Failure(t.message ?: "") }
+			}.collect {
+				when (feedType) {
+					FeedType.BOARD -> {
+						_textFeedList.compareAndSet(textFeedList.value, it)
+						textFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							textFeedCursorId
+						}
+					}
+					FeedType.BOARD_PICTURE -> {
+						_imageFeedList.compareAndSet(imageFeedList.value, it)
+						imageFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							imageFeedCursorId
+						}
+					}
+				}
+			}
+		}
 	}
 
-	private val fakeFeedList = listOf(
-		Feed(
-			feedId = 1L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "https://picsum.photos/270/358",
-			date = "2021-01-01",
-			userId = 2L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/32/32",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 3L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "https://picsum.photos/270/359",
-			date = "2021-01-01",
-			userId = 4L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/32/32",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 5L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "https://picsum.photos/270/360",
-			date = "2021-01-01",
-			userId = 6L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/32/32",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 7L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "https://picsum.photos/270/361",
-			date = "2021-01-01",
-			userId = 8L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/32/32",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		)
-	)
+	private fun resetData() {
+		_textFeedList.compareAndSet(_textFeedList.value, emptyList())
+		_imageFeedList.compareAndSet(_imageFeedList.value, emptyList())
 
-	private val fakeFeedList2 = listOf(
-		Feed(
-			feedId = 9L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 10L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 11L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 12L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 13L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 14L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 15L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 16L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 17L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 18L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 19L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 21L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 23L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 25L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 27L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 29L,
-			title = "사진 제목 텍스트\n" + "두줄까지 들어가고 넘어가는건 어떠떨까떬떨세셍",
-			content = "여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지. 여기는 내용 들어옵니다. 최대 2줄까지",
-			feedImageUrl = "",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		)
-	)
+		textFeedCursorId = 0
+		imageFeedCursorId = 0
+	}
 }

@@ -8,8 +8,6 @@ import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.UserRepository
-import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.Page
 import com.lyfe.android.core.model.User
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -75,22 +73,4 @@ class UserRepositoryImpl @Inject constructor(
 			}
 		}
 	}
-
-	override fun getUserBoard(lastId: Int?): Flow<Pair<List<Feed>, Page>> = flow {
-		when (val response = userRemoteDataSource.getUserBoard(lastId)) {
-			is Result.Success -> {
-				val result = response.body ?: throw ApiResultException()
-				emit(Pair(result.boardPictureList.map { it.toDomain() }, result.page.toDomain()))
-			}
-			is Result.Failure -> {
-				throw ApiResultException(response.error)
-			}
-			is Result.NetworkError -> {
-				throw response.exception
-			}
-			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
-			}
-		}
-	}.flowOn(ioDispatcher)
 }
