@@ -98,7 +98,7 @@ fun FeedScreen(
 			selectedTabIndex = pagerState.currentPage,
 			tabIdx = tabIdx,
 			onChangeTabIdx = { index -> tabIdx = index },
-			onNavigateToRequestPhoto = {},
+			onNavigateToRequestPhoto = {}
 		)
 
 		HorizontalPager(
@@ -124,6 +124,7 @@ fun FeedScreen(
 		}
 	}
 }
+
 @Composable
 private fun FeedTopBar(
 	tabWidth: Dp,
@@ -201,7 +202,7 @@ private fun FeedTab(
 						modifier = Modifier,
 						text = item.text,
 						style = H5,
-						color = getTabTextColor(tabIdx, index),
+						color = getTabTextColor(tabIdx, index)
 					)
 				},
 				selected = tabIdx == index,
