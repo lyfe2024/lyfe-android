@@ -1,163 +1,101 @@
 package com.lyfe.android.feature.feed
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.domain.usecase.GetLatestBoardsUseCase
+import com.lyfe.android.core.domain.usecase.GetPopularBoardsUseCase
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.feature.feed.model.FeedSortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class FeedViewModel @Inject constructor() : ViewModel() {
+class FeedViewModel @Inject constructor(
+	getLatestBoardsUseCase: GetLatestBoardsUseCase,
+	getPopularBoardsUseCase: GetPopularBoardsUseCase
+) : ViewModel() {
 
-	private val _feedList = MutableStateFlow<List<Feed>>(emptyList())
-	val feedList get() = _feedList.asStateFlow()
+	private val _latestFeedUiState = MutableStateFlow<LatestFeedListUiState>(LatestFeedListUiState.Loading)
+	val latestFeedUiState = _latestFeedUiState.asStateFlow()
 
-	var feedSortType by mutableStateOf(FeedSortType.WHISKY_DESC)
-		private set
+	private val _popularFeedUiState = MutableStateFlow<PopularFeedListUiState>(PopularFeedListUiState.Loading)
+	val popularFeedUiState = _popularFeedUiState.asStateFlow()
 
-	fun fetchFeedList() {
-		_feedList.compareAndSet(feedList.value, fakeFeedList)
+	private val _feedSortType = MutableStateFlow(FeedSortType.WHISKY_DESC)
+	val feedSortType get() = _feedSortType.asStateFlow()
+
+	private val prevLatestFeedList = mutableListOf<Feed>()
+	private val latestFeedFetchingLastFeedId = MutableStateFlow(0L)
+	val latestFeedList: StateFlow<List<Feed>> = latestFeedFetchingLastFeedId.flatMapLatest { lastFeedId ->
+		getLatestBoardsUseCase(
+			cursorId = lastFeedId,
+			boardType = FeedType.BOARD_PICTURE.name
+		).onStart {
+			_latestFeedUiState.value = LatestFeedListUiState.Loading
+		}.onCompletion {
+			_latestFeedUiState.value = LatestFeedListUiState.IDLE
+		}.catch {
+			_latestFeedUiState.value = LatestFeedListUiState.Error(it.message)
+		}.map {
+			prevLatestFeedList.addAll(it)
+			prevLatestFeedList.toList()
+		}
+	}.stateIn(
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5000L),
+		initialValue = emptyList()
+	)
+
+	private val prevPopularFeedList = mutableListOf<Feed>()
+	private val popularFeedFetchingLastFeedId = MutableStateFlow(0L)
+	val popularFeedList: StateFlow<List<Feed>> = popularFeedFetchingLastFeedId.flatMapLatest { lastFeedId ->
+		getPopularBoardsUseCase(
+			cursorId = lastFeedId,
+			boardType = FeedType.BOARD_PICTURE.name,
+			popularType = feedSortType.value.name
+		).onStart {
+			_popularFeedUiState.value = PopularFeedListUiState.Loading
+		}.onCompletion {
+			_popularFeedUiState.value = PopularFeedListUiState.IDLE
+		}.catch {
+			_popularFeedUiState.value = PopularFeedListUiState.Error(it.message)
+		}.map {
+			prevPopularFeedList.addAll(it)
+			prevPopularFeedList.toList()
+		}
+	}.stateIn(
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5000L),
+		initialValue = emptyList()
+	)
+	fun fetchNextLatestFeedList() {
+		if (latestFeedUiState.value != LatestFeedListUiState.Loading) {
+			latestFeedFetchingLastFeedId.value = prevLatestFeedList.last().feedId
+		}
+	}
+
+	fun fetchNextPopularFeedList() {
+		if (popularFeedUiState.value != PopularFeedListUiState.Loading) {
+			popularFeedFetchingLastFeedId.value = prevPopularFeedList.last().feedId
+		}
 	}
 
 	fun selectFeedSortType(feedSortType: FeedSortType) {
-		this.feedSortType = feedSortType
+		if (_feedSortType.value != feedSortType) {
+			_feedSortType.value = feedSortType
+			prevPopularFeedList.clear()
+			popularFeedFetchingLastFeedId.value = 0L
+		}
 	}
-
-	private val fakeFeedList = listOf(
-		Feed(
-			feedId = 1L,
-			title = "타이틀1\n타이틀2",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 2L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 3L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 4L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 5L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 6L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 7L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 8L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 9L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 10L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 11L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 12L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 13L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 14L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 15L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 16L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 17L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 18L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		),
-		Feed(
-			feedId = 19L,
-			title = "타이틀1",
-			content = "컨텐츠1",
-			feedImageUrl = "https://picsum.photos/700/700",
-			date = "2021-01-01",
-			userId = 20L,
-			userName = "홍길동",
-			userProfileImgUrl = "https://picsum.photos/700/700",
-			whiskyCount = 1,
-			commentCount = 1,
-			isLike = false
-		)
-	)
 }

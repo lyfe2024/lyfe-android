@@ -2,15 +2,19 @@ package com.lyfe.android.feature.feed
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,25 +30,25 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
+import com.lyfe.android.core.model.Feed
 import com.lyfe.android.feature.feed.model.FeedSortType
 
 @Composable
 fun PopularFeedScreen(
-	modifier: Modifier = Modifier,
-	viewModel: FeedViewModel = viewModel(),
+	viewModel: FeedViewModel = hiltViewModel(),
 	onScroll: (Boolean) -> Unit = {},
 	onFeedClick: () -> Unit = {}
 ) {
-	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
+	val uiState by viewModel.popularFeedUiState.collectAsStateWithLifecycle()
+	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
+	val feedList by viewModel.popularFeedList.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
-
-	LaunchedEffect(Unit) {
-		viewModel.fetchFeedList()
-	}
 
 	LaunchedEffect(lazyGridState) {
 		snapshotFlow { lazyGridState.isScrollInProgress }
@@ -53,16 +57,38 @@ fun PopularFeedScreen(
 			}
 	}
 
-	Column(
-		modifier = modifier
-	) {
+	Column(modifier = Modifier.fillMaxSize()) {
 		FeedFilterView(
 			modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
-			feedSortType = viewModel.feedSortType,
-			selectSortType = {
-				viewModel.selectFeedSortType(it)
-			}
+			feedSortType = feedSortType,
+			selectSortType = viewModel::selectFeedSortType
 		)
+
+		PopularFeedListScreen(
+			lazyGridState = lazyGridState,
+			feedList = feedList,
+			uiState = uiState,
+			fetchNextFeedList = viewModel::fetchNextPopularFeedList,
+			onFeedClick = onFeedClick
+		)
+	}
+}
+
+@Composable
+private fun PopularFeedListScreen(
+	lazyGridState: LazyGridState,
+	feedList: List<Feed>,
+	uiState: PopularFeedListUiState,
+	fetchNextFeedList: () -> Unit,
+	onFeedClick: () -> Unit
+) {
+	Box(modifier = Modifier.fillMaxSize()) {
+		if (uiState == PopularFeedListUiState.Loading) {
+			// Progress Bar
+			LogUtil.d("PopularFeedScreen", "PopularFeedListUiState Loading")
+		}
+
+		val threshold = 10
 
 		LazyVerticalGrid(
 			columns = GridCells.Fixed(2),
@@ -71,7 +97,11 @@ fun PopularFeedScreen(
 			verticalArrangement = Arrangement.spacedBy(12.dp),
 			horizontalArrangement = Arrangement.spacedBy(18.dp)
 		) {
-			items(feedList) { feed ->
+			itemsIndexed(feedList) { index, feed ->
+				if ((index + threshold) >= feedList.size && uiState != PopularFeedListUiState.Loading) {
+					fetchNextFeedList()
+				}
+
 				key(feed.feedId) {
 					FeedScreenCardView(feed = feed) {
 						onFeedClick()
@@ -90,7 +120,14 @@ private fun FeedFilterView(
 ) {
 	Row(
 		modifier = modifier.clickableSingle {
-			selectSortType(FeedSortType.COMMENT_DESC)
+			when (feedSortType) {
+				FeedSortType.WHISKY_DESC -> {
+					selectSortType(FeedSortType.COMMENT_DESC)
+				}
+				FeedSortType.COMMENT_DESC -> {
+					selectSortType(FeedSortType.WHISKY_DESC)
+				}
+			}
 		},
 		verticalAlignment = Alignment.CenterVertically
 	) {
