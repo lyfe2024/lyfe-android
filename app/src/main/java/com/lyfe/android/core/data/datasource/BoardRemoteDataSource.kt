@@ -26,7 +26,7 @@ class BoardRemoteDataSource @Inject constructor(
 
 	override suspend fun getPopularBoards(
 		cursorId: Long,
-		boardType: String?,
+		boardType: String,
 		popularType: String
 	): Result<GetBoardListResult> {
 		return boardService.getPopularBoards(
@@ -36,7 +36,7 @@ class BoardRemoteDataSource @Inject constructor(
 	}
 
 	override suspend fun getUserBoards(
-		boardType: String?,
+		boardType: String,
 		cursorId: Long
 	): Result<GetBoardListResult> {
 		return boardService.getUserBoards(

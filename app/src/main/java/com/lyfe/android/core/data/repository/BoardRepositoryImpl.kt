@@ -47,7 +47,7 @@ class BoardRepositoryImpl @Inject constructor(
 
 	override fun getPopularBoards(
 		cursorId: Long,
-		boardType: String?,
+		boardType: String,
 		popularType: String
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getPopularBoards(cursorId, boardType, popularType)) {
@@ -68,7 +68,7 @@ class BoardRepositoryImpl @Inject constructor(
 	}.flowOn(ioDispatcher)
 
 	override fun getUserBoards(
-		boardType: String?,
+		boardType: String,
 		cursorId: Long
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getUserBoards(boardType, cursorId)) {
