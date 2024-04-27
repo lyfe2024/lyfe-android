@@ -35,19 +35,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.H4
 import com.lyfe.android.core.common.ui.theme.Main500
-import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.FeedType
@@ -124,13 +121,8 @@ private fun HomePastBestItem(
 				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Start,
 			text = "여기에 과거 주제 내용\n" + "문장 들어갑니다.",
-			style = TextStyle(
-				color = Color.Black,
-				fontSize = 20.sp,
-				fontWeight = FontWeight.W700,
-				lineHeight = 32.sp,
-				fontFamily = pretenard
-			),
+			style = H4,
+			color = Color.Black,
 			maxLines = 2,
 			overflow = TextOverflow.Ellipsis
 		)

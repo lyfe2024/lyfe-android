@@ -14,13 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.lyfe.android.core.common.ui.theme.Body3
 import com.lyfe.android.core.common.ui.theme.DEFAULT
-import com.lyfe.android.core.common.ui.theme.pretenard
 
 private const val BACKGROUND_ALPHA = 0.8f
 
@@ -54,12 +51,8 @@ fun LyfeSnackBar(
 
 		Text(
 			text = message,
-			style = TextStyle(
-				color = Color.White,
-				fontWeight = FontWeight.W500,
-				fontSize = 14.sp,
-				fontFamily = pretenard
-			)
+			color = Color.White,
+			style = Body3
 		)
 	}
 }

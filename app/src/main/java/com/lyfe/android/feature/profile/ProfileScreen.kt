@@ -37,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,12 +49,18 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.model.TabItem
+import com.lyfe.android.core.common.ui.theme.Body1
+import com.lyfe.android.core.common.ui.theme.Button1
+import com.lyfe.android.core.common.ui.theme.Caption2
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.Grey500
 import com.lyfe.android.core.common.ui.theme.Grey900
+import com.lyfe.android.core.common.ui.theme.H4
+import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.theme.Main500
-import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.common.ui.theme.Title1
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.User
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
@@ -76,11 +81,7 @@ fun ProfileScreen(
 				.align(Alignment.End)
 				.padding(horizontal = 20.dp),
 			text = AnnotatedString(stringResource(id = R.string.setting_screen_title)),
-			style = TextStyle(
-				fontSize = 16.sp,
-				fontWeight = FontWeight.W600,
-				color = Color.Black
-			),
+			style = Button1,
 			onClick = { navigator.navigate(LyfeScreens.Setting.route) }
 		)
 
@@ -157,12 +158,8 @@ private fun ProfileUserInfo(
 		) {
 			Text(
 				text = user.name,
-				style = TextStyle(
-					color = Color.Black,
-					fontSize = 20.sp,
-					fontWeight = FontWeight.W700,
-					lineHeight = 32.sp
-				)
+				color = Color.Black,
+				style = H4
 			)
 
 			if (user.id > 0) {
@@ -259,6 +256,7 @@ private fun ProfileTab(
 				text = {
 					Text(
 						text = tabItem.text,
+						color = getTabTextColor(pagerState.currentPage, index),
 						style = getTabTextStyle(pagerState.currentPage, index)
 					)
 				},
@@ -281,13 +279,9 @@ private fun ProfileGuestLoginView(
 
 		Text(
 			text = stringResource(R.string.profile_screen_guest_login_title),
-			style = TextStyle(
-				color = Grey900,
-				fontSize = 18.sp,
-				fontWeight = FontWeight.W700,
-				lineHeight = 28.sp,
-				textAlign = TextAlign.Center
-			)
+			textAlign = TextAlign.Center,
+			color = Grey900,
+			style = H5
 		)
 
 		Spacer(modifier = Modifier.height(40.dp))
@@ -306,19 +300,15 @@ private fun ProfileGuestLoginView(
 
 		Spacer(modifier = Modifier.height(8.dp))
 
-		ClickableText(
-			modifier = Modifier.align(CenterHorizontally),
+		Text(
+			modifier = Modifier.align(CenterHorizontally)
+				.clickableSingle {
+					 navigator.navigate(route = LyfeScreens.Login.route)
+				},
 			text = AnnotatedString(stringResource(R.string.profile_screen_guest_login_message)),
-			style = TextStyle(
-				fontSize = 14.sp,
-				fontWeight = FontWeight.W400,
-				color = Grey500,
-				textAlign = TextAlign.Center
-			)
-		) {
-			// TODO 로그인 화면으로
-			navigator.navigate(route = LyfeScreens.Login.route)
-		}
+			color = Grey500,
+			style = Caption2
+		)
 
 		Spacer(modifier = Modifier.weight(2f))
 	}
@@ -359,25 +349,23 @@ private fun ProfileUserPostPager(
 	}
 }
 
+private fun getTabTextColor(
+	currentPage: Int,
+	tabIdx: Int
+) = if (isCurrentTab(currentPage, tabIdx)) {
+	Main500
+} else {
+	Grey200
+}
+
+
 private fun getTabTextStyle(
 	currentPage: Int,
 	tabIdx: Int
 ) = if (isCurrentTab(currentPage, tabIdx)) {
-	TextStyle(
-		color = Main500,
-		fontSize = 18.sp,
-		fontWeight = FontWeight.W700,
-		fontFamily = pretenard,
-		lineHeight = 28.sp
-	)
+	Title1
 } else {
-	TextStyle(
-		color = Grey200,
-		fontSize = 18.sp,
-		fontWeight = FontWeight.W500,
-		fontFamily = pretenard,
-		lineHeight = 28.sp
-	)
+	Body1
 }
 
 private fun isCurrentTab(currentPage: Int, tabIdx: Int) = currentPage == tabIdx
