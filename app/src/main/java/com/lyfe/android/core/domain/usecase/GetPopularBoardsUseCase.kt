@@ -9,7 +9,7 @@ class GetPopularBoardsUseCase @Inject constructor(
 
 	operator fun invoke(
 		cursorId: Long = 0,
-		boardType: String?,
+		boardType: String,
 		popularType: String
 	) = boardRepository.getPopularBoards(cursorId, boardType, popularType)
 }

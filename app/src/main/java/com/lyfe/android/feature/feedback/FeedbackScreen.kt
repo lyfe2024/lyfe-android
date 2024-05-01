@@ -36,9 +36,12 @@ import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
+import com.lyfe.android.core.common.ui.theme.Body2
+import com.lyfe.android.core.common.ui.theme.Body3
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.Grey800
+import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
@@ -55,24 +58,16 @@ fun FeedbackScreen(
 	) {
 		Text(
 			text = stringResource(R.string.feedback_title),
-			style = TextStyle(
-				fontSize = 24.sp,
-				lineHeight = 36.sp,
-				fontWeight = FontWeight.W700,
-				color = Color.Black
-			)
+			color = Color.Black,
+			style = H3
 		)
 
 		Spacer(modifier = Modifier.height(8.dp))
 
 		Text(
 			text = stringResource(R.string.feedback_sub_title),
-			style = TextStyle(
-				fontSize = 14.sp,
-				lineHeight = 22.sp,
-				fontWeight = FontWeight.W500,
-				color = Color.Black
-			)
+			color = Color.Black,
+			style = Body3
 		)
 
 		Spacer(modifier = Modifier.height(16.dp))
@@ -191,12 +186,8 @@ fun FeedbackTextField(
 			if (text.isEmpty()) {
 				Text(
 					text = stringResource(R.string.enter_feedback),
-					style = TextStyle(
-						color = Grey200,
-						fontSize = 16.sp,
-						fontWeight = FontWeight.W500,
-						fontFamily = pretenard
-					)
+					color = Grey200,
+					style = Body2
 				)
 			}
 			innerTextField()

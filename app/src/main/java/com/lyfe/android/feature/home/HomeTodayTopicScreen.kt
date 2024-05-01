@@ -35,9 +35,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
+import com.lyfe.android.core.common.ui.theme.Caption2
+import com.lyfe.android.core.common.ui.theme.Caption3
 import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.H4
 import com.lyfe.android.core.common.ui.theme.Main500
+import com.lyfe.android.core.common.ui.theme.Title3
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
@@ -216,13 +220,8 @@ private fun HomeTodayTopicTextFeedTopBar(
 	) {
 		Text(
 			text = stringResource(R.string.home_text_feed),
-			style = TextStyle(
-				color = Color.Black,
-				fontFamily = pretenard,
-				fontSize = 20.sp,
-				fontWeight = FontWeight.W700,
-				lineHeight = 32.sp
-			)
+			color = Color.Black,
+			style = H4
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
@@ -232,6 +231,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 				onFetchingTypeChanged(FeedFetchingType.LATEST)
 			},
 			text = stringResource(R.string.home_filter_latest),
+			color = getTextColor(fetchingType == FeedFetchingType.LATEST),
 			style = TextStyle.getTextStyle(fetchingType == FeedFetchingType.LATEST)
 		)
 
@@ -248,6 +248,7 @@ private fun HomeTodayTopicTextFeedTopBar(
 				onFetchingTypeChanged(FeedFetchingType.POPULAR)
 			},
 			text = stringResource(R.string.home_filter_popular),
+			color = getTextColor(fetchingType == FeedFetchingType.POPULAR),
 			style = TextStyle.getTextStyle(fetchingType == FeedFetchingType.POPULAR)
 		)
 	}
@@ -269,22 +270,14 @@ private fun HomeTodayTopicHorizontalImageFeedList(
 			Text(
 				modifier = Modifier.weight(1f),
 				text = "댓글이 많이 달린",
-				style = TextStyle(
-					color = Color.Black,
-					fontSize = 20.sp,
-					fontWeight = FontWeight.W700,
-					fontFamily = pretenard
-				)
+				color = Color.Black,
+				style = H4
 			)
 
 			Text(
 				text = stringResource(R.string.home_feed_more),
-				style = TextStyle(
-					color = Color.Black,
-					fontSize = 12.sp,
-					fontWeight = FontWeight.W400,
-					fontFamily = pretenard
-				)
+				color = Color.Black,
+				style = Caption3
 			)
 		}
 
@@ -324,23 +317,19 @@ private fun HomeTopicText(text: String) {
 	)
 }
 
+private fun getTextColor(isSelected: Boolean): Color {
+	return if (isSelected) {
+		Main500
+	} else {
+		Grey200
+	}
+}
+
 @Composable
 private fun TextStyle.Companion.getTextStyle(isSelected: Boolean): TextStyle {
 	return if (isSelected) {
-		TextStyle(
-			color = Main500,
-			fontFamily = pretenard,
-			fontSize = 14.sp,
-			fontWeight = FontWeight.W700,
-			lineHeight = 22.sp
-		)
+		Title3
 	} else {
-		TextStyle(
-			color = Grey200,
-			fontFamily = pretenard,
-			fontSize = 14.sp,
-			fontWeight = FontWeight.W400,
-			lineHeight = 22.sp
-		)
+		Caption2
 	}
 }

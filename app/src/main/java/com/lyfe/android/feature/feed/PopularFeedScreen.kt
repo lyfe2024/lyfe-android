@@ -25,13 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.theme.Title3
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
@@ -138,12 +137,8 @@ private fun FeedFilterView(
 
 		Text(
 			text = feedSortType.content,
-			style = TextStyle(
-				fontSize = 14.sp,
-				lineHeight = 22.sp,
-				fontWeight = FontWeight.W700,
-				color = Color.Black
-			)
+			color = Color.Black,
+			style = Title3
 		)
 	}
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.theme.Title3
 import com.lyfe.android.core.common.ui.theme.think
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
@@ -52,10 +53,10 @@ fun HomeScreen(
 			),
 			style = TextStyle(
 				color = Color.Black,
+				fontFamily = think,
+				fontWeight = FontWeight.Normal,
 				fontSize = 80.sp,
-				fontWeight = FontWeight.W400,
-				lineHeight = 72.sp,
-				fontFamily = think
+				lineHeight = 72.sp
 			)
 		)
 
@@ -112,11 +113,8 @@ private fun HomeTopContent(
 
 		Text(
 			text = feedType.content,
-			style = TextStyle(
-				color = Color.Black,
-				fontSize = 14.sp,
-				fontWeight = FontWeight.W700
-			)
+			style = Title3,
+			color = Color.Black
 		)
 	}
 }

@@ -11,7 +11,7 @@ interface TopicService {
 	suspend fun getTodayTopic(): Result<Topic>
 
 	// 과거의 주제 조회
-	@GET("/v1/topics/{date}")
+	@GET("/v1/topics/past/{date}")
 	suspend fun getPastTopic(
 		@Path("date") date: String
 	): Result<Topic>

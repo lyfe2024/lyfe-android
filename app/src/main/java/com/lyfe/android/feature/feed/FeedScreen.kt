@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyfe.android.R
@@ -201,8 +202,9 @@ private fun FeedTab(
 					Text(
 						modifier = Modifier,
 						text = item.text,
+						color = getTabTextColor(tabIdx, index),
 						style = H5,
-						color = getTabTextColor(tabIdx, index)
+						textAlign = TextAlign.Center
 					)
 				},
 				selected = tabIdx == index,

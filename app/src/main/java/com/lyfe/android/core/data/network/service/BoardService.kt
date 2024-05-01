@@ -18,21 +18,21 @@ interface BoardService {
 	@GET("/v1/boards/latest")
 	suspend fun getLatestBoards(
 		@Query("cursorId") cursorId: Long = 0,
-		@Query("type") boardType: String? = "BOARD"
+		@Query("type") boardType: String = "BOARD"
 	): Result<GetBoardListResult>
 
 	// 글 리스트 조회(인기순)
 	@GET("/v1/boards/popular")
 	suspend fun getPopularBoards(
 		@Query("cursorId") cursorId: Long = 0,
-		@Query("type") boardType: String? = "BOARD",
+		@Query("type") boardType: String = "BOARD",
 		@Query("popularType") popularType: String = "WHISKY"
 	): Result<GetBoardListResult>
 
 	// 자신이 작성한 글 조회
 	@GET("/v1/boards/me")
 	suspend fun getUserBoards(
-		@Query("type") boardType: String? = "BOARD",
+		@Query("type") boardType: String = "BOARD",
 		@Query("cursorId") cursorId: Long
 	): Result<GetBoardListResult>
 }

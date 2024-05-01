@@ -17,12 +17,12 @@ interface BoardDataSource {
 
 	suspend fun getPopularBoards(
 		cursorId: Long = 0,
-		boardType: String?,
+		boardType: String,
 		popularType: String
 	): Result<GetBoardListResult>
 
 	suspend fun getUserBoards(
-		boardType: String? = "BOARD",
+		boardType: String = "BOARD",
 		cursorId: Long
 	): Result<GetBoardListResult>
 }
