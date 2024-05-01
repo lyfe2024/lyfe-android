@@ -22,6 +22,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -50,6 +51,7 @@ import com.lyfe.android.core.model.FeedFetchingType
 import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import kotlin.math.min
 
 private const val IMAGE_FEED_INDEXING = 5
 private const val TODAY_TOPIC_CARDS_COUNT = 4
@@ -155,11 +157,7 @@ private fun HomeTodayTopicFeedList(
 
 			HomeSwipeableFeeds(
 				modifier = Modifier.padding(horizontal = 20.dp),
-				feeds = if (imageFeeds.size > TODAY_TOPIC_CARDS_COUNT - 1) {
-					imageFeeds.subList(0, TODAY_TOPIC_CARDS_COUNT)
-				} else {
-					emptyList()
-				},
+				feeds = imageFeeds.subList(0, min(TODAY_TOPIC_CARDS_COUNT, imageFeeds.size)),
 				onClick = { onFeedClick(it) }
 			)
 
@@ -178,8 +176,8 @@ private fun HomeTodayTopicFeedList(
 
 		itemsIndexed(
 			items = textFeeds,
-			key = { _, feed ->
-				feed.feedId
+			key = { index, feed ->
+				index
 			}
 		) { index, feed ->
 			HomeTextFeedView(
@@ -287,7 +285,7 @@ private fun HomeTodayTopicHorizontalImageFeedList(
 		) {
 			itemsIndexed(
 				items = feeds,
-				key = { _, feed -> feed.feedId }
+				key = { index, feed -> index }
 			) { index, feed ->
 				LyfeFeedCardView(
 					modifier = Modifier,
