@@ -303,7 +303,7 @@ private fun ProfileGuestLoginView(
 		Text(
 			modifier = Modifier.align(CenterHorizontally)
 				.clickableSingle {
-					 navigator.navigate(route = LyfeScreens.Login.route)
+					navigator.navigate(route = LyfeScreens.Login.route)
 				},
 			text = AnnotatedString(stringResource(R.string.profile_screen_guest_login_message)),
 			color = Grey500,
@@ -357,7 +357,6 @@ private fun getTabTextColor(
 } else {
 	Grey200
 }
-
 
 private fun getTabTextStyle(
 	currentPage: Int,

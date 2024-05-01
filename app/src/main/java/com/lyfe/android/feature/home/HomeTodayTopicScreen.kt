@@ -325,7 +325,6 @@ private fun getTextColor(isSelected: Boolean): Color {
 	}
 }
 
-
 @Composable
 private fun TextStyle.Companion.getTextStyle(isSelected: Boolean): TextStyle {
 	return if (isSelected) {

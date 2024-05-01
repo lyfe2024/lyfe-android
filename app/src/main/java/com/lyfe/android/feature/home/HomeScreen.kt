@@ -56,8 +56,8 @@ fun HomeScreen(
 				fontFamily = think,
 				fontWeight = FontWeight.Normal,
 				fontSize = 80.sp,
-				lineHeight = 72.sp,
-			),
+				lineHeight = 72.sp
+			)
 		)
 
 		Column(
