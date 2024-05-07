@@ -2,6 +2,8 @@ package com.lyfe.android.core.data.datasource.di
 
 import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.datasource.AuthRemoteDataSource
+import com.lyfe.android.core.data.datasource.BoardDataSource
+import com.lyfe.android.core.data.datasource.BoardRemoteDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSourceImpl
 import com.lyfe.android.core.data.datasource.FeedbackDataSource
@@ -14,6 +16,8 @@ import com.lyfe.android.core.data.datasource.PolicyDataSource
 import com.lyfe.android.core.data.datasource.PolicyRemoteDataSource
 import com.lyfe.android.core.data.datasource.TokenDataSource
 import com.lyfe.android.core.data.datasource.TokenLocalDataSource
+import com.lyfe.android.core.data.datasource.TopicDataSource
+import com.lyfe.android.core.data.datasource.TopicRemoteDataSource
 import com.lyfe.android.core.data.datasource.UserLocalDataSource
 import com.lyfe.android.core.data.datasource.UserLocalDataSourceImpl
 import com.lyfe.android.core.data.datasource.UserRemoteDataSource
@@ -80,4 +84,16 @@ interface DataSourceModule {
 	fun bindsFeedbackDataSource(
 		feedbackRemoteDataSource: FeedbackRemoteDataSource
 	): FeedbackDataSource
+
+	@Singleton
+	@Binds
+	fun bindsBoardDataSource(
+		boardRemoteDataSource: BoardRemoteDataSource
+	): BoardDataSource
+
+	@Singleton
+	@Binds
+	fun bindsTopicDataSource(
+		topicRemoteDataSource: TopicRemoteDataSource
+	): TopicDataSource
 }

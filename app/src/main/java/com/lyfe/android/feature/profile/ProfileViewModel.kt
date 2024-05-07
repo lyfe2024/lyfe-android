@@ -5,10 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.domain.usecase.GetUserBoardUseCase
 import com.lyfe.android.core.domain.usecase.GetUserInfoUseCase
 import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.Page
 import com.lyfe.android.core.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,10 +30,14 @@ class ProfileViewModel @Inject constructor(
 	private val _user = MutableStateFlow(User())
 	val user get() = _user.value
 
-	private val _feedList = MutableStateFlow<List<Feed>>(emptyList())
-	val feedList get() = _feedList.asStateFlow()
+	private val _textFeedList = MutableStateFlow<List<Feed>>(emptyList())
+	val textFeedList get() = _textFeedList.asStateFlow()
 
-	private var lastPage: Page? = null
+	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
+	val imageFeedList get() = _imageFeedList.asStateFlow()
+
+	private var imageCursorId = 0L
+	private var textCursorId = 0L
 
 	fun getUserInfo() = viewModelScope.launch {
 		getUserInfoUseCase().onEach {
@@ -46,13 +50,35 @@ class ProfileViewModel @Inject constructor(
 		}
 	}
 
-	fun fetchFeedList() = viewModelScope.launch {
-		getUserBoardUseCase(lastPage?.number).catch {
-			// TODO
-		}.collect { result ->
-			val feeds = result.first
-			lastPage = result.second
-			_feedList.update {
+	fun fetchImageFeedList() = viewModelScope.launch {
+		getUserBoardUseCase(
+			boardType = "BOARD_PICTURE",
+			cursorId = imageCursorId
+		).catch {
+			LogUtil.e("ProfileViewModel", it.message ?: "에러 메세지가 없습니다.")
+		}.collect { feeds ->
+			if (feeds.isEmpty()) {
+				return@collect
+			}
+			imageCursorId = feeds.first().feedId
+			_imageFeedList.update {
+				it.plus(feeds)
+			}
+		}
+	}
+
+	fun fetchTextFeedList() = viewModelScope.launch {
+		getUserBoardUseCase(
+			boardType = "BOARD",
+			cursorId = textCursorId
+		).catch {
+			LogUtil.e("ProfileViewModel", it.message ?: "에러 메세지가 없습니다.")
+		}.collect { feeds ->
+			if (feeds.isEmpty()) {
+				return@collect
+			}
+			textCursorId = feeds.first().feedId
+			_textFeedList.update {
 				it.plus(feeds)
 			}
 		}

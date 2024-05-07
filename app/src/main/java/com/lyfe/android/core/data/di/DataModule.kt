@@ -2,21 +2,25 @@ package com.lyfe.android.core.data.di
 
 import com.lyfe.android.core.data.repository.AlbumRepositoryImpl
 import com.lyfe.android.core.data.repository.AuthRepositoryImpl
+import com.lyfe.android.core.data.repository.BoardRepositoryImpl
 import com.lyfe.android.core.data.repository.FeedbackRepositoryImpl
 import com.lyfe.android.core.data.repository.ImageRepositoryImpl
 import com.lyfe.android.core.data.repository.NotificationRepositoryImpl
 import com.lyfe.android.core.data.repository.PolicyRepositoryImpl
 import com.lyfe.android.core.data.repository.TokenRepositoryImpl
+import com.lyfe.android.core.data.repository.TopicRepositoryImpl
 import com.lyfe.android.core.data.repository.UserRepositoryImpl
 import com.lyfe.android.core.data.repository.fake.FakeLyfeRepository
 import com.lyfe.android.core.domain.repository.AlbumRepository
 import com.lyfe.android.core.domain.repository.AuthRepository
+import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.domain.repository.FeedbackRepository
 import com.lyfe.android.core.domain.repository.ImageRepository
 import com.lyfe.android.core.domain.repository.LyfeRepository
 import com.lyfe.android.core.domain.repository.NotificationRepository
 import com.lyfe.android.core.domain.repository.PolicyRepository
 import com.lyfe.android.core.domain.repository.TokenRepository
+import com.lyfe.android.core.domain.repository.TopicRepository
 import com.lyfe.android.core.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -82,4 +86,16 @@ interface DataModule {
 	fun bindsNotificationRepository(
 		notificationRepositoryImpl: NotificationRepositoryImpl
 	): NotificationRepository
+
+	@Singleton
+	@Binds
+	fun bindsTopicRepository(
+		topicRepositoryImpl: TopicRepositoryImpl
+	): TopicRepository
+
+	@Singleton
+	@Binds
+	fun bindsBoardRepository(
+		boardRepositoryImpl: BoardRepositoryImpl
+	): BoardRepository
 }

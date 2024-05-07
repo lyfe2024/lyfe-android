@@ -11,10 +11,12 @@ import com.lyfe.android.core.data.network.converter.asConverterFactory
 import com.lyfe.android.core.data.network.interceptor.NetworkInterceptor
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.AuthService
+import com.lyfe.android.core.data.network.service.BoardService
 import com.lyfe.android.core.data.network.service.FeedbackService
 import com.lyfe.android.core.data.network.service.ImageService
 import com.lyfe.android.core.data.network.service.NotificationService
 import com.lyfe.android.core.data.network.service.PolicyService
+import com.lyfe.android.core.data.network.service.TopicService
 import com.lyfe.android.core.data.network.service.UserService
 import dagger.Module
 import dagger.Provides
@@ -167,5 +169,17 @@ object NetworkModule {
 		)
 
 		return retrofit.create(AuthService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesTopicService(retrofit: Retrofit): TopicService {
+		return retrofit.create(TopicService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesBoardService(retrofit: Retrofit): BoardService {
+		return retrofit.create(BoardService::class.java)
 	}
 }

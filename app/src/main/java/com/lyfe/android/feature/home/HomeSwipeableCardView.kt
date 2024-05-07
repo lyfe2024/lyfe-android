@@ -51,9 +51,10 @@ private const val MAXIMUM_CARD_RATIO = 0.85f
 fun HomeSwipeableFeeds(
 	modifier: Modifier,
 	feeds: List<Feed>,
-	onClick: () -> Unit
+	onClick: (Feed) -> Unit
 ) {
-	var feedList by remember { mutableStateOf(feeds) }
+	val reversedFeeds = feeds.reversed()
+	var feedList by remember(reversedFeeds) { mutableStateOf(reversedFeeds) }
 
 	Box(
 		modifier = modifier,
@@ -86,7 +87,7 @@ fun HomeSwipeableCard(
 	totalCount: Int,
 	feed: Feed,
 	onMoveToRemove: () -> Unit,
-	onClick: () -> Unit = {}
+	onClick: (Feed) -> Unit = {}
 ) {
 	val animatedScale by animateFloatAsState(
 		targetValue = 1f - (totalCount - order - 1) * 0.05f,
@@ -103,7 +104,7 @@ fun HomeSwipeableCard(
 				scaleX = animatedScale
 				scaleY = animatedScale
 			}
-			.clickableSingle { onClick() }
+			.clickableSingle { onClick(feed) }
 			.swipeToRemove(
 				isSwipeableOrder = order == totalCount - 1,
 				onMoveToRemove = onMoveToRemove
@@ -149,7 +150,12 @@ fun Modifier.swipeToRemove(
 						val targetOffsetX = decay.calculateTargetValue(offsetX.value, velocity)
 						if (targetOffsetX.absoluteValue <= size.width / 2) {
 							// Not enough velocity; Reset.
-							launch { offsetX.animateTo(targetValue = 0f, initialVelocity = velocity) }
+							launch {
+								offsetX.animateTo(
+									targetValue = 0f,
+									initialVelocity = velocity
+								)
+							}
 						} else {
 							// Enough velocity to remove the card
 							val duration = 600

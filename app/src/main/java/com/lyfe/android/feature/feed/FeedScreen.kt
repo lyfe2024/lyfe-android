@@ -30,19 +30,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.model.TabItem
+import com.lyfe.android.core.common.ui.theme.Button1
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey50
+import com.lyfe.android.core.common.ui.theme.H3
+import com.lyfe.android.core.common.ui.theme.H5
+import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.core.common.ui.theme.Grey200
-import com.lyfe.android.core.common.ui.theme.Grey50
-import com.lyfe.android.core.common.ui.theme.Main500
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -98,12 +98,8 @@ fun FeedScreen(
 		) {
 			Text(
 				text = stringResource(id = R.string.feed_screen_title),
-				style = TextStyle(
-					fontSize = 24.sp,
-					lineHeight = 36.sp,
-					fontWeight = FontWeight.W700,
-					color = Color.Black
-				)
+				color = Color.Black,
+				style = H3
 			)
 
 			Text(
@@ -112,12 +108,8 @@ fun FeedScreen(
 						navigator.navigate(LyfeScreens.Home.name)
 					},
 				text = stringResource(id = R.string.feed_screen_request_photo),
-				style = TextStyle(
-					fontSize = 16.sp,
-					lineHeight = 24.sp,
-					fontWeight = FontWeight.W600,
-					color = Main500
-				)
+				color = Main500,
+				style = Button1
 			)
 		}
 
@@ -187,13 +179,9 @@ private fun FeedTab(
 					Text(
 						modifier = Modifier,
 						text = item.text,
-						style = TextStyle(
-							fontSize = 18.sp,
-							lineHeight = 28.sp,
-							fontWeight = FontWeight.W700,
-							color = getTabTextColor(tabIdx, index),
-							textAlign = TextAlign.Center
-						)
+						color = getTabTextColor(tabIdx, index),
+						style = H5,
+						textAlign = TextAlign.Center
 					)
 				},
 				selected = tabIdx == index,

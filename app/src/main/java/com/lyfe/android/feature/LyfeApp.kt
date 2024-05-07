@@ -66,6 +66,7 @@ fun LyfeApp(
 	LaunchedEffect(snackBarVisuals) {
 		if (snackBarVisuals.message.isNotEmpty()) {
 			snackBarState.showSnackbar(snackBarVisuals)
+			snackBarVisuals = LyfeSnackBarVisuals()
 		}
 	}
 	
@@ -146,7 +147,9 @@ fun LyfeApp(
 			hostState = snackBarState
 		) { snackBarData ->
 			val visuals = snackBarData.visuals as LyfeSnackBarVisuals
-			Column {
+			Column(
+				modifier = Modifier.padding(horizontal = 24.dp)
+			) {
 				LyfeSnackBar(
 					iconType = visuals.iconType,
 					message = visuals.message
