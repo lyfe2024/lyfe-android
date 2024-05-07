@@ -3,6 +3,7 @@ package com.lyfe.android.core.data.datasource
 import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.model.GetBoardListResult
 import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.model.FeedType
 
 interface BoardDataSource {
 
@@ -12,17 +13,17 @@ interface BoardDataSource {
 
 	suspend fun getLatestBoards(
 		cursorId: Long,
-		boardType: String
+		boardType: String = FeedType.BOARD.name
 	): Result<GetBoardListResult>
 
 	suspend fun getPopularBoards(
 		cursorId: Long = 0,
-		boardType: String,
+		boardType: String = FeedType.BOARD.name,
 		popularType: String
 	): Result<GetBoardListResult>
 
 	suspend fun getUserBoards(
-		boardType: String = "BOARD",
+		boardType: String = FeedType.BOARD.name,
 		cursorId: Long
 	): Result<GetBoardListResult>
 }

@@ -53,7 +53,8 @@ fun HomeSwipeableFeeds(
 	feeds: List<Feed>,
 	onClick: (Feed) -> Unit
 ) {
-	var feedList by remember(feeds.reversed()) { mutableStateOf(feeds.reversed()) }
+	val reversedFeeds = feeds.reversed()
+	var feedList by remember(reversedFeeds) { mutableStateOf(reversedFeeds) }
 
 	Box(
 		modifier = modifier,
