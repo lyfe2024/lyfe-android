@@ -53,7 +53,8 @@ fun HomeSwipeableFeeds(
 	feeds: List<Feed>,
 	onClick: (Feed) -> Unit
 ) {
-	var feedList by remember { mutableStateOf(feeds) }
+	val reversedFeeds = feeds.reversed()
+	var feedList by remember(reversedFeeds) { mutableStateOf(reversedFeeds) }
 
 	Box(
 		modifier = modifier,
@@ -149,7 +150,12 @@ fun Modifier.swipeToRemove(
 						val targetOffsetX = decay.calculateTargetValue(offsetX.value, velocity)
 						if (targetOffsetX.absoluteValue <= size.width / 2) {
 							// Not enough velocity; Reset.
-							launch { offsetX.animateTo(targetValue = 0f, initialVelocity = velocity) }
+							launch {
+								offsetX.animateTo(
+									targetValue = 0f,
+									initialVelocity = velocity
+								)
+							}
 						} else {
 							// Enough velocity to remove the card
 							val duration = 600

@@ -30,7 +30,7 @@ class HomeViewModel @Inject constructor(
 	private val getPopularBoardsUseCase: GetPopularBoardsUseCase
 ) : ViewModel() {
 
-	private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
+	private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Success)
 	val uiState get() = _uiState.asStateFlow()
 
 	var homeFeedType by mutableStateOf(HomeFeedType.TODAY_TOPIC)
@@ -84,76 +84,83 @@ class HomeViewModel @Inject constructor(
 		resetData()
 	}
 
-	fun fetchLatestFeedList(
-		feedType: FeedType
-	) {
-		val cursorId = when (feedType) {
-			FeedType.BOARD -> textFeedCursorId
-			FeedType.BOARD_PICTURE -> imageFeedCursorId
-		}
-		_uiState.update {
-			HomeUiState.Loading
-		}
-		viewModelScope.launch {
-			getLatestBoardsUseCase(
-				cursorId = cursorId,
-				boardType = feedType.name
-			).catch { t ->
-				_uiState.update { HomeUiState.Failure(t.message ?: "") }
-			}.collect {
-				when (feedType) {
-					FeedType.BOARD -> {
-						_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
-						textFeedCursorId = if (it.isNotEmpty()) {
-							it.last().feedId
-						} else {
-							textFeedCursorId
+	fun fetchLatestFeedList(feedType: FeedType) {
+		if (_uiState.value != HomeUiState.Loading) {
+			val cursorId = when (feedType) {
+				FeedType.BOARD -> textFeedCursorId
+				FeedType.BOARD_PICTURE -> imageFeedCursorId
+			}
+			_uiState.update {
+				HomeUiState.Loading
+			}
+			viewModelScope.launch {
+				getLatestBoardsUseCase(
+					cursorId = cursorId,
+					boardType = feedType.name
+				).catch { t ->
+					_uiState.update { HomeUiState.Failure(t.message ?: "") }
+				}.collect {
+					when (feedType) {
+						FeedType.BOARD -> {
+							_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
+							textFeedCursorId = if (it.isNotEmpty()) {
+								it.last().feedId
+							} else {
+								textFeedCursorId
+							}
+						}
+						FeedType.BOARD_PICTURE -> {
+							_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
+							imageFeedCursorId = if (it.isNotEmpty()) {
+								it.last().feedId
+							} else {
+								imageFeedCursorId
+							}
 						}
 					}
-					FeedType.BOARD_PICTURE -> {
-						_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
-						imageFeedCursorId = if (it.isNotEmpty()) {
-							it.last().feedId
-						} else {
-							imageFeedCursorId
-						}
-					}
+					_uiState.update { HomeUiState.Success }
 				}
 			}
 		}
 	}
 
-	fun fetchPopularFeedList(
-		feedType: FeedType
-	) {
-		_uiState.update {
-			HomeUiState.Loading
-		}
-		viewModelScope.launch {
-			getPopularBoardsUseCase(
-				cursorId = 0,
-				boardType = feedType.name,
-				popularType = PopularType.WHISKY.name
-			).catch { t ->
-				_uiState.update { HomeUiState.Failure(t.message ?: "") }
-			}.collect {
-				when (feedType) {
-					FeedType.BOARD -> {
-						_textFeedList.compareAndSet(textFeedList.value, it)
-						textFeedCursorId = if (it.isNotEmpty()) {
-							it.last().feedId
-						} else {
-							textFeedCursorId
+	fun fetchPopularFeedList(feedType: FeedType) {
+		if (_uiState.value != HomeUiState.Loading) {
+			val cursorId = when (feedType) {
+				FeedType.BOARD -> textFeedCursorId
+				FeedType.BOARD_PICTURE -> imageFeedCursorId
+			}
+			_uiState.update {
+				HomeUiState.Loading
+			}
+			viewModelScope.launch {
+				getPopularBoardsUseCase(
+					cursorId = cursorId,
+					boardType = feedType.name,
+					popularType = PopularType.WHISKY.name
+				).catch { t ->
+					_uiState.update { HomeUiState.Failure(t.message ?: "") }
+				}.collect {
+					when (feedType) {
+						FeedType.BOARD -> {
+							_textFeedList.compareAndSet(textFeedList.value, it)
+							textFeedCursorId = if (it.isNotEmpty()) {
+								it.last().feedId
+							} else {
+								textFeedCursorId
+							}
+						}
+
+						FeedType.BOARD_PICTURE -> {
+							_imageFeedList.compareAndSet(imageFeedList.value, it)
+							imageFeedCursorId = if (it.isNotEmpty()) {
+								it.last().feedId
+							} else {
+								imageFeedCursorId
+							}
 						}
 					}
-					FeedType.BOARD_PICTURE -> {
-						_imageFeedList.compareAndSet(imageFeedList.value, it)
-						imageFeedCursorId = if (it.isNotEmpty()) {
-							it.last().feedId
-						} else {
-							imageFeedCursorId
-						}
-					}
+					_uiState.update { HomeUiState.Success }
 				}
 			}
 		}
