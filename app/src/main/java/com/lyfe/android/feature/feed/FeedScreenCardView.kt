@@ -16,14 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
+import com.lyfe.android.core.common.ui.theme.Button3
 import com.lyfe.android.core.common.ui.theme.TempColor
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
@@ -74,12 +72,8 @@ private fun FeedScoreRow(
 
 		Text(
 			text = whiskyCnt.toString(),
-			style = TextStyle(
-				fontSize = 12.sp,
-				lineHeight = 18.sp,
-				fontWeight = FontWeight.W600,
-				color = TempColor.CCCCCC
-			)
+			color = TempColor.CCCCCC,
+			style = Button3
 		)
 
 		Spacer(modifier = Modifier.width(8.dp))
@@ -94,12 +88,8 @@ private fun FeedScoreRow(
 
 		Text(
 			text = commentCnt.toString(),
-			style = TextStyle(
-				fontSize = 12.sp,
-				lineHeight = 18.sp,
-				fontWeight = FontWeight.W600,
-				color = TempColor.CCCCCC
-			)
+			color = TempColor.CCCCCC,
+			style = Button3
 		)
 	}
 }

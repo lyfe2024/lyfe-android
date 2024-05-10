@@ -4,6 +4,7 @@ data class Feed(
 	val feedId: Long,
 	val title: String,
 	val content: String,
+	val topic: String = "토픽",
 	val feedImageUrl: String,
 	val date: String,
 	val userId: Long,

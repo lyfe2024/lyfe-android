@@ -5,10 +5,7 @@ sealed interface ProfileEditUiState {
 	object IDLE : ProfileEditUiState
 	object Loading : ProfileEditUiState
 
-	data class Success(
-		val thumbnail: String = "",
-		val nickname: String
-	) : ProfileEditUiState
+	object Success : ProfileEditUiState
 
 	data class Failure(
 		val message: String

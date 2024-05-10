@@ -1,10 +1,24 @@
 package com.lyfe.android.core.domain.repository
 
-import com.lyfe.android.core.data.model.CheckNicknameResponse
-import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.model.User
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
+
+	suspend fun updateSocialType(
+		socialType: String
+	)
+
+	fun getSocialType(): Flow<String>
+
+	fun getUserInfo(): Flow<User>
+
 	suspend fun fetchIsNicknameDuplicated(
 		nickname: String
-	): Result<CheckNicknameResponse>
+	): Flow<Boolean>
+
+	suspend fun putUserInfo(
+		nickname: String,
+		profileUrl: String
+	): Flow<User>
 }

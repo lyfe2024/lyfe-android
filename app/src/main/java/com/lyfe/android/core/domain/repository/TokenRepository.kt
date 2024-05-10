@@ -4,25 +4,37 @@ import kotlinx.coroutines.flow.Flow
 
 interface TokenRepository {
 
+	/**
+	 * SignUpToken Function
+	 */
+	fun getSignUpToken(): Flow<String>
+
 	suspend fun updateSignUpToken(
 		signUpToken: String
 	)
+
+	suspend fun deleteSignUpToken()
+
+	/**
+	 * AccessToken Function
+	 */
+	fun getAccessToken(): Flow<String?>
 
 	suspend fun updateAccessToken(
 		accessToken: String
 	)
 
+	/**
+	 * RefreshToken Function
+	 */
+	fun getRefreshToken(): Flow<String?>
+
 	suspend fun updateRefreshToken(
 		refreshToken: String
 	)
 
-	fun getSignUpToken(): Flow<String>
-
-	fun getAccessToken(): Flow<String>
-
-	fun getRefreshToken(): Flow<String>
-
-	suspend fun deleteSignUpToken()
-
+	/**
+	 * Util Function
+	 */
 	suspend fun deleteAllToken()
 }

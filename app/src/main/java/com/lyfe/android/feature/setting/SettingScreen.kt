@@ -15,29 +15,40 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeModal
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.LyfeSwitch
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.feature.login.AppleLoginManager
+import com.lyfe.android.feature.login.GoogleLoginManager
+import com.lyfe.android.feature.login.KakaoLoginManager
+import com.lyfe.android.feature.login.SocialType
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingScreen(
-	navigator: LyfeNavigator
+	viewModel: SettingViewModel = hiltViewModel(),
+	navigator: LyfeNavigator,
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -65,16 +76,53 @@ fun SettingScreen(
 			Setting.DELETE_ACCOUNT
 		)
 
-		SettingContent(navigator, list)
+		SettingContent(viewModel, navigator, list)
+	}
+
+	when (viewModel.uiState) {
+		SettingUiState.DeleteAccountSuccess -> {
+			onShowSnackBar(
+				LyfeSnackBarIconType.SUCCESS,
+				"회원탈퇴가 정상 처리되었습니다."
+			)
+		}
+		SettingUiState.LogoutSuccess -> {
+			onShowSnackBar(
+				LyfeSnackBarIconType.SUCCESS,
+				"로그아웃이 완료되었습니다."
+			)
+			navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
+		}
+		is SettingUiState.Failure -> {
+			val message = (viewModel.uiState as SettingUiState.Failure).message
+			onShowSnackBar(
+				LyfeSnackBarIconType.ERROR,
+				message ?: ""
+			)
+		}
+		SettingUiState.IDLE -> { }
+		SettingUiState.Loading -> {
+			// TODO 로딩창 보여주기
+		}
 	}
 }
 
 @Composable
 fun SettingContent(
+	viewModel: SettingViewModel,
 	navigator: LyfeNavigator,
 	list: List<Setting>
 ) {
 	var showModal by remember { mutableStateOf(false) }
+	val coroutineScope = rememberCoroutineScope()
+	val context = LocalContext.current
+	// 로그아웃 콜백 처리용 람다 함수
+	val onFailure: (Throwable?) -> Unit = { throwable ->
+		viewModel.updateUiState(SettingUiState.Failure(throwable?.message))
+	}
+	val onSuccess = {
+		viewModel.updateUiState(SettingUiState.LogoutSuccess)
+	}
 
 	Box(
 		modifier = Modifier.fillMaxSize()
@@ -88,8 +136,8 @@ fun SettingContent(
 							// TODO
 						}
 					}
-					Setting.USER_EXPERIENCE -> SettingButtonRow(stringResource(R.string.user_experience_title)) {
-						navigator.navigate(LyfeScreens.UserExperience.route)
+					Setting.USER_EXPERIENCE -> SettingButtonRow(stringResource(R.string.feedback_title)) {
+						navigator.navigate(LyfeScreens.Feedback.route)
 					}
 					Setting.PRIVACY_POLICY -> SettingButtonRow(stringResource(R.string.setting_screen_privacy_policy)) {
 						// TODO
@@ -113,8 +161,28 @@ fun SettingContent(
 				text = stringResource(R.string.setting_screen_logout),
 				isClearIconShow = false
 			) {
-				// TODO 로그아웃
-				navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
+				// 로그아웃
+				coroutineScope.launch {
+					when (viewModel.getSocialType()) {
+						SocialType.KAKAO.name ->
+							KakaoLoginManager.logout(
+								onFailure = onFailure,
+								onSuccess = onSuccess
+							)
+						SocialType.GOOGLE.name ->
+							GoogleLoginManager.signOut(
+								context = context,
+								onFailure = onFailure,
+								onSuccess = onSuccess
+							)
+						SocialType.APPLE.name ->
+							AppleLoginManager.signOut(
+								onFailure = onFailure,
+								onSuccess = onSuccess
+							)
+						else -> navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
+					}
+				}
 			}
 		}
 
@@ -124,7 +192,11 @@ fun SettingContent(
 				message = "",
 				confirmBtnText = stringResource(R.string.confirm),
 				dismissBtnText = stringResource(R.string.nope),
-				onConfirm = { showModal = false },
+				onConfirm = {
+					// 회원 탈퇴
+					viewModel.deleteAccount()
+					showModal = false
+				},
 				onDismiss = { showModal = false }
 			)
 		}

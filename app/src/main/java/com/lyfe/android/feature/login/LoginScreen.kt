@@ -25,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.SNSLoginButton
 import com.lyfe.android.core.common.ui.definition.SNSLoginButtonType
 import com.lyfe.android.core.common.ui.util.LogUtil
@@ -34,7 +35,8 @@ import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 @Composable
 fun LoginScreen(
 	navigator: LyfeNavigator,
-	viewModel: LoginViewModel = hiltViewModel()
+	viewModel: LoginViewModel = hiltViewModel(),
+	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
 	Column(
 		modifier = Modifier
@@ -55,7 +57,10 @@ fun LoginScreen(
 				// 로딩중 표시
 			}
 			is LoginUiState.Failure -> {
-				// 실패 토스트 메세지 표시
+				// 실패 토스트 메세지 표시'
+				val message = ((viewModel.uiState) as LoginUiState.Failure).errorMessage
+				onShowSnackBar(LyfeSnackBarIconType.ERROR, "소셜 로그인 실패 $message")
+				navigator.navigateAndroidClearBackStack(LyfeScreens.Home.name)
 			}
 			is LoginUiState.SignedIn -> {
 				// 기존 유저 로그인 -> 홈 화면으로 이동
@@ -63,7 +68,7 @@ fun LoginScreen(
 			}
 			is LoginUiState.Success -> {
 				// 회원가입 절차 진행
-				navigator.navigate(LyfeScreens.Nickname.name)
+				navigator.navigate(LyfeScreens.CreateNickname.name)
 				viewModel.updateUiState(LoginUiState.IDLE)
 			}
 			else -> {}
@@ -114,7 +119,7 @@ private fun kakaoLogin(
 				onTokenReceived = { oAuthToken ->
 					// 소셜 로그인 접근
 					viewModel.authUser(
-						socialType = "KAKAO",
+						socialType = SocialType.KAKAO,
 						identityToken = oAuthToken.accessToken,
 						fcmToken = ""
 					)
@@ -135,7 +140,7 @@ private fun googleLogin(
 			val account = GoogleLoginManager.handleSignInResult(it)
 			// 소셜 로그인 접근
 			viewModel.authUser(
-				socialType = "GOOGLE",
+				socialType = SocialType.GOOGLE,
 				authorizationCode = account.serverAuthCode.orEmpty(),
 				fcmToken = ""
 			)

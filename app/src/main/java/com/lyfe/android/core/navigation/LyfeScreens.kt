@@ -17,7 +17,7 @@ sealed class LyfeScreens(
 
 	object Post : LyfeScreens("post")
 
-	object Alarm : LyfeScreens("Alarm")
+	object NotificationList : LyfeScreens("Alarm")
 
 	object Profile : LyfeScreens("profile")
 
@@ -29,15 +29,19 @@ sealed class LyfeScreens(
 
 	object Login : LyfeScreens("login")
 
-	object Nickname : LyfeScreens("nickname")
+	object CreateNickname : LyfeScreens("nickname/create")
 
-	object Policy : LyfeScreens("policy")
+	object SignUpTerms : LyfeScreens("terms/signup")
 
-	object LoginComplete : LyfeScreens("loginComplete")
+	object ServiceTerms : LyfeScreens("terms/service")
+
+	object PersonalInfoTermsScreen : LyfeScreens("terms/personal-info")
+
+	object SignUpComplete : LyfeScreens("signup/complete")
 
 	object Setting : LyfeScreens("setting")
 
-	object UserExperience : LyfeScreens("userExperience")
+	object Feedback : LyfeScreens("feedback")
 }
 
 private fun String.appendArguments(navArguments: List<NamedNavArgument>): String {

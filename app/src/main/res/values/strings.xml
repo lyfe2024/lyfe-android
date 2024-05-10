@@ -33,10 +33,14 @@
 	<string name="feed_screen_popular_tab_text">인기</string>
 
 	<!-- AlarmScreen -->
-	<string name="no_alarm_list">새로운 알림이 없어요</string>
-	<string name="data_loading_failure">데이터를 호출하는 데 실패했습니다</string>
-	<string name="alarm_read_all_text">모두 읽음</string>
-	<string name="alarm_screen_title">알림</string>
+	<string name="noti_list_screen_title">알림</string>
+	<string name="noti_list_read_all_text">모두 읽음</string>
+	<string name="noti_list_data_empty">\&quot;새로운 알림이 없어요\&quot;</string>
+	<!-- TODO 서버와 text 맞춘 후 수정이 필요함	-->
+	<string name="noti_list_picture_whisky_type_text">사진 반응 알림</string>
+	<string name="noti_list_picture_comment_type_text">사진 댓글 알림</string>
+	<string name="noti_list_board_whisky_text">글 반응 알림</string>
+	<string name="noti_list_board_comment_text">글 댓글 알림</string>
 
 	<!-- LoginScreen -->
 	<string name="kakao_button_text">카카오로 3초만에 시작하기</string>
@@ -46,6 +50,7 @@
 	<!-- NicknameScreen -->
 	<string name="nickname_screen_title">닉네임 설정</string>
 	<string name="nickname_screen_sub_title">원하는 닉네임을 설정해주세요.</string>
+	<string name="nickname_screen_textfield_hint">닉네임을 입력해주세요</string>
 	<string name="nickname_comb_incorrect_text">한글/영문+숫자 조합으로만 설정가능해요</string>
 	<string name="nickname_comb_empty_text">한글/영문+숫자 조합으로 설정해주세요</string>
 	<string name="nickname_comb_correct_text">한글/영문+숫자 조합</string>
@@ -53,6 +58,8 @@
 	<string name="nickname_special_letter_correct_text">특수문자 사용 X</string>
 	<string name="nickname_length_incorrect_text">최대 10글자로 설정해주세요</string>
 	<string name="nickname_length_correct_text">최대 10글자</string>
+	<string name="nickname_button_text">다음</string>
+
 
 	<!-- ProfileEditScreen -->
 	<string name="profile_edit_title">프로필 수정</string>
@@ -62,9 +69,9 @@
 	<!-- FeedDetailScreen -->
 	<string name="comment_reply_text">답글 달기</string>
 
-	<!-- UserExperienceScreen -->
-    <string name="user_experience_title">사용경험</string>
-	<string name="user_experience_sub_title">Lyfe에서의 경험을 편하게 말씀해주세요.\n긍정/부정 적인 피드백 무엇이든 괜찮아요.</string>
+	<!-- FeedbackScreen -->
+    <string name="feedback_title">사용경험</string>
+	<string name="feedback_sub_title">Lyfe에서의 경험을 편하게 말씀해주세요.\n긍정/부정 적인 피드백 무엇이든 괜찮아요.</string>
 	<string name="send_feedback">피드백 보내기</string>
 	<string name="enter_feedback">피드백 내용을 입력해주세요</string>
 
@@ -83,12 +90,16 @@
 	<string name="profile_screen_image_feeds">신청 사진</string>
 	<string name="profile_screen_text_feeds">고민 글</string>
 
-	<!-- PolicyScreen -->
-	<string name="policy_screen_title">회원가입 약관 동의</string>
-	<string name="policy_screen_sub_title">마지막 단계에요!</string>
-	<string name="policy_screen_agree_all">아래의 약관에 모두 동의합니다.</string>
-	<string name="policy_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
-	<string name="policy_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
-	<string name="login_complete_start">시작하기</string>
+	<!-- SignUpTermsScreen -->
+	<string name="signup_terms_screen_title">회원가입 약관 동의</string>
+	<string name="signup_terms_screen_sub_title">마지막 단계에요!</string>
+	<string name="signup_terms_screen_agree_all">아래의 약관에 모두 동의합니다.</string>
+	<string name="signup_terms_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
+	<string name="signup_terms_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
+	<string name="signup_complete_start">시작하기</string>
+
+	<string name="service_terms">이용약관</string>
+    <string name="personal_info_terms">개인정보 수집 및 이용</string>
+	<string name="signup_terms_screen_finish">완료</string>
 
 </resources>

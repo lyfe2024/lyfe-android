@@ -35,23 +35,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.H4
 import com.lyfe.android.core.common.ui.theme.Main500
-import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import kotlin.math.min
+
+private const val PAST_BEST_FEED_COUNT = 3
 
 @Composable
 fun HomePastBestScreen(
@@ -65,8 +66,8 @@ fun HomePastBestScreen(
 	val scrollState = rememberLazyListState()
 
 	LaunchedEffect(Unit) {
-		viewModel.fetchImageFeedList()
-		viewModel.fetchTextFeedList()
+		viewModel.fetchLatestFeedList(FeedType.BOARD)
+		viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
 	}
 
 	LaunchedEffect(scrollState) {
@@ -82,7 +83,7 @@ fun HomePastBestScreen(
 		state = scrollState
 	) {
 		items(
-			count = 10,
+			count = imageFeeds.size / PAST_BEST_FEED_COUNT,
 			key = { it }
 		) { _ ->
 			HomePastBestItem(
@@ -120,13 +121,8 @@ private fun HomePastBestItem(
 				.padding(horizontal = 16.dp),
 			textAlign = TextAlign.Start,
 			text = "여기에 과거 주제 내용\n" + "문장 들어갑니다.",
-			style = TextStyle(
-				color = Color.Black,
-				fontSize = 20.sp,
-				fontWeight = FontWeight.W700,
-				lineHeight = 32.sp,
-				fontFamily = pretenard
-			),
+			style = H4,
+			color = Color.Black,
 			maxLines = 2,
 			overflow = TextOverflow.Ellipsis
 		)
@@ -161,7 +157,7 @@ private fun HomePastBestFeeds(
 	navigator: LyfeNavigator,
 	feeds: List<Feed>
 ) {
-	val pages = feeds.subList(0, 3)
+	val pages = feeds.subList(0, min(feeds.size, 3))
 	val pagerState = rememberPagerState { pages.size }
 	var indicatorIdx by remember { mutableIntStateOf(0) }
 
