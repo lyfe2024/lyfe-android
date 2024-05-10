@@ -24,10 +24,10 @@ class AuthRepositoryImpl @Inject constructor(
 	override suspend fun authUser(
 		socialType: String,
 		authorizationCode: String,
-		identityToken: String,
+		idToken: String,
 		fcmToken: String
 	): Result<AuthUserResult> {
-		val requestBody = AuthUserRequest(socialType, authorizationCode, identityToken, fcmToken)
+		val requestBody = AuthUserRequest(socialType, authorizationCode, idToken, fcmToken)
 		return authDataSource.authUser(requestBody)
 	}
 
