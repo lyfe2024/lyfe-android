@@ -13,9 +13,9 @@ data class CommentDto(
 	@SerialName("replies") val replyList: List<CommentDto>? = emptyList()
 ) {
 	@Serializable
-	data class CommentDtoUser (
+	data class CommentDtoUser(
 		@SerialName("id") val id: Long,
 		@SerialName("username") val username: String?,
-		@SerialName("profile") val profileImg: String?,
+		@SerialName("profile") val profileImg: String?
 	)
 }

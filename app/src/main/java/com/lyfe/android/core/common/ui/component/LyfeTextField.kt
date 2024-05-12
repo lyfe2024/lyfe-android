@@ -29,9 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.core.common.ui.theme.Body2
 import com.lyfe.android.core.common.ui.theme.Grey400
@@ -48,11 +46,9 @@ fun LyfeTextField(
 	isActivateCloseIcon: Boolean = false,
 	text: String,
 	hintText: String = "",
-	fontSize: TextUnit = 16.sp,
 	textColor: Color = Color.Black,
 	textStyle: TextStyle = Body2,
 	requestFocus: Boolean = false,
-	lineHeight: TextUnit = TextUnit.Unspecified,
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
 ) {

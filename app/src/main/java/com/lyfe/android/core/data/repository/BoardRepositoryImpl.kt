@@ -23,9 +23,11 @@ class BoardRepositoryImpl @Inject constructor(
 	override fun fetchBoardDetail(
 		boardId: Long
 	) = flow {
-		emit(boardDataSource.fetchBoardDetail(
-			boardId = boardId
-		).transform { it.toDomain() })
+		emit(
+			boardDataSource.fetchBoardDetail(
+				boardId = boardId
+			).transform { it.toDomain() }
+		)
 	}.flowOn(ioDispatcher)
 
 	override fun getLatestBoards(
@@ -34,17 +36,20 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getLatestBoards(cursorId, boardType)) {
 			is Result.Success -> {
-				val result = response.body?.list ?: throw ApiResultException()
+				val result = response.body.list
 				emit(result.map { it.toDomain() })
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
@@ -56,17 +61,20 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getPopularBoards(cursorId, boardType, popularType)) {
 			is Result.Success -> {
-				val result = response.body?.list ?: throw ApiResultException()
+				val result = response.body.list
 				emit(result.map { it.toDomain() })
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
@@ -77,17 +85,20 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getUserBoards(boardType, cursorId)) {
 			is Result.Success -> {
-				val result = response.body?.list ?: throw ApiResultException()
+				val result = response.body.list
 				emit(result.map { it.toDomain() })
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)

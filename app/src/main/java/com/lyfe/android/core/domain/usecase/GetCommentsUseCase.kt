@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 class GetCommentsUseCase @Inject constructor(
 	private val commentRepository: CommentRepository
-){
+) {
 
 	// 댓글 조회
 	operator fun invoke(
@@ -13,6 +13,6 @@ class GetCommentsUseCase @Inject constructor(
 		lastCommentId: Long
 	) = commentRepository.fetchLatestComments(
 		boardId = boardId,
-		lastCommentId = lastCommentId,
+		lastCommentId = lastCommentId
 	)
 }

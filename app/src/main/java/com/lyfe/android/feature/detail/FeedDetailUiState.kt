@@ -8,7 +8,7 @@ sealed interface FeedDetailUiState {
 	data class Success(
 		val boardDetail: BoardDetail,
 		val commentList: List<Comment>
-	): FeedDetailUiState
+	) : FeedDetailUiState
 
 	object Loading : FeedDetailUiState
 

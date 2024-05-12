@@ -115,17 +115,8 @@ fun FeedDetailScreen(
 			navigateUp = onNavigateUp
 		)
 
-		Column(
-			modifier = Modifier
-				.fillMaxSize()
-		) {
-
-		}
 		when (feedDetailUiState) {
-			is FeedDetailUiState.Loading -> {
-
-			}
-
+			is FeedDetailUiState.Loading -> {}
 			is FeedDetailUiState.Success -> {
 				FeedDetailContent(
 					modifier = modifier,
@@ -141,9 +132,7 @@ fun FeedDetailScreen(
 				)
 			}
 
-			is FeedDetailUiState.Error -> {
-
-			}
+			is FeedDetailUiState.Error -> {}
 		}
 
 		FeedCommentInputArea(
@@ -188,7 +177,6 @@ private fun FeedDetailContent(
 	fetchingNextCommentList: () -> Unit,
 	clickReplyText: (comment: Comment) -> Unit
 ) {
-
 	LazyColumn(
 		modifier = modifier
 	) {
@@ -228,7 +216,7 @@ private fun FeedDetailContent(
 @Composable
 private fun FeedDetailView(
 	topBarHeight: Dp,
-	feedDetail: BoardDetail,
+	feedDetail: BoardDetail
 ) {
 	Spacer(
 		modifier = Modifier
@@ -269,27 +257,30 @@ private fun FeedDetailUserRow(
 	profileImg: String,
 	userName: String,
 	date: String,
-	onWhiskyClick: () -> Unit
+	onWhiskyClick: () -> Unit = {}
 ) {
 	Row(
 		modifier = modifier
 			.padding(horizontal = 20.dp, vertical = 12.dp),
 		verticalAlignment = Alignment.CenterVertically
 	) {
-		Icon(
-			modifier = Modifier.size(24.dp),
-			painter = painterResource(id = R.drawable.ic_glass_cheers),
-			contentDescription = "ic_glass_cheers",
-			tint = Color.Black
-		)
+		Row(
+			modifier = Modifier.clickableSingle { onWhiskyClick() },
+			horizontalArrangement = Arrangement.spacedBy(4.dp)
+		) {
+			Icon(
+				modifier = Modifier.size(24.dp),
+				painter = painterResource(id = R.drawable.ic_glass_cheers),
+				contentDescription = "ic_glass_cheers",
+				tint = Color.Black
+			)
 
-		Spacer(modifier = Modifier.width(4.dp))
-
-		Text(
-			text = cheersCnt.toString(),
-			style = Button2,
-			color = Color.Black
-		)
+			Text(
+				text = cheersCnt.toString(),
+				style = Button2,
+				color = Color.Black
+			)
+		}
 
 		Spacer(modifier = Modifier.width(8.dp))
 
@@ -444,7 +435,7 @@ private fun FeedCommentInputBox(
 @Composable
 private fun FeedCommentInputDialogContent(
 	modifier: Modifier = Modifier,
-	commentInputType: FeedCommentInputType,
+	commentInputType: FeedCommentInputType
 ) {
 	var comment by remember { mutableStateOf("") }
 
@@ -618,7 +609,7 @@ private fun ReplyCommentItemView(
 	modifier: Modifier = Modifier,
 	replyCommentList: List<Comment>
 ) {
-	replyCommentList.forEachIndexed { index, comment ->
+	replyCommentList.forEachIndexed { _, comment ->
 		Spacer(modifier = Modifier.height(8.dp))
 
 		Row(
@@ -634,7 +625,7 @@ private fun ReplyCommentItemView(
 
 			CommentItemView(
 				comment = comment,
-				showReplyComment = false,
+				showReplyComment = false
 			)
 		}
 	}

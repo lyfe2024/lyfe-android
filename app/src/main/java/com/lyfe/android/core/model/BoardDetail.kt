@@ -10,5 +10,5 @@ data class BoardDetail(
 	val boardType: String = "",
 	val whiskyCount: String = "0",
 	val commentCount: String = "0",
-	val updatedAt: String = "",
+	val updatedAt: String = ""
 )

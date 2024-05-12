@@ -97,7 +97,7 @@ interface DataSourceModule {
 	@Binds
 	fun bindsCommentDataSource(
 		commentRemoteDataSource: CommentRemoteDataSource
-	) : CommentDataSource
+	): CommentDataSource
 
 	@Singleton
 	@Binds

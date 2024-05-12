@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.detail
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -60,7 +59,7 @@ class FeedDetailViewModel @Inject constructor(
 		} else {
 			val boardFlow = getBoardDetailUseCase(boardId = boardId)
 
-			val commentsFlow = fetchingCommentId.flatMapLatest { commentId ->
+			val commentsFlow = fetchingCommentId.flatMapLatest { _ ->
 				getCommentsUseCase(
 					boardId = boardId,
 					lastCommentId = 0
@@ -75,7 +74,7 @@ class FeedDetailViewModel @Inject constructor(
 					FeedDetail(boardDetail = board, commentList = commentList.toList())
 				}
 
-				when(result) {
+				when (result) {
 					is Result.Success -> {
 						_commentsLoading.value = false
 
@@ -84,12 +83,15 @@ class FeedDetailViewModel @Inject constructor(
 							commentList = result.body.commentList
 						)
 					}
+
 					is Result.Unexpected -> {
 						FeedDetailUiState.Error(result.t.message)
 					}
+
 					is Result.Failure -> {
 						FeedDetailUiState.Error("${result.code} ${result.error}")
 					}
+
 					is Result.NetworkError -> {
 						FeedDetailUiState.Error("${result.exception.message}")
 					}
@@ -105,7 +107,6 @@ class FeedDetailViewModel @Inject constructor(
 	fun fetchingCommentList() {
 		if (!_commentsLoading.value) {
 			_commentsLoading.value = true
-			Log.e("Test@@@", "ViewModel fetchingCommentList")
 			fetchingCommentId.value += 1
 		}
 	}

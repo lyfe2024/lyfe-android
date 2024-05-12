@@ -9,6 +9,6 @@ interface CommentRepository {
 	// 댓글 조회
 	fun fetchLatestComments(
 		boardId: Long,
-		lastCommentId: Long,
+		lastCommentId: Long
 	): Flow<Result<List<Comment>>>
 }

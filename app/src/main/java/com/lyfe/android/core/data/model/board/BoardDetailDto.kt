@@ -14,12 +14,12 @@ data class BoardDetailDto(
 	@SerialName("boardType") val boardType: String?,
 	@SerialName("whiskyCount") val whiskyCount: String?,
 	@SerialName("commentCount") val commentCount: String?,
-	@SerialName("updatedAt") val updatedAt: String?,
+	@SerialName("updatedAt") val updatedAt: String?
 ) {
 	@Serializable
 	data class UserDto(
 		@SerialName("id") val id: Long,
 		@SerialName("username") val username: String?,
-		@SerialName("profile") val profile: String?,
+		@SerialName("profile") val profile: String?
 	)
 }

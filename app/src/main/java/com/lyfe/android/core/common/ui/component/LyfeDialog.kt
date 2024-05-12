@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.ScrimColor
 
 @Composable
 fun LyfeDialog(
@@ -39,7 +40,7 @@ fun LyfeDialog(
 		modifier = modifier.fillMaxSize()
 	) {
 		LyfeScrim(
-			color = Color(0x6A000000),
+			color = ScrimColor,
 			onDismissRequest = onDismissRequest,
 			visible = isShow
 		)
@@ -83,13 +84,12 @@ fun LyfeDialog(
 					) {
 						drawRoundRect(
 							color = Grey100,
-							topLeft = Offset(x = -(barWidth.toPx())/2, y = 0.dp.toPx()),
+							topLeft = Offset(x = -(barWidth.toPx()/2), y = 0.dp.toPx()),
 							size = Size(barWidth.toPx(), barHeight.toPx()),
 							cornerRadius = CornerRadius(barCornerRadius.toPx(), barCornerRadius.toPx())
 						)
 					}
 				}
-
 
 				content()
 			}
