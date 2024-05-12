@@ -1,61 +1,113 @@
 package com.lyfe.android.feature.detail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.data.network.model.zip
+import com.lyfe.android.core.domain.usecase.GetBoardDetailUseCase
+import com.lyfe.android.core.domain.usecase.GetCommentsUseCase
+import com.lyfe.android.core.model.BoardDetail
 import com.lyfe.android.core.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
-@HiltViewModel
-class FeedDetailViewModel @Inject constructor() : ViewModel() {
-	var commentList by mutableStateOf<List<Comment>>(emptyList())
-		private set
+/**
+ * 고려해야할 상태
+ * 1. 추후 스와이프를 통해 리프레쉬될 수 있는 구조
+ * 2. comment가 cursor기반 스크롤 데이터 로딩이 가능하게 끔 만들기.
+ */
 
-	fun fetchCommentList() {
-		commentList = listOf(
-			Comment(
-				id = 0L,
-				profileImg = "https://media.bunjang.co.kr/product/233392017_1_1692231420_w360.jpg",
-				userName = "유저이름",
-				date = "몇 분전",
-				content = "여기는 내용 들어옵니다. 최대 2줄까지라고 되어 있는데 꼭 2줄 제한을 둬야 할까요? 안해도 괜찮을것 같습니다만.. 글자수로 제한을 둬야 하지 않을까 싶네요?",
-				replyCommentList = listOf(
-					Comment(
-						id = 1L,
-						profileImg = "https://media.bunjang.co.kr/product/233392017_1_1692231420_w360.jpg",
-						userName = "유저이름2",
-						date = "몇 분전",
-						content = "asda41sd",
-						replyCommentList = emptyList()
-					),
-					Comment(
-						id = 2L,
-						profileImg = "https://media.bunjang.co.kr/product/233392017_1_1692231420_w360.jpg",
-						userName = "유저이름3",
-						date = "몇 분전",
-						content = "asdas123d",
-						replyCommentList = emptyList()
-					),
-					Comment(
-						id = 3L,
-						profileImg = "https://media.bunjang.co.kr/product/233392017_1_1692231420_w360.jpg",
-						userName = "유저이름4",
-						date = "몇 분전",
-						content = "asdasd23",
-						replyCommentList = emptyList()
-					)
+/**
+ * 리프레쉬가 되게 끔 하는 방법
+ * 1. comment로 변환
+ */
+
+data class FeedDetail(
+	val boardDetail: BoardDetail,
+	val commentList: List<Comment>
+)
+
+@OptIn(ExperimentalCoroutinesApi::class)
+@HiltViewModel
+class FeedDetailViewModel @Inject constructor(
+	private val savedStateHandle: SavedStateHandle,
+	private val getBoardDetailUseCase: GetBoardDetailUseCase,
+	private val getCommentsUseCase: GetCommentsUseCase
+) : ViewModel() {
+
+	private val boardId = savedStateHandle.getStateFlow<Long?>("boardId", 500L)
+	private val fetchingCommentId = MutableStateFlow(0L)
+
+	private val commentList = mutableListOf<Comment>()
+
+	private var _commentsLoading = MutableStateFlow(false)
+	val commentsLoading = _commentsLoading.asStateFlow()
+
+	val feedDetailUiState = boardId.flatMapLatest { boardId ->
+		if (boardId == null) {
+			flowOf(FeedDetailUiState.Error("boardId is Null"))
+		} else {
+			val boardFlow = getBoardDetailUseCase(boardId = boardId)
+
+			val commentsFlow = fetchingCommentId.flatMapLatest { _ ->
+				getCommentsUseCase(
+					boardId = boardId,
+					lastCommentId = 0
 				)
-			),
-			Comment(
-				id = 5L,
-				profileImg = "https://media.bunjang.co.kr/product/233392017_1_1692231420_w360.jpg",
-				userName = "다음 유저",
-				date = "몇 분전",
-				content = "123456789",
-				replyCommentList = emptyList()
-			)
-		)
+			}
+
+			combine(boardFlow, commentsFlow) { boardResult, commentsResult ->
+				Pair(boardResult, commentsResult)
+			}.map {
+				val result = it.first.zip(it.second) { board, comments ->
+					commentList.addAll(comments)
+					FeedDetail(boardDetail = board, commentList = commentList.toList())
+				}
+
+				when (result) {
+					is Result.Success -> {
+						_commentsLoading.value = false
+
+						FeedDetailUiState.Success(
+							boardDetail = result.body.boardDetail,
+							commentList = result.body.commentList
+						)
+					}
+
+					is Result.Unexpected -> {
+						FeedDetailUiState.Error(result.t.message)
+					}
+
+					is Result.Failure -> {
+						FeedDetailUiState.Error("${result.code} ${result.error}")
+					}
+
+					is Result.NetworkError -> {
+						FeedDetailUiState.Error("${result.exception.message}")
+					}
+				}
+			}
+		}
+	}.stateIn(
+		scope = viewModelScope,
+		started = SharingStarted.WhileSubscribed(5000L),
+		initialValue = FeedDetailUiState.Loading
+	)
+
+	fun fetchingCommentList() {
+		if (!_commentsLoading.value) {
+			_commentsLoading.value = true
+			fetchingCommentId.value += 1
+		}
 	}
 }

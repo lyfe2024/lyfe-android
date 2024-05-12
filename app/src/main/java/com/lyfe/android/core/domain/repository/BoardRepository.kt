@@ -1,13 +1,16 @@
 package com.lyfe.android.core.domain.repository
 
-import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.core.model.BoardDetail
 import kotlinx.coroutines.flow.Flow
 
 interface BoardRepository {
 
-	suspend fun getBoardDetail(boardId: Long): Result<GetBoardDetailResponse>
+	// 글 상세 조회
+	fun fetchBoardDetail(
+		boardId: Long
+	): Flow<Result<BoardDetail>>
 
 	fun getLatestBoards(
 		cursorId: Long,

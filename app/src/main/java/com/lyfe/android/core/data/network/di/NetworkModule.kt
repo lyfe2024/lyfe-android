@@ -12,6 +12,7 @@ import com.lyfe.android.core.data.network.interceptor.NetworkInterceptor
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.AuthService
 import com.lyfe.android.core.data.network.service.BoardService
+import com.lyfe.android.core.data.network.service.CommentService
 import com.lyfe.android.core.data.network.service.FeedbackService
 import com.lyfe.android.core.data.network.service.ImageService
 import com.lyfe.android.core.data.network.service.NotificationService
@@ -152,6 +153,24 @@ object NetworkModule {
 
 	@Provides
 	@Singleton
+	fun providesBoardService(retrofit: Retrofit): BoardService {
+		return retrofit.create(BoardService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesCommentService(retrofit: Retrofit): CommentService {
+		return retrofit.create(CommentService::class.java)
+	}
+
+	@Provides
+	@Singleton
+	fun providesTopicService(retrofit: Retrofit): TopicService {
+		return retrofit.create(TopicService::class.java)
+	}
+
+	@Provides
+	@Singleton
 	fun providesAWSService(@Named("AWS") retrofit: Retrofit): AWSService {
 		return retrofit.create(AWSService::class.java)
 	}
@@ -169,17 +188,5 @@ object NetworkModule {
 		)
 
 		return retrofit.create(AuthService::class.java)
-	}
-
-	@Provides
-	@Singleton
-	fun providesTopicService(retrofit: Retrofit): TopicService {
-		return retrofit.create(TopicService::class.java)
-	}
-
-	@Provides
-	@Singleton
-	fun providesBoardService(retrofit: Retrofit): BoardService {
-		return retrofit.create(BoardService::class.java)
 	}
 }

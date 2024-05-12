@@ -16,7 +16,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 
 @Composable
@@ -47,14 +46,15 @@ fun LyfeTextFieldWithBottomCount(
 			isActivateCloseIcon = isActivateCloseIcon,
 			text = text,
 			hintText = hintText,
-			lineHeight = 24.sp,
 			onTextClear = onTextClear,
 			onTextChange = {
 				if (it.length > maxLength) return@LyfeTextField
 				onTextChange(it)
 			}
 		)
+
 		Spacer(modifier = Modifier.height(4.dp))
+
 		Text(
 			modifier = Modifier.align(Alignment.End),
 			text = "${text.length}/$maxLength",

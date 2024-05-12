@@ -2,6 +2,8 @@ package com.lyfe.android.core.data.datasource.di
 
 import com.lyfe.android.core.data.datasource.AuthDataSource
 import com.lyfe.android.core.data.datasource.AuthRemoteDataSource
+import com.lyfe.android.core.data.datasource.CommentDataSource
+import com.lyfe.android.core.data.datasource.CommentRemoteDataSource
 import com.lyfe.android.core.data.datasource.BoardDataSource
 import com.lyfe.android.core.data.datasource.BoardRemoteDataSource
 import com.lyfe.android.core.data.datasource.DeviceGalleryDataSource
@@ -90,6 +92,12 @@ interface DataSourceModule {
 	fun bindsBoardDataSource(
 		boardRemoteDataSource: BoardRemoteDataSource
 	): BoardDataSource
+
+	@Singleton
+	@Binds
+	fun bindsCommentDataSource(
+		commentRemoteDataSource: CommentRemoteDataSource
+	): CommentDataSource
 
 	@Singleton
 	@Binds
