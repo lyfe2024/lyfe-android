@@ -2,11 +2,11 @@ package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.BoardDataSource
 import com.lyfe.android.core.data.mapper.toDomain
-import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.data.network.model.transform
 import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.model.Feed
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,9 +20,13 @@ class BoardRepositoryImpl @Inject constructor(
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : BoardRepository {
 
-	override suspend fun getBoardDetail(boardId: Long): Result<GetBoardDetailResponse> {
-		return boardDataSource.getBoardDetail(boardId = boardId)
-	}
+	override fun fetchBoardDetail(
+		boardId: Long
+	) = flow {
+		emit(boardDataSource.fetchBoardDetail(
+			boardId = boardId
+		).transform { it.toDomain() })
+	}.flowOn(ioDispatcher)
 
 	override fun getLatestBoards(
 		cursorId: Long,
