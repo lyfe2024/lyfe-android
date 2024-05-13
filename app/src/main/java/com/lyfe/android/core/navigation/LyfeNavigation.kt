@@ -9,21 +9,21 @@ import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.NotificationListRoute
 import com.lyfe.android.feature.album.SelectAlbumScreen
-import com.lyfe.android.feature.detail.FeedDetailScreen
+import com.lyfe.android.feature.detail.FeedDetailRouter
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
-import com.lyfe.android.feature.signup.SignUpCompleteScreen
-import com.lyfe.android.feature.terms.PersonalInfoAgreementsScreen
-import com.lyfe.android.feature.signup.SignUpTermsPolicyScreen
-import com.lyfe.android.feature.terms.ServiceTermsScreen
 import com.lyfe.android.feature.post.PostScreen
 import com.lyfe.android.feature.post.create.PostCreateScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.setting.SettingScreen
+import com.lyfe.android.feature.signup.SignUpCompleteScreen
+import com.lyfe.android.feature.signup.SignUpTermsPolicyScreen
+import com.lyfe.android.feature.terms.PersonalInfoAgreementsScreen
+import com.lyfe.android.feature.terms.ServiceTermsScreen
 
 fun NavGraphBuilder.lyfeHomeNavigation(
 	lyfeNavigator: LyfeNavigator,
@@ -49,7 +49,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.FeedDetail.name) {
-		FeedDetailScreen(
+		FeedDetailRouter(
 			navigator = lyfeNavigator
 		)
 		selectedScreen(LyfeScreens.FeedDetail.name)

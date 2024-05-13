@@ -1,15 +1,15 @@
 package com.lyfe.android.core.data.datasource
 
-import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.model.GetBoardListResult
+import com.lyfe.android.core.data.model.board.BoardDetailDto
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.model.FeedType
 
 interface BoardDataSource {
 
-	suspend fun getBoardDetail(
+	suspend fun fetchBoardDetail(
 		boardId: Long
-	): Result<GetBoardDetailResponse>
+	): Result<BoardDetailDto>
 
 	suspend fun getLatestBoards(
 		cursorId: Long,

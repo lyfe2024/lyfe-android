@@ -1,18 +1,19 @@
 package com.lyfe.android.core.data.network.service
 
-import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.model.GetBoardListResult
+import com.lyfe.android.core.data.model.board.BoardDetailDto
 import com.lyfe.android.core.data.network.model.Result
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface BoardService {
+
 	// 글 상세 조회
-	@GET("/v1/boards/details/{boardId}")
-	suspend fun getBoardDetail(
+	@GET("/v1/boards/detail/{boardId}")
+	suspend fun fetchBoardDetail(
 		@Path("boardId") boardId: Long
-	): Result<GetBoardDetailResponse>
+	): Result<BoardDetailDto>
 
 	// 글 리스트 조회(최신순)
 	@GET("/v1/boards/latest")

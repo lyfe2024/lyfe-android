@@ -15,22 +15,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
-import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Body2
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.util.clickableSingle
 
@@ -42,14 +43,23 @@ fun LyfeTextField(
 	verticalPadding: Dp = 12.dp,
 	horizontalPadding: Dp = 12.dp,
 	textFieldType: LyfeTextFieldType = LyfeTextFieldType.TC_DEFAULT_BG_WHITE_SC_TRANSPARENT,
-	isActivateCloseIcon: Boolean = true,
+	isActivateCloseIcon: Boolean = false,
 	text: String,
 	hintText: String = "",
-	fontSize: TextUnit = 16.sp,
-	lineHeight: TextUnit = TextUnit.Unspecified,
+	textColor: Color = Color.Black,
+	textStyle: TextStyle = Body2,
+	requestFocus: Boolean = false,
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
 ) {
+	val focusRequester = remember { FocusRequester() }
+
+	LaunchedEffect(Unit) {
+		if (requestFocus) {
+			focusRequester.requestFocus()
+		}
+	}
+
 	Box(
 		modifier = modifier
 	) {
@@ -61,17 +71,13 @@ fun LyfeTextField(
 					color = textFieldType.strokeColor,
 					shape = RoundedCornerShape(size = 8.dp)
 				)
+				.focusRequester(focusRequester)
 				.background(color = textFieldType.bgColor, shape = RoundedCornerShape(size = 8.dp))
 				.padding(horizontal = horizontalPadding, vertical = verticalPadding),
 			singleLine = singleLine,
 			maxLines = maxLines,
 			value = text,
-			textStyle = TextStyle(
-				color = textFieldType.textColor,
-				fontSize = fontSize,
-				fontWeight = FontWeight.W600,
-				lineHeight = lineHeight
-			),
+			textStyle = textStyle,
 			onValueChange = onTextChange
 		) { innerTextField ->
 			Row(
@@ -83,11 +89,8 @@ fun LyfeTextField(
 					if (text.isEmpty()) {
 						Text(
 							text = hintText,
-							style = TextStyle(
-								color = Grey200,
-								fontSize = fontSize,
-								fontWeight = FontWeight.W600
-							)
+							style = textStyle,
+							color = textColor
 						)
 					}
 					innerTextField()

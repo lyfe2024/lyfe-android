@@ -2,11 +2,11 @@ package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.BoardDataSource
 import com.lyfe.android.core.data.mapper.toDomain
-import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.ApiResultException
 import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.data.network.model.transform
 import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.model.Feed
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,9 +20,15 @@ class BoardRepositoryImpl @Inject constructor(
 	@Dispatcher(LyfeDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : BoardRepository {
 
-	override suspend fun getBoardDetail(boardId: Long): Result<GetBoardDetailResponse> {
-		return boardDataSource.getBoardDetail(boardId = boardId)
-	}
+	override fun fetchBoardDetail(
+		boardId: Long
+	) = flow {
+		emit(
+			boardDataSource.fetchBoardDetail(
+				boardId = boardId
+			).transform { it.toDomain() }
+		)
+	}.flowOn(ioDispatcher)
 
 	override fun getLatestBoards(
 		cursorId: Long,
@@ -30,17 +36,20 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getLatestBoards(cursorId, boardType)) {
 			is Result.Success -> {
-				val result = response.body?.list ?: throw ApiResultException()
+				val result = response.body.list
 				emit(result.map { it.toDomain() })
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
@@ -52,17 +61,20 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getPopularBoards(cursorId, boardType, popularType)) {
 			is Result.Success -> {
-				val result = response.body?.list ?: throw ApiResultException()
+				val result = response.body.list
 				emit(result.map { it.toDomain() })
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
@@ -73,17 +85,20 @@ class BoardRepositoryImpl @Inject constructor(
 	): Flow<List<Feed>> = flow {
 		when (val response = boardDataSource.getUserBoards(boardType, cursorId)) {
 			is Result.Success -> {
-				val result = response.body?.list ?: throw ApiResultException()
+				val result = response.body.list
 				emit(result.map { it.toDomain() })
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
