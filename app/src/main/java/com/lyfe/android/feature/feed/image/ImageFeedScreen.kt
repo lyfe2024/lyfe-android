@@ -1,9 +1,11 @@
-package com.lyfe.android.feature.feed
+package com.lyfe.android.feature.feed.image
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,15 +23,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.feature.feed.FeedFilterView
+import com.lyfe.android.feature.feed.FeedScreenCardView
 
 @Composable
-fun LatestFeedScreen(
-	viewModel: FeedViewModel = hiltViewModel(),
+fun ImageFeedScreen(
+	viewModel: ImageFeedViewModel = hiltViewModel(),
 	onScroll: (Boolean) -> Unit = {},
 	onFeedClick: () -> Unit = {}
 ) {
-	val uiState by viewModel.latestFeedUiState.collectAsStateWithLifecycle()
-	val feedList by viewModel.latestFeedList.collectAsStateWithLifecycle()
+	val uiState by viewModel.imageFeedUiState.collectAsStateWithLifecycle()
+	val feedList by viewModel.imageFeedList.collectAsStateWithLifecycle()
+	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
 
 	LaunchedEffect(lazyGridState) {
@@ -38,30 +43,36 @@ fun LatestFeedScreen(
 				onScroll(it)
 			}
 	}
+	
+	Column(modifier = Modifier.fillMaxSize()) {
+		FeedFilterView(
+			modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
+			feedSortType = feedSortType,
+			selectSortType = viewModel::selectFeedSortType
+		)
 
-	LatestFeedListScreen(
-		lazyGridState = lazyGridState,
-		feedList = feedList,
-		uiState = uiState,
-		fetchNextFeedList = viewModel::fetchNextLatestFeedList,
-		onFeedClick = onFeedClick
-	)
+		ImageFeedListScreen(
+			lazyGridState = lazyGridState,
+			feedList = feedList,
+			uiState = uiState,
+			fetchNextFeedList = viewModel::fetchNextFeedList,
+			onFeedClick = onFeedClick
+		)
+	}
 }
 
 @Composable
-private fun LatestFeedListScreen(
+private fun ImageFeedListScreen(
 	lazyGridState: LazyGridState,
 	feedList: List<Feed>,
-	uiState: LatestFeedListUiState,
+	uiState: ImageFeedListUiState,
 	fetchNextFeedList: () -> Unit,
 	onFeedClick: () -> Unit
 ) {
-	Box(
-		modifier = Modifier.fillMaxSize()
-	) {
-		if (uiState == LatestFeedListUiState.Loading) {
+	Box(modifier = Modifier.fillMaxSize()) {
+		if (uiState == ImageFeedListUiState.Loading) {
 			// Progress Bar
-			LogUtil.d("LatestFeedScreen", "LatestFeedListUiState Loading")
+			LogUtil.d("ImageFeedScreen", "ImageFeedListUiState Loading")
 		}
 
 		val threshold = 10
@@ -69,12 +80,12 @@ private fun LatestFeedListScreen(
 		LazyVerticalGrid(
 			columns = GridCells.Fixed(2),
 			state = lazyGridState,
-			contentPadding = PaddingValues(vertical = 13.dp, horizontal = 20.dp),
+			contentPadding = PaddingValues(horizontal = 20.dp),
 			verticalArrangement = Arrangement.spacedBy(12.dp),
 			horizontalArrangement = Arrangement.spacedBy(18.dp)
 		) {
 			itemsIndexed(feedList) { index, feed ->
-				if ((index + threshold) >= feedList.size && uiState != LatestFeedListUiState.Loading) {
+				if ((index + threshold) >= feedList.size && uiState != ImageFeedListUiState.Loading) {
 					fetchNextFeedList()
 				}
 
@@ -90,6 +101,6 @@ private fun LatestFeedListScreen(
 
 @Preview
 @Composable
-private fun Preview_LatestFeedScreen() {
-	LatestFeedScreen()
+private fun Preview_ImageFeedScreen() {
+	ImageFeedScreen()
 }

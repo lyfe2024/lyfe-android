@@ -44,6 +44,8 @@ import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.feature.feed.image.ImageFeedScreen
+import com.lyfe.android.feature.feed.text.TextFeedScreen
 
 private const val LATEST_FEED = 0
 private const val POPULAR_FEED = 1
@@ -55,8 +57,8 @@ fun FeedScreen(
 	onScroll: (Boolean) -> Unit
 ) {
 	val tabItemList = listOf(
-		TabItem(stringResource(id = R.string.feed_screen_latest_tab_text)),
-		TabItem(stringResource(id = R.string.feed_screen_popular_tab_text))
+		TabItem(stringResource(id = R.string.feed_screen_image_tab_text)),
+		TabItem(stringResource(id = R.string.feed_screen_text_tab_text))
 	)
 	var tabIdx by remember { mutableIntStateOf(0) }
 	val pagerState = rememberPagerState(
@@ -108,14 +110,14 @@ fun FeedScreen(
 		) { page ->
 			when (page) {
 				LATEST_FEED -> {
-					LatestFeedScreen(
+					ImageFeedScreen(
 						onScroll = onScroll
 					) {
 						navigator.navigate(LyfeScreens.FeedDetail.name)
 					}
 				}
 				POPULAR_FEED -> {
-					PopularFeedScreen(
+					TextFeedScreen(
 						onScroll = onScroll
 					) {
 						navigator.navigate(LyfeScreens.FeedDetail.name)

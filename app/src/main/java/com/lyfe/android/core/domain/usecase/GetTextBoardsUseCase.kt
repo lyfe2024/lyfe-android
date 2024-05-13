@@ -1,0 +1,21 @@
+package com.lyfe.android.core.domain.usecase
+
+import com.lyfe.android.core.domain.repository.BoardRepository
+import com.lyfe.android.core.model.Feed
+import com.lyfe.android.core.model.FeedType
+import com.lyfe.android.feature.feed.model.FeedSortType
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
+
+class GetTextBoardsUseCase @Inject constructor(
+	private val boardRepository: BoardRepository
+) {
+
+	operator fun invoke(
+		cursorId: Long,
+		sortType: FeedSortType
+	) = when (sortType) {
+		FeedSortType.LATEST -> boardRepository.getLatestBoards(cursorId, FeedType.BOARD.name)
+		else  -> boardRepository.getPopularBoards(cursorId, FeedType.BOARD.name, sortType.name)
+	}
+}

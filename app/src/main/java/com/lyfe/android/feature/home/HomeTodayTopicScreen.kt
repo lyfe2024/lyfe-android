@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.Caption2
@@ -179,7 +180,7 @@ private fun HomeTodayTopicFeedList(
 				index
 			}
 		) { index, feed ->
-			HomeTextFeedView(
+			LyfeTextFeedView(
 				modifier = Modifier.padding(horizontal = 20.dp),
 				feed = feed
 			)

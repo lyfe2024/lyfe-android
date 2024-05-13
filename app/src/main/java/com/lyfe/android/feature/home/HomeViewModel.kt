@@ -59,7 +59,7 @@ class HomeViewModel @Inject constructor(
 	private fun getTodayTopic() = viewModelScope.launch {
 		when (val result = getTodayTopicUseCase()) {
 			is Result.Success -> {
-				todayTopic = result.body?.content.orEmpty()
+				todayTopic = result.body.content
 			}
 			else -> {
 				// TODO 토픽 실패 처리

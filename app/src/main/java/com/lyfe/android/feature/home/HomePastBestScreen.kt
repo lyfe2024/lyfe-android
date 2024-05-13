@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
 import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.theme.H4
@@ -236,7 +237,7 @@ private fun HomePostPastPager(
 		val feed = pages[page]
 		if (feed.feedImageUrl.isEmpty()) {
 			// 텍스트 피드
-			HomeTextFeedView(
+			LyfeTextFeedView(
 				feed = feed,
 				onClick = onItemClick
 			)
