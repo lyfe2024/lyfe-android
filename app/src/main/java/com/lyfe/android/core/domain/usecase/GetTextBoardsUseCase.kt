@@ -1,10 +1,8 @@
 package com.lyfe.android.core.domain.usecase
 
 import com.lyfe.android.core.domain.repository.BoardRepository
-import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.feature.feed.model.FeedSortType
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetTextBoardsUseCase @Inject constructor(

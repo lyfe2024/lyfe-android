@@ -15,6 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -25,6 +28,7 @@ import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.feature.feed.FeedFilterView
 import com.lyfe.android.feature.feed.FeedScreenCardView
+import com.lyfe.android.feature.feed.SelectFilterListView
 
 @Composable
 fun ImageFeedScreen(
@@ -36,6 +40,7 @@ fun ImageFeedScreen(
 	val feedList by viewModel.imageFeedList.collectAsStateWithLifecycle()
 	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
 	val lazyGridState = rememberLazyGridState()
+	var selectingState by remember { mutableStateOf(false) }
 
 	LaunchedEffect(lazyGridState) {
 		snapshotFlow { lazyGridState.isScrollInProgress }
@@ -43,21 +48,36 @@ fun ImageFeedScreen(
 				onScroll(it)
 			}
 	}
-	
-	Column(modifier = Modifier.fillMaxSize()) {
-		FeedFilterView(
-			modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
-			feedSortType = feedSortType,
-			selectSortType = viewModel::selectFeedSortType
-		)
 
-		ImageFeedListScreen(
-			lazyGridState = lazyGridState,
-			feedList = feedList,
-			uiState = uiState,
-			fetchNextFeedList = viewModel::fetchNextFeedList,
-			onFeedClick = onFeedClick
-		)
+	Box {
+		Column(modifier = Modifier.fillMaxSize()) {
+			FeedFilterView(
+				modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
+				feedSortType = feedSortType,
+				onClick = { selectingState = !selectingState }
+			)
+
+			ImageFeedListScreen(
+				lazyGridState = lazyGridState,
+				feedList = feedList,
+				uiState = uiState,
+				fetchNextFeedList = viewModel::fetchNextFeedList,
+				onFeedClick = {
+					selectingState = false
+					onFeedClick()
+				}
+			)
+		}
+
+		if (selectingState) {
+			SelectFilterListView(
+				feedSortType = feedSortType,
+				onSelectSortType = {
+					selectingState = false
+					viewModel.selectFeedSortType(it)
+				}
+			)
+		}
 	}
 }
 

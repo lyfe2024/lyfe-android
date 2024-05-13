@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.feed.text
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -15,6 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -25,6 +27,7 @@ import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.feature.feed.FeedFilterView
+import com.lyfe.android.feature.feed.SelectFilterListView
 
 @Composable
 fun TextFeedScreen(
@@ -36,6 +39,7 @@ fun TextFeedScreen(
 	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
 	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
 	val lazyListState = rememberLazyListState()
+	var selectingState by remember { mutableStateOf(false) }
 
 	LaunchedEffect(lazyListState) {
 		snapshotFlow { lazyListState.isScrollInProgress }
@@ -44,20 +48,35 @@ fun TextFeedScreen(
 			}
 	}
 
-	Column(modifier = Modifier.fillMaxSize()) {
-		FeedFilterView(
-			modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
-			feedSortType = feedSortType,
-			selectSortType = viewModel::selectFeedSortType
-		)
+	Box {
+		Column(modifier = Modifier.fillMaxSize()) {
+			FeedFilterView(
+				modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
+				feedSortType = feedSortType,
+				onClick = { selectingState = !selectingState }
+			)
 
-		TextFeedListScreen(
-			lazyListState = lazyListState,
-			feedList = feedList,
-			uiState = uiState,
-			fetchNextFeedList = viewModel::fetchNextFeedList,
-			onFeedClick = onFeedClick
-		)
+			TextFeedListScreen(
+				lazyListState = lazyListState,
+				feedList = feedList,
+				uiState = uiState,
+				fetchNextFeedList = viewModel::fetchNextFeedList,
+				onFeedClick = {
+					selectingState = false
+					onFeedClick()
+				}
+			)
+		}
+
+		if (selectingState) {
+			SelectFilterListView(
+				feedSortType = feedSortType,
+				onSelectSortType = {
+					selectingState = false
+					viewModel.selectFeedSortType(it)
+				}
+			)
+		}
 	}
 }
 
