@@ -98,7 +98,7 @@ private fun TextFeedListScreen(
 
 		LazyColumn(
 			state = lazyListState,
-			contentPadding = PaddingValues(horizontal = 20.dp),
+			contentPadding = PaddingValues(horizontal = 20.dp)
 		) {
 			itemsIndexed(feedList) { index, feed ->
 				if ((index + threshold) >= feedList.size && uiState != TextFeedListUiState.Loading) {

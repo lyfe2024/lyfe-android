@@ -22,7 +22,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ImageFeedViewModel @Inject constructor(
-	getImageBoardsUseCase: GetImageBoardsUseCase,
+	getImageBoardsUseCase: GetImageBoardsUseCase
 ) : ViewModel() {
 
 	private val _imageFeedUiState = MutableStateFlow<ImageFeedListUiState>(ImageFeedListUiState.Loading)

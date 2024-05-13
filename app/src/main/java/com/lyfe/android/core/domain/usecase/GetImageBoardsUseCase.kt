@@ -14,6 +14,6 @@ class GetImageBoardsUseCase @Inject constructor(
 		sortType: FeedSortType
 	) = when (sortType) {
 		FeedSortType.LATEST -> boardRepository.getLatestBoards(cursorId, FeedType.BOARD_PICTURE.name)
-		else  -> boardRepository.getPopularBoards(cursorId, FeedType.BOARD_PICTURE.name, sortType.name)
+		else -> boardRepository.getPopularBoards(cursorId, FeedType.BOARD_PICTURE.name, sortType.name)
 	}
 }

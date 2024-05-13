@@ -14,6 +14,6 @@ class GetTextBoardsUseCase @Inject constructor(
 		sortType: FeedSortType
 	) = when (sortType) {
 		FeedSortType.LATEST -> boardRepository.getLatestBoards(cursorId, FeedType.BOARD.name)
-		else  -> boardRepository.getPopularBoards(cursorId, FeedType.BOARD.name, sortType.name)
+		else -> boardRepository.getPopularBoards(cursorId, FeedType.BOARD.name, sortType.name)
 	}
 }

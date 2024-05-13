@@ -28,7 +28,6 @@ import com.lyfe.android.core.common.ui.theme.Title3
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.feature.feed.model.FeedSortType
 
-
 @Composable
 fun FeedFilterView(
 	modifier: Modifier = Modifier,
