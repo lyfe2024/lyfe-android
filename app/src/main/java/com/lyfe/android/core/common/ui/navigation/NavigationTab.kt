@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,8 +51,7 @@ fun NavigationTab(
 	onClick: (index: Int) -> Unit
 ) {
 	val density = LocalDensity.current
-	var width by remember { mutableStateOf(0.dp) } // 너비 정보를 저장할 변수
-	val navigationShowType = NavigationShowType.getNavigationShowType(width)
+	val navigationShowType = NavigationShowType.getNavigationShowType()
 	var tabWidth by remember { mutableStateOf(0.dp) }
 	var indicatorPosition by remember { mutableStateOf(0.dp) }
 
@@ -70,9 +69,7 @@ fun NavigationTab(
 			.background(color = DEFAULT, shape = RoundedCornerShape(20.dp))
 			.height(56.dp)
 			.padding(vertical = 8.dp, horizontal = 20.dp)
-			.onGloballyPositioned {
-				width = with(density) { it.size.width.toDp() }
-			}
+			.clickableSingle {}
 	) {
 		MyTabIndicator(
 			indicatorWidth = tabWidth,
@@ -132,7 +129,7 @@ private fun MyTabIndicator(
 private fun MyTabItem(
 	modifier: Modifier = Modifier,
 	isSelected: Boolean,
-	navigationShowType: NavigationShowType = NavigationShowType.FULL,
+	navigationShowType: NavigationShowType = NavigationShowType.ICON,
 	onClick: () -> Unit,
 	item: BottomNavItem
 ) {
