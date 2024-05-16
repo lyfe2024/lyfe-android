@@ -33,13 +33,13 @@ import com.lyfe.android.feature.feed.SelectFilterListView
 @Composable
 fun ImageFeedScreen(
 	viewModel: ImageFeedViewModel = hiltViewModel(),
+	lazyGridState: LazyGridState = rememberLazyGridState(),
 	onScroll: (Boolean) -> Unit = {},
 	onFeedClick: () -> Unit = {}
 ) {
 	val uiState by viewModel.imageFeedUiState.collectAsStateWithLifecycle()
 	val feedList by viewModel.imageFeedList.collectAsStateWithLifecycle()
 	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
-	val lazyGridState = rememberLazyGridState()
 	var selectingState by remember { mutableStateOf(false) }
 
 	LaunchedEffect(lazyGridState) {
