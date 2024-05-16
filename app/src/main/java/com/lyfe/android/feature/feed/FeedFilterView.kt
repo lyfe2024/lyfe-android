@@ -35,9 +35,10 @@ fun FeedFilterView(
 	onClick: () -> Unit
 ) {
 	Row(
-		modifier = modifier.clickableSingle {
-			onClick()
-		},
+		modifier = modifier
+			.clickableSingle {
+				onClick()
+			},
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Image(

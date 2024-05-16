@@ -12,5 +12,10 @@ class AuthUserUseCase @Inject constructor(
 		authorizationCode: String,
 		idToken: String,
 		fcmToken: String
-	) = authRepository.authUser(socialType, authorizationCode, idToken, fcmToken)
+	) = authRepository.authUser(
+		socialType = socialType,
+		authorizationCode = authorizationCode,
+		idToken = idToken,
+		fcmToken = fcmToken
+	)
 }

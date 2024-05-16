@@ -153,9 +153,7 @@ private fun LyfeTextFeedScoreRow(
 		Spacer(modifier = Modifier.width(16.dp))
 
 		Image(
-			modifier = Modifier
-				.padding(0.66667.dp)
-				.size(16.dp),
+			modifier = Modifier.size(16.dp),
 			painter = painterResource(id = R.drawable.ic_comment),
 			contentDescription = "ic_whisky"
 		)

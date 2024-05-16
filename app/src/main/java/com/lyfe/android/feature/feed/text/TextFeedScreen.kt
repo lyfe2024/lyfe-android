@@ -49,7 +49,9 @@ fun TextFeedScreen(
 	}
 
 	Box {
-		Column(modifier = Modifier.fillMaxSize()) {
+		Column(
+			modifier = Modifier.fillMaxSize()
+		) {
 			FeedFilterView(
 				modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
 				feedSortType = feedSortType,
@@ -88,7 +90,9 @@ private fun TextFeedListScreen(
 	fetchNextFeedList: () -> Unit,
 	onFeedClick: () -> Unit
 ) {
-	Box(modifier = Modifier.fillMaxSize()) {
+	Box(
+		modifier = Modifier.fillMaxSize()
+	) {
 		if (uiState == TextFeedListUiState.Loading) {
 			// Progress Bar
 			LogUtil.d("TextFeedScreen", "TextFeedListUiState Loading")
