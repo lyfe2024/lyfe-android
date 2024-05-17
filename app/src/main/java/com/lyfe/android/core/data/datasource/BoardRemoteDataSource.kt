@@ -1,6 +1,5 @@
 package com.lyfe.android.core.data.datasource
 
-import com.lyfe.android.core.data.model.GetBoardDetailResponse
 import com.lyfe.android.core.data.model.GetBoardListResult
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.BoardService
@@ -10,9 +9,10 @@ class BoardRemoteDataSource @Inject constructor(
 	private val boardService: BoardService
 ) : BoardDataSource {
 
-	override suspend fun getBoardDetail(boardId: Long): Result<GetBoardDetailResponse> {
-		return boardService.getBoardDetail(boardId = boardId)
-	}
+	// 글 상세 조회
+	override suspend fun fetchBoardDetail(
+		boardId: Long
+	) = boardService.fetchBoardDetail(boardId = boardId)
 
 	override suspend fun getLatestBoards(
 		cursorId: Long,
