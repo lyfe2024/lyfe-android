@@ -57,10 +57,12 @@ class UserRepositoryImpl @Inject constructor(
 		nickname: String,
 		profileUrl: String
 	) = flow {
-		when (val response = userRemoteDataSource.putUserInfo(
-			nickname = nickname,
-			profileUrl = profileUrl
-		)) {
+		when (
+			val response = userRemoteDataSource.putUserInfo(
+				nickname = nickname,
+				profileUrl = profileUrl
+			)
+		) {
 			is Result.Success -> {
 				val body = response.body
 				emit(body.toDomain())

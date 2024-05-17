@@ -34,10 +34,12 @@ class BoardRepositoryImpl @Inject constructor(
 		cursorId: Long,
 		boardType: String
 	): Flow<List<Feed>> = flow {
-		when (val response = boardDataSource.getLatestBoards(
-			cursorId = cursorId,
-			boardType = boardType
-		)) {
+		when (
+			val response = boardDataSource.getLatestBoards(
+				cursorId = cursorId,
+				boardType = boardType
+			)
+		) {
 			is Result.Success -> {
 				val result = response.body.list
 				emit(result.map { it.toDomain() })
@@ -62,11 +64,13 @@ class BoardRepositoryImpl @Inject constructor(
 		boardType: String,
 		popularType: String
 	): Flow<List<Feed>> = flow {
-		when (val response = boardDataSource.getPopularBoards(
-			cursorId = cursorId,
-			boardType = boardType,
-			popularType = popularType
-		)) {
+		when (
+			val response = boardDataSource.getPopularBoards(
+				cursorId = cursorId,
+				boardType = boardType,
+				popularType = popularType
+			)
+		) {
 			is Result.Success -> {
 				val result = response.body.list
 				emit(result.map { it.toDomain() })
@@ -90,10 +94,12 @@ class BoardRepositoryImpl @Inject constructor(
 		boardType: String,
 		cursorId: Long
 	): Flow<List<Feed>> = flow {
-		when (val response = boardDataSource.getUserBoards(
-			boardType = boardType,
-			cursorId = cursorId
-		)) {
+		when (
+			val response = boardDataSource.getUserBoards(
+				boardType = boardType,
+				cursorId = cursorId
+			)
+		) {
 			is Result.Success -> {
 				val result = response.body.list
 				emit(result.map { it.toDomain() })

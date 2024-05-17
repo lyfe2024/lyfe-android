@@ -21,10 +21,12 @@ class ImageRepositoryImpl @Inject constructor(
 ) : ImageRepository {
 
 	override fun getImageUploadUrl(format: String, path: String) = flow {
-		when (val response = imageDataSource.getImageUploadUrl(
-			format = format,
-			path = path
-		)) {
+		when (
+			val response = imageDataSource.getImageUploadUrl(
+				format = format,
+				path = path
+			)
+		) {
 			is Result.Success -> {
 				val result = response.body
 				emit(result.toDomain())
