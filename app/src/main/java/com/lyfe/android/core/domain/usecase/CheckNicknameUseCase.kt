@@ -7,5 +7,5 @@ class CheckNicknameUseCase @Inject constructor(
 	private val userRepository: UserRepository
 ) {
 
-	suspend operator fun invoke(nickname: String) = userRepository.fetchIsNicknameDuplicated(nickname)
+	suspend operator fun invoke(nickname: String) = userRepository.fetchIsNicknameDuplicated(nickname = nickname)
 }

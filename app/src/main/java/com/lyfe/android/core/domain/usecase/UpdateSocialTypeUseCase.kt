@@ -7,5 +7,5 @@ class UpdateSocialTypeUseCase @Inject constructor(
 	private val userRepository: UserRepository
 ) {
 	// 유저 액세스 토큰 저장
-	suspend operator fun invoke(socialType: String) = userRepository.updateSocialType(socialType)
+	suspend operator fun invoke(socialType: String) = userRepository.updateSocialType(socialType = socialType)
 }

@@ -11,5 +11,9 @@ class GetPopularBoardsUseCase @Inject constructor(
 		cursorId: Long = 0,
 		boardType: String,
 		popularType: String
-	) = boardRepository.getPopularBoards(cursorId, boardType, popularType)
+	) = boardRepository.getPopularBoards(
+		cursorId = cursorId,
+		boardType = boardType,
+		popularType = popularType
+	)
 }

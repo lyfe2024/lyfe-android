@@ -7,5 +7,5 @@ class SendFeedbackUseCase @Inject constructor(
 	private val feedbackRepository: FeedbackRepository
 ) {
 
-	suspend operator fun invoke(text: String) = feedbackRepository.sendFeedback(text)
+	suspend operator fun invoke(text: String) = feedbackRepository.sendFeedback(text = text)
 }

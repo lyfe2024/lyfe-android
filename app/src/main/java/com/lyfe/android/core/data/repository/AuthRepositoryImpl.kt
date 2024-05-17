@@ -16,9 +16,15 @@ class AuthRepositoryImpl @Inject constructor(
 	private val authDataSource: AuthDataSource
 ) : AuthRepository {
 
-	override suspend fun postUser(userToken: String, nickname: String): Result<PostUserResult> {
-		val requestBody = PostUserRequest(userToken, nickname)
-		return authDataSource.postUser(requestBody)
+	override suspend fun postUser(
+		userToken: String,
+		nickname: String
+	): Result<PostUserResult> {
+		val requestBody = PostUserRequest(
+			userToken = userToken,
+			nickname = nickname
+		)
+		return authDataSource.postUser(requestBody = requestBody)
 	}
 
 	override suspend fun authUser(
@@ -27,13 +33,18 @@ class AuthRepositoryImpl @Inject constructor(
 		idToken: String,
 		fcmToken: String
 	): Result<AuthUserResult> {
-		val requestBody = AuthUserRequest(socialType, authorizationCode, idToken, fcmToken)
-		return authDataSource.authUser(requestBody)
+		val requestBody = AuthUserRequest(
+			socialType = socialType,
+			authorizationCode = authorizationCode,
+			idToken = idToken,
+			fcmToken = fcmToken
+		)
+		return authDataSource.authUser(requestBody = requestBody)
 	}
 
 	override suspend fun reissueToken(token: String): Result<ReissueTokenResult> {
-		val requestBody = ReissueTokenRequest(token)
-		return authDataSource.reissueToken(requestBody)
+		val requestBody = ReissueTokenRequest(token = token)
+		return authDataSource.reissueToken(requestBody = requestBody)
 	}
 
 	override suspend fun revoke(): Result<RevokeResult> {

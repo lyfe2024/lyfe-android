@@ -10,5 +10,8 @@ class EditProfileUseCase @Inject constructor(
 	suspend operator fun invoke(
 		nickname: String,
 		profileUrl: String
-	) = userRepository.putUserInfo(nickname, profileUrl)
+	) = userRepository.putUserInfo(
+		nickname = nickname,
+		profileUrl = profileUrl
+	)
 }
