@@ -21,9 +21,14 @@ class ImageRepositoryImpl @Inject constructor(
 ) : ImageRepository {
 
 	override fun getImageUploadUrl(format: String, path: String) = flow {
-		when (val response = imageDataSource.getImageUploadUrl(format, path)) {
+		when (
+			val response = imageDataSource.getImageUploadUrl(
+				format = format,
+				path = path
+			)
+		) {
 			is Result.Success -> {
-				val result = response.body ?: throw ApiResultException("Empty Data")
+				val result = response.body
 				emit(result.toDomain())
 			}
 			is Result.Failure -> {
@@ -33,7 +38,7 @@ class ImageRepositoryImpl @Inject constructor(
 				throw response.exception
 			}
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
@@ -41,10 +46,14 @@ class ImageRepositoryImpl @Inject constructor(
 	override suspend fun uploadImage(url: String, key: String, file: File): Result<Void> {
 		val requestBody = file.asRequestBody()
 		val part = MultipartBody.Part.createFormData(
-			"image",
-			file.name,
-			requestBody
+			name = "image",
+			filename = file.name,
+			body = requestBody
 		)
-		return imageDataSource.uploadImage(url, key, part)
+		return imageDataSource.uploadImage(
+			url = url,
+			key = key,
+			file = part
+		)
 	}
 }

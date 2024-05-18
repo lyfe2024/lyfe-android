@@ -17,7 +17,7 @@ class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun updateSignUpToken(signUpToken: String) {
-		tokenLocalDataSource.updateSignUpToken(signUpToken)
+		tokenLocalDataSource.updateSignUpToken(signUpToken = signUpToken)
 	}
 
 	override suspend fun deleteSignUpToken() {
@@ -32,7 +32,7 @@ class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun updateAccessToken(accessToken: String) {
-		tokenLocalDataSource.updateAccessToken(accessToken)
+		tokenLocalDataSource.updateAccessToken(accessToken = accessToken)
 	}
 
 	/**
@@ -43,7 +43,7 @@ class TokenRepositoryImpl @Inject constructor(
 	}
 
 	override suspend fun updateRefreshToken(refreshToken: String) {
-		tokenLocalDataSource.updateRefreshToken(refreshToken)
+		tokenLocalDataSource.updateRefreshToken(refreshToken = refreshToken)
 	}
 
 	/**

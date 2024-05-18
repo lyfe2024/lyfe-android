@@ -10,7 +10,12 @@ class AuthUserUseCase @Inject constructor(
 	suspend operator fun invoke(
 		socialType: String,
 		authorizationCode: String,
-		identityToken: String,
+		idToken: String,
 		fcmToken: String
-	) = authRepository.authUser(socialType, authorizationCode, identityToken, fcmToken)
+	) = authRepository.authUser(
+		socialType = socialType,
+		authorizationCode = authorizationCode,
+		idToken = idToken,
+		fcmToken = fcmToken
+	)
 }

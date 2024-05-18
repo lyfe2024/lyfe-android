@@ -16,7 +16,7 @@ interface AuthRepository {
 	suspend fun authUser(
 		socialType: String,
 		authorizationCode: String,
-		identityToken: String,
+		idToken: String,
 		fcmToken: String
 	): Result<AuthUserResult>
 

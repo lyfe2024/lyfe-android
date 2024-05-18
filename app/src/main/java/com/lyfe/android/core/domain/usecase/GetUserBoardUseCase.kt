@@ -10,5 +10,8 @@ class GetUserBoardUseCase @Inject constructor(
 	operator fun invoke(
 		boardType: String,
 		cursorId: Long = 0
-	) = boardRepository.getUserBoards(boardType, cursorId)
+	) = boardRepository.getUserBoards(
+		boardType = boardType,
+		cursorId = cursorId
+	)
 }

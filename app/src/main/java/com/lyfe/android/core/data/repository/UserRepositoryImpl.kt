@@ -31,7 +31,7 @@ class UserRepositoryImpl @Inject constructor(
 	override fun getUserInfo(): Flow<User> = flow {
 		when (val response = userRemoteDataSource.getUserInfo()) {
 			is Result.Success -> {
-				val body = response.body ?: throw ApiResultException()
+				val body = response.body
 				emit(body.toDomain())
 			}
 			is Result.Failure -> {
@@ -41,15 +41,15 @@ class UserRepositoryImpl @Inject constructor(
 				throw response.exception
 			}
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}.flowOn(ioDispatcher)
 
 	override suspend fun fetchIsNicknameDuplicated(nickname: String) = flow {
-		val result = userRemoteDataSource.checkNicknameDuplicated(nickname)
+		val result = userRemoteDataSource.checkNicknameDuplicated(nickname = nickname)
 		if (result is Result.Success) {
-			emit(result.body?.isAvailable ?: false)
+			emit(result.body.isAvailable)
 		}
 	}
 
@@ -57,9 +57,14 @@ class UserRepositoryImpl @Inject constructor(
 		nickname: String,
 		profileUrl: String
 	) = flow {
-		when (val response = userRemoteDataSource.putUserInfo(nickname, profileUrl)) {
+		when (
+			val response = userRemoteDataSource.putUserInfo(
+				nickname = nickname,
+				profileUrl = profileUrl
+			)
+		) {
 			is Result.Success -> {
-				val body = response.body ?: throw ApiResultException()
+				val body = response.body
 				emit(body.toDomain())
 			}
 			is Result.Failure -> {
@@ -69,7 +74,7 @@ class UserRepositoryImpl @Inject constructor(
 				throw response.exception
 			}
 			is Result.Unexpected -> {
-				throw response.t ?: ApiResultException()
+				throw response.t
 			}
 		}
 	}

@@ -12,5 +12,9 @@ class UploadImageUseCase @Inject constructor(
 		url: String,
 		key: String,
 		file: File
-	) = imageRepository.uploadImage(url, key, file)
+	) = imageRepository.uploadImage(
+		url = url,
+		key = key,
+		file = file
+	)
 }

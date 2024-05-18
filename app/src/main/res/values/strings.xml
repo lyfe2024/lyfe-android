@@ -29,8 +29,8 @@
 	<!-- Feed -->
 	<string name="feed_screen_title">피드</string>
 	<string name="feed_screen_request_photo">사진 신청</string>
-	<string name="feed_screen_latest_tab_text">최신</string>
-	<string name="feed_screen_popular_tab_text">인기</string>
+	<string name="feed_screen_image_tab_text">신청 사진</string>
+	<string name="feed_screen_text_tab_text">신청 글</string>
 
 	<!-- AlarmScreen -->
 	<string name="noti_list_screen_title">알림</string>

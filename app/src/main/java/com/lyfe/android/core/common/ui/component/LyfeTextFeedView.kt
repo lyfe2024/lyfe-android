@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.home
+package com.lyfe.android.core.common.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,7 @@ import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 
 @Composable
-fun HomeTextFeedView(
+fun LyfeTextFeedView(
 	modifier: Modifier = Modifier,
 	feed: Feed,
 	onClick: () -> Unit = {}
@@ -46,7 +46,7 @@ fun HomeTextFeedView(
 			},
 		verticalArrangement = Arrangement.spacedBy(4.dp)
 	) {
-		HomeTextFeedProfile(feed)
+		LyfeTextFeedProfile(feed)
 
 		Text(
 			text = feed.title,
@@ -71,7 +71,7 @@ fun HomeTextFeedView(
 			maxLines = 2
 		)
 
-		HomeTextFeedScoreRow(
+		LyfeTextFeedScoreRow(
 			whiskyCnt = feed.whiskyCount,
 			commentCnt = feed.commentCount
 		)
@@ -80,7 +80,7 @@ fun HomeTextFeedView(
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun HomeTextFeedProfile(
+private fun LyfeTextFeedProfile(
 	feed: Feed
 ) {
 	Row(
@@ -121,7 +121,7 @@ private fun HomeTextFeedProfile(
 }
 
 @Composable
-private fun HomeTextFeedScoreRow(
+private fun LyfeTextFeedScoreRow(
 	modifier: Modifier = Modifier,
 	whiskyCnt: Int,
 	commentCnt: Int
@@ -153,9 +153,7 @@ private fun HomeTextFeedScoreRow(
 		Spacer(modifier = Modifier.width(16.dp))
 
 		Image(
-			modifier = Modifier
-				.padding(0.66667.dp)
-				.size(16.dp),
+			modifier = Modifier.size(16.dp),
 			painter = painterResource(id = R.drawable.ic_comment),
 			contentDescription = "ic_whisky"
 		)
@@ -176,7 +174,7 @@ private fun HomeTextFeedScoreRow(
 
 @Preview
 @Composable
-private fun Preview_HomeTextFeedView() {
+private fun Preview_LyfeTextFeedView() {
 	val feed = Feed(
 		feedId = 1L,
 		title = "여기 텍스트 기반 피드 제목 들어옵니다. ",
@@ -191,7 +189,7 @@ private fun Preview_HomeTextFeedView() {
 		isLike = false
 	)
 
-	HomeTextFeedView(
+	LyfeTextFeedView(
 		modifier = Modifier.fillMaxSize(),
 		feed = feed,
 		onClick = {}

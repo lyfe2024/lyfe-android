@@ -120,7 +120,7 @@ private fun kakaoLogin(
 					// 소셜 로그인 접근
 					viewModel.authUser(
 						socialType = SocialType.KAKAO,
-						identityToken = oAuthToken.accessToken,
+						idToken = oAuthToken.accessToken,
 						fcmToken = ""
 					)
 				},
