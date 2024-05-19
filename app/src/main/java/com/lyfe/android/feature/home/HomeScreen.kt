@@ -30,7 +30,8 @@ import com.lyfe.android.feature.home.model.HomeFeedType
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-private const val SCREEN_DATE_TEXT_ALPHA = 0.05f
+private const val DATE_TEXT_ALPHA = 0.05f
+private const val DATE_TEXT_FORMAT = "MM.dd."
 
 @Composable
 fun HomeScreen(
@@ -47,9 +48,9 @@ fun HomeScreen(
 			modifier = Modifier
 				.align(Alignment.TopEnd)
 				.padding(top = 4.dp, end = 20.dp)
-				.alpha(SCREEN_DATE_TEXT_ALPHA),
+				.alpha(DATE_TEXT_ALPHA),
 			text = LocalDateTime.now().format(
-				DateTimeFormatter.ofPattern("MM.dd.")
+				DateTimeFormatter.ofPattern(DATE_TEXT_FORMAT)
 			),
 			style = TextStyle(
 				color = Color.Black,
@@ -94,29 +95,29 @@ private fun HomeTopContent(
 		contentDescription = "app logo"
 	)
 
-	Spacer(modifier = Modifier.height(16.dp))
-
-	Row(
-		modifier = Modifier
-			.padding(horizontal = 20.dp)
-			.clickableSingle {
-				onChangeFilter()
-			},
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Image(
-			painter = painterResource(id = R.drawable.ic_arrow_down_black),
-			contentDescription = "ic_arrow_down"
-		)
-
-		Spacer(modifier = Modifier.width(10.dp))
-
-		Text(
-			text = feedType.content,
-			style = Title3,
-			color = Color.Black
-		)
-	}
+//	Spacer(modifier = Modifier.height(16.dp))
+//
+//	Row(
+//		modifier = Modifier
+//			.padding(horizontal = 20.dp)
+//			.clickableSingle {
+//				onChangeFilter()
+//			},
+//		verticalAlignment = Alignment.CenterVertically
+//	) {
+//		Image(
+//			painter = painterResource(id = R.drawable.ic_arrow_down_black),
+//			contentDescription = "ic_arrow_down"
+//		)
+//
+//		Spacer(modifier = Modifier.width(10.dp))
+//
+//		Text(
+//			text = feedType.content,
+//			style = Title3,
+//			color = Color.Black
+//		)
+//	}
 }
 
 @Composable

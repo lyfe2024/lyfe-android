@@ -9,11 +9,27 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.calculateTargetValue
 import androidx.compose.animation.core.keyframes
 import androidx.compose.animation.splineBasedDecay
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.horizontalDrag
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -23,15 +39,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.bumptech.glide.integration.compose.GlideImage
+import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
+import com.lyfe.android.core.common.ui.theme.BlackTransparent30
+import com.lyfe.android.core.common.ui.theme.Grey300
+import com.lyfe.android.core.common.ui.theme.Grey400
+import com.lyfe.android.core.common.ui.theme.H5
+import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 import kotlinx.coroutines.coroutineScope
@@ -46,12 +78,26 @@ import kotlin.math.roundToInt
 // https://www.jetpackcompose.app/snippets/SwipeableCards
 // 이것저것 만져보면서 고친거라 저도 100% 코드를 이해한 건 아니라 주석이 많지 않습니다...
 private const val MAXIMUM_CARD_RATIO = 0.85f
+private val fakeFeed = Feed(
+	feedId = 0L,
+	title = "",
+	content = "",
+	feedImageUrl = "",
+	date = "",
+	userId = 0L,
+	userName = "",
+	userProfileImgUrl = "",
+	whiskyCount = 0,
+	commentCount = 0,
+	isLike = false
+)
 
 @Composable
 fun HomeSwipeableFeeds(
 	modifier: Modifier,
 	feeds: List<Feed>,
-	onClick: (Feed) -> Unit
+	onFeedClick: (Feed) -> Unit,
+	onMoreFeedClick: () -> Unit
 ) {
 	val reversedFeeds = feeds.reversed()
 	var feedList by remember(reversedFeeds) { mutableStateOf(reversedFeeds) }
@@ -71,10 +117,12 @@ fun HomeSwipeableFeeds(
 						// 카드가 1개만 남으면 그대로.
 						if (feedList.size > 1) {
 							val removed = feedList.last()
-							feedList = listOf(removed) + (feedList - removed)
+//							feedList = listOf(removed) + (feedList - removed)
+							feedList = listOf(fakeFeed.copy()) + (feedList - removed)
 						}
 					},
-					onClick = onClick
+					onClick = onFeedClick,
+					onMoreFeedClick = onMoreFeedClick
 				)
 			}
 		}
@@ -87,7 +135,8 @@ fun HomeSwipeableCard(
 	totalCount: Int,
 	feed: Feed,
 	onMoveToRemove: () -> Unit,
-	onClick: (Feed) -> Unit = {}
+	onClick: (Feed) -> Unit,
+	onMoreFeedClick: () -> Unit
 ) {
 	val animatedScale by animateFloatAsState(
 		targetValue = 1f - (totalCount - order - 1) * 0.05f,
@@ -104,17 +153,69 @@ fun HomeSwipeableCard(
 				scaleX = animatedScale
 				scaleY = animatedScale
 			}
-			.clickableSingle { onClick(feed) }
+			.clickableSingle {
+				if (feed.feedId > 0L) {
+					onClick(feed)
+				}
+			}
 			.swipeToRemove(
-				isSwipeableOrder = order == totalCount - 1,
+				isSwipeableOrder = (order == totalCount - 1) && feed.feedId > 0L,
 				onMoveToRemove = onMoveToRemove
 			)
 	) {
-		LyfeFeedCardView(
-			modifier = Modifier.fillMaxWidth(MAXIMUM_CARD_RATIO),
-			feed = feed,
-			designType = LyfeCardViewDesignType.HOME_SCREEN_CARD
-		)
+		if (feed.feedId != 0L) {
+			LyfeFeedCardView(
+				modifier = Modifier.fillMaxWidth(MAXIMUM_CARD_RATIO),
+				feed = feed,
+				designType = LyfeCardViewDesignType.HOME_SCREEN_CARD
+			)
+		} else {
+			MoreFeedCardView(
+				modifier = Modifier.fillMaxWidth(MAXIMUM_CARD_RATIO),
+				onMoreFeedClick = onMoreFeedClick
+			)
+		}
+	}
+}
+
+@Composable
+private fun MoreFeedCardView(
+	modifier: Modifier,
+	designType: LyfeCardViewDesignType = LyfeCardViewDesignType.HOME_SCREEN_CARD,
+	onMoreFeedClick: () -> Unit
+) {
+	Box(
+		modifier = modifier
+			.widthIn(min = 152.dp)
+			.aspectRatio(designType.ratio)
+			.fillMaxSize()
+			.background(
+				color = Grey300,
+				shape = RoundedCornerShape(16.dp)
+			)
+	) {
+		Column(
+			modifier = Modifier
+				.align(Alignment.Center)
+				.size(128.dp)
+				.background(
+					color = Grey400,
+					shape = CircleShape
+				).clickableSingle { onMoreFeedClick() },
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.Center
+		) {
+			Image(
+				painter = painterResource(id = R.drawable.ic_arrow_next_white),
+				contentDescription = "더보기"
+			)
+
+			Text(
+				text = stringResource(id = R.string.home_feed_more),
+				style = H5,
+				color = Color.White
+			)
+		}
 	}
 }
 

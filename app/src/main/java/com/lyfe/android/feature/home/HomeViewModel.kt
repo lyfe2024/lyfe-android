@@ -94,32 +94,35 @@ class HomeViewModel @Inject constructor(
 				HomeUiState.Loading
 			}
 			viewModelScope.launch {
-				getLatestBoardsUseCase(
-					cursorId = cursorId,
-					boardType = feedType.name
-				).catch { t ->
-					_uiState.update { HomeUiState.Failure(t.message ?: "") }
-				}.collect {
-					when (feedType) {
-						FeedType.BOARD -> {
-							_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
-							textFeedCursorId = if (it.isNotEmpty()) {
-								it.last().feedId
-							} else {
-								textFeedCursorId
-							}
-						}
-						FeedType.BOARD_PICTURE -> {
-							_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
-							imageFeedCursorId = if (it.isNotEmpty()) {
-								it.last().feedId
-							} else {
-								imageFeedCursorId
-							}
-						}
-					}
-					_uiState.update { HomeUiState.Success }
-				}
+				_textFeedList.compareAndSet(_textFeedList.value, fakeFeeds)
+				_imageFeedList.compareAndSet(_imageFeedList.value, fakeFeeds)
+				_uiState.update { HomeUiState.Success }
+//				getLatestBoardsUseCase(
+//					cursorId = cursorId,
+//					boardType = feedType.name
+//				).catch { t ->
+//					_uiState.update { HomeUiState.Failure(t.message ?: "") }
+//				}.collect {
+//					when (feedType) {
+//						FeedType.BOARD -> {
+//							_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
+//							textFeedCursorId = if (it.isNotEmpty()) {
+//								it.last().feedId
+//							} else {
+//								textFeedCursorId
+//							}
+//						}
+//						FeedType.BOARD_PICTURE -> {
+//							_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
+//							imageFeedCursorId = if (it.isNotEmpty()) {
+//								it.last().feedId
+//							} else {
+//								imageFeedCursorId
+//							}
+//						}
+//					}
+//					_uiState.update { HomeUiState.Success }
+//				}
 			}
 		}
 	}
@@ -173,4 +176,72 @@ class HomeViewModel @Inject constructor(
 		textFeedCursorId = 0
 		imageFeedCursorId = 0
 	}
+
+	private val fakeFeeds = listOf(
+		Feed(
+			feedId = 1L,
+			title = "제목1",
+			content = "내용1",
+			feedImageUrl = "https://picsum.photos/300/450",
+			date = "날짜",
+			userId = 1L,
+			userName = "유저 닉네임1",
+			userProfileImgUrl = "https://picsum.photos/100",
+			whiskyCount = 23,
+			commentCount = 12,
+			isLike = false
+		),
+		Feed(
+			feedId = 2L,
+			title = "제목2",
+			content = "내용2",
+			feedImageUrl = "https://picsum.photos/300/451",
+			date = "날짜",
+			userId = 2L,
+			userName = "유저 닉네임2",
+			userProfileImgUrl = "https://picsum.photos/100",
+			whiskyCount = 23,
+			commentCount = 12,
+			isLike = false
+		),
+		Feed(
+			feedId = 3L,
+			title = "제목3",
+			content = "내용3",
+			feedImageUrl = "https://picsum.photos/300/453",
+			date = "날짜",
+			userId = 3L,
+			userName = "유저 닉네임3",
+			userProfileImgUrl = "https://picsum.photos/100",
+			whiskyCount = 23,
+			commentCount = 12,
+			isLike = false
+		),
+		Feed(
+			feedId = 4L,
+			title = "제목4",
+			content = "내용4",
+			feedImageUrl = "https://picsum.photos/300/454",
+			date = "날짜",
+			userId = 4L,
+			userName = "유저 닉네임4",
+			userProfileImgUrl = "https://picsum.photos/100",
+			whiskyCount = 23,
+			commentCount = 12,
+			isLike = false
+		),
+		Feed(
+			feedId = 5L,
+			title = "제목5",
+			content = "내용5",
+			feedImageUrl = "https://picsum.photos/300/455",
+			date = "날짜",
+			userId = 5L,
+			userName = "유저 닉네임5",
+			userProfileImgUrl = "https://picsum.photos/100",
+			whiskyCount = 23,
+			commentCount = 12,
+			isLike = false
+		)
+	)
 }

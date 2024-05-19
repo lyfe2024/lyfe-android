@@ -112,6 +112,9 @@ fun HomeTodayTopicScreen(
 		onFeedClick = {
 			navigator.navigate(LyfeScreens.FeedDetail.name)
 		},
+		onMoreFeedClick = {
+			navigator.navigate(LyfeScreens.Feed.name)
+		},
 		onFetchingTypeChanged = {
 			viewModel.updateFeedFetchingType(it)
 		},
@@ -130,6 +133,7 @@ private fun HomeTodayTopicFeedList(
 	imageFeeds: List<Feed>,
 	textFeeds: List<Feed>,
 	onFeedClick: (Feed) -> Unit,
+	onMoreFeedClick: () -> Unit,
 	onFetchingTypeChanged: (FeedFetchingType) -> Unit,
 	onReachedBottom: () -> Unit
 ) {
@@ -158,7 +162,8 @@ private fun HomeTodayTopicFeedList(
 			HomeSwipeableFeeds(
 				modifier = Modifier.padding(horizontal = 20.dp),
 				feeds = imageFeeds.subList(0, min(TODAY_TOPIC_CARDS_COUNT, imageFeeds.size)),
-				onClick = { onFeedClick(it) }
+				onFeedClick = onFeedClick,
+				onMoreFeedClick = onMoreFeedClick
 			)
 
 			Spacer(modifier = Modifier.height(24.dp))
@@ -302,7 +307,11 @@ private fun HomeTopicText(text: String) {
 	Text(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 20.dp),
+			.padding(
+				start = 20.dp,
+				end = 20.dp,
+				top = 40.dp
+			),
 		text = text,
 		style = TextStyle(
 			fontSize = 28.sp,
