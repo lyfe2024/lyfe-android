@@ -16,16 +16,11 @@ import androidx.compose.foundation.gestures.horizontalDrag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,31 +34,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
-import com.lyfe.android.core.common.ui.theme.BlackTransparent30
 import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.H5
-import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
 import kotlinx.coroutines.coroutineScope
@@ -78,6 +64,8 @@ import kotlin.math.roundToInt
 // https://www.jetpackcompose.app/snippets/SwipeableCards
 // 이것저것 만져보면서 고친거라 저도 100% 코드를 이해한 건 아니라 주석이 많지 않습니다...
 private const val MAXIMUM_CARD_RATIO = 0.85f
+private const val MINIMUM_CARD_COUNT = 4
+
 private val fakeFeed = Feed(
 	feedId = 0L,
 	title = "",
@@ -93,14 +81,16 @@ private val fakeFeed = Feed(
 )
 
 @Composable
-fun HomeSwipeableFeeds(
+fun HomeSwipeableImageFeeds(
 	modifier: Modifier,
 	feeds: List<Feed>,
 	onFeedClick: (Feed) -> Unit,
 	onMoreFeedClick: () -> Unit
 ) {
-	val reversedFeeds = feeds.reversed()
-	var feedList by remember(reversedFeeds) { mutableStateOf(reversedFeeds) }
+	val shownFeeds = feeds.subList(0, min(MINIMUM_CARD_COUNT, feeds.size)).reversed()
+	val waitingFeeds: MutableList<Feed> = (feeds - shownFeeds.toSet()).toMutableList()
+
+	var feedList by remember(shownFeeds) { mutableStateOf(shownFeeds) }
 
 	Box(
 		modifier = modifier,
@@ -110,15 +100,15 @@ fun HomeSwipeableFeeds(
 			key(feed) {
 				HomeSwipeableCard(
 					order = idx,
-					totalCount = feedList.size,
+					totalCount = min(MINIMUM_CARD_COUNT, feedList.size),
 					feed = feed,
 					onMoveToRemove = {
-						// 카드 하나 지우면 list에서 해당 카드 제거
-						// 카드가 1개만 남으면 그대로.
-						if (feedList.size > 1) {
-							val removed = feedList.last()
-//							feedList = listOf(removed) + (feedList - removed)
-							feedList = listOf(fakeFeed.copy()) + (feedList - removed)
+						// 카드 하나 지우면 list 에서 해당 카드 제거
+						val removed = feedList.last()
+						feedList = if (waitingFeeds.isNotEmpty()) {
+							listOf(waitingFeeds.removeFirst()) + (feedList - removed)
+						} else {
+							listOf(fakeFeed.copy()) + (feedList - removed)
 						}
 					},
 					onClick = onFeedClick,
