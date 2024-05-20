@@ -1,16 +1,25 @@
 package com.lyfe.android.feature.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
@@ -21,6 +30,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -31,8 +42,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
 import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.Grey300
+import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.H4
+import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.theme.Main500
+import com.lyfe.android.core.common.ui.theme.Title2
+import com.lyfe.android.core.common.ui.theme.Title3
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
@@ -124,10 +140,11 @@ private fun HomeTodayTopicFeedArea(
 
 		HomeTextFeedPager(
 			pagerState = rememberPagerState {
-				textFeeds.size
+				textFeeds.size + 1
 			},
 			feeds = textFeeds,
-			onFeedClick = onFeedClick
+			onFeedClick = onFeedClick,
+			onMoreFeedClick = onMoreFeedClick
 		)
 	}
 }
@@ -155,31 +172,78 @@ private fun HomeTopicText(text: String) {
 private fun HomeTextFeedPager(
 	pagerState: PagerState,
 	feeds: List<Feed>,
-	onFeedClick: (Feed) -> Unit
+	onFeedClick: (Feed) -> Unit,
+	onMoreFeedClick: () -> Unit
 ) {
 	HorizontalPager(
 		modifier = Modifier.fillMaxWidth(),
 		verticalAlignment = Alignment.CenterVertically,
-		state = pagerState
+		state = pagerState,
+		flingBehavior = PagerDefaults.flingBehavior(
+			state = pagerState,
+			pagerSnapDistance = PagerSnapDistance.atMost(0)
+		),
+		pageSpacing = 8.dp,
+		contentPadding = PaddingValues(horizontal = 20.dp)
 	) {
 		Box(
 			modifier = Modifier
 				.fillMaxWidth()
-				.padding(horizontal = 20.dp)
 				.border(
 					width = 1.dp,
 					color = Grey100,
 					shape = RoundedCornerShape(16.dp)
 				)
 		) {
-			LyfeTextFeedView(
-				modifier = Modifier
-					.padding(
-						horizontal = 12.dp,
-						vertical = 16.dp
-					)
-					.clickableSingle { onFeedClick(feeds[it]) },
-				feed = feeds[it]
+			if (it == feeds.size) {
+				MoreTextFeedView(
+					onMoreFeedClick = onMoreFeedClick
+				)
+			} else {
+				LyfeTextFeedView(
+					modifier = Modifier
+						.padding(
+							horizontal = 12.dp,
+							vertical = 16.dp
+						)
+						.clickableSingle { onFeedClick(feeds[it]) },
+					feed = feeds[it]
+				)
+			}
+		}
+	}
+}
+
+@Composable
+private fun MoreTextFeedView(
+	onMoreFeedClick: () -> Unit
+) {
+	Box(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(vertical = 32.dp)
+	) {
+		Column(
+			modifier = Modifier
+				.align(Alignment.Center)
+				.size(80.dp)
+				.background(
+					color = Grey400,
+					shape = CircleShape
+				).clickableSingle { onMoreFeedClick() },
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.Center
+		) {
+			Image(
+				modifier = Modifier.size(36.dp),
+				painter = painterResource(id = R.drawable.ic_arrow_next_white),
+				contentDescription = "더보기"
+			)
+
+			Text(
+				text = stringResource(id = R.string.home_feed_more),
+				style = Title2,
+				color = Color.White
 			)
 		}
 	}

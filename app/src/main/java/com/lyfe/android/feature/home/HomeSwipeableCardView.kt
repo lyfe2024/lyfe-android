@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
@@ -87,8 +88,8 @@ fun HomeSwipeableImageFeeds(
 	onFeedClick: (Feed) -> Unit,
 	onMoreFeedClick: () -> Unit
 ) {
-	val shownFeeds = feeds.subList(0, min(MINIMUM_CARD_COUNT, feeds.size)).reversed()
-	val waitingFeeds: MutableList<Feed> = (feeds - shownFeeds.toSet()).toMutableList()
+	val fakeFeeds = List(4) { fakeFeed }
+	val shownFeeds = (feeds + fakeFeeds).reversed()
 
 	var feedList by remember(shownFeeds) { mutableStateOf(shownFeeds) }
 
@@ -100,16 +101,12 @@ fun HomeSwipeableImageFeeds(
 			key(feed) {
 				HomeSwipeableCard(
 					order = idx,
-					totalCount = min(MINIMUM_CARD_COUNT, feedList.size),
+					totalCount = feedList.size,
 					feed = feed,
 					onMoveToRemove = {
 						// 카드 하나 지우면 list 에서 해당 카드 제거
 						val removed = feedList.last()
-						feedList = if (waitingFeeds.isNotEmpty()) {
-							listOf(waitingFeeds.removeFirst()) + (feedList - removed)
-						} else {
-							listOf(fakeFeed.copy()) + (feedList - removed)
-						}
+						feedList = feedList - removed
 					},
 					onClick = onFeedClick,
 					onMoreFeedClick = onMoreFeedClick
@@ -128,6 +125,10 @@ fun HomeSwipeableCard(
 	onClick: (Feed) -> Unit,
 	onMoreFeedClick: () -> Unit
 ) {
+	val alphaState by animateFloatAsState(
+		targetValue = if (order >= totalCount - 4) 1f else 0f,
+		label = ""
+	)
 	val animatedScale by animateFloatAsState(
 		targetValue = 1f - (totalCount - order - 1) * 0.05f,
 		label = ""
@@ -152,6 +153,7 @@ fun HomeSwipeableCard(
 				isSwipeableOrder = (order == totalCount - 1) && feed.feedId > 0L,
 				onMoveToRemove = onMoveToRemove
 			)
+			.alpha(alphaState)
 	) {
 		if (feed.feedId != 0L) {
 			LyfeFeedCardView(
