@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -42,13 +40,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
 import com.lyfe.android.core.common.ui.theme.Grey100
-import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.H4
-import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.Title2
-import com.lyfe.android.core.common.ui.theme.Title3
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
@@ -57,10 +52,12 @@ import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
+private const val DIVIDER_ALPHA = 0.5f
+
 @Composable
 fun HomeTodayTopicScreen(
 	viewModel: HomeViewModel = hiltViewModel(),
-	navigator: LyfeNavigator,
+	navigator: LyfeNavigator
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -94,7 +91,7 @@ fun HomeTodayTopicScreen(
 		},
 		onMoreFeedClick = {
 			navigator.navigate(LyfeScreens.Feed.name)
-		},
+		}
 	)
 }
 
@@ -122,7 +119,7 @@ private fun HomeTodayTopicFeedArea(
 		Spacer(modifier = Modifier.height(32.dp))
 
 		Divider(
-			modifier = Modifier.alpha(0.5f),
+			modifier = Modifier.alpha(DIVIDER_ALPHA),
 			color = Grey100,
 			thickness = 8.dp
 		)
@@ -205,9 +202,11 @@ private fun HomeTextFeedPager(
 						.padding(
 							horizontal = 12.dp,
 							vertical = 16.dp
-						)
-						.clickableSingle { onFeedClick(feeds[it]) },
-					feed = feeds[it]
+						),
+					feed = feeds[it],
+					onClick = {
+						onFeedClick(feeds[it])
+					}
 				)
 			}
 		}
@@ -222,6 +221,7 @@ private fun MoreTextFeedView(
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(vertical = 32.dp)
+			.clickableSingle { onMoreFeedClick() }
 	) {
 		Column(
 			modifier = Modifier
@@ -230,7 +230,7 @@ private fun MoreTextFeedView(
 				.background(
 					color = Grey400,
 					shape = CircleShape
-				).clickableSingle { onMoreFeedClick() },
+				),
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.Center
 		) {

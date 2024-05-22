@@ -41,6 +41,10 @@ class HomeViewModel @Inject constructor(
 	var todayTopic by mutableStateOf("오늘의 주제")
 		private set
 
+	companion object {
+		private const val HOME_FEED_MAX_COUNT = 10
+	}
+
 	init {
 		getTodayTopic()
 	}
@@ -71,7 +75,7 @@ class HomeViewModel @Inject constructor(
 			}.collect {
 				when (feedType) {
 					FeedType.BOARD -> {
-						_textFeedList.compareAndSet(_textFeedList.value, it.subList(0, minOf(it.size, 10)))
+						_textFeedList.compareAndSet(_textFeedList.value, it.subList(0, minOf(it.size, HOME_FEED_MAX_COUNT)))
 						textFeedCursorId = if (it.isNotEmpty()) {
 							it.last().feedId
 						} else {
@@ -79,7 +83,7 @@ class HomeViewModel @Inject constructor(
 						}
 					}
 					FeedType.BOARD_PICTURE -> {
-						_imageFeedList.compareAndSet(_imageFeedList.value, it.subList(0, minOf(it.size, 10)))
+						_imageFeedList.compareAndSet(_imageFeedList.value, it.subList(0, minOf(it.size, HOME_FEED_MAX_COUNT)))
 						imageFeedCursorId = if (it.isNotEmpty()) {
 							it.last().feedId
 						} else {
@@ -90,137 +94,4 @@ class HomeViewModel @Inject constructor(
 			}
 		}
 	}
-
-	private val fakeFeeds = listOf(
-		Feed(
-			feedId = 1L,
-			title = "제목1",
-			content = "내용1",
-			feedImageUrl = "https://picsum.photos/300/450",
-			date = "날짜",
-			userId = 1L,
-			userName = "유저 닉네임1",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 2L,
-			title = "제목2",
-			content = "내용2",
-			feedImageUrl = "https://picsum.photos/300/451",
-			date = "날짜",
-			userId = 2L,
-			userName = "유저 닉네임2",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 3L,
-			title = "제목3",
-			content = "내용3",
-			feedImageUrl = "https://picsum.photos/300/453",
-			date = "날짜",
-			userId = 3L,
-			userName = "유저 닉네임3",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 4L,
-			title = "제목4",
-			content = "내용4",
-			feedImageUrl = "https://picsum.photos/300/454",
-			date = "날짜",
-			userId = 4L,
-			userName = "유저 닉네임4",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 5L,
-			title = "제목5",
-			content = "내용5",
-			feedImageUrl = "https://picsum.photos/300/455",
-			date = "날짜",
-			userId = 5L,
-			userName = "유저 닉네임5",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 6L,
-			title = "제목6",
-			content = "내용6",
-			feedImageUrl = "https://picsum.photos/300/456",
-			date = "날짜",
-			userId = 1L,
-			userName = "유저 닉네임1",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 7L,
-			title = "제목7",
-			content = "내용7",
-			feedImageUrl = "https://picsum.photos/300/457",
-			date = "날짜",
-			userId = 2L,
-			userName = "유저 닉네임2",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 8L,
-			title = "제목8",
-			content = "내용8",
-			feedImageUrl = "https://picsum.photos/300/458",
-			date = "날짜",
-			userId = 3L,
-			userName = "유저 닉네임3",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 9L,
-			title = "제목9",
-			content = "내용9",
-			feedImageUrl = "https://picsum.photos/300/459",
-			date = "날짜",
-			userId = 4L,
-			userName = "유저 닉네임4",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		),
-		Feed(
-			feedId = 10L,
-			title = "제목10",
-			content = "내용10",
-			feedImageUrl = "https://picsum.photos/300/460",
-			date = "날짜",
-			userId = 5L,
-			userName = "유저 닉네임5",
-			userProfileImgUrl = "https://picsum.photos/100",
-			whiskyCount = 23,
-			commentCount = 12,
-			isLike = false
-		)
-	)
 }

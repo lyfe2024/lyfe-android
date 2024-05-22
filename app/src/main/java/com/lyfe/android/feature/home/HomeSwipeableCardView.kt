@@ -48,10 +48,14 @@ import androidx.compose.ui.unit.dp
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
 import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
+import com.lyfe.android.core.common.ui.theme.Grey10
+import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.util.clickableSingle
+import com.lyfe.android.core.common.ui.util.shadow
 import com.lyfe.android.core.model.Feed
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.joinAll
@@ -65,7 +69,7 @@ import kotlin.math.roundToInt
 // https://www.jetpackcompose.app/snippets/SwipeableCards
 // 이것저것 만져보면서 고친거라 저도 100% 코드를 이해한 건 아니라 주석이 많지 않습니다...
 private const val MAXIMUM_CARD_RATIO = 0.85f
-private const val MINIMUM_CARD_COUNT = 4
+private const val SHADOW_ALPHA = 0.25f
 
 private val fakeFeed = Feed(
 	feedId = 0L,
@@ -118,6 +122,7 @@ fun HomeSwipeableImageFeeds(
 
 @Composable
 fun HomeSwipeableCard(
+	modifier: Modifier = Modifier,
 	order: Int,
 	totalCount: Int,
 	feed: Feed,
@@ -137,8 +142,21 @@ fun HomeSwipeableCard(
 		targetValue = ((totalCount - order - 1) * 24).dp,
 		label = ""
 	)
+	val shadowXOffset by animateDpAsState(
+		targetValue = (2 - (totalCount - order - 1) * 0.11).dp,
+		label = ""
+	)
+	val shadowYOffset by animateDpAsState(
+		targetValue = (6 - (totalCount - order - 1) * 0.33).dp,
+		label = ""
+	)
+	val animateBlurRadius by animateDpAsState(
+		targetValue = (10 - (totalCount - order - 1) * 0.56).dp,
+		label = ""
+	)
+
 	Box(
-		modifier = Modifier
+		modifier = modifier
 			.offset { IntOffset(x = animatedXOffset.roundToPx(), y = 0) }
 			.graphicsLayer {
 				scaleX = animatedScale
@@ -157,13 +175,38 @@ fun HomeSwipeableCard(
 	) {
 		if (feed.feedId != 0L) {
 			LyfeFeedCardView(
-				modifier = Modifier.fillMaxWidth(MAXIMUM_CARD_RATIO),
+				modifier = Modifier
+					.fillMaxWidth(MAXIMUM_CARD_RATIO)
+					.shadow(
+						color = Color(
+							red = 0f,
+							green = 0f,
+							blue = 0f,
+							alpha = SHADOW_ALPHA
+						),
+						offsetX = shadowXOffset,
+						offsetY = shadowYOffset,
+						blurRadius = animateBlurRadius
+					),
 				feed = feed,
 				designType = LyfeCardViewDesignType.HOME_SCREEN_CARD
 			)
 		} else {
 			MoreFeedCardView(
-				modifier = Modifier.fillMaxWidth(MAXIMUM_CARD_RATIO),
+				modifier = Modifier
+					.fillMaxWidth(MAXIMUM_CARD_RATIO)
+					.shadow(
+						color = Color(
+							red = 0f,
+							green = 0f,
+							blue = 0f,
+							alpha = SHADOW_ALPHA
+						),
+						offsetX = shadowXOffset,
+						offsetY = shadowYOffset,
+						blurRadius = animateBlurRadius
+					),
+				order = totalCount - order,
 				onMoreFeedClick = onMoreFeedClick
 			)
 		}
@@ -174,15 +217,24 @@ fun HomeSwipeableCard(
 private fun MoreFeedCardView(
 	modifier: Modifier,
 	designType: LyfeCardViewDesignType = LyfeCardViewDesignType.HOME_SCREEN_CARD,
+	order: Int,
 	onMoreFeedClick: () -> Unit
 ) {
+	val backgroundColor = when (order) {
+		1 -> Grey300
+		2 -> Grey200
+		3 -> Grey100
+		4 -> Grey10
+		else -> Color.Transparent
+	}
+
 	Box(
 		modifier = modifier
 			.widthIn(min = 152.dp)
 			.aspectRatio(designType.ratio)
 			.fillMaxSize()
 			.background(
-				color = Grey300,
+				color = backgroundColor,
 				shape = RoundedCornerShape(16.dp)
 			)
 	) {
@@ -193,7 +245,8 @@ private fun MoreFeedCardView(
 				.background(
 					color = Grey400,
 					shape = CircleShape
-				).clickableSingle { onMoreFeedClick() },
+				)
+				.clickableSingle { onMoreFeedClick() },
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.Center
 		) {
