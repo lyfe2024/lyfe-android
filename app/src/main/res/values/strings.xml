@@ -108,4 +108,8 @@
 	<string name="profile_text_feed_post">고민글 쓰러가기</string>
 	<string name="home_text_feed_more">함께 더 많은 고민을 나눠봐요!</string>
 
+	<!-- Create Post	-->
+	<string name="create_board_picture">사진 신청하기</string>
+	<string name="create_board">고민글 작성하기</string>
+
 </resources>
