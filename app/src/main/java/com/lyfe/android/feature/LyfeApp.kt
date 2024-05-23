@@ -106,8 +106,10 @@ fun LyfeApp(
 		BottomNavItem.Alarm,
 		BottomNavItem.Profile
 	)
+	var prevSelected by remember { mutableStateOf(0) }
 	var selected by remember { mutableIntStateOf(0) }
 	var bottomNaviTopOffsetY by remember { mutableStateOf(0.dp) }
+	var createPostButtonsShow by remember { mutableStateOf(false) }
 
 	Box(
 		modifier = Modifier.fillMaxSize()
@@ -159,8 +161,10 @@ fun LyfeApp(
 					selectedItemIndex = selected,
 					isNeedIndicatorAnimation = !isNavigationBarHide && !this.transition.isRunning,
 					onClick = { index ->
+						prevSelected = selected
 						selected = index
 
+						createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
 						if (bottomNavItems[index] != BottomNavItem.CreatePost) {
 							navigator.navigate(bottomNavItems[index].screenRoute)
 						}
@@ -169,11 +173,15 @@ fun LyfeApp(
 			}
 		}
 
-		if (bottomNavItems[selected] == BottomNavItem.CreatePost) {
+		if (createPostButtonsShow) {
 			Spacer(
 				modifier = Modifier
 					.fillMaxSize()
 					.background(ScrimColor)
+					.clickableSingle {
+						createPostButtonsShow = false
+						selected = prevSelected
+					}
 			)
 
 			Column(
