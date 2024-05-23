@@ -128,8 +128,8 @@ fun LyfeApp(
 				)
 			}
 		) { route ->
-//			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
-//			selected = idx
+			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
+			selected = idx
 		}
 
 		if (selected != -1) {
@@ -192,7 +192,10 @@ fun LyfeApp(
 					modifier = Modifier.width(144.dp),
 					textRes = R.string.create_board_picture,
 					iconRes = R.drawable.ic_pic_fill,
-					click = {}
+					click = {
+						createPostButtonsShow = false
+						navigator.navigate(LyfeScreens.CreatePhotoPost.name)
+					}
 				)
 
 				Spacer(modifier = Modifier
@@ -203,7 +206,10 @@ fun LyfeApp(
 					modifier = Modifier.width(144.dp),
 					textRes = R.string.create_board,
 					iconRes = R.drawable.ic_text,
-					click = {}
+					click = {
+						createPostButtonsShow = false
+						navigator.navigate(LyfeScreens.CreatePhotoPost.name)
+					}
 				)
 
 				Spacer(modifier = Modifier
@@ -292,7 +298,7 @@ sealed class BottomNavItem(
 		defaultIconRes = R.drawable.ic_btm_navi_post_default,
 		selectedIconRes = R.drawable.ic_btm_navi_post_selected,
 		description = "게시 아이콘",
-		screenRoute = LyfeScreens.Post.name
+		screenRoute = ""
 	)
 
 	object Alarm : BottomNavItem(

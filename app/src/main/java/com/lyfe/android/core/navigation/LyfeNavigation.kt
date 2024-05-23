@@ -15,8 +15,7 @@ import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
-import com.lyfe.android.feature.post.PostScreen
-import com.lyfe.android.feature.post.create.PostCreateScreen
+import com.lyfe.android.feature.post.create.CreatePhotoPostScreen
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.setting.SettingScreen
@@ -55,17 +54,20 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		selectedScreen(LyfeScreens.FeedDetail.name)
 	}
 
-	composable(route = LyfeScreens.Post.name) {
-		PostScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.Post.name)
-	}
-
-	composable(route = LyfeScreens.PostCreate.name) {
-		PostCreateScreen(
+	composable(route = LyfeScreens.CreatePhotoPost.name) {
+		CreatePhotoPostScreen(
 			navigator = lyfeNavigator,
 			navHostController = navHostController
 		)
-		selectedScreen(LyfeScreens.PostCreate.name)
+		selectedScreen(LyfeScreens.CreatePhotoPost.name)
+	}
+
+	composable(route = LyfeScreens.CreateTextPost.name) {
+		CreatePhotoPostScreen(
+			navigator = lyfeNavigator,
+			navHostController = navHostController
+		)
+		selectedScreen(LyfeScreens.CreateTextPost.name)
 	}
 
 	composable(route = LyfeScreens.NotificationList.name) {

@@ -47,7 +47,7 @@ import com.lyfe.android.feature.album.SelectImageKey
 import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
 
 @Composable
-fun PostCreateScreen(
+fun CreatePhotoPostScreen(
 	navigator: LyfeNavigator,
 	navHostController: NavHostController,
 	viewModel: PostCreateViewModel = hiltViewModel()
@@ -56,7 +56,7 @@ fun PostCreateScreen(
 
 	LaunchedEffect(navHostController) {
 		val selectedImage =
-			navHostController.getBackStackEntry(LyfeScreens.PostCreate.name).savedStateHandle.get<String>(SelectImageKey)
+			navHostController.getBackStackEntry(LyfeScreens.CreatePhotoPost.name).savedStateHandle.get<String>(SelectImageKey)
 
 		viewModel.setSelectedImage(selectedImage ?: "")
 	}

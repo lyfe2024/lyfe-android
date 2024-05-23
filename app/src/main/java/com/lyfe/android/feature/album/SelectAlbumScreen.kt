@@ -112,7 +112,7 @@ fun SelectAlbumScreen(
 						navigator.navigateBackWithResult(
 							key = SelectImageKey,
 							result = selectedImageUri,
-							route = LyfeScreens.PostCreate.name
+							route = LyfeScreens.CreatePhotoPost.name
 						)
 					}
 				}
