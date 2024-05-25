@@ -3,6 +3,7 @@ package com.lyfe.android.core.domain.repository
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.BoardDetail
+import com.lyfe.android.core.model.FeedType
 import kotlinx.coroutines.flow.Flow
 
 interface BoardRepository {
@@ -24,7 +25,7 @@ interface BoardRepository {
 	): Flow<List<Feed>>
 
 	fun getUserBoards(
-		boardType: String = "BOARD",
+		boardType: String,
 		cursorId: Long
 	): Flow<List<Feed>>
 }

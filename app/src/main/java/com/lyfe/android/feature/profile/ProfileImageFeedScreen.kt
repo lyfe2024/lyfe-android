@@ -12,35 +12,36 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun ProfileImageFeedScreen(
-	viewModel: ProfileViewModel,
+	viewModel: ProfileViewModel = hiltViewModel(),
 	onFeedClick: () -> Unit
 ) {
-	val feeds by viewModel.textFeedList.collectAsStateWithLifecycle()
-	val lazyGridState = rememberLazyGridState()
-
-	LaunchedEffect(Unit) {
-		viewModel.fetchTextFeedList()
-	}
-
-	LazyVerticalGrid(
-		state = lazyGridState,
-		columns = GridCells.Fixed(2),
-		contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
-		horizontalArrangement = Arrangement.spacedBy(16.dp),
-		verticalArrangement = Arrangement.spacedBy(12.dp)
-	) {
-		items(feeds) { imageFeed ->
-			key(imageFeed.feedId) {
-				ProfileScreenImageFeedView(
-					modifier = Modifier,
-					feed = imageFeed,
-					onClick = onFeedClick
-				)
-			}
-		}
-	}
+//	val feeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
+//	val lazyGridState = rememberLazyGridState()
+//
+//	LaunchedEffect(Unit) {
+//		viewModel.fetchTextFeedList()
+//	}
+//
+//	LazyVerticalGrid(
+//		state = lazyGridState,
+//		columns = GridCells.Fixed(2),
+//		contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+//		horizontalArrangement = Arrangement.spacedBy(16.dp),
+//		verticalArrangement = Arrangement.spacedBy(12.dp)
+//	) {
+//		items(feeds) { imageFeed ->
+//			key(imageFeed.feedId) {
+//				ProfileScreenImageFeedView(
+//					modifier = Modifier,
+//					feed = imageFeed,
+//					onClick = onFeedClick
+//				)
+//			}
+//		}
+//	}
 }

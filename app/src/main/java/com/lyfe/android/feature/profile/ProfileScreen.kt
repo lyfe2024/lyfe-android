@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
@@ -64,6 +65,7 @@ import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.User
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.feature.profile.text.ProfileTextFeedScreen
 
 @Composable
 fun ProfileScreen(
@@ -71,6 +73,8 @@ fun ProfileScreen(
 	navigator: LyfeNavigator,
 	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
+	val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
 	Column(
 		modifier = Modifier
 			.fillMaxSize()
@@ -87,43 +91,52 @@ fun ProfileScreen(
 
 		Spacer(modifier = Modifier.height(16.dp))
 
-		ProfileContentArea(viewModel, navigator, onShowSnackBar)
+		ProfileContentArea(
+			uiState = uiState.value,
+			navigator = navigator,
+			onError = {
+				onShowSnackBar(LyfeSnackBarIconType.ERROR, it ?: "에러메세지가 존재하지 않습니다.")
+			}
+		)
 	}
 }
 
 @Composable
 private fun ProfileContentArea(
-	viewModel: ProfileViewModel,
+	uiState: ProfileUiState,
 	navigator: LyfeNavigator,
-	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
+	onError: (String?) -> Unit
 ) {
-	LaunchedEffect(Unit) {
-		viewModel.getUserInfo()
-	}
-
-	when (viewModel.uiState) {
-		is ProfileUiState.GuestSuccess,
-		is ProfileUiState.UserSuccess -> {
-			val isGuest = viewModel.uiState is ProfileUiState.GuestSuccess
+	when (uiState) {
+		ProfileUiState.IDLE -> Unit
+		is ProfileUiState.Guest -> {
 			ProfileUserInfo(
-				navigator = navigator,
-				user = viewModel.user
+				navigator = navigator
 			)
 
 			Spacer(modifier = Modifier.height(16.dp))
 
 			ProfileUserPostTabContent(
-				viewModel = viewModel,
-				isGuest = isGuest,
-				navigator = navigator
+				navigator = navigator,
+				isGuest = true
 			)
 		}
-		is ProfileUiState.Failure -> {
-			// 로딩 실패
-			onShowSnackBar(LyfeSnackBarIconType.ERROR, "로딩 실패")
+		is ProfileUiState.UserLoaded -> {
+			ProfileUserInfo(
+				navigator = navigator,
+				user = uiState.user
+			)
+
+			Spacer(modifier = Modifier.height(16.dp))
+
+			ProfileUserPostTabContent(
+				navigator = navigator,
+				isGuest = false
+			)
 		}
-		is ProfileUiState.Loading -> {
-			// 로딩 중 표시
+
+		is ProfileUiState.Error -> {
+			onError(uiState.message)
 		}
 	}
 }
@@ -132,7 +145,7 @@ private fun ProfileContentArea(
 @Composable
 private fun ProfileUserInfo(
 	navigator: LyfeNavigator,
-	user: User
+	user: User? = null
 ) {
 	Row(
 		modifier = Modifier
@@ -144,7 +157,7 @@ private fun ProfileUserInfo(
 				.fillMaxHeight()
 				.aspectRatio(1.0f)
 				.clip(CircleShape),
-			model = user.profileImage,
+			model = user?.profileImage,
 			failure = placeholder(R.drawable.ic_profile_default),
 			contentDescription = "profile image"
 		)
@@ -157,12 +170,12 @@ private fun ProfileUserInfo(
 			verticalArrangement = Arrangement.Center
 		) {
 			Text(
-				text = user.name,
+				text = user?.name ?: "게스트",
 				color = Color.Black,
 				style = H4
 			)
 
-			if (user.id > 0) {
+			if (user?.id != null) {
 				ClickableText(
 					text = AnnotatedString(stringResource(id = R.string.profile_edit_title)),
 					style = TextStyle(
@@ -179,7 +192,6 @@ private fun ProfileUserInfo(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ProfileUserPostTabContent(
-	viewModel: ProfileViewModel,
 	isGuest: Boolean = true,
 	navigator: LyfeNavigator
 ) {
@@ -222,7 +234,6 @@ private fun ProfileUserPostTabContent(
 		}
 
 		ProfileUserPostPager(
-			viewModel = viewModel,
 			navigator = navigator,
 			isGuest = isGuest,
 			pagerState = pagerState
@@ -295,13 +306,14 @@ private fun ProfileGuestLoginView(
 			horizontalPadding = 24.dp
 		) {
 			// TODO 로그인 화면으로
-// 			navigator.navigate(route = LyfeScreens.Login.route)
+ 			navigator.navigate(route = LyfeScreens.Login.route)
 		}
 
 		Spacer(modifier = Modifier.height(8.dp))
 
 		Text(
-			modifier = Modifier.align(CenterHorizontally)
+			modifier = Modifier
+				.align(CenterHorizontally)
 				.clickableSingle {
 					navigator.navigate(route = LyfeScreens.Login.route)
 				},
@@ -317,10 +329,10 @@ private fun ProfileGuestLoginView(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ProfileUserPostPager(
-	viewModel: ProfileViewModel,
 	navigator: LyfeNavigator,
 	isGuest: Boolean,
-	pagerState: PagerState
+	pagerState: PagerState,
+	onScroll: (Boolean) -> Unit = {}
 ) {
 	HorizontalPager(
 		modifier = Modifier.fillMaxSize(),
@@ -331,19 +343,18 @@ private fun ProfileUserPostPager(
 		when (page) {
 			0 -> {
 				// 신청 사진 리스트
-				ProfileImageFeedScreen(
-					viewModel = viewModel
-				) {
+				ProfileImageFeedScreen {
 					navigator.navigate(LyfeScreens.FeedDetail.route)
 				}
 			}
 			1 -> {
 				// 고민 글
 				ProfileTextFeedScreen(
-					viewModel = viewModel
-				) {
-					navigator.navigate(LyfeScreens.FeedDetail.route)
-				}
+					onScroll = onScroll,
+					onFeedClick = {
+						navigator.navigate(LyfeScreens.FeedDetail.route)
+					}
+				)
 			}
 		}
 	}
