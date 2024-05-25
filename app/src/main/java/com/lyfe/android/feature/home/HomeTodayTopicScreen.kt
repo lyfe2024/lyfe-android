@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
 import com.lyfe.android.core.common.ui.theme.Grey100
 import com.lyfe.android.core.common.ui.theme.Grey400
@@ -220,30 +221,30 @@ private fun MoreTextFeedView(
 	Box(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(vertical = 32.dp)
+			.padding(vertical = 40.dp)
 			.clickableSingle { onMoreFeedClick() }
 	) {
 		Column(
 			modifier = Modifier
-				.align(Alignment.Center)
-				.size(80.dp)
-				.background(
-					color = Grey400,
-					shape = CircleShape
-				),
+				.align(Alignment.Center),
 			horizontalAlignment = Alignment.CenterHorizontally,
 			verticalArrangement = Arrangement.Center
 		) {
-			Image(
-				modifier = Modifier.size(36.dp),
-				painter = painterResource(id = R.drawable.ic_arrow_next_white),
-				contentDescription = "더보기"
+			Text(
+				text = stringResource(R.string.home_text_feed_more),
+				style = Title2,
+				color = Color.Black
 			)
 
-			Text(
+			Spacer(modifier = Modifier.height(16.dp))
+
+			LyfeButton(
 				text = stringResource(id = R.string.home_feed_more),
-				style = Title2,
-				color = Color.White
+				horizontalPadding = 24.dp,
+				verticalPadding = 4.dp,
+				cornerSize = 16.dp,
+				isClearIconShow = false,
+				onClick = onMoreFeedClick
 			)
 		}
 	}

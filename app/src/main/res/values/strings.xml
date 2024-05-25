@@ -106,5 +106,6 @@
 	<string name="profile_image_feed_post">사진 신청하러 가기</string>
 	<string name="profile_text_feed_empty">고민을 털어놓으면 마음이 가벼워져요.\n첫번째 글을 작성해 보세요.</string>
 	<string name="profile_text_feed_post">고민글 쓰러가기</string>
+	<string name="home_text_feed_more">함께 더 많은 고민을 나눠봐요!</string>
 
 </resources>
