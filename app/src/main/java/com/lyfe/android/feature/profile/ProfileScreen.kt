@@ -65,6 +65,7 @@ import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.User
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
+import com.lyfe.android.feature.profile.image.ProfileImageFeedScreen
 import com.lyfe.android.feature.profile.text.ProfileTextFeedScreen
 
 @Composable
@@ -343,9 +344,15 @@ private fun ProfileUserPostPager(
 		when (page) {
 			0 -> {
 				// 신청 사진 리스트
-				ProfileImageFeedScreen {
-					navigator.navigate(LyfeScreens.FeedDetail.route)
-				}
+				ProfileImageFeedScreen(
+					onScroll = onScroll,
+					onFeedClick = {
+						navigator.navigate(LyfeScreens.FeedDetail.route)
+					},
+					onPostButtonClick = {
+						navigator.navigate(LyfeScreens.PostCreate.route)
+					}
+				)
 			}
 			1 -> {
 				// 고민 글
@@ -353,6 +360,9 @@ private fun ProfileUserPostPager(
 					onScroll = onScroll,
 					onFeedClick = {
 						navigator.navigate(LyfeScreens.FeedDetail.route)
+					},
+					onPostButtonClick = {
+						navigator.navigate(LyfeScreens.PostCreate.route)
 					}
 				)
 			}
