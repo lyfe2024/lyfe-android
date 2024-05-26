@@ -19,11 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.util.clickableSingle
 
@@ -36,9 +34,7 @@ fun LyfeButton(
 	isClearIconShow: Boolean = true,
 	buttonType: LyfeButtonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
 	text: String,
-	fontSize: Int = 16,
-	lineHeight: Int = 24,
-	fontWeight: FontWeight = FontWeight.W700,
+	textStyle: TextStyle = TextStyle.Default,
 	onClose: () -> Unit = {},
 	onClick: () -> Unit
 ) {
@@ -74,12 +70,8 @@ fun LyfeButton(
 
 		Text(
 			text = text,
-			style = TextStyle(
-				fontSize = fontSize.sp,
-				lineHeight = lineHeight.sp,
-				fontWeight = fontWeight,
-				color = buttonType.textColor
-			)
+			style = textStyle,
+			color = buttonType.textColor
 		)
 	}
 }
