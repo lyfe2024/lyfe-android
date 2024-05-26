@@ -1,5 +1,6 @@
 package com.lyfe.android.feature
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -106,8 +107,9 @@ fun LyfeApp(
 		BottomNavItem.Alarm,
 		BottomNavItem.Profile
 	)
-	var prevSelected by remember { mutableStateOf(0) }
-	var selected by remember { mutableIntStateOf(0) }
+	var prevbtmSelectedIdx by remember { mutableIntStateOf(0) }
+	var btmSelectedIdx by remember { mutableIntStateOf(0) }
+	var showBtmNavi by remember { mutableStateOf(true) }
 	var bottomNaviTopOffsetY by remember { mutableStateOf(0.dp) }
 	var createPostButtonsShow by remember { mutableStateOf(false) }
 
@@ -128,49 +130,8 @@ fun LyfeApp(
 				)
 			}
 		) { route ->
-			val idx = bottomNavItems.indexOfFirst { item -> item.screenRoute == route }
-			selected = idx
-		}
-
-		if (selected != -1) {
-			AnimatedVisibility(
-				modifier = Modifier.align(Alignment.BottomCenter),
-				visible = !isNavigationBarHide,
-				enter = slideInVertically {
-					// Slide in from 40 dp from the top.
-					with(density) { -40.dp.roundToPx() }
-				} + expandVertically(
-					// Expand from the top.
-					expandFrom = Alignment.Top
-				) + fadeIn(
-					// Fade in with the initial alpha of 0.3f.
-					initialAlpha = 0.3f
-				),
-				exit = slideOutVertically() + shrinkVertically() + fadeOut()
-			) {
-				NavigationTab(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(bottom = 8.dp, start = 20.dp, end = 20.dp)
-						.onGloballyPositioned {
-							with(density) {
-								bottomNaviTopOffsetY = it.boundsInRoot().top.toDp()
-							}
-						},
-					items = bottomNavItems,
-					selectedItemIndex = selected,
-					isNeedIndicatorAnimation = !isNavigationBarHide && !this.transition.isRunning,
-					onClick = { index ->
-						prevSelected = selected
-						selected = index
-
-						createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
-						if (bottomNavItems[index] != BottomNavItem.CreatePost) {
-							navigator.navigate(bottomNavItems[index].screenRoute)
-						}
-					}
-				)
-			}
+			Log.e("Test@@@", "route: $route")
+			showBtmNavi = bottomNavItems.any { item -> item.screenRoute == route }
 		}
 
 		if (createPostButtonsShow) {
@@ -180,7 +141,7 @@ fun LyfeApp(
 					.background(ScrimColor)
 					.clickableSingle {
 						createPostButtonsShow = false
-						selected = prevSelected
+						btmSelectedIdx = prevbtmSelectedIdx
 					}
 			)
 
@@ -219,7 +180,46 @@ fun LyfeApp(
 			}
 		}
 
+		if (showBtmNavi) {
+			AnimatedVisibility(
+				modifier = Modifier.align(Alignment.BottomCenter),
+				visible = !isNavigationBarHide,
+				enter = slideInVertically {
+					// Slide in from 40 dp from the top.
+					with(density) { -40.dp.roundToPx() }
+				} + expandVertically(
+					// Expand from the top.
+					expandFrom = Alignment.Top
+				) + fadeIn(
+					// Fade in with the initial alpha of 0.3f.
+					initialAlpha = 0.3f
+				),
+				exit = slideOutVertically() + shrinkVertically() + fadeOut()
+			) {
+				NavigationTab(
+					modifier = Modifier
+						.fillMaxWidth()
+						.padding(bottom = 8.dp, start = 20.dp, end = 20.dp)
+						.onGloballyPositioned {
+							with(density) {
+								bottomNaviTopOffsetY = it.boundsInRoot().top.toDp()
+							}
+						},
+					items = bottomNavItems,
+					selectedItemIndex = btmSelectedIdx,
+					isNeedIndicatorAnimation = !isNavigationBarHide && !this.transition.isRunning,
+					onClick = { index ->
+						prevbtmSelectedIdx = btmSelectedIdx
+						btmSelectedIdx = index
 
+						createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
+						if (bottomNavItems[index] != BottomNavItem.CreatePost) {
+							navigator.navigate(bottomNavItems[index].screenRoute)
+						}
+					}
+				)
+			}
+		}
 
 		SnackbarHost(
 			modifier = Modifier.align(Alignment.BottomCenter),
