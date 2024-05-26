@@ -130,7 +130,6 @@ fun LyfeApp(
 				)
 			}
 		) { route ->
-			Log.e("Test@@@", "route: $route")
 			showBtmNavi = bottomNavItems.any { item -> item.screenRoute == route }
 		}
 
