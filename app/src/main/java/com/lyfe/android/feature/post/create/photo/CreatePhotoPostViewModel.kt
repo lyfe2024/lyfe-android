@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.post.create
+package com.lyfe.android.feature.post.create.photo
 
 import android.os.Build
 import androidx.compose.runtime.getValue
@@ -10,7 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class PostCreateViewModel @Inject constructor() : ViewModel() {
+class CreatePhotoPostViewModel @Inject constructor() : ViewModel() {
 
 	var uiState by mutableStateOf<PostCreateUiState>(PostCreateUiState.Success())
 		private set

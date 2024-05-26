@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.post.create
+package com.lyfe.android.feature.post.create.photo
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,7 +50,7 @@ import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
 fun CreatePhotoPostScreen(
 	navigator: LyfeNavigator,
 	navHostController: NavHostController,
-	viewModel: PostCreateViewModel = hiltViewModel()
+	viewModel: CreatePhotoPostViewModel = hiltViewModel()
 ) {
 	var isNavigateToSelectAlbum by remember { mutableStateOf(false) }
 
@@ -104,7 +104,7 @@ fun CreatePhotoPostScreen(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun PostScreenDefault(
-	viewModel: PostCreateViewModel,
+	viewModel: CreatePhotoPostViewModel,
 	image: String = "",
 	title: String,
 	changeTitle: (title: String) -> Unit,

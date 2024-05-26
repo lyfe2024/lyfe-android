@@ -1,4 +1,4 @@
-package com.lyfe.android.feature.post.create
+package com.lyfe.android.feature.post.create.photo
 
 import com.lyfe.android.core.common.ui.permission.NeededPermission
 import javax.annotation.concurrent.Immutable
