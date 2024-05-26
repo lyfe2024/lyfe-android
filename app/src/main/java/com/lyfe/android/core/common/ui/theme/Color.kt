@@ -48,3 +48,5 @@ val BlackTransparent30 = Color(0x4D000000)
 val KakaoYelowColor = Color(0xFFFEE500)
 
 val ScrimColor = Color(0x40000000)
+
+val Color_121219 = Color(0xFF121219)
