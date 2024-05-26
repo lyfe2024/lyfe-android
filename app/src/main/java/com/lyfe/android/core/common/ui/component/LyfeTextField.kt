@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyfe.android.core.common.ui.definition.LyfeTextFieldType
 import com.lyfe.android.core.common.ui.theme.Body2
+import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.util.clickableSingle
 
@@ -45,9 +46,14 @@ fun LyfeTextField(
 	textFieldType: LyfeTextFieldType = LyfeTextFieldType.TC_DEFAULT_BG_WHITE_SC_TRANSPARENT,
 	isActivateCloseIcon: Boolean = false,
 	text: String,
-	hintText: String = "",
 	textColor: Color = Color.Black,
 	textStyle: TextStyle = Body2,
+	hintText: String = "",
+	hintTextStyle: TextStyle = TextStyle.Default,
+	hintTextColor: Color = Grey200,
+	borderWidth: Dp = 0.dp,
+	borderColor: Color = Color.Unspecified,
+	cornerRadius: Dp = 0.dp,
 	requestFocus: Boolean = false,
 	onTextClear: () -> Unit = {},
 	onTextChange: (String) -> Unit
@@ -67,12 +73,15 @@ fun LyfeTextField(
 			modifier = Modifier
 				.fillMaxWidth()
 				.border(
-					width = 1.dp,
-					color = textFieldType.strokeColor,
-					shape = RoundedCornerShape(size = 8.dp)
+					width = borderWidth,
+					color = borderColor,
+					shape = RoundedCornerShape(size = cornerRadius)
 				)
 				.focusRequester(focusRequester)
-				.background(color = textFieldType.bgColor, shape = RoundedCornerShape(size = 8.dp))
+				.background(
+					color = textFieldType.bgColor,
+					shape = RoundedCornerShape(size = cornerRadius)
+				)
 				.padding(horizontal = horizontalPadding, vertical = verticalPadding),
 			singleLine = singleLine,
 			maxLines = maxLines,
@@ -89,8 +98,8 @@ fun LyfeTextField(
 					if (text.isEmpty()) {
 						Text(
 							text = hintText,
-							style = textStyle,
-							color = textColor
+							style = hintTextStyle,
+							color = hintTextColor
 						)
 					}
 					innerTextField()
