@@ -87,7 +87,7 @@ private fun ProfileEditContentArea(
 	// ViewModel uiState 에 따라서 화면 표시 여부 달라짐
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val nicknameValidationState by viewModel.nicknameValidationUiState.collectAsStateWithLifecycle()
-	val originImageUrl by remember { mutableStateOf(viewModel.user.profileImage) }
+
 
 	when (uiState) {
 		is ProfileEditUiState.IDLE -> {
@@ -96,7 +96,7 @@ private fun ProfileEditContentArea(
 				nickname = viewModel.nickname,
 				nicknameValidationState = nicknameValidationState,
 				onNicknameChanged = { viewModel.setNickname(it) },
-				originImageUrl = originImageUrl,
+				originImageUrl = viewModel.user.value.profileImage,
 				selectedImagePath = viewModel.imagePath,
 				onUpdateImagePath = { viewModel.updateProfileImageFilePath(it) },
 				onCompleteButtonClick = { viewModel.checkNicknameDuplicate() }
@@ -119,7 +119,7 @@ private fun ProfileEditContentArea(
 				nickname = viewModel.nickname,
 				nicknameValidationState = nicknameValidationState,
 				onNicknameChanged = { viewModel.setNickname(it) },
-				originImageUrl = originImageUrl,
+				originImageUrl = viewModel.user.value.profileImage,
 				selectedImagePath = viewModel.imagePath,
 				onUpdateImagePath = { viewModel.updateProfileImageFilePath(it) },
 				onCompleteButtonClick = { viewModel.checkNicknameDuplicate() }
