@@ -88,7 +88,6 @@ private fun ProfileEditContentArea(
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val nicknameValidationState by viewModel.nicknameValidationUiState.collectAsStateWithLifecycle()
 
-
 	when (uiState) {
 		is ProfileEditUiState.IDLE -> {
 			// 처음 화면에 보일 닉네임은 로컬 저장소에서 가져옴.

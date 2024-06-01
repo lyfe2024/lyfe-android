@@ -2,7 +2,6 @@ package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 
 interface ImageDataSource {

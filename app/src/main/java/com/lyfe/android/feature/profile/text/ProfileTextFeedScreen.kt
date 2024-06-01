@@ -33,6 +33,8 @@ import com.lyfe.android.core.common.ui.theme.Title1
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.feature.profile.ProfileScreenTextFeedView
 
+private const val EMPTY_SPACER_HEIGHT = 0.5f
+
 @Composable
 fun ProfileTextFeedScreen(
 	viewModel: ProfileTextFeedViewModel = hiltViewModel(),
@@ -107,9 +109,9 @@ private fun FeedListEmptyView(
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
-		horizontalAlignment = Alignment.CenterHorizontally,
+		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Spacer(modifier = Modifier.weight(0.5f))
+		Spacer(modifier = Modifier.weight(EMPTY_SPACER_HEIGHT))
 
 		Text(
 			text = stringResource(R.string.profile_text_feed_empty),
@@ -123,7 +125,7 @@ private fun FeedListEmptyView(
 		LyfeButton(
 			buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
 			isClearIconShow = false,
-			text = stringResource(R.string.profile_text_feed_post),
+			text = stringResource(R.string.profile_text_feed_post)
 		) {
 			onPostButtonClick()
 		}

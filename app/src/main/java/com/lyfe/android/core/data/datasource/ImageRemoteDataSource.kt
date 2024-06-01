@@ -4,7 +4,6 @@ import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.ImageService
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import javax.inject.Inject
 

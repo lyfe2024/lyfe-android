@@ -307,7 +307,7 @@ private fun ProfileGuestLoginView(
 			horizontalPadding = 24.dp
 		) {
 			// TODO 로그인 화면으로
- 			navigator.navigate(route = LyfeScreens.Login.route)
+			navigator.navigate(route = LyfeScreens.Login.route)
 		}
 
 		Spacer(modifier = Modifier.height(8.dp))

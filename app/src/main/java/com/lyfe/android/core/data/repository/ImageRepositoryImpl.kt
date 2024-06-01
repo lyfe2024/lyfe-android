@@ -45,11 +45,6 @@ class ImageRepositoryImpl @Inject constructor(
 
 	override suspend fun uploadImage(url: String, key: String, file: File): Result<Unit> {
 		val requestBody = file.asRequestBody()
-		val part = MultipartBody.Part.createFormData(
-			name = "image",
-			filename = file.name,
-			body = requestBody
-		)
 		return imageDataSource.uploadImage(
 			url = url,
 			key = key,
