@@ -3,22 +3,25 @@ package com.lyfe.android.feature.post.create.photo
 import com.lyfe.android.core.common.ui.permission.NeededPermission
 import javax.annotation.concurrent.Immutable
 
-sealed interface PostCreateUiState {
-	@Immutable
-	data class Success(
-		val selectedImage: String = "",
-		val event: PostCreateUiEvent = PostCreateUiEvent.IDLE
-	) : PostCreateUiState
+@Immutable
+data class CreatePhotoPostUiState(
+	val selectedImage: String = "",
+	val title: String = "",
+	val event: CreatePhotoPostUiEvent = CreatePhotoPostUiEvent.IDLE
+) {
+	fun isAvailableToNavigateNextScreen() = selectedImage.isNotEmpty() && titleValidation()
+
+	private fun titleValidation() = title.isNotEmpty() && title.length <= 20
 }
 
-sealed interface PostCreateUiEvent {
-	object IDLE : PostCreateUiEvent
+sealed interface CreatePhotoPostUiEvent {
+	object IDLE : CreatePhotoPostUiEvent
 
-	object CheckPermission : PostCreateUiEvent
+	object CheckPermission : CreatePhotoPostUiEvent
 
 	data class ShowPermissionAlertDialog(
 		val failedPermissionList: List<NeededPermission>
-	) : PostCreateUiEvent
+	) : CreatePhotoPostUiEvent
 
-	object MoveToSelectAlbum : PostCreateUiEvent
+	object MoveToSelectAlbum : CreatePhotoPostUiEvent
 }

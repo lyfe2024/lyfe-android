@@ -8,14 +8,15 @@ import androidx.navigation.navArgument
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.NotificationListRoute
-import com.lyfe.android.feature.album.SelectAlbumScreen
+import com.lyfe.android.feature.album.SelectAlbumRouter
 import com.lyfe.android.feature.detail.FeedDetailRouter
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
-import com.lyfe.android.feature.post.create.photo.CreatePhotoPostScreen
+import com.lyfe.android.feature.post.create.photo.CreatePhotoPostRouter
+import com.lyfe.android.feature.post.create.text.CreateTextPostRouter
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.setting.SettingScreen
@@ -55,7 +56,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.CreatePhotoPost.name) {
-		CreatePhotoPostScreen(
+		CreatePhotoPostRouter(
 			navigator = lyfeNavigator,
 			navHostController = navHostController
 		)
@@ -63,9 +64,8 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.CreateTextPost.name) {
-		CreatePhotoPostScreen(
-			navigator = lyfeNavigator,
-			navHostController = navHostController
+		CreateTextPostRouter(
+			navigator = lyfeNavigator
 		)
 		selectedScreen(LyfeScreens.CreateTextPost.name)
 	}
@@ -84,7 +84,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	}
 
 	composable(route = LyfeScreens.SelectAlbum.name) {
-		SelectAlbumScreen(navigator = lyfeNavigator)
+		SelectAlbumRouter(navigator = lyfeNavigator)
 		selectedScreen(LyfeScreens.SelectAlbum.name)
 	}
 

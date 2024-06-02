@@ -174,7 +174,7 @@ fun LyfeApp(
 					iconRes = R.drawable.ic_text,
 					click = {
 						createPostButtonsShow = false
-						navigator.navigate(LyfeScreens.CreatePhotoPost.name)
+						navigator.navigate(LyfeScreens.CreateTextPost.name)
 					}
 				)
 

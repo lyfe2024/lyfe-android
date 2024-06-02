@@ -3,12 +3,14 @@ package com.lyfe.android.core.common.ui.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -48,11 +51,13 @@ fun LyfeTextField(
 	text: String,
 	textColor: Color = Color.Black,
 	textStyle: TextStyle = Body2,
+	textBoxHeightDp: Dp = 0.dp,
 	hintText: String = "",
 	hintTextStyle: TextStyle = TextStyle.Default,
 	hintTextColor: Color = Grey200,
 	borderWidth: Dp = 0.dp,
-	borderColor: Color = Color.Unspecified,
+	borderIdleColor: Color = Color.Unspecified,
+	borderFocusedColor: Color = Color.Unspecified,
 	cornerRadius: Dp = 0.dp,
 	requestFocus: Boolean = false,
 	onTextClear: () -> Unit = {},
@@ -66,12 +71,18 @@ fun LyfeTextField(
 		}
 	}
 
+	var borderColor by remember { mutableStateOf(Color.Unspecified) }
+
 	Box(
 		modifier = modifier
 	) {
 		BasicTextField(
 			modifier = Modifier
+				.heightIn(min = textBoxHeightDp)
 				.fillMaxWidth()
+				.onFocusChanged {
+					borderColor = if(it.isFocused) borderFocusedColor else borderIdleColor
+				}
 				.border(
 					width = borderWidth,
 					color = borderColor,
@@ -83,6 +94,7 @@ fun LyfeTextField(
 					shape = RoundedCornerShape(size = cornerRadius)
 				)
 				.padding(horizontal = horizontalPadding, vertical = verticalPadding),
+
 			singleLine = singleLine,
 			maxLines = maxLines,
 			value = text,
@@ -90,7 +102,8 @@ fun LyfeTextField(
 			onValueChange = onTextChange
 		) { innerTextField ->
 			Row(
-				verticalAlignment = Alignment.CenterVertically
+				verticalAlignment = Alignment.Top,
+				horizontalArrangement = Arrangement.Start
 			) {
 				Box(
 					modifier = Modifier.weight(1f)

@@ -1,162 +1,198 @@
 package com.lyfe.android.feature.post.create.photo
 
-import androidx.compose.foundation.Image
+import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
-import com.lyfe.android.core.common.ui.component.TextField
+import com.lyfe.android.core.common.ui.component.LyfeTextField
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
 import com.lyfe.android.core.common.ui.permission.NeededPermission
 import com.lyfe.android.core.common.ui.permission.PermissionAlertDialogs
 import com.lyfe.android.core.common.ui.permission.PermissionsCheckScreen
+import com.lyfe.android.core.common.ui.theme.Body2
+import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
+import com.lyfe.android.core.common.ui.theme.Button1
+import com.lyfe.android.core.common.ui.theme.Caption3
+import com.lyfe.android.core.common.ui.theme.Color_121219
+import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.Grey200
+import com.lyfe.android.core.common.ui.theme.Grey400
+import com.lyfe.android.core.common.ui.theme.Grey800
+import com.lyfe.android.core.common.ui.theme.H3
+import com.lyfe.android.core.common.ui.theme.Title2
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.common.ui.util.noRippleClickable
+import com.lyfe.android.core.common.ui.util.pxToDp
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.album.SelectImageKey
-import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
-fun CreatePhotoPostScreen(
+fun CreatePhotoPostRouter(
 	navigator: LyfeNavigator,
 	navHostController: NavHostController,
 	viewModel: CreatePhotoPostViewModel = hiltViewModel()
 ) {
-	var isNavigateToSelectAlbum by remember { mutableStateOf(false) }
+
+	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(navHostController) {
-		val selectedImage =
-			navHostController.getBackStackEntry(LyfeScreens.CreatePhotoPost.name).savedStateHandle.get<String>(SelectImageKey)
+		val selectedImage = navHostController.getBackStackEntry(LyfeScreens.CreatePhotoPost.name)
+			.savedStateHandle.get<String>(SelectImageKey) ?: ""
 
-		viewModel.setSelectedImage(selectedImage ?: "")
+		viewModel.saveSelectedImage(selectedImage)
 	}
 
-	LaunchedEffect(isNavigateToSelectAlbum) {
-		if (!isNavigateToSelectAlbum) return@LaunchedEffect
+	DisposableEffect(uiState.event) {
+		if (uiState.event is CreatePhotoPostUiEvent.MoveToSelectAlbum) {
+			navigator.navigate(LyfeScreens.SelectAlbum.name)
+		}
 
-		navigator.navigate(LyfeScreens.SelectAlbum.name)
-		viewModel.setUiEventIdle()
-	}
-
-	when (viewModel.uiState) {
-		is PostCreateUiState.Success -> {
-			val image = (viewModel.uiState as PostCreateUiState.Success).selectedImage
-
-			PostScreenDefault(
-				viewModel = viewModel,
-				image = image,
-				title = viewModel.title,
-				changeTitle = { change ->
-					viewModel.title = change
-				},
-				isBtnClickable = viewModel.title.isNotEmpty() && image.isNotEmpty(),
-				onClickBackBtn = {
-					navigator.navigateUp()
-				}
-			)
+		onDispose {
+			viewModel.setUiEventIdle()
 		}
 	}
 
-	HandleUiEvent(
-		event = (viewModel.uiState as PostCreateUiState.Success).event,
+	CreatePhotoPostScreen(
+		uiState = uiState,
 		neededPermissions = viewModel.neededPermissions,
-		checkPermissionResult = { passedPermissionList, failedPermissionList ->
-			viewModel.checkPermissionResult(passedPermissionList, failedPermissionList)
-		},
-		onPermissionSuccess = { permissionList -> viewModel.addAllowedPermissions(permissionList) },
-		onDialogDismiss = { viewModel.setUiEventIdle() },
-		navigateToSelectAlbum = {
-			isNavigateToSelectAlbum = true
-		}
+		onTextChanged = viewModel::savePostTitle,
+		checkPermissionResult = viewModel::checkPermissionResult,
+		onPermissionSuccess = viewModel::addAllowedPermissions,
+		onPermissionAlertDialogDismiss = viewModel::setUiEventIdle,
+		navigateUp = navigator::navigateUp,
+		clickUploadingBox = viewModel::checkPermission,
+		navigateToSelectAlbum = { navigator.navigate(LyfeScreens.SelectAlbum.name) }
 	)
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun PostScreenDefault(
-	viewModel: CreatePhotoPostViewModel,
-	image: String = "",
-	title: String,
-	changeTitle: (title: String) -> Unit,
-	onClickBackBtn: () -> Unit,
-	isBtnClickable: Boolean = false
+fun CreatePhotoPostScreen(
+	uiState: CreatePhotoPostUiState = CreatePhotoPostUiState(),
+	neededPermissions: Array<String>,
+	onTextChanged: (String) -> Unit,
+	onPermissionSuccess: (List<NeededPermission>) -> Unit,
+	checkPermissionResult: (List<NeededPermission>, List<NeededPermission>) -> Unit,
+	onPermissionAlertDialogDismiss: () -> Unit,
+	clickUploadingBox: () -> Unit,
+	navigateToSelectAlbum: () -> Unit,
+	navigateUp: () -> Unit
 ) {
+	CreatePhotoPostContent(
+		selectedImage = uiState.selectedImage,
+		postTitle = uiState.title,
+		onTextChanged = onTextChanged,
+		navigateUp = navigateUp,
+		clickUploadingBox = clickUploadingBox,
+		isBtnClickable = uiState.isAvailableToNavigateNextScreen(),
+		clickPostBtn = {}
+	)
+
+	HandleUiEvent(
+		event = uiState.event,
+		neededPermissions = neededPermissions,
+		checkPermissionResult = checkPermissionResult,
+		onPermissionSuccess = onPermissionSuccess,
+		onPermissionAlertDialogDismiss = onPermissionAlertDialogDismiss,
+		navigateToSelectAlbum = navigateToSelectAlbum
+	)
+}
+
+@Composable
+private fun CreatePhotoPostContent(
+	selectedImage: String = "",
+	postTitle: String,
+	onTextChanged: (String) -> Unit,
+	navigateUp: () -> Unit,
+	isBtnClickable: Boolean = false,
+	titleMaxCnt: Int = 20,
+	textFieldRequestFocus: Boolean = false,
+	scrollState: ScrollState = rememberScrollState(),
+	keyboardHeight: Int = WindowInsets.ime.getBottom(LocalDensity.current),
+	coroutineScope: CoroutineScope = rememberCoroutineScope(),
+	context: Context = LocalContext.current,
+	clickUploadingBox: () -> Unit,
+	clickPostBtn: () -> Unit
+) {
+
+	LaunchedEffect(key1 = keyboardHeight) {
+		coroutineScope.launch {
+			scrollState.scrollBy(keyboardHeight.toFloat().pxToDp(context))
+		}
+	}
+
 	Column(
-		modifier = Modifier
-			.padding(top = 16.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
+		modifier = Modifier.fillMaxSize()
 	) {
-		PostTopBar(modifier = Modifier.wrapContentWidth()) { onClickBackBtn() }
+		CreatePhotoPostTopBar(
+			navigateUp = navigateUp
+		)
 
-		Spacer(modifier = Modifier.height(16.dp))
-
-		PostTitleBox(modifier = Modifier.wrapContentWidth())
-
-		Spacer(modifier = Modifier.height(16.dp))
-
-		if (image.isEmpty()) {
-			UploadingPhotoBox(
-				modifier = Modifier.wrapContentSize()
-			) {
-				viewModel.checkPermission()
-			}
-		} else {
-			GlideImage(
-				modifier = Modifier
-					.fillMaxWidth()
-					.aspectRatio(1f),
-				model = image,
-				contentDescription = ""
-			) {
-				it.centerCrop()
-			}
-		}
-
-		Spacer(modifier = Modifier.height(24.dp))
-		TypingPostTitleBox(
+		Column(
 			modifier = Modifier
-				.weight(1f),
-			postTitle = title
-		) { title ->
-			changeTitle(title)
-		}
+				.weight(1f)
+				.verticalScroll(scrollState)
+		) {
+			SelectPhotoBox(
+				selectedImage = selectedImage,
+				clickPhotoBox = clickUploadingBox
+			)
 
-		Spacer(modifier = Modifier.height(16.dp))
+			TypingPostTitleBox(
+				modifier = Modifier,
+				postTitle = postTitle,
+				titleMaxCnt = titleMaxCnt,
+				onTextChanged = onTextChanged
+			)
+		}
 
 		LyfeButton(
 			modifier = Modifier
 				.fillMaxWidth()
-				.height(48.dp),
-			text = "게시",
+				.padding(bottom = 24.dp, start = 20.dp, end = 20.dp),
+			text = stringResource(id = R.string.create_photo_post_btn_text),
 			buttonType = if (isBtnClickable) {
 				LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT
 			} else {
@@ -164,27 +200,57 @@ private fun PostScreenDefault(
 			},
 			verticalPadding = 12.dp,
 			horizontalPadding = 24.dp,
-			isClearIconShow = false
-		) {
-			// TODO 게시 했을 때 게시글 작성
+			isClearIconShow = false,
+			textStyle = Button1,
+			onClick = clickPostBtn
+		)
+	}
+}
+
+@Composable
+@OptIn(ExperimentalGlideComposeApi::class)
+private fun SelectPhotoBox(
+	modifier: Modifier = Modifier,
+	selectedImage: String,
+	clickPhotoBox: () -> Unit
+) {
+	Box(
+		modifier = modifier
+			.padding(top = 0.dp, start = 20.dp, end = 20.dp, bottom = 24.dp)
+			.clickableSingle { clickPhotoBox() }
+	) {
+		if (selectedImage.isEmpty()) {
+			UploadingPhotoBox()
+		} else {
+			GlideImage(
+				modifier = Modifier
+					.fillMaxWidth()
+					.aspectRatio(1f)
+					.clip(RoundedCornerShape(10.dp)),
+				model = selectedImage,
+				contentDescription = "uploading_image"
+			) {
+				it.centerCrop()
+			}
 		}
 	}
 }
 
 @Composable
 private fun HandleUiEvent(
-	event: PostCreateUiEvent,
+	event: CreatePhotoPostUiEvent,
 	neededPermissions: Array<String>,
 	checkPermissionResult: (
 		passedPermissionList: List<NeededPermission>,
 		failedPermissionList: List<NeededPermission>
 	) -> Unit,
 	onPermissionSuccess: (permissionList: List<NeededPermission>) -> Unit,
-	onDialogDismiss: () -> Unit,
+	onPermissionAlertDialogDismiss: () -> Unit,
 	navigateToSelectAlbum: () -> Unit
 ) {
+
 	when (event) {
-		is PostCreateUiEvent.CheckPermission -> {
+		is CreatePhotoPostUiEvent.CheckPermission -> {
 			PermissionsCheckScreen(
 				neededPermissions = neededPermissions
 			) { passedPermissionList, failedPermissionList ->
@@ -192,18 +258,17 @@ private fun HandleUiEvent(
 			}
 		}
 
-		is PostCreateUiEvent.ShowPermissionAlertDialog -> {
+		is CreatePhotoPostUiEvent.ShowPermissionAlertDialog -> {
 			PermissionAlertDialogs(
 				failedPermissionList = event.failedPermissionList,
-				permissionSuccess = { permissionList ->
-					onPermissionSuccess(permissionList)
-				},
-				onDismiss = { onDialogDismiss() }
+				permissionSuccess = onPermissionSuccess,
+				onDismiss = onPermissionAlertDialogDismiss
 			)
 		}
 
-		is PostCreateUiEvent.MoveToSelectAlbum -> {
-			navigateToSelectAlbum()
+		is CreatePhotoPostUiEvent.MoveToSelectAlbum -> {
+			Log.e("Test@@@", "HandleUi $event")
+//			navigateToSelectAlbum()
 		}
 
 		else -> {}
@@ -211,72 +276,59 @@ private fun HandleUiEvent(
 }
 
 @Composable
-private fun PostTitleBox(
-	modifier: Modifier = Modifier
-) {
-	Box(
-		modifier = modifier
-	) {
-		Text(
-			text = "사진 신청",
-			style = TextStyle(
-				fontSize = 24.sp,
-				lineHeight = 36.sp,
-				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000)
-			)
-		)
-	}
-}
-
-@Composable
-private fun PostTopBar(
+private fun CreatePhotoPostTopBar(
 	modifier: Modifier = Modifier,
-	onClickBackBtn: () -> Unit
+	navigateUp: () -> Unit
 ) {
-	Box(
+	Column(
 		modifier = modifier
+			.padding(vertical = 16.dp, horizontal = 20.dp),
+		verticalArrangement = Arrangement.spacedBy(16.dp)
 	) {
-		Image(
+		Icon(
 			modifier = Modifier
-				.noRippleClickable { onClickBackBtn() },
+				.noRippleClickable { navigateUp() },
 			painter = painterResource(id = R.drawable.ic_arrow_back),
-			contentDescription = "post_back_btn"
+			contentDescription = "post_back_btn",
+			tint = Color.Black
+		)
+
+		Text(
+			text = stringResource(id = R.string.create_photo_post_title),
+			color = Color.Black,
+			style = H3
 		)
 	}
 }
 
 @Composable
 private fun UploadingPhotoBox(
-	modifier: Modifier = Modifier,
-	clickPhotoBox: () -> Unit
+	modifier: Modifier = Modifier
 ) {
 	Column(
 		modifier = modifier
 			.fillMaxWidth()
 			.height(158.dp)
-			.background(color = BtnLightGrayColor, shape = RoundedCornerShape(size = 10.dp))
-			.clickableSingle {
-				clickPhotoBox()
-			},
+			.background(
+				color = BtnLightGrayColor,
+				shape = RoundedCornerShape(size = 10.dp)
+			),
 		verticalArrangement = Arrangement.Center,
 		horizontalAlignment = Alignment.CenterHorizontally
 	) {
-		Image(
+		Icon(
+			modifier = Modifier.size(44.dp),
 			painter = painterResource(id = R.drawable.ic_plus_black),
-			contentDescription = "ic_plus_black"
+			contentDescription = "ic_plus_black",
+			tint = Color_121219
 		)
 
 		Spacer(modifier = Modifier.height(8.dp))
 
 		Text(
-			text = "사진 업로드",
-			style = TextStyle(
-				fontSize = 14.sp,
-				lineHeight = 21.sp,
-				fontWeight = FontWeight.W600,
-				color = Color.Black
-			)
+			text = stringResource(id = R.string.create_photo_post_uploading_box_text),
+			style = Button1,
+			color = Color.Black
 		)
 	}
 }
@@ -285,37 +337,51 @@ private fun UploadingPhotoBox(
 private fun TypingPostTitleBox(
 	modifier: Modifier = Modifier,
 	postTitle: String,
-	onPostTitleChange: (String) -> Unit
+	titleMaxCnt: Int,
+	onTextChanged: (String) -> Unit
 ) {
 	Column(
 		modifier = modifier
+			.padding(vertical = 24.dp, horizontal = 20.dp),
+		verticalArrangement = Arrangement.spacedBy(8.dp)
 	) {
 		Text(
 			modifier = Modifier,
-			text = "제목",
-			style = TextStyle(
-				fontSize = 16.sp,
-				lineHeight = 24.sp,
-				fontWeight = FontWeight(weight = 700),
-				color = Color(color = 0xFF000000)
-			)
+			text = stringResource(id = R.string.create_photo_post_typing_box_title),
+			style = Title2,
+			color = Color.Black
 		)
-		Spacer(modifier = Modifier.height(8.dp))
-		TextField(
-			modifier = Modifier.fillMaxWidth(),
+
+		LyfeTextField(
 			text = postTitle,
-			onTextChange = onPostTitleChange,
-			placeHolder = {
-				Text(
-					text = "제목을 입력해주세요",
-					style = TextStyle(
-						fontSize = 16.sp,
-						lineHeight = 24.sp,
-						fontWeight = FontWeight(weight = 500),
-						color = Color(color = 0xFFC4C4C4)
-					)
-				)
-			}
+			onTextChange = onTextChanged,
+			hintText = stringResource(id = R.string.create_photo_post_typing_box_hint),
+			hintTextStyle = Body2,
+			hintTextColor = Grey200,
+			borderIdleColor = Grey200,
+			borderFocusedColor = DEFAULT,
+			borderWidth = 1.dp,
+			cornerRadius = 8.dp,
+			verticalPadding = 12.dp,
+			horizontalPadding = 12.dp,
 		)
+
+		Row(
+			modifier = Modifier.fillMaxWidth(),
+			horizontalArrangement = Arrangement.End
+		) {
+
+			Text(
+				text = "${postTitle.length}",
+				style = Caption3,
+				color = if (postTitle.isNotEmpty()) Grey800 else Grey200
+			)
+
+			Text(
+				text = "/${titleMaxCnt}",
+				style = Caption3,
+				color = Grey400
+			)
+		}
 	}
 }

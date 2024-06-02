@@ -50,3 +50,4 @@ val KakaoYelowColor = Color(0xFFFEE500)
 val ScrimColor = Color(0x40000000)
 
 val Color_121219 = Color(0xFF121219)
+val Main500Transparency20 = Color(0x33E86336)
