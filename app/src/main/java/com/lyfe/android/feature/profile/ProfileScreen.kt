@@ -94,7 +94,18 @@ fun ProfileScreen(
 
 		ProfileContentArea(
 			uiState = uiState.value,
-			navigator = navigator,
+			onMoveToLogin = {
+				navigator.navigate(route = LyfeScreens.Login.route)
+			},
+			onMoveToFeed = {
+				navigator.navigate(LyfeScreens.FeedDetail.route)
+			},
+			onMoveToPost = {
+				navigator.navigate(LyfeScreens.PostCreate.route)
+			},
+			onMoveToProfileEdit = {
+				navigator.navigate(LyfeScreens.ProfileEdit.route)
+			},
 			onError = {
 				onShowSnackBar(LyfeSnackBarIconType.ERROR, it ?: "에러메세지가 존재하지 않습니다.")
 			}
@@ -105,34 +116,39 @@ fun ProfileScreen(
 @Composable
 private fun ProfileContentArea(
 	uiState: ProfileUiState,
-	navigator: LyfeNavigator,
+	onMoveToLogin: () -> Unit,
+	onMoveToFeed: () -> Unit,
+	onMoveToPost: () -> Unit,
+	onMoveToProfileEdit: () -> Unit,
 	onError: (String?) -> Unit
 ) {
 	when (uiState) {
 		ProfileUiState.IDLE -> Unit
 		is ProfileUiState.Guest -> {
-			ProfileUserInfo(
-				navigator = navigator
-			)
+			ProfileUserInfo()
 
 			Spacer(modifier = Modifier.height(16.dp))
 
 			ProfileUserPostTabContent(
-				navigator = navigator,
-				isGuest = true
+				isGuest = true,
+				onMoveToLogin = onMoveToLogin,
+				onFeedClick = onMoveToFeed,
+				onPostButtonClick = onMoveToPost
 			)
 		}
 		is ProfileUiState.UserLoaded -> {
 			ProfileUserInfo(
-				navigator = navigator,
-				user = uiState.user
+				user = uiState.user,
+				onMoveToEdit = onMoveToProfileEdit
 			)
 
 			Spacer(modifier = Modifier.height(16.dp))
 
 			ProfileUserPostTabContent(
-				navigator = navigator,
-				isGuest = false
+				isGuest = false,
+				onMoveToLogin = onMoveToLogin,
+				onFeedClick = onMoveToFeed,
+				onPostButtonClick = onMoveToPost
 			)
 		}
 
@@ -145,8 +161,8 @@ private fun ProfileContentArea(
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun ProfileUserInfo(
-	navigator: LyfeNavigator,
-	user: User? = null
+	user: User? = null,
+	onMoveToEdit: (() -> Unit)? = null
 ) {
 	Row(
 		modifier = Modifier
@@ -183,7 +199,9 @@ private fun ProfileUserInfo(
 						fontSize = 12.sp,
 						color = Grey300
 					),
-					onClick = { navigator.navigate(LyfeScreens.ProfileEdit.route) }
+					onClick = {
+						onMoveToEdit?.invoke()
+					}
 				)
 			}
 		}
@@ -194,7 +212,9 @@ private fun ProfileUserInfo(
 @Composable
 private fun ProfileUserPostTabContent(
 	isGuest: Boolean = true,
-	navigator: LyfeNavigator
+	onMoveToLogin: () -> Unit,
+	onFeedClick: () -> Unit,
+	onPostButtonClick: () -> Unit
 ) {
 	val pages = listOf(
 		TabItem(stringResource(R.string.profile_screen_image_feeds)),
@@ -230,14 +250,15 @@ private fun ProfileUserPostTabContent(
 		if (isGuest) {
 			// 게스트는 로그인 유도창 띄우기
 			ProfileGuestLoginView(
-				navigator = navigator
+				onMoveToLogin = onMoveToLogin
 			)
 		}
 
 		ProfileUserPostPager(
-			navigator = navigator,
 			isGuest = isGuest,
-			pagerState = pagerState
+			pagerState = pagerState,
+			onFeedClick = onFeedClick,
+			onPostButtonClick = onPostButtonClick
 		)
 	}
 }
@@ -281,7 +302,7 @@ private fun ProfileTab(
 
 @Composable
 private fun ProfileGuestLoginView(
-	navigator: LyfeNavigator
+	onMoveToLogin: () -> Unit
 ) {
 	Column(
 		modifier = Modifier.fillMaxSize(),
@@ -304,11 +325,9 @@ private fun ProfileGuestLoginView(
 			text = stringResource(R.string.profile_screen_guest_login_btn_text),
 			buttonType = LyfeButtonType.TC_WHITE_BG_MAIN500_SC_TRANSPARENT,
 			verticalPadding = 12.dp,
-			horizontalPadding = 24.dp
-		) {
-			// TODO 로그인 화면으로
-			navigator.navigate(route = LyfeScreens.Login.route)
-		}
+			horizontalPadding = 24.dp,
+			onClick = onMoveToLogin
+		)
 
 		Spacer(modifier = Modifier.height(8.dp))
 
@@ -316,7 +335,7 @@ private fun ProfileGuestLoginView(
 			modifier = Modifier
 				.align(CenterHorizontally)
 				.clickableSingle {
-					navigator.navigate(route = LyfeScreens.Login.route)
+					onMoveToLogin()
 				},
 			text = AnnotatedString(stringResource(R.string.profile_screen_guest_login_message)),
 			color = Grey500,
@@ -330,10 +349,11 @@ private fun ProfileGuestLoginView(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ProfileUserPostPager(
-	navigator: LyfeNavigator,
 	isGuest: Boolean,
 	pagerState: PagerState,
-	onScroll: (Boolean) -> Unit = {}
+	onScroll: (Boolean) -> Unit = {},
+	onFeedClick: () -> Unit,
+	onPostButtonClick: () -> Unit
 ) {
 	HorizontalPager(
 		modifier = Modifier.fillMaxSize(),
@@ -346,24 +366,16 @@ private fun ProfileUserPostPager(
 				// 신청 사진 리스트
 				ProfileImageFeedScreen(
 					onScroll = onScroll,
-					onFeedClick = {
-						navigator.navigate(LyfeScreens.FeedDetail.route)
-					},
-					onPostButtonClick = {
-						navigator.navigate(LyfeScreens.PostCreate.route)
-					}
+					onFeedClick = onFeedClick,
+					onPostButtonClick = onPostButtonClick
 				)
 			}
 			1 -> {
 				// 고민 글
 				ProfileTextFeedScreen(
 					onScroll = onScroll,
-					onFeedClick = {
-						navigator.navigate(LyfeScreens.FeedDetail.route)
-					},
-					onPostButtonClick = {
-						navigator.navigate(LyfeScreens.PostCreate.route)
-					}
+					onFeedClick = onFeedClick,
+					onPostButtonClick = onPostButtonClick
 				)
 			}
 		}
