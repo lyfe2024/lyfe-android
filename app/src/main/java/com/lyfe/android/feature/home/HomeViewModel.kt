@@ -8,13 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.GetLatestBoardsUseCase
-import com.lyfe.android.core.domain.usecase.GetPopularBoardsUseCase
 import com.lyfe.android.core.domain.usecase.GetTodayTopicUseCase
 import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.FeedFetchingType
 import com.lyfe.android.core.model.FeedType
-import com.lyfe.android.core.model.PopularType
-import com.lyfe.android.feature.home.model.HomeFeedType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,18 +22,11 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
 	private val getTodayTopicUseCase: GetTodayTopicUseCase,
-	private val getLatestBoardsUseCase: GetLatestBoardsUseCase,
-	private val getPopularBoardsUseCase: GetPopularBoardsUseCase
+	private val getLatestBoardsUseCase: GetLatestBoardsUseCase
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Success)
 	val uiState get() = _uiState.asStateFlow()
-
-	var homeFeedType by mutableStateOf(HomeFeedType.TODAY_TOPIC)
-		private set
-
-	private val _feedFetchingType = MutableStateFlow(FeedFetchingType.LATEST)
-	val feedFetchingType get() = _feedFetchingType.asStateFlow()
 
 	private val _imageFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val imageFeedList get() = _imageFeedList.asStateFlow()
@@ -51,6 +40,10 @@ class HomeViewModel @Inject constructor(
 
 	var todayTopic by mutableStateOf("오늘의 주제")
 		private set
+
+	companion object {
+		private const val HOME_FEED_MAX_COUNT = 10
+	}
 
 	init {
 		getTodayTopic()
@@ -67,110 +60,38 @@ class HomeViewModel @Inject constructor(
 		}
 	}
 
-	fun changeFilterType() {
-		homeFeedType = if (homeFeedType == HomeFeedType.TODAY_TOPIC) {
-			HomeFeedType.PAST_BEST
-		} else {
-			HomeFeedType.TODAY_TOPIC
-		}
-		resetData()
-	}
-
-	fun updateFeedFetchingType(fetchingType: FeedFetchingType) {
-		if (feedFetchingType.value == fetchingType) {
-			return
-		}
-		_feedFetchingType.value = fetchingType
-		resetData()
-	}
-
 	fun fetchLatestFeedList(feedType: FeedType) {
-		if (_uiState.value != HomeUiState.Loading) {
-			val cursorId = when (feedType) {
-				FeedType.BOARD -> textFeedCursorId
-				FeedType.BOARD_PICTURE -> imageFeedCursorId
-			}
-			_uiState.update {
-				HomeUiState.Loading
-			}
-			viewModelScope.launch {
-				getLatestBoardsUseCase(
-					cursorId = cursorId,
-					boardType = feedType.name
-				).catch { t ->
-					_uiState.update { HomeUiState.Failure(t.message ?: "") }
-				}.collect {
-					when (feedType) {
-						FeedType.BOARD -> {
-							_textFeedList.compareAndSet(_textFeedList.value, _textFeedList.value + it)
-							textFeedCursorId = if (it.isNotEmpty()) {
-								it.last().feedId
-							} else {
-								textFeedCursorId
-							}
-						}
-						FeedType.BOARD_PICTURE -> {
-							_imageFeedList.compareAndSet(_imageFeedList.value, _imageFeedList.value + it)
-							imageFeedCursorId = if (it.isNotEmpty()) {
-								it.last().feedId
-							} else {
-								imageFeedCursorId
-							}
+		val cursorId = when (feedType) {
+			FeedType.BOARD -> textFeedCursorId
+			FeedType.BOARD_PICTURE -> imageFeedCursorId
+		}
+
+		viewModelScope.launch {
+			getLatestBoardsUseCase(
+				cursorId = cursorId,
+				boardType = feedType.name
+			).catch { t ->
+				_uiState.update { HomeUiState.Failure(t.message ?: "") }
+			}.collect {
+				when (feedType) {
+					FeedType.BOARD -> {
+						_textFeedList.compareAndSet(_textFeedList.value, it.subList(0, minOf(it.size, HOME_FEED_MAX_COUNT)))
+						textFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							textFeedCursorId
 						}
 					}
-					_uiState.update { HomeUiState.Success }
+					FeedType.BOARD_PICTURE -> {
+						_imageFeedList.compareAndSet(_imageFeedList.value, it.subList(0, minOf(it.size, HOME_FEED_MAX_COUNT)))
+						imageFeedCursorId = if (it.isNotEmpty()) {
+							it.last().feedId
+						} else {
+							imageFeedCursorId
+						}
+					}
 				}
 			}
 		}
-	}
-
-	fun fetchPopularFeedList(feedType: FeedType) {
-		if (_uiState.value != HomeUiState.Loading) {
-			val cursorId = when (feedType) {
-				FeedType.BOARD -> textFeedCursorId
-				FeedType.BOARD_PICTURE -> imageFeedCursorId
-			}
-			_uiState.update {
-				HomeUiState.Loading
-			}
-			viewModelScope.launch {
-				getPopularBoardsUseCase(
-					cursorId = cursorId,
-					boardType = feedType.name,
-					popularType = PopularType.WHISKY.name
-				).catch { t ->
-					_uiState.update { HomeUiState.Failure(t.message ?: "") }
-				}.collect {
-					when (feedType) {
-						FeedType.BOARD -> {
-							_textFeedList.compareAndSet(textFeedList.value, it)
-							textFeedCursorId = if (it.isNotEmpty()) {
-								it.last().feedId
-							} else {
-								textFeedCursorId
-							}
-						}
-
-						FeedType.BOARD_PICTURE -> {
-							_imageFeedList.compareAndSet(imageFeedList.value, it)
-							imageFeedCursorId = if (it.isNotEmpty()) {
-								it.last().feedId
-							} else {
-								imageFeedCursorId
-							}
-						}
-					}
-					_uiState.update { HomeUiState.Success }
-				}
-			}
-		}
-	}
-
-	private fun resetData() {
-		_textFeedList.compareAndSet(_textFeedList.value, emptyList())
-		_imageFeedList.compareAndSet(_imageFeedList.value, emptyList())
-
-		textFeedCursorId = 0
-		imageFeedCursorId = 0
 	}
 }

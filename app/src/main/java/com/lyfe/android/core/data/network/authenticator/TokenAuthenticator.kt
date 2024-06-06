@@ -1,8 +1,10 @@
 package com.lyfe.android.core.data.network.authenticator
 
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.data.model.ReissueTokenRequest
 import com.lyfe.android.core.data.network.token.TokenManager
 import com.lyfe.android.core.data.network.model.Result
+import com.lyfe.android.core.data.network.model.onException
 import com.lyfe.android.core.data.network.service.AuthService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
@@ -60,15 +62,17 @@ class TokenAuthenticator @Inject constructor(
 	private suspend fun reissueToken(refreshToken: String): Boolean {
 		val newTokenResult = authService.reissueToken(ReissueTokenRequest(refreshToken))
 		if (newTokenResult is Result.Success) {
-			val result = newTokenResult.body
-			val newAccessToken = result?.accessToken
-			val newRefreshToken = result?.refreshToken
-			if (newAccessToken != null && newRefreshToken != null) {
-				// Update the access token in your storage.
-				tokenManager.updateAccessToken(newAccessToken)
-				tokenManager.updateRefreshToken(newRefreshToken)
+			val result = newTokenResult.body.result
+			val newAccessToken = result.accessToken
+			val newRefreshToken = result.refreshToken
+			// Update the access token in your storage.
+			tokenManager.updateAccessToken(newAccessToken)
+			tokenManager.updateRefreshToken(newRefreshToken)
 
-				return true
+			return true
+		} else {
+			newTokenResult.onException {
+				LogUtil.e("ReissueTokenError", it.message ?: "")
 			}
 		}
 		return false

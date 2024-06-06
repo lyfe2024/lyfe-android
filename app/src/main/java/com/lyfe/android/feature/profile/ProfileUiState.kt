@@ -1,12 +1,19 @@
 package com.lyfe.android.feature.profile
 
+import com.lyfe.android.core.model.User
+
 sealed interface ProfileUiState {
 
-	object GuestSuccess : ProfileUiState
+	object IDLE : ProfileUiState
 
-	object UserSuccess : ProfileUiState
+	object Guest : ProfileUiState
 
-	object Loading : ProfileUiState
+	data class UserLoaded(
+		val user: User
+	) : ProfileUiState
 
-	object Failure : ProfileUiState
+	data class Error(
+		val code: Int? = null,
+		val message: String? = null
+	) : ProfileUiState
 }

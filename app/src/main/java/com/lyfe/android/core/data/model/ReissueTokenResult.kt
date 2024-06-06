@@ -4,6 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReissueTokenResult(
-	val accessToken: String,
-	val refreshToken: String
-)
+	val result: Token
+) {
+
+	@Serializable
+	data class Token(
+		val accessToken: String,
+		val refreshToken: String
+	)
+}

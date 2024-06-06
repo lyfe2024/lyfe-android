@@ -4,7 +4,7 @@ import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.AWSService
 import com.lyfe.android.core.data.network.service.ImageService
-import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class ImageRemoteDataSource @Inject constructor(
@@ -19,7 +19,7 @@ class ImageRemoteDataSource @Inject constructor(
 		return imageService.getUploadUrl(format, path)
 	}
 
-	override suspend fun uploadImage(url: String, key: String, file: MultipartBody.Part): Result<Void> {
+	override suspend fun uploadImage(url: String, key: String, file: RequestBody): Result<Unit> {
 		val queryMap: HashMap<String, String> = hashMapOf()
 
 		val splitKey = key.split("/")

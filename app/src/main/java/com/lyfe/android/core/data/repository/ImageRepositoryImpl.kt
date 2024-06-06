@@ -10,7 +10,6 @@ import com.lyfe.android.core.domain.repository.ImageRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
@@ -43,17 +42,12 @@ class ImageRepositoryImpl @Inject constructor(
 		}
 	}.flowOn(ioDispatcher)
 
-	override suspend fun uploadImage(url: String, key: String, file: File): Result<Void> {
+	override suspend fun uploadImage(url: String, key: String, file: File): Result<Unit> {
 		val requestBody = file.asRequestBody()
-		val part = MultipartBody.Part.createFormData(
-			name = "image",
-			filename = file.name,
-			body = requestBody
-		)
 		return imageDataSource.uploadImage(
 			url = url,
 			key = key,
-			file = part
+			file = requestBody
 		)
 	}
 }

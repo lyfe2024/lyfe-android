@@ -1,29 +1,29 @@
 package com.lyfe.android.feature.home
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerDefaults
+import androidx.compose.foundation.pager.PagerSnapDistance
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -33,61 +33,35 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
+import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
-import com.lyfe.android.core.common.ui.component.LyfeCardViewDesignType
-import com.lyfe.android.core.common.ui.component.LyfeFeedCardView
-import com.lyfe.android.core.common.ui.theme.Caption2
-import com.lyfe.android.core.common.ui.theme.Caption3
 import com.lyfe.android.core.common.ui.theme.Grey100
-import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.H4
 import com.lyfe.android.core.common.ui.theme.Main500
-import com.lyfe.android.core.common.ui.theme.Title3
+import com.lyfe.android.core.common.ui.theme.Title2
 import com.lyfe.android.core.common.ui.theme.pretenard
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.model.Feed
-import com.lyfe.android.core.model.FeedFetchingType
 import com.lyfe.android.core.model.FeedType
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import kotlin.math.min
 
-private const val IMAGE_FEED_INDEXING = 5
-private const val TODAY_TOPIC_CARDS_COUNT = 4
+private const val DIVIDER_ALPHA = 0.5f
 
 @Composable
 fun HomeTodayTopicScreen(
 	viewModel: HomeViewModel = hiltViewModel(),
-	navigator: LyfeNavigator,
-	onScroll: (Boolean) -> Unit
+	navigator: LyfeNavigator
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	val feedFetchingType by viewModel.feedFetchingType.collectAsStateWithLifecycle()
 
 	val textFeeds by viewModel.textFeedList.collectAsStateWithLifecycle()
 	val imageFeeds by viewModel.imageFeedList.collectAsStateWithLifecycle()
 
-	val scrollState = rememberLazyListState()
-
-	LaunchedEffect(feedFetchingType) {
-		when (feedFetchingType) {
-			FeedFetchingType.POPULAR -> {
-				viewModel.fetchPopularFeedList(FeedType.BOARD)
-				viewModel.fetchPopularFeedList(FeedType.BOARD_PICTURE)
-			}
-			FeedFetchingType.LATEST -> {
-				viewModel.fetchLatestFeedList(FeedType.BOARD)
-				viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
-			}
-		}
-	}
-
-	LaunchedEffect(scrollState) {
-		snapshotFlow { scrollState.isScrollInProgress }
-			.collect {
-				onScroll(it)
-			}
+	LaunchedEffect(Unit) {
+		viewModel.fetchLatestFeedList(FeedType.BOARD)
+		viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
 	}
 
 	when (uiState) {
@@ -103,197 +77,67 @@ fun HomeTodayTopicScreen(
 		}
 	}
 
-	HomeTodayTopicFeedList(
-		scrollState = scrollState,
+	HomeTodayTopicFeedArea(
 		todayTopic = viewModel.todayTopic,
-		feedFetchingType = feedFetchingType,
 		imageFeeds = imageFeeds,
 		textFeeds = textFeeds,
 		onFeedClick = {
 			navigator.navigate(LyfeScreens.FeedDetail.name)
 		},
-		onFetchingTypeChanged = {
-			viewModel.updateFeedFetchingType(it)
-		},
-		onReachedBottom = {
-			viewModel.fetchLatestFeedList(FeedType.BOARD)
-			viewModel.fetchLatestFeedList(FeedType.BOARD_PICTURE)
+		onMoreFeedClick = {
+			navigator.navigate(LyfeScreens.Feed.name)
 		}
 	)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeTodayTopicFeedList(
-	scrollState: LazyListState,
+private fun HomeTodayTopicFeedArea(
 	todayTopic: String,
-	feedFetchingType: FeedFetchingType,
 	imageFeeds: List<Feed>,
 	textFeeds: List<Feed>,
 	onFeedClick: (Feed) -> Unit,
-	onFetchingTypeChanged: (FeedFetchingType) -> Unit,
-	onReachedBottom: () -> Unit
+	onMoreFeedClick: () -> Unit
 ) {
-	// observe list scrolling
-	val reachedBottom: Boolean by remember {
-		derivedStateOf {
-			val lastVisibleItem = scrollState.layoutInfo.visibleItemsInfo.lastOrNull()
-			lastVisibleItem?.index != 0 && lastVisibleItem?.index == scrollState.layoutInfo.totalItemsCount - 1
-		}
-	}
+	Column {
+		HomeTopicText(todayTopic)
 
-	LaunchedEffect(reachedBottom) {
-		if (reachedBottom) {
-			onReachedBottom()
-		}
-	}
+		Spacer(modifier = Modifier.height(8.dp))
 
-	LazyColumn(
-		state = scrollState
-	) {
-		item {
-			HomeTopicText(todayTopic)
+		HomeSwipeableImageFeeds(
+			modifier = Modifier.padding(horizontal = 20.dp),
+			feeds = imageFeeds,
+			onFeedClick = onFeedClick,
+			onMoreFeedClick = onMoreFeedClick
+		)
 
-			Spacer(modifier = Modifier.height(8.dp))
+		Spacer(modifier = Modifier.height(32.dp))
 
-			HomeSwipeableFeeds(
-				modifier = Modifier.padding(horizontal = 20.dp),
-				feeds = imageFeeds.subList(0, min(TODAY_TOPIC_CARDS_COUNT, imageFeeds.size)),
-				onClick = { onFeedClick(it) }
-			)
+		Divider(
+			modifier = Modifier.alpha(DIVIDER_ALPHA),
+			color = Grey100,
+			thickness = 8.dp
+		)
 
-			Spacer(modifier = Modifier.height(24.dp))
-		}
+		Spacer(modifier = Modifier.height(16.dp))
 
-		item {
-			HomeTodayTopicTextFeedTopBar(
-				modifier = Modifier.padding(horizontal = 20.dp),
-				fetchingType = feedFetchingType,
-				onFetchingTypeChanged = {
-					onFetchingTypeChanged(it)
-				}
-			)
-		}
-
-		itemsIndexed(
-			items = textFeeds,
-			key = { index, feed ->
-				index
-			}
-		) { index, feed ->
-			LyfeTextFeedView(
-				modifier = Modifier.padding(horizontal = 20.dp),
-				feed = feed
-			)
-
-			Divider(
-				modifier = Modifier.padding(horizontal = 20.dp),
-				color = Grey100,
-				thickness = 1.dp
-			)
-
-			if (index % IMAGE_FEED_INDEXING == IMAGE_FEED_INDEXING - 1) {
-				HomeTodayTopicHorizontalImageFeedList(
-					modifier = Modifier.padding(vertical = 16.dp),
-					feeds = imageFeeds,
-					contentPadding = PaddingValues(
-						horizontal = 20.dp,
-						vertical = 16.dp
-					)
-				)
-			}
-		}
-	}
-}
-
-@Composable
-private fun HomeTodayTopicTextFeedTopBar(
-	modifier: Modifier,
-	fetchingType: FeedFetchingType,
-	onFetchingTypeChanged: (FeedFetchingType) -> Unit
-) {
-	Row(
-		modifier = modifier
-			.fillMaxWidth(),
-		verticalAlignment = Alignment.CenterVertically
-	) {
 		Text(
+			modifier = Modifier.padding(horizontal = 20.dp),
 			text = stringResource(R.string.home_text_feed),
 			color = Color.Black,
 			style = H4
 		)
 
-		Spacer(modifier = Modifier.weight(1f))
+		Spacer(modifier = Modifier.height(8.dp))
 
-		Text(
-			modifier = Modifier.clickableSingle {
-				onFetchingTypeChanged(FeedFetchingType.LATEST)
+		HomeTextFeedPager(
+			pagerState = rememberPagerState {
+				textFeeds.size + 1
 			},
-			text = stringResource(R.string.home_filter_latest),
-			color = getTextColor(fetchingType == FeedFetchingType.LATEST),
-			style = TextStyle.getTextStyle(fetchingType == FeedFetchingType.LATEST)
+			feeds = textFeeds,
+			onFeedClick = onFeedClick,
+			onMoreFeedClick = onMoreFeedClick
 		)
-
-		Text(
-			modifier = Modifier
-				.fillMaxHeight()
-				.padding(horizontal = 4.dp),
-			text = "|",
-			color = Grey200
-		)
-
-		Text(
-			modifier = Modifier.clickableSingle {
-				onFetchingTypeChanged(FeedFetchingType.POPULAR)
-			},
-			text = stringResource(R.string.home_filter_popular),
-			color = getTextColor(fetchingType == FeedFetchingType.POPULAR),
-			style = TextStyle.getTextStyle(fetchingType == FeedFetchingType.POPULAR)
-		)
-	}
-}
-
-@Composable
-private fun HomeTodayTopicHorizontalImageFeedList(
-	modifier: Modifier,
-	feeds: List<Feed>,
-	contentPadding: PaddingValues
-) {
-	Column(
-		modifier = modifier.fillMaxWidth()
-	) {
-		Row(
-			modifier = Modifier.padding(horizontal = 20.dp),
-			verticalAlignment = Alignment.CenterVertically
-		) {
-			Text(
-				modifier = Modifier.weight(1f),
-				text = "댓글이 많이 달린",
-				color = Color.Black,
-				style = H4
-			)
-
-			Text(
-				text = stringResource(R.string.home_feed_more),
-				color = Color.Black,
-				style = Caption3
-			)
-		}
-
-		LazyRow(
-			horizontalArrangement = Arrangement.spacedBy(8.dp),
-			contentPadding = contentPadding
-		) {
-			itemsIndexed(
-				items = feeds,
-				key = { index, feed -> index }
-			) { index, feed ->
-				LyfeFeedCardView(
-					modifier = Modifier,
-					feed = feed,
-					designType = LyfeCardViewDesignType.FEED_SCREEN_CARD
-				)
-			}
-		}
 	}
 }
 
@@ -315,19 +159,87 @@ private fun HomeTopicText(text: String) {
 	)
 }
 
-private fun getTextColor(isSelected: Boolean): Color {
-	return if (isSelected) {
-		Main500
-	} else {
-		Grey200
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun HomeTextFeedPager(
+	pagerState: PagerState,
+	feeds: List<Feed>,
+	onFeedClick: (Feed) -> Unit,
+	onMoreFeedClick: () -> Unit
+) {
+	HorizontalPager(
+		modifier = Modifier.fillMaxWidth(),
+		verticalAlignment = Alignment.CenterVertically,
+		state = pagerState,
+		flingBehavior = PagerDefaults.flingBehavior(
+			state = pagerState,
+			pagerSnapDistance = PagerSnapDistance.atMost(0)
+		),
+		pageSpacing = 8.dp,
+		contentPadding = PaddingValues(horizontal = 20.dp)
+	) {
+		Box(
+			modifier = Modifier
+				.fillMaxWidth()
+				.border(
+					width = 1.dp,
+					color = Grey100,
+					shape = RoundedCornerShape(16.dp)
+				)
+		) {
+			if (it == feeds.size) {
+				MoreTextFeedView(
+					onMoreFeedClick = onMoreFeedClick
+				)
+			} else {
+				LyfeTextFeedView(
+					modifier = Modifier
+						.padding(
+							horizontal = 12.dp,
+							vertical = 16.dp
+						),
+					feed = feeds[it],
+					onClick = {
+						onFeedClick(feeds[it])
+					}
+				)
+			}
+		}
 	}
 }
 
 @Composable
-private fun TextStyle.Companion.getTextStyle(isSelected: Boolean): TextStyle {
-	return if (isSelected) {
-		Title3
-	} else {
-		Caption2
+private fun MoreTextFeedView(
+	onMoreFeedClick: () -> Unit
+) {
+	Box(
+		modifier = Modifier
+			.fillMaxWidth()
+			.padding(vertical = 40.dp)
+			.clickableSingle { onMoreFeedClick() }
+	) {
+		Column(
+			modifier = Modifier
+				.align(Alignment.Center),
+			horizontalAlignment = Alignment.CenterHorizontally,
+			verticalArrangement = Arrangement.Center
+		) {
+			Text(
+				text = stringResource(R.string.home_text_feed_more),
+				style = Title2,
+				color = Color.Black
+			)
+
+			Spacer(modifier = Modifier.height(16.dp))
+
+			LyfeButton(
+				text = stringResource(id = R.string.home_feed_more),
+				horizontalPadding = 24.dp,
+				verticalPadding = 4.dp,
+				cornerSize = 16.dp,
+				isClearIconShow = false,
+				onClick = onMoreFeedClick
+			)
+		}
 	}
 }

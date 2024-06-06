@@ -16,5 +16,5 @@ interface ImageRepository {
 		url: String,
 		key: String,
 		file: File
-	): Result<Void>
+	): Result<Unit>
 }

@@ -78,7 +78,7 @@ fun FeedbackScreen(
 	when (val uiState = viewModel.uiState) {
 		FeedbackUiState.IDLE -> {}
 		FeedbackUiState.Success -> {
-			onShowSnackBar(LyfeSnackBarIconType.SUCCESS, "피드백이 성공적으로 전송되었습니다.")
+			onShowSnackBar(LyfeSnackBarIconType.SUCCESS, stringResource(R.string.feedback_success))
 			navigator.navigateUp()
 		}
 		is FeedbackUiState.Failure -> {

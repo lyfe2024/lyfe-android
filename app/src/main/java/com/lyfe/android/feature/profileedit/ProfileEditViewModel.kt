@@ -42,7 +42,8 @@ class ProfileEditViewModel @Inject constructor(
 	private val _uiState = MutableStateFlow<ProfileEditUiState>(ProfileEditUiState.Loading)
 	val uiState get() = _uiState.asStateFlow()
 
-	var user = User()
+	private val _user = mutableStateOf(User())
+	val user = _user
 
 	private val _nickname = MutableStateFlow("")
 	val nickname get() = _nickname.value
@@ -76,7 +77,7 @@ class ProfileEditViewModel @Inject constructor(
 					ProfileEditUiState.Failure(message = e.message ?: "오류로 인해 닉네임 중복 검사에 실패했습니다.")
 				}
 			}.collect {
-				user = it
+				_user.value = it
 				_nickname.value = it.name
 				_uiState.update { ProfileEditUiState.IDLE }
 			}
@@ -84,7 +85,7 @@ class ProfileEditViewModel @Inject constructor(
 	}
 
 	fun checkNicknameDuplicate() {
-		if (user.name == nickname) {
+		if (user.value.name == nickname) {
 			// 닉네임 변경하지 않았을 경우 바로 이미지 업로드 수행
 			uploadProfileImage()
 			return
@@ -105,6 +106,7 @@ class ProfileEditViewModel @Inject constructor(
 	private fun uploadProfileImage() {
 		viewModelScope.launch {
 			val file = imagePath?.let { File(it) }
+
 			if (file == null) {
 				editProfile()
 				return@launch
@@ -113,10 +115,12 @@ class ProfileEditViewModel @Inject constructor(
 				val message = it.message ?: "오류로 인해 프로필 변경에 실패했습니다."
 				_uiState.update { ProfileEditUiState.Failure(message = message) }
 			}.collectLatest {
-				val url = it.url
-				when (val response = uploadImageUseCase(url, it.key, file)) {
+				val uploadUrl = it.url
+				val imageUrl = uploadUrl.substring(8 until it.url.indexOf('?')).replace("//", "/")
+				val response = uploadImageUseCase(it.url, it.key, file)
+				when (response) {
 					is Result.Success -> {
-						user.profileImage = url
+						user.value.profileImage = "https://$imageUrl"
 						editProfile()
 					}
 					is Result.Failure -> {
@@ -136,7 +140,7 @@ class ProfileEditViewModel @Inject constructor(
 	private fun editProfile() = viewModelScope.launch {
 		editProfileUseCase(
 			nickname = nickname,
-			profileUrl = user.profileImage
+			profileUrl = user.value.profileImage
 		).catch {
 			val message = it.message ?: "오류로 인해 프로필 변경에 실패하였습니다."
 			_uiState.update { ProfileEditUiState.Failure(message = message) }

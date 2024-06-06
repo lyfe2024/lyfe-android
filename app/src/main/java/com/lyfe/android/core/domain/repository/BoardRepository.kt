@@ -24,7 +24,7 @@ interface BoardRepository {
 	): Flow<List<Feed>>
 
 	fun getUserBoards(
-		boardType: String = "BOARD",
+		boardType: String,
 		cursorId: Long
 	): Flow<List<Feed>>
 }
