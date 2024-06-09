@@ -109,4 +109,20 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 		}
 		return folderList
 	}
+
+	override suspend fun translateToFile(localContentUrl: String): File? {
+		val contentUri = Uri.parse(localContentUrl)
+
+		val cursor = contentResolver.query(contentUri, null, null, null, null)
+		if (cursor != null && cursor.moveToFirst()) {
+			val columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
+
+			if (columnIndex < 0) return null
+			val filePath = cursor.getString(columnIndex)
+			cursor.close()
+			return File(filePath)
+		} else {
+			return null
+		}
+	}
 }

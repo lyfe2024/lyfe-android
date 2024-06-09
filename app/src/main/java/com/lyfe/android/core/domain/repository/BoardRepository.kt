@@ -3,6 +3,10 @@ package com.lyfe.android.core.domain.repository
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.BoardDetail
+import com.lyfe.android.core.model.board.RegisterBoardData
+import com.lyfe.android.core.model.board.RegisterBoardRequestData
+import com.lyfe.android.core.model.board.UpdateBoardData
+import com.lyfe.android.core.model.board.UpdateBoardRequestData
 import kotlinx.coroutines.flow.Flow
 
 interface BoardRepository {
@@ -27,4 +31,13 @@ interface BoardRepository {
 		boardType: String,
 		cursorId: Long
 	): Flow<List<Feed>>
+
+	fun registerBoard(
+		registerBoardRequestData: RegisterBoardRequestData
+	): Flow<Result<RegisterBoardData>>
+
+	fun updateBoard(
+		boardId: Long,
+		updateBoardRequestData: UpdateBoardRequestData
+	): Flow<Result<UpdateBoardData>>
 }

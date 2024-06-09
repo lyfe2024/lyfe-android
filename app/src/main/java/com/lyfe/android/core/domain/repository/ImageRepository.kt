@@ -9,7 +9,7 @@ interface ImageRepository {
 
 	fun getImageUploadUrl(
 		format: String,
-		path: String
+		path: String = "topic_picture"
 	): Flow<UploadImageUrl>
 
 	suspend fun uploadImage(

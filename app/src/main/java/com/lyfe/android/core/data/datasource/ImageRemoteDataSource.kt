@@ -1,5 +1,6 @@
 package com.lyfe.android.core.data.datasource
 
+import android.util.Log
 import com.lyfe.android.core.data.model.UploadImageUrlResult
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.AWSService
@@ -28,6 +29,8 @@ class ImageRemoteDataSource @Inject constructor(
 			val split = it.split('=')
 			queryMap[split[0]] = split[1]
 		}
+
+		Log.w("Test@@@", "DataSource uploadImage")
 
 		return awsService.putImage(
 			dev = splitKey[0],
