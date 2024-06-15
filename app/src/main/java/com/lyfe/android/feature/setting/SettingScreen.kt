@@ -1,7 +1,6 @@
 package com.lyfe.android.feature.setting
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,8 +32,11 @@ import com.lyfe.android.core.common.ui.component.LyfeModal
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.LyfeSwitch
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.theme.Body2
 import com.lyfe.android.core.common.ui.theme.DEFAULT
+import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.Main500
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.login.AppleLoginManager
@@ -50,34 +51,23 @@ fun SettingScreen(
 	navigator: LyfeNavigator,
 	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
-	Column(
-		modifier = Modifier
-			.padding(top = 16.dp, bottom = 24.dp)
-			.fillMaxSize()
-	) {
-		Text(
-			modifier = Modifier.padding(start = 20.dp),
-			text = stringResource(R.string.setting_screen_title),
-			style = TextStyle(
-				fontSize = 24.sp,
-				lineHeight = 36.sp,
-				fontWeight = FontWeight.W700,
-				color = Color.Black
-			)
-		)
+	var showModal by remember { mutableStateOf(false) }
+	val menuList = listOf(
+		Setting.NOTIFICATION,
+		Setting.USER_EXPERIENCE,
+		Setting.TERMS,
+		Setting.PRIVACY_POLICY,
+		Setting.DELETE_ACCOUNT
+	)
 
-		Spacer(modifier = Modifier.height(16.dp))
-
-		val list = listOf(
-			Setting.NOTIFICATION,
-			Setting.SCRAP,
-			Setting.USER_EXPERIENCE,
-			Setting.PRIVACY_POLICY,
-			Setting.DELETE_ACCOUNT
-		)
-
-		SettingContent(viewModel, navigator, list)
-	}
+	SettingContent(
+		navigator = navigator,
+		menuList = menuList,
+		showModal = showModal,
+		onModalVisibilityChanged = {
+			showModal = it
+		}
+	)
 
 	when (viewModel.uiState) {
 		SettingUiState.DeleteAccountSuccess -> {
@@ -108,12 +98,71 @@ fun SettingScreen(
 }
 
 @Composable
-fun SettingContent(
-	viewModel: SettingViewModel,
+private fun SettingContent(
+	viewModel: SettingViewModel = hiltViewModel(),
 	navigator: LyfeNavigator,
-	list: List<Setting>
+	menuList: List<Setting>,
+	showModal: Boolean,
+	onModalVisibilityChanged: (Boolean) -> Unit
 ) {
-	var showModal by remember { mutableStateOf(false) }
+	Column(
+		modifier = Modifier
+			.padding(top = 16.dp, bottom = 24.dp)
+			.fillMaxSize()
+	) {
+		Text(
+			modifier = Modifier.padding(start = 20.dp),
+			text = stringResource(R.string.setting_screen_title),
+			color = Color.Black,
+			style = H3
+		)
+
+		Spacer(modifier = Modifier.height(16.dp))
+
+		SettingMenuList(
+			navigator = navigator,
+			list = menuList,
+			onMenuClick = { menu ->
+				when(menu) {
+					Setting.USER_EXPERIENCE -> {
+						navigator.navigate(LyfeScreens.Feedback.name)
+					}
+					Setting.TERMS -> {
+						navigator.navigate(LyfeScreens.ServiceTerms.name)
+					}
+					Setting.PRIVACY_POLICY -> {
+						navigator.navigate(LyfeScreens.PersonalInfoTermsScreen.name)
+					}
+					Setting.DELETE_ACCOUNT -> {
+						// 회원탈퇴 창 생성
+						onModalVisibilityChanged(true)
+					}
+					else -> {}
+				}
+			}
+		)
+
+		SettingModal(
+			showModal = showModal,
+			onConfirm = {
+				// 회원 탈퇴
+				viewModel.deleteAccount()
+				onModalVisibilityChanged(false)
+			},
+			onDismiss = {
+				onModalVisibilityChanged(false)
+			}
+		)
+	}
+}
+
+@Composable
+private fun SettingMenuList(
+	viewModel: SettingViewModel = hiltViewModel(),
+	navigator: LyfeNavigator,
+	list: List<Setting>,
+	onMenuClick: (Setting) -> Unit
+) {
 	val coroutineScope = rememberCoroutineScope()
 	val context = LocalContext.current
 	// 로그아웃 콜백 처리용 람다 함수
@@ -131,21 +180,13 @@ fun SettingContent(
 		Column {
 			list.forEach { setting ->
 				when (setting) {
-					Setting.NOTIFICATION -> { SettingSwitchRow(stringResource(R.string.setting_screen_notification)) }
-					Setting.SCRAP -> {
-						SettingButtonRow(stringResource(R.string.setting_screen_scrap)) {
-							// TODO
+					Setting.NOTIFICATION -> {
+						SettingSwitchRow(stringResource(setting.content))
+					}
+					else -> {
+						SettingButtonRow(title = stringResource(id = setting.content)) {
+							onMenuClick(setting)
 						}
-					}
-					Setting.USER_EXPERIENCE -> SettingButtonRow(stringResource(R.string.feedback_title)) {
-						navigator.navigate(LyfeScreens.Feedback.route)
-					}
-					Setting.PRIVACY_POLICY -> SettingButtonRow(stringResource(R.string.setting_screen_privacy_policy)) {
-						// TODO
-					}
-					Setting.DELETE_ACCOUNT -> SettingButtonRow(stringResource(R.string.setting_screen_delete_account)) {
-						// 회원탈퇴 창 생성
-						showModal = true
 					}
 				}
 			}
@@ -186,21 +227,6 @@ fun SettingContent(
 				}
 			}
 		}
-
-		if (showModal) {
-			LyfeModal(
-				title = stringResource(R.string.delete_dialog_title),
-				message = "",
-				confirmBtnText = stringResource(R.string.confirm),
-				dismissBtnText = stringResource(R.string.nope),
-				onConfirm = {
-					// 회원 탈퇴
-					viewModel.deleteAccount()
-					showModal = false
-				},
-				onDismiss = { showModal = false }
-			)
-		}
 	}
 }
 
@@ -214,9 +240,8 @@ fun SettingSwitchRow(title: String) {
 	) {
 		Text(
 			text = title,
-			fontSize = 16.sp,
 			color = DEFAULT,
-			fontWeight = FontWeight.W500
+			style = Body2
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
@@ -231,19 +256,24 @@ fun SettingSwitchRow(title: String) {
 }
 
 @Composable
-fun SettingButtonRow(title: String, onClick: () -> Unit) {
+fun SettingButtonRow(
+	title: String,
+	onClick: () -> Unit
+) {
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.clickable { onClick() }
-			.padding(vertical = 12.dp, horizontal = 20.dp),
+			.clickableSingle { onClick() }
+			.padding(
+				vertical = 12.dp,
+				horizontal = 20.dp
+			),
 		verticalAlignment = Alignment.CenterVertically
 	) {
 		Text(
 			text = title,
-			fontSize = 16.sp,
+			style = Body2,
 			color = DEFAULT,
-			fontWeight = FontWeight.W500
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
@@ -251,6 +281,24 @@ fun SettingButtonRow(title: String, onClick: () -> Unit) {
 		Image(
 			painter = painterResource(id = R.drawable.ic_arrow_next),
 			contentDescription = "ic_next"
+		)
+	}
+}
+
+@Composable
+private fun SettingModal(
+	showModal: Boolean,
+	onConfirm: () -> Unit,
+	onDismiss: () -> Unit
+) {
+	if (showModal) {
+		LyfeModal(
+			title = stringResource(R.string.delete_dialog_title),
+			message = "",
+			confirmBtnText = stringResource(R.string.confirm),
+			dismissBtnText = stringResource(R.string.nope),
+			onConfirm = onConfirm,
+			onDismiss = onDismiss
 		)
 	}
 }

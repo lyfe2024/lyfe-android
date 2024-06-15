@@ -1,5 +1,6 @@
 package com.lyfe.android.core.data.network.interceptor
 
+import android.util.Log
 import com.lyfe.android.core.data.network.token.TokenManager
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -20,6 +21,7 @@ class NetworkInterceptor @Inject constructor(
 
 		val request = chain.request().newBuilder().apply {
 			if (token != null) {
+				Log.i("Token", token)
 				this.header(HEADER_AUTHORIZATION, "$HEADER_AUTHORIZATION_TYPE $token")
 			}
 		}.build()

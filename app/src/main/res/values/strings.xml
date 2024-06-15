@@ -80,7 +80,7 @@
 	<string name="setting_screen_title">설정</string>
 	<string name="setting_screen_logout">로그아웃</string>
 	<string name="setting_screen_notification">알림설정</string>
-	<string name="setting_screen_scrap">스크랩</string>
+	<string name="setting_screen_terms">이용약관</string>
 	<string name="setting_screen_privacy_policy">개인정보 수집 및 이용동의</string>
 	<string name="setting_screen_delete_account">회원탈퇴</string>
 

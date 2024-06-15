@@ -50,7 +50,7 @@ class SettingViewModel @Inject constructor(
 				}
 
 				is Result.Unexpected -> {
-					SettingUiState.Failure(message = response.t?.message)
+					SettingUiState.Failure(message = response.t.message)
 				}
 			}
 		}
