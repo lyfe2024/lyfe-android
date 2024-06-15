@@ -7,4 +7,6 @@ interface UserLocalDataSource {
 	fun getSocialType(): Flow<String>
 
 	suspend fun updateSocialType(socialType: String)
+
+	suspend fun deleteAllUserData()
 }

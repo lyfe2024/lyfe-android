@@ -21,4 +21,6 @@ interface UserRepository {
 		nickname: String,
 		profileUrl: String
 	): Flow<User>
+
+	suspend fun deleteAllLocalUserData()
 }

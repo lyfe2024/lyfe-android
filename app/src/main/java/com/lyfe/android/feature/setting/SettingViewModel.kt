@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.DeleteAccountUseCase
+import com.lyfe.android.core.domain.usecase.DeleteLocalDataUseCase
 import com.lyfe.android.core.domain.usecase.GetSocialTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -16,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingViewModel @Inject constructor(
 	private val deleteAccountUseCase: DeleteAccountUseCase,
-	private val getSocialTypeUseCase: GetSocialTypeUseCase
+	private val getSocialTypeUseCase: GetSocialTypeUseCase,
+	private val deleteLocalDataUseCase: DeleteLocalDataUseCase,
 ) : ViewModel() {
 
 	var uiState by mutableStateOf<SettingUiState>(SettingUiState.IDLE)
@@ -43,6 +45,7 @@ class SettingViewModel @Inject constructor(
 				}
 
 				is Result.Success -> {
+					deleteLocalData()
 					SettingUiState.DeleteAccountSuccess
 				}
 
@@ -51,5 +54,9 @@ class SettingViewModel @Inject constructor(
 				}
 			}
 		}
+	}
+
+	fun deleteLocalData() = viewModelScope.launch {
+		deleteLocalDataUseCase()
 	}
 }

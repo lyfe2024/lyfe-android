@@ -121,6 +121,7 @@ fun SettingContent(
 		viewModel.updateUiState(SettingUiState.Failure(throwable?.message))
 	}
 	val onSuccess = {
+		viewModel.deleteLocalData()
 		viewModel.updateUiState(SettingUiState.LogoutSuccess)
 	}
 
