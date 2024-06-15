@@ -9,6 +9,7 @@ import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.DeleteAccountUseCase
 import com.lyfe.android.core.domain.usecase.DeleteLocalDataUseCase
 import com.lyfe.android.core.domain.usecase.GetSocialTypeUseCase
+import com.lyfe.android.feature.login.SocialType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -24,8 +25,15 @@ class SettingViewModel @Inject constructor(
 	var uiState by mutableStateOf<SettingUiState>(SettingUiState.IDLE)
 		private set
 
-	suspend fun getSocialType(): String {
-		return getSocialTypeUseCase().first()
+	var socialType by mutableStateOf("")
+		private set
+
+	init {
+		getSocialType()
+	}
+
+	private fun getSocialType() = viewModelScope.launch {
+		socialType = getSocialTypeUseCase().first()
 	}
 
 	fun updateUiState(uiState: SettingUiState) {

@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,9 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
@@ -43,7 +40,6 @@ import com.lyfe.android.feature.login.AppleLoginManager
 import com.lyfe.android.feature.login.GoogleLoginManager
 import com.lyfe.android.feature.login.KakaoLoginManager
 import com.lyfe.android.feature.login.SocialType
-import kotlinx.coroutines.launch
 
 @Composable
 fun SettingScreen(
@@ -63,7 +59,20 @@ fun SettingScreen(
 	SettingContent(
 		navigator = navigator,
 		menuList = menuList,
+		socialType = viewModel.socialType,
 		showModal = showModal,
+		onLogoutSuccess = {
+			viewModel.deleteLocalData()
+			viewModel.updateUiState(SettingUiState.LogoutSuccess)
+		},
+		onLogoutFailure = { throwable ->
+			viewModel.updateUiState(SettingUiState.Failure(throwable?.message))
+		},
+		onDeleteAccount = {
+			// 회원 탈퇴
+			viewModel.deleteAccount()
+			showModal = false
+		},
 		onModalVisibilityChanged = {
 			showModal = it
 		}
@@ -73,13 +82,13 @@ fun SettingScreen(
 		SettingUiState.DeleteAccountSuccess -> {
 			onShowSnackBar(
 				LyfeSnackBarIconType.SUCCESS,
-				"회원탈퇴가 정상 처리되었습니다."
+				stringResource(R.string.setting_delete_account_success)
 			)
 		}
 		SettingUiState.LogoutSuccess -> {
 			onShowSnackBar(
 				LyfeSnackBarIconType.SUCCESS,
-				"로그아웃이 완료되었습니다."
+				stringResource(R.string.setting_logout_success)
 			)
 			navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
 		}
@@ -87,7 +96,7 @@ fun SettingScreen(
 			val message = (viewModel.uiState as SettingUiState.Failure).message
 			onShowSnackBar(
 				LyfeSnackBarIconType.ERROR,
-				message ?: ""
+				message.orEmpty()
 			)
 		}
 		SettingUiState.IDLE -> { }
@@ -99,10 +108,13 @@ fun SettingScreen(
 
 @Composable
 private fun SettingContent(
-	viewModel: SettingViewModel = hiltViewModel(),
 	navigator: LyfeNavigator,
 	menuList: List<Setting>,
+	socialType: String,
 	showModal: Boolean,
+	onLogoutSuccess: () -> Unit,
+	onLogoutFailure: (Throwable?) -> Unit,
+	onDeleteAccount: () -> Unit,
 	onModalVisibilityChanged: (Boolean) -> Unit
 ) {
 	Column(
@@ -120,8 +132,8 @@ private fun SettingContent(
 		Spacer(modifier = Modifier.height(16.dp))
 
 		SettingMenuList(
-			navigator = navigator,
 			list = menuList,
+			socialType = socialType,
 			onMenuClick = { menu ->
 				when(menu) {
 					Setting.USER_EXPERIENCE -> {
@@ -139,16 +151,14 @@ private fun SettingContent(
 					}
 					else -> {}
 				}
-			}
+			},
+			onLogoutSuccess = onLogoutSuccess,
+			onLogoutFailure = onLogoutFailure
 		)
 
 		SettingModal(
 			showModal = showModal,
-			onConfirm = {
-				// 회원 탈퇴
-				viewModel.deleteAccount()
-				onModalVisibilityChanged(false)
-			},
+			onConfirm = onDeleteAccount,
 			onDismiss = {
 				onModalVisibilityChanged(false)
 			}
@@ -158,21 +168,13 @@ private fun SettingContent(
 
 @Composable
 private fun SettingMenuList(
-	viewModel: SettingViewModel = hiltViewModel(),
-	navigator: LyfeNavigator,
 	list: List<Setting>,
-	onMenuClick: (Setting) -> Unit
+	socialType: String,
+	onMenuClick: (Setting) -> Unit,
+	onLogoutSuccess: () -> Unit,
+	onLogoutFailure: (Throwable?) -> Unit,
 ) {
-	val coroutineScope = rememberCoroutineScope()
 	val context = LocalContext.current
-	// 로그아웃 콜백 처리용 람다 함수
-	val onFailure: (Throwable?) -> Unit = { throwable ->
-		viewModel.updateUiState(SettingUiState.Failure(throwable?.message))
-	}
-	val onSuccess = {
-		viewModel.deleteLocalData()
-		viewModel.updateUiState(SettingUiState.LogoutSuccess)
-	}
 
 	Box(
 		modifier = Modifier.fillMaxSize()
@@ -204,26 +206,23 @@ private fun SettingMenuList(
 				isClearIconShow = false
 			) {
 				// 로그아웃
-				coroutineScope.launch {
-					when (viewModel.getSocialType()) {
-						SocialType.KAKAO.name ->
-							KakaoLoginManager.logout(
-								onFailure = onFailure,
-								onSuccess = onSuccess
-							)
-						SocialType.GOOGLE.name ->
-							GoogleLoginManager.signOut(
-								context = context,
-								onFailure = onFailure,
-								onSuccess = onSuccess
-							)
-						SocialType.APPLE.name ->
-							AppleLoginManager.signOut(
-								onFailure = onFailure,
-								onSuccess = onSuccess
-							)
-						else -> navigator.navigateAndroidClearBackStack(LyfeScreens.Login.name)
-					}
+				when (socialType) {
+					SocialType.KAKAO.name ->
+						KakaoLoginManager.logout(
+							onFailure = onLogoutFailure,
+							onSuccess = onLogoutSuccess
+						)
+					SocialType.GOOGLE.name ->
+						GoogleLoginManager.signOut(
+							context = context,
+							onFailure = onLogoutFailure,
+							onSuccess = onLogoutSuccess
+						)
+					SocialType.APPLE.name ->
+						AppleLoginManager.signOut(
+							onFailure = onLogoutFailure,
+							onSuccess = onLogoutSuccess
+						)
 				}
 			}
 		}
