@@ -1,21 +1,29 @@
 package com.lyfe.android.feature.post.create.photo
 
 import android.os.Build
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.common.ui.permission.NeededPermission
+import com.lyfe.android.core.data.network.model.onSuccess
+import com.lyfe.android.core.domain.usecase.board.RegisterLocalImageBoardUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val SAVED_TITLE_KEY = "saved_title_key"
 
 @HiltViewModel
 class CreatePhotoPostViewModel @Inject constructor(
-	private val savedStateHandle: SavedStateHandle
+	private val savedStateHandle: SavedStateHandle,
+	private val registerLocalImageBoardUseCase: RegisterLocalImageBoardUseCase,
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow(CreatePhotoPostUiState())
@@ -30,6 +38,34 @@ class CreatePhotoPostViewModel @Inject constructor(
 			uiState.value.copy(
 				title = savedTitle
 			)
+		}
+	}
+
+	fun registerBoard() {
+		if (!uiState.value.isAvailableToRegisterData()) return
+
+		viewModelScope.launch {
+			registerLocalImageBoardUseCase(
+				title = uiState.value.title,
+				localContentImageUrl = uiState.value.selectedImage
+			).onStart {
+				_uiState.compareAndSet(
+					uiState.value,
+					uiState.value.copy(event = CreatePhotoPostUiEvent.Loading)
+				)
+			}.catch { throwable ->
+				_uiState.update { uiState.value.copy(event = CreatePhotoPostUiEvent.Failure(throwable.message)) }
+			}.collectLatest {
+				it.onSuccess { registerBoardData ->
+					_uiState.update {
+						uiState.value.copy(
+							event = CreatePhotoPostUiEvent.CreateSuccess(
+								id = registerBoardData.id
+							)
+						)
+					}
+				}
+			}
 		}
 	}
 
@@ -114,11 +150,6 @@ class CreatePhotoPostViewModel @Inject constructor(
 				event = CreatePhotoPostUiEvent.IDLE
 			)
 		}
-	}
-
-	override fun onCleared() {
-		super.onCleared()
-		Log.e("Test@@@", "ViewModel Clear")
 	}
 
 	private fun checkPassedAllPermissions() =

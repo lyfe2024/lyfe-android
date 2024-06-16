@@ -104,6 +104,7 @@ fun CreatePhotoPostRouter(
 		onPermissionAlertDialogDismiss = viewModel::setUiEventIdle,
 		navigateUp = navigator::navigateUp,
 		clickUploadingBox = viewModel::checkPermission,
+		registerData = viewModel::registerBoard,
 		navigateToSelectAlbum = { navigator.navigate(LyfeScreens.SelectAlbum.name) }
 	)
 }
@@ -118,6 +119,7 @@ fun CreatePhotoPostScreen(
 	onPermissionAlertDialogDismiss: () -> Unit,
 	clickUploadingBox: () -> Unit,
 	navigateToSelectAlbum: () -> Unit,
+	registerData: () -> Unit,
 	navigateUp: () -> Unit
 ) {
 	CreatePhotoPostContent(
@@ -126,8 +128,8 @@ fun CreatePhotoPostScreen(
 		onTextChanged = onTextChanged,
 		navigateUp = navigateUp,
 		clickUploadingBox = clickUploadingBox,
-		isBtnClickable = uiState.isAvailableToNavigateNextScreen(),
-		clickPostBtn = {}
+		isBtnClickable = uiState.isAvailableToRegisterData(),
+		clickPostBtn = registerData
 	)
 
 	HandleUiEvent(
@@ -202,7 +204,10 @@ private fun CreatePhotoPostContent(
 			horizontalPadding = 24.dp,
 			isClearIconShow = false,
 			textStyle = Button1,
-			onClick = clickPostBtn
+			onClick = {
+				Log.e("Test@@@", "버튼 클릭")
+				clickPostBtn()
+			}
 		)
 	}
 }

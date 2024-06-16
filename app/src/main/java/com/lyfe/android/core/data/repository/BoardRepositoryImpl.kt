@@ -1,5 +1,6 @@
 package com.lyfe.android.core.data.repository
 
+import android.util.Log
 import com.lyfe.android.core.data.datasource.BoardDataSource
 import com.lyfe.android.core.data.mapper.toDomain
 import com.lyfe.android.core.data.mapper.toRequest
@@ -125,6 +126,7 @@ class BoardRepositoryImpl @Inject constructor(
 	override fun registerBoard(
 		registerBoardRequestData: RegisterBoardRequestData
 	) = flow {
+		Log.e("Test@@@", "Repository registerBoard")
 		val response = boardDataSource.registerBoard(registerBoardRequestData.toRequest())
 		emit(response.transform { it.toDomain() })
 	}.flowOn(ioDispatcher)

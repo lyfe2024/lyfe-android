@@ -9,13 +9,23 @@ data class CreatePhotoPostUiState(
 	val title: String = "",
 	val event: CreatePhotoPostUiEvent = CreatePhotoPostUiEvent.IDLE
 ) {
-	fun isAvailableToNavigateNextScreen() = selectedImage.isNotEmpty() && titleValidation()
+	fun isAvailableToRegisterData() = selectedImage.isNotEmpty() && titleValidation()
 
 	private fun titleValidation() = title.isNotEmpty() && title.length <= 20
 }
 
 sealed interface CreatePhotoPostUiEvent {
 	object IDLE : CreatePhotoPostUiEvent
+
+	object Loading : CreatePhotoPostUiEvent
+
+	data class Failure(
+		val message: String?
+	) : CreatePhotoPostUiEvent
+
+	data class CreateSuccess(
+		val id: Long
+	) : CreatePhotoPostUiEvent
 
 	object CheckPermission : CreatePhotoPostUiEvent
 

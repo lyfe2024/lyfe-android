@@ -101,7 +101,7 @@ fun ProfileScreen(
 				navigator.navigate(LyfeScreens.FeedDetail.route)
 			},
 			onMoveToPost = {
-				navigator.navigate(LyfeScreens.PostCreate.route)
+				navigator.navigate(LyfeScreens.CreatePhotoPost.route)
 			},
 			onMoveToProfileEdit = {
 				navigator.navigate(LyfeScreens.ProfileEdit.route)

@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Topic(
-	val id: Int,
+	val id: Long,
 	val content: String,
 	val date: String
 )

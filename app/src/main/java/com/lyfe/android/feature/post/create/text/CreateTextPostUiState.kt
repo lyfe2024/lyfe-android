@@ -12,4 +12,10 @@ sealed interface CreateTextPostUiEvent {
 	object IDLE : CreateTextPostUiEvent
 
 	object MoveToSelectAlbum : CreateTextPostUiEvent
+
+	object CreateSuccess : CreateTextPostUiEvent
+
+	data class CreateFail(
+		val message: String?
+	) : CreateTextPostUiEvent
 }

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -20,12 +19,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -51,17 +48,40 @@ import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.Title2
 import com.lyfe.android.core.common.ui.util.noRippleClickable
 import com.lyfe.android.core.common.ui.util.pxToDp
+import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Event 처리 해야함 - 추후 기획 메세지 정해지면 진행
+ */
 @Composable
 fun CreateTextPostRouter(
 	navigator: LyfeNavigator,
 	viewModel: CreateTextPostViewModel = hiltViewModel()
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+	Log.e("Test@@@", "uiState: $uiState")
 
+	DisposableEffect(uiState.event) {
+		when (uiState.event) {
+			is CreateTextPostUiEvent.CreateFail -> {
+
+			}
+			CreateTextPostUiEvent.CreateSuccess -> {
+				navigator.navigate(LyfeScreens.FeedDetail.name)
+			}
+			CreateTextPostUiEvent.MoveToSelectAlbum -> {
+
+			}
+			else -> {}
+		}
+
+		onDispose {
+			viewModel.clearEvent()
+		}
+	}
 	CreateTextPostScreen(
 		uiState = uiState,
 		navigateUp = navigator::navigateUp,
