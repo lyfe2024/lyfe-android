@@ -23,6 +23,14 @@ enum class NeededPermission(
 		title = "READ_MEDIA_IMAGES",
 		description = "READ_MEDIA_IMAGES 설정",
 		permanentlyDeniedDescription = "READ_MEDIA_IMAGES 해줘."
+	),
+
+	@RequiresApi(Build.VERSION_CODES.TIRAMISU)
+	POST_NOTIFICATION(
+		permission = android.Manifest.permission.POST_NOTIFICATIONS,
+		title = "POST_NOTIFICATIONS",
+		description = "POST_NOTIFICATION 설정",
+		permanentlyDeniedDescription = "POST_NOTIFICATION 해줘."
 	);
 
 	fun permissionTextProvider(isPermanentDenied: Boolean): String {

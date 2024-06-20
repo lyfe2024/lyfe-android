@@ -1,5 +1,9 @@
 package com.lyfe.android.feature.setting
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,16 +24,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeButton
 import com.lyfe.android.core.common.ui.component.LyfeModal
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.common.ui.component.LyfeSwitch
 import com.lyfe.android.core.common.ui.definition.LyfeButtonType
+import com.lyfe.android.core.common.ui.permission.NeededPermission
+import com.lyfe.android.core.common.ui.permission.PermissionAlertDialog
+import com.lyfe.android.core.common.ui.permission.PermissionAlertDialogs
+import com.lyfe.android.core.common.ui.permission.PermissionsCheckScreen
 import com.lyfe.android.core.common.ui.theme.Body2
 import com.lyfe.android.core.common.ui.theme.DEFAULT
 import com.lyfe.android.core.common.ui.theme.H3
@@ -43,11 +59,12 @@ import com.lyfe.android.feature.login.SocialType
 
 @Composable
 fun SettingScreen(
+	lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 	viewModel: SettingViewModel = hiltViewModel(),
 	navigator: LyfeNavigator,
 	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit
 ) {
-	var showModal by remember { mutableStateOf(false) }
+	val context = LocalContext.current
 	val menuList = listOf(
 		Setting.NOTIFICATION,
 		Setting.USER_EXPERIENCE,
@@ -55,12 +72,39 @@ fun SettingScreen(
 		Setting.PRIVACY_POLICY,
 		Setting.DELETE_ACCOUNT
 	)
+	var showModal by remember { mutableStateOf(false) }
+	var isNotificationAllowed by remember { mutableStateOf(isNotificationPermissionAllowed(context)) }
+
+	DisposableEffect(lifecycleOwner) {
+		val observer = LifecycleEventObserver { source, event ->
+			when (event) {
+				Lifecycle.Event.ON_RESUME,
+				Lifecycle.Event.ON_PAUSE -> {
+					isNotificationAllowed = isNotificationPermissionAllowed(context)
+					Log.i("isNotificationAllowed", "Lifecycle Event $isNotificationAllowed")
+				}
+				else -> Unit
+			}
+		}
+		lifecycleOwner.lifecycle.addObserver(observer)
+		onDispose {
+			lifecycleOwner.lifecycle.removeObserver(observer)
+		}
+	}
 
 	SettingContent(
 		navigator = navigator,
 		menuList = menuList,
 		socialType = viewModel.socialType,
 		showModal = showModal,
+		isNotificationAllowed = isNotificationAllowed,
+		onNotificationToggle = { allowed ->
+			if (allowed) {
+				viewModel.checkPermission()
+			} else {
+				viewModel.denyPermission()
+			}
+		},
 		onLogoutSuccess = {
 			viewModel.deleteLocalData()
 			viewModel.updateUiState(SettingUiState.LogoutSuccess)
@@ -99,9 +143,39 @@ fun SettingScreen(
 				message.orEmpty()
 			)
 		}
-		SettingUiState.IDLE -> { }
+		SettingUiState.IDLE -> Unit
 		SettingUiState.Loading -> {
 			// TODO 로딩창 보여주기
+		}
+	}
+
+	val event = viewModel.event.collectAsStateWithLifecycle(initialValue = SettingUiEvent.IDLE)
+	when (event.value) {
+		SettingUiEvent.IDLE -> {}
+		SettingUiEvent.CheckPermission -> {
+			val notificationPermission = viewModel.notificationPermission?.permission ?: return
+			PermissionsCheckScreen(
+				neededPermissions = arrayOf(notificationPermission),
+			) { passedPermissions, _ ->
+				viewModel.checkPermissionResult(passedPermissions.getOrNull(0))
+			}
+		}
+		SettingUiEvent.ShowPermissionAlertDialog -> {
+			val permission = viewModel.notificationPermission ?: return
+			PermissionAlertDialogs(
+				failedPermissionList = listOf(permission),
+				permissionSuccess = {
+					isNotificationAllowed = true
+					Log.i("isNotificationAllowed", "Permission Success $isNotificationAllowed")
+				},
+				onDismiss = {
+					isNotificationAllowed = isNotificationPermissionAllowed(context)
+					Log.i("isNotificationAllowed", "onDismiss $isNotificationAllowed")
+				}
+			)
+		}
+		SettingUiEvent.NotificationAllowed -> {
+			isNotificationAllowed = true
 		}
 	}
 }
@@ -112,6 +186,8 @@ private fun SettingContent(
 	menuList: List<Setting>,
 	socialType: String,
 	showModal: Boolean,
+	isNotificationAllowed: Boolean,
+	onNotificationToggle: (Boolean) -> Unit,
 	onLogoutSuccess: () -> Unit,
 	onLogoutFailure: (Throwable?) -> Unit,
 	onDeleteAccount: () -> Unit,
@@ -134,6 +210,7 @@ private fun SettingContent(
 		SettingMenuList(
 			list = menuList,
 			socialType = socialType,
+			isNotificationAllowed = isNotificationAllowed,
 			onMenuClick = { menu ->
 				when(menu) {
 					Setting.USER_EXPERIENCE -> {
@@ -152,6 +229,7 @@ private fun SettingContent(
 					else -> {}
 				}
 			},
+			onNotificationToggle = onNotificationToggle,
 			onLogoutSuccess = onLogoutSuccess,
 			onLogoutFailure = onLogoutFailure
 		)
@@ -170,7 +248,9 @@ private fun SettingContent(
 private fun SettingMenuList(
 	list: List<Setting>,
 	socialType: String,
+	isNotificationAllowed: Boolean,
 	onMenuClick: (Setting) -> Unit,
+	onNotificationToggle: (Boolean) -> Unit,
 	onLogoutSuccess: () -> Unit,
 	onLogoutFailure: (Throwable?) -> Unit,
 ) {
@@ -183,10 +263,16 @@ private fun SettingMenuList(
 			list.forEach { setting ->
 				when (setting) {
 					Setting.NOTIFICATION -> {
-						SettingSwitchRow(stringResource(setting.content))
+						SettingSwitchRow(
+							title = stringResource(setting.content),
+							isNotificationAllowed = isNotificationAllowed,
+							onNotificationToggle = onNotificationToggle
+						)
 					}
 					else -> {
-						SettingButtonRow(title = stringResource(id = setting.content)) {
+						SettingButtonRow(
+							title = stringResource(id = setting.content),
+						) {
 							onMenuClick(setting)
 						}
 					}
@@ -230,7 +316,11 @@ private fun SettingMenuList(
 }
 
 @Composable
-fun SettingSwitchRow(title: String) {
+fun SettingSwitchRow(
+	title: String,
+	isNotificationAllowed: Boolean,
+	onNotificationToggle: (Boolean) -> Unit
+) {
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
@@ -245,11 +335,10 @@ fun SettingSwitchRow(title: String) {
 
 		Spacer(modifier = Modifier.weight(1f))
 
-		var checkedState by remember { mutableStateOf(false) }
-
 		LyfeSwitch(
+			checked = isNotificationAllowed,
 			checkedTrackColor = Main500,
-			onCheckedChange = { checkedState = it }
+			onCheckedChange = onNotificationToggle
 		)
 	}
 }
@@ -299,5 +388,18 @@ private fun SettingModal(
 			onConfirm = onConfirm,
 			onDismiss = onDismiss
 		)
+	}
+}
+
+private fun isNotificationPermissionAllowed(
+	context: Context,
+) : Boolean {
+	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+		ContextCompat.checkSelfPermission(
+			context,
+			android.Manifest.permission.POST_NOTIFICATIONS
+		) == PackageManager.PERMISSION_GRANTED
+	} else {
+		NotificationManagerCompat.from(context).areNotificationsEnabled()
 	}
 }

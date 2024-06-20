@@ -1,16 +1,19 @@
 package com.lyfe.android.feature.setting
 
+import android.os.Build
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyfe.android.core.common.ui.permission.NeededPermission
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.DeleteAccountUseCase
 import com.lyfe.android.core.domain.usecase.DeleteLocalDataUseCase
 import com.lyfe.android.core.domain.usecase.GetSocialTypeUseCase
-import com.lyfe.android.feature.login.SocialType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -24,6 +27,11 @@ class SettingViewModel @Inject constructor(
 
 	var uiState by mutableStateOf<SettingUiState>(SettingUiState.IDLE)
 		private set
+
+	private val _event = MutableSharedFlow<SettingUiEvent>()
+	val event = _event.asSharedFlow()
+
+	val notificationPermission = getPermission()
 
 	var socialType by mutableStateOf("")
 		private set
@@ -66,5 +74,32 @@ class SettingViewModel @Inject constructor(
 
 	fun deleteLocalData() = viewModelScope.launch {
 		deleteLocalDataUseCase()
+	}
+
+	private fun getPermission(): NeededPermission? {
+		// SDK 13부터 이미지 및 사진에 대한 세부 권한 추가 요청 필요
+		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+			NeededPermission.POST_NOTIFICATION
+		} else {
+			null
+		}
+	}
+
+	fun checkPermission() = viewModelScope.launch {
+		_event.emit(SettingUiEvent.CheckPermission)
+	}
+
+	fun denyPermission() = viewModelScope.launch {
+		_event.emit(SettingUiEvent.ShowPermissionAlertDialog)
+	}
+
+	fun checkPermissionResult(
+		passedPermission: NeededPermission?
+	) = viewModelScope.launch {
+		if (passedPermission != null && passedPermission.permission == notificationPermission?.permission) {
+			_event.emit(SettingUiEvent.NotificationAllowed)
+		} else {
+			_event.emit(SettingUiEvent.ShowPermissionAlertDialog)
+		}
 	}
 }
