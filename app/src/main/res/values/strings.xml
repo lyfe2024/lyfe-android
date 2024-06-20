@@ -88,6 +88,8 @@
 	<string name="setting_logout_success">로그아웃이 완료되었습니다.</string>
 
 	<!-- ProfileScreen -->
+	<string name="profile_screen_title">마이페이지</string>
+	<string name="profile_screen_need_login">로그인이 필요해요</string>
 	<string name="profile_screen_guest_login_title">로그인 하시면 신청한 사진,\n작성한 고민글을 모아 볼 수 있어요</string>
 	<string name="profile_screen_guest_login_btn_text">로그인 하러 가기</string>
 	<string name="profile_screen_guest_login_message">아직 회원이 아니신가요?</string>

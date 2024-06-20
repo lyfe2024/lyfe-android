@@ -57,6 +57,7 @@ import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.theme.Grey500
 import com.lyfe.android.core.common.ui.theme.Grey900
+import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.H4
 import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.theme.Main500
@@ -81,14 +82,9 @@ fun ProfileScreen(
 			.fillMaxSize()
 			.padding(top = 16.dp, bottom = 0.dp)
 	) {
-		ClickableText(
-			modifier = Modifier
-				.align(Alignment.End)
-				.padding(horizontal = 20.dp),
-			text = AnnotatedString(stringResource(id = R.string.setting_screen_title)),
-			style = Button1,
-			onClick = { navigator.navigate(LyfeScreens.Setting.route) }
-		)
+		ProfileTopBar {
+			navigator.navigate(LyfeScreens.Setting.route)
+		}
 
 		Spacer(modifier = Modifier.height(16.dp))
 
@@ -109,6 +105,36 @@ fun ProfileScreen(
 			onError = {
 				onShowSnackBar(LyfeSnackBarIconType.ERROR, it ?: "에러메세지가 존재하지 않습니다.")
 			}
+		)
+	}
+}
+
+@Composable
+private fun ProfileTopBar(
+	modifier: Modifier = Modifier,
+	onMoveToEdit: () -> Unit
+) {
+	Row(
+		modifier = modifier
+			.fillMaxWidth()
+			.padding(vertical = 10.dp, horizontal = 20.dp),
+		horizontalArrangement = Arrangement.SpaceBetween,
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Text(
+			text = stringResource(id = R.string.profile_screen_title),
+			style = H3,
+			color = Color.Black
+		)
+
+		Text(
+			modifier = Modifier
+				.clickableSingle {
+					onMoveToEdit()
+				},
+			text = stringResource(id = R.string.setting_screen_title),
+			style = Button1,
+			color = Main500
 		)
 	}
 }
@@ -187,7 +213,7 @@ private fun ProfileUserInfo(
 			verticalArrangement = Arrangement.Center
 		) {
 			Text(
-				text = user?.name ?: "게스트",
+				text = user?.name ?: stringResource(R.string.profile_screen_need_login),
 				color = Color.Black,
 				style = H4
 			)
