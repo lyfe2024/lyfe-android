@@ -1,6 +1,5 @@
 package com.lyfe.android.core.domain.usecase.board
 
-import android.util.Log
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.domain.repository.TopicRepository

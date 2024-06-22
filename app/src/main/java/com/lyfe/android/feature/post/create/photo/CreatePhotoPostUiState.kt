@@ -11,7 +11,11 @@ data class CreatePhotoPostUiState(
 ) {
 	fun isAvailableToRegisterData() = selectedImage.isNotEmpty() && titleValidation()
 
-	private fun titleValidation() = title.isNotEmpty() && title.length <= 20
+	private fun titleValidation() = title.isNotEmpty() && title.length <= MAX_TITLE_LENGTH
+
+	companion object {
+		const val MAX_TITLE_LENGTH = 20
+	}
 }
 
 sealed interface CreatePhotoPostUiEvent {

@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.os.bundleOf
+import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.data.model.GalleryImageResponse
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -114,13 +115,23 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 		val contentUri = Uri.parse(localContentUrl)
 
 		val cursor = contentResolver.query(contentUri, null, null, null, null)
-		if (cursor != null && cursor.moveToFirst()) {
-			val columnIndex = cursor.getColumnIndex(MediaStore.Images.Media.DATA)
 
-			if (columnIndex < 0) return null
-			val filePath = cursor.getString(columnIndex)
-			cursor.close()
-			return File(filePath)
+		if (cursor != null && cursor.moveToFirst()) {
+			val filePath = try {
+				val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+				require(columnIndex >= 0) {
+					"cursor.getColumnIndex는 -1부터 반환하지만 cursor.getString을 위해선 0이상이여야 합니다."
+				}
+
+				cursor.getString(columnIndex)
+			} catch (e: IllegalArgumentException) {
+				LogUtil.e("DeviceGalleryDataSourceImpl", e.message ?: e.toString())
+				null
+			} finally {
+				cursor.close()
+			}
+
+			return filePath?.let { File(it) } ?: null
 		} else {
 			return null
 		}

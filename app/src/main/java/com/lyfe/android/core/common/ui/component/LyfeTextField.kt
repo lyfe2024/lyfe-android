@@ -49,7 +49,6 @@ fun LyfeTextField(
 	textFieldType: LyfeTextFieldType = LyfeTextFieldType.TC_DEFAULT_BG_WHITE_SC_TRANSPARENT,
 	isActivateCloseIcon: Boolean = false,
 	text: String,
-	textColor: Color = Color.Black,
 	textStyle: TextStyle = Body2,
 	textBoxHeightDp: Dp = 0.dp,
 	hintText: String = "",
@@ -81,7 +80,7 @@ fun LyfeTextField(
 				.heightIn(min = textBoxHeightDp)
 				.fillMaxWidth()
 				.onFocusChanged {
-					borderColor = if(it.isFocused) borderFocusedColor else borderIdleColor
+					borderColor = if (it.isFocused) borderFocusedColor else borderIdleColor
 				}
 				.border(
 					width = borderWidth,

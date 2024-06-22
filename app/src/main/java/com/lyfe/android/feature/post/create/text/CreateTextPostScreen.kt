@@ -1,7 +1,6 @@
 package com.lyfe.android.feature.post.create.text
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
@@ -65,15 +64,13 @@ fun CreateTextPostRouter(
 
 	DisposableEffect(uiState.event) {
 		when (uiState.event) {
-			is CreateTextPostUiEvent.CreateFail -> {
+			is CreateTextPostUiEvent.CreateFail -> {}
 
-			}
 			CreateTextPostUiEvent.CreateSuccess -> {
 				navigator.navigate(LyfeScreens.FeedDetail.name)
 			}
-			CreateTextPostUiEvent.MoveToSelectAlbum -> {
 
-			}
+			CreateTextPostUiEvent.MoveToSelectAlbum -> {}
 			else -> {}
 		}
 
@@ -100,10 +97,9 @@ fun CreateTextPostScreen(
 	onTitleChanged: (String) -> Unit = {},
 	onContentChanged: (String) -> Unit = {},
 	navigateUp: () -> Unit = {},
-	clickPostBtn: () -> Unit,
+	clickPostBtn: () -> Unit
 ) {
-
-	LaunchedEffect(key1 = keyboardHeight) {
+	LaunchedEffect(keyboardHeight) {
 		coroutineScope.launch {
 			scrollState.scrollBy(keyboardHeight.toFloat().pxToDp(context))
 		}
@@ -206,7 +202,6 @@ private fun TypingPostBox(
 			color = Color.Black
 		)
 
-
 		LyfeTextField(
 			text = text,
 			onTextChange = onTextChanged,
@@ -220,14 +215,13 @@ private fun TypingPostBox(
 			verticalPadding = 12.dp,
 			horizontalPadding = 12.dp,
 			maxLines = maxLines,
-			textBoxHeightDp = textBoxHeightDp,
+			textBoxHeightDp = textBoxHeightDp
 		)
 
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.End
 		) {
-
 			Text(
 				text = "${text.length}",
 				style = Caption3,
@@ -235,7 +229,7 @@ private fun TypingPostBox(
 			)
 
 			Text(
-				text = "/${textMaxCnt}",
+				text = "/$textMaxCnt",
 				style = Caption3,
 				color = Grey400
 			)

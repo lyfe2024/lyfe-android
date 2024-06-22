@@ -47,11 +47,11 @@ interface BoardService {
 	@POST("/v1/boards")
 	suspend fun registerBoard(
 		@Body boardRequest: RegisterBoardRequest
-	) : Result<RegisterBoardResponse>
+	): Result<RegisterBoardResponse>
 
 	@PUT("/v1/boards/{boardId}")
 	suspend fun updateBoard(
 		@Path("boardId") boardId: Long,
 		@Body boardRequest: UpdateBoardRequest
-	) : Result<UpdateBoardResponse>
+	): Result<UpdateBoardResponse>
 }

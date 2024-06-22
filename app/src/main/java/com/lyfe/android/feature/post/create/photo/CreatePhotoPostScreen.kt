@@ -1,7 +1,6 @@
 package com.lyfe.android.feature.post.create.photo
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.scrollBy
@@ -75,7 +74,6 @@ fun CreatePhotoPostRouter(
 	navHostController: NavHostController,
 	viewModel: CreatePhotoPostViewModel = hiltViewModel()
 ) {
-
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	LaunchedEffect(navHostController) {
@@ -150,7 +148,6 @@ private fun CreatePhotoPostContent(
 	navigateUp: () -> Unit,
 	isBtnClickable: Boolean = false,
 	titleMaxCnt: Int = 20,
-	textFieldRequestFocus: Boolean = false,
 	scrollState: ScrollState = rememberScrollState(),
 	keyboardHeight: Int = WindowInsets.ime.getBottom(LocalDensity.current),
 	coroutineScope: CoroutineScope = rememberCoroutineScope(),
@@ -158,7 +155,6 @@ private fun CreatePhotoPostContent(
 	clickUploadingBox: () -> Unit,
 	clickPostBtn: () -> Unit
 ) {
-
 	LaunchedEffect(key1 = keyboardHeight) {
 		coroutineScope.launch {
 			scrollState.scrollBy(keyboardHeight.toFloat().pxToDp(context))
@@ -205,7 +201,6 @@ private fun CreatePhotoPostContent(
 			isClearIconShow = false,
 			textStyle = Button1,
 			onClick = {
-				Log.e("Test@@@", "버튼 클릭")
 				clickPostBtn()
 			}
 		)
@@ -253,7 +248,6 @@ private fun HandleUiEvent(
 	onPermissionAlertDialogDismiss: () -> Unit,
 	navigateToSelectAlbum: () -> Unit
 ) {
-
 	when (event) {
 		is CreatePhotoPostUiEvent.CheckPermission -> {
 			PermissionsCheckScreen(
@@ -272,8 +266,7 @@ private fun HandleUiEvent(
 		}
 
 		is CreatePhotoPostUiEvent.MoveToSelectAlbum -> {
-			Log.e("Test@@@", "HandleUi $event")
-//			navigateToSelectAlbum()
+			navigateToSelectAlbum()
 		}
 
 		else -> {}
@@ -368,14 +361,13 @@ private fun TypingPostTitleBox(
 			borderWidth = 1.dp,
 			cornerRadius = 8.dp,
 			verticalPadding = 12.dp,
-			horizontalPadding = 12.dp,
+			horizontalPadding = 12.dp
 		)
 
 		Row(
 			modifier = Modifier.fillMaxWidth(),
 			horizontalArrangement = Arrangement.End
 		) {
-
 			Text(
 				text = "${postTitle.length}",
 				style = Caption3,
@@ -383,7 +375,7 @@ private fun TypingPostTitleBox(
 			)
 
 			Text(
-				text = "/${titleMaxCnt}",
+				text = "/$titleMaxCnt",
 				style = Caption3,
 				color = Grey400
 			)

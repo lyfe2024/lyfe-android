@@ -6,10 +6,8 @@ import com.lyfe.android.core.domain.repository.TopicRepository
 import com.lyfe.android.core.domain.repository.UserRepository
 import com.lyfe.android.core.domain.usecase.GetUploadLocalImageUrlUseCase
 import com.lyfe.android.core.model.FeedType
-import com.lyfe.android.core.model.board.RegisterBoardData
 import com.lyfe.android.core.model.board.RegisterBoardRequestData
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -24,8 +22,8 @@ class RegisterLocalImageBoardUseCase @Inject constructor(
 ) {
 	operator fun invoke(
 		title: String,
-		localContentImageUrl: String,
- 	): Flow<Result<RegisterBoardData>> = flow {
+		localContentImageUrl: String
+	) = flow {
 		val uploadedImageUrl = uploadImageUrlUseCase(localContentImageUrl).firstOrNull() ?: return@flow
 		val todayTopic = (topicRepository.getTodayTopic() as? Result.Success)?.body ?: return@flow
 

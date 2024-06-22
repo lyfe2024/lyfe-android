@@ -33,10 +33,10 @@ interface BoardDataSource {
 
 	suspend fun registerBoard(
 		boardRequest: RegisterBoardRequest
-	) : Result<RegisterBoardResponse>
+	): Result<RegisterBoardResponse>
 
 	suspend fun updateBoard(
 		boardId: Long,
 		boardRequest: UpdateBoardRequest
-	) : Result<UpdateBoardResponse>
+	): Result<UpdateBoardResponse>
 }

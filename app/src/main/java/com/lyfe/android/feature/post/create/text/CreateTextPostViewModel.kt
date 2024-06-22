@@ -1,6 +1,5 @@
 package com.lyfe.android.feature.post.create.text
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyfe.android.core.data.network.model.Result
@@ -45,10 +44,8 @@ class CreateTextPostViewModel @Inject constructor(
 				title = uiState.value.title,
 				content = uiState.value.content
 			).collectLatest { result ->
-				Log.e("Test@@@", "result: $result")
 				when (result) {
 					is Result.Success -> {
-						Log.e("Test@@@", "success: $result")
 						_uiState.update {
 							uiState.value.copy(event = CreateTextPostUiEvent.CreateSuccess)
 						}

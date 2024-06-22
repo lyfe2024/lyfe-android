@@ -4,8 +4,6 @@ import android.graphics.drawable.Drawable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -39,14 +37,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -57,25 +51,23 @@ import com.bumptech.glide.integration.compose.rememberGlidePreloadingData
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.RoundedCornerButton
-import com.lyfe.android.core.common.ui.util.clickableSingle
-import com.lyfe.android.core.model.GalleryImage
-import com.lyfe.android.core.navigation.LyfeScreens
-import com.lyfe.android.core.navigation.navigator.LyfeNavigator
-import com.lyfe.android.core.common.ui.theme.BtnDarkColor
-import com.lyfe.android.core.common.ui.theme.BtnLightGrayColor
 import com.lyfe.android.core.common.ui.theme.Button1
 import com.lyfe.android.core.common.ui.theme.DisabledBtnTextColor
 import com.lyfe.android.core.common.ui.theme.Grey50
 import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.theme.Main500
 import com.lyfe.android.core.common.ui.theme.Main500Transparency20
+import com.lyfe.android.core.common.ui.util.clickableSingle
+import com.lyfe.android.core.model.GalleryImage
+import com.lyfe.android.core.navigation.LyfeScreens
+import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 const val SelectImageKey = "Select Image"
 
 @Composable
 fun SelectAlbumRouter(
 	viewModel: SelectAlbumViewModel = hiltViewModel(),
-	navigator: LyfeNavigator,
+	navigator: LyfeNavigator
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

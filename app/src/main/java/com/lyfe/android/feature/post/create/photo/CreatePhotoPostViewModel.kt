@@ -8,7 +8,6 @@ import com.lyfe.android.core.common.ui.permission.NeededPermission
 import com.lyfe.android.core.data.network.model.onSuccess
 import com.lyfe.android.core.domain.usecase.board.RegisterLocalImageBoardUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -23,7 +22,7 @@ private const val SAVED_TITLE_KEY = "saved_title_key"
 @HiltViewModel
 class CreatePhotoPostViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
-	private val registerLocalImageBoardUseCase: RegisterLocalImageBoardUseCase,
+	private val registerLocalImageBoardUseCase: RegisterLocalImageBoardUseCase
 ) : ViewModel() {
 
 	private val _uiState = MutableStateFlow(CreatePhotoPostUiState())
@@ -89,7 +88,7 @@ class CreatePhotoPostViewModel @Inject constructor(
 		}
 	}
 
-	private fun titleValidation(title: String) = title.length <= 20
+	private fun titleValidation(title: String) = title.length <= CreatePhotoPostUiState.MAX_TITLE_LENGTH
 
 	private fun getNeededPermission(): Array<String> {
 		val permissionList = mutableListOf<String>()

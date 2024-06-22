@@ -1,14 +1,10 @@
 package com.lyfe.android.core.domain.usecase
 
-import android.util.Log
 import com.lyfe.android.core.data.network.model.Result
-import com.lyfe.android.core.data.network.model.onFailure
-import com.lyfe.android.core.data.network.model.onSuccess
 import com.lyfe.android.core.domain.repository.ImageRepository
 import com.lyfe.android.core.domain.util.getImageServerUrl
 import com.lyfe.android.feature.profileedit.getImageFormat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import java.io.File

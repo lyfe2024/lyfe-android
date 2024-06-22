@@ -53,7 +53,6 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 			navigator = lyfeNavigator,
 			onScroll = onScroll
 		)
-
 	}
 
 	composable(route = LyfeScreens.FeedDetail.name) {
@@ -123,7 +122,7 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 
 		ProfileEditScreen(
 			navigator = lyfeNavigator,
-			onShowSnackBar = onShowSnackBar,
+			onShowSnackBar = onShowSnackBar
 		)
 	}
 

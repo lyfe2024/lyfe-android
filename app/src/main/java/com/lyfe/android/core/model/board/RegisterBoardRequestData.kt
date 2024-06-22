@@ -7,5 +7,5 @@ data class RegisterBoardRequestData(
 	val content: String,
 	val boardType: FeedType,
 	val userId: Long,
-	val topicId: Long,
+	val topicId: Long
 )

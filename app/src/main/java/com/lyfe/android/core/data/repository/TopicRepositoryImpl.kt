@@ -1,6 +1,5 @@
 package com.lyfe.android.core.data.repository
 
-import android.util.Log
 import com.lyfe.android.core.data.datasource.TopicDataSource
 import com.lyfe.android.core.data.model.Topic
 import com.lyfe.android.core.data.network.Dispatcher
@@ -8,7 +7,6 @@ import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.repository.TopicRepository
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

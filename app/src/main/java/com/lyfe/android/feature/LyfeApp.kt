@@ -1,6 +1,5 @@
 package com.lyfe.android.feature
 
-import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedVisibility
@@ -17,21 +16,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -136,7 +129,6 @@ fun LyfeApp(
 				)
 			}
 		) { route ->
-			Log.e("Test@@@", "selectedScreen: $route")
 			// 비어있는 경로는 Bottom Post Icon
 			btmSelectedIdx = bottomNavItems.indexOfFirst { it.screenRoute == route }
 			showBtmNavi = btmSelectedIdx != -1
@@ -168,9 +160,11 @@ fun LyfeApp(
 					}
 				)
 
-				Spacer(modifier = Modifier
-					.fillMaxWidth()
-					.height(8.dp))
+				Spacer(
+					modifier = Modifier
+						.fillMaxWidth()
+						.height(8.dp)
+				)
 
 				CreatePostBox(
 					modifier = Modifier.width(144.dp),
@@ -182,10 +176,11 @@ fun LyfeApp(
 					}
 				)
 
-				Spacer(modifier = Modifier
-					.fillMaxWidth()
-					.height(16.dp))
-
+				Spacer(
+					modifier = Modifier
+						.fillMaxWidth()
+						.height(16.dp)
+				)
 			}
 		}
 
@@ -221,7 +216,6 @@ fun LyfeApp(
 						if (btmSelectedIdx != index) {
 							prevbtmSelectedIdx = btmSelectedIdx
 							btmSelectedIdx = index
-							Log.e("Test@@@", "$prevbtmSelectedIdx $btmSelectedIdx")
 
 							createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
 							if (bottomNavItems[index] != BottomNavItem.CreatePost) {
@@ -258,7 +252,7 @@ private fun CreatePostBox(
 	@StringRes textRes: Int,
 	@DrawableRes iconRes: Int,
 	click: () -> Unit
-)  {
+) {
 	Row(
 		modifier
 			.background(color = Main500, shape = RoundedCornerShape(12.dp))
