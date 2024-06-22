@@ -62,7 +62,6 @@ fun CreateTextPostRouter(
 	viewModel: CreateTextPostViewModel = hiltViewModel()
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-	Log.e("Test@@@", "uiState: $uiState")
 
 	DisposableEffect(uiState.event) {
 		when (uiState.event) {

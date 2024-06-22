@@ -81,6 +81,19 @@ fun LyfeApp(
 	var isNavigationBarHide by remember { mutableStateOf(false) }
 	var isNeedNavigationTabIndicatorAnimation by remember { mutableStateOf(false) }
 
+	val bottomNavItems = listOf(
+		BottomNavItem.Home,
+		BottomNavItem.Feed,
+		BottomNavItem.CreatePost,
+		BottomNavItem.Alarm,
+		BottomNavItem.Profile
+	)
+	var prevbtmSelectedIdx by remember { mutableIntStateOf(0) }
+	var btmSelectedIdx by remember { mutableIntStateOf(0) }
+	var showBtmNavi by remember { mutableStateOf(true) }
+	var bottomNaviTopOffsetY by remember { mutableStateOf(0.dp) }
+	var createPostButtonsShow by remember { mutableStateOf(false) }
+
 	LaunchedEffect(scrollState) {
 		snapshotFlow { scrollState.isScrollInProgress }
 			.collect {
@@ -106,19 +119,6 @@ fun LyfeApp(
 		navigator.handleNavigationCommands(navController)
 	}
 
-	val bottomNavItems = listOf(
-		BottomNavItem.Home,
-		BottomNavItem.Feed,
-		BottomNavItem.CreatePost,
-		BottomNavItem.Alarm,
-		BottomNavItem.Profile
-	)
-	var prevbtmSelectedIdx by remember { mutableIntStateOf(0) }
-	var btmSelectedIdx by remember { mutableIntStateOf(0) }
-	var showBtmNavi by remember { mutableStateOf(true) }
-	var bottomNaviTopOffsetY by remember { mutableStateOf(0.dp) }
-	var createPostButtonsShow by remember { mutableStateOf(false) }
-
 	Box(
 		modifier = modifier
 	) {
@@ -136,7 +136,10 @@ fun LyfeApp(
 				)
 			}
 		) { route ->
-			showBtmNavi = bottomNavItems.any { item -> item.screenRoute == route }
+			Log.e("Test@@@", "selectedScreen: $route")
+			// 비어있는 경로는 Bottom Post Icon
+			btmSelectedIdx = bottomNavItems.indexOfFirst { it.screenRoute == route }
+			showBtmNavi = btmSelectedIdx != -1
 		}
 
 		if (createPostButtonsShow) {
@@ -147,6 +150,7 @@ fun LyfeApp(
 					.clickableSingle {
 						createPostButtonsShow = false
 						btmSelectedIdx = prevbtmSelectedIdx
+						prevbtmSelectedIdx = -1
 					}
 			)
 
@@ -214,12 +218,15 @@ fun LyfeApp(
 					selectedItemIndex = btmSelectedIdx,
 					isNeedIndicatorAnimation = !isNavigationBarHide && !this.transition.isRunning,
 					onClick = { index ->
-						prevbtmSelectedIdx = btmSelectedIdx
-						btmSelectedIdx = index
+						if (btmSelectedIdx != index) {
+							prevbtmSelectedIdx = btmSelectedIdx
+							btmSelectedIdx = index
+							Log.e("Test@@@", "$prevbtmSelectedIdx $btmSelectedIdx")
 
-						createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
-						if (bottomNavItems[index] != BottomNavItem.CreatePost) {
-							navigator.navigate(bottomNavItems[index].screenRoute)
+							createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
+							if (bottomNavItems[index] != BottomNavItem.CreatePost) {
+								navigator.navigate(bottomNavItems[index].screenRoute)
+							}
 						}
 					}
 				)

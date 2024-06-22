@@ -26,7 +26,7 @@ fun LyfeNavHost(
 			navHostController = navHostController,
 			onScroll = onScroll,
 			onShowSnackBar = onShowSnackBar,
-			selectedScreen = selectedScreen
+			onScreenShow = selectedScreen
 		)
 	}
 }
