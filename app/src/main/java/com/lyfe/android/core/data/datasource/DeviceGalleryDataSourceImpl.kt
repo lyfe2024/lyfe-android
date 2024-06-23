@@ -63,6 +63,7 @@ class DeviceGalleryDataSourceImpl @Inject constructor(
 				galleryImageList.add(image)
 			}
 		}
+
 		return galleryImageList
 	}
 

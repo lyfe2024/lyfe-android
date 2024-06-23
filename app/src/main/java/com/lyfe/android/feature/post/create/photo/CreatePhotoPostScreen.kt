@@ -23,7 +23,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -83,16 +82,6 @@ fun CreatePhotoPostRouter(
 		viewModel.saveSelectedImage(selectedImage)
 	}
 
-	DisposableEffect(uiState.event) {
-		if (uiState.event is CreatePhotoPostUiEvent.MoveToSelectAlbum) {
-			navigator.navigate(LyfeScreens.SelectAlbum.name)
-		}
-
-		onDispose {
-			viewModel.setUiEventIdle()
-		}
-	}
-
 	CreatePhotoPostScreen(
 		uiState = uiState,
 		neededPermissions = viewModel.neededPermissions,
@@ -103,6 +92,7 @@ fun CreatePhotoPostRouter(
 		navigateUp = navigator::navigateUp,
 		clickUploadingBox = viewModel::checkPermission,
 		registerData = viewModel::registerBoard,
+		onEventClear = viewModel::setUiEventIdle,
 		navigateToSelectAlbum = { navigator.navigate(LyfeScreens.SelectAlbum.name) }
 	)
 }
@@ -118,6 +108,7 @@ fun CreatePhotoPostScreen(
 	clickUploadingBox: () -> Unit,
 	navigateToSelectAlbum: () -> Unit,
 	registerData: () -> Unit,
+	onEventClear: () -> Unit,
 	navigateUp: () -> Unit
 ) {
 	CreatePhotoPostContent(
@@ -136,6 +127,7 @@ fun CreatePhotoPostScreen(
 		checkPermissionResult = checkPermissionResult,
 		onPermissionSuccess = onPermissionSuccess,
 		onPermissionAlertDialogDismiss = onPermissionAlertDialogDismiss,
+		onEventClear = onEventClear,
 		navigateToSelectAlbum = navigateToSelectAlbum
 	)
 }
@@ -246,8 +238,16 @@ private fun HandleUiEvent(
 	) -> Unit,
 	onPermissionSuccess: (permissionList: List<NeededPermission>) -> Unit,
 	onPermissionAlertDialogDismiss: () -> Unit,
+	onEventClear: () -> Unit,
 	navigateToSelectAlbum: () -> Unit
 ) {
+	LaunchedEffect(event) {
+		if (event is CreatePhotoPostUiEvent.MoveToSelectAlbum) {
+			navigateToSelectAlbum()
+			onEventClear()
+		}
+	}
+
 	when (event) {
 		is CreatePhotoPostUiEvent.CheckPermission -> {
 			PermissionsCheckScreen(
@@ -263,10 +263,6 @@ private fun HandleUiEvent(
 				permissionSuccess = onPermissionSuccess,
 				onDismiss = onPermissionAlertDialogDismiss
 			)
-		}
-
-		is CreatePhotoPostUiEvent.MoveToSelectAlbum -> {
-			navigateToSelectAlbum()
 		}
 
 		else -> {}
