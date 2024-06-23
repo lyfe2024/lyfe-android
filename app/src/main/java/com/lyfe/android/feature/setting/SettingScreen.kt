@@ -129,7 +129,7 @@ fun SettingScreen(
 		SettingUiEvent.CheckPermission -> {
 			val notificationPermission = viewModel.notificationPermission?.permission ?: return
 			PermissionsCheckScreen(
-				neededPermissions = arrayOf(notificationPermission),
+				neededPermissions = arrayOf(notificationPermission)
 			) { passedPermissions, _ ->
 				viewModel.checkPermissionResult(passedPermissions.getOrNull(0))
 			}
@@ -202,7 +202,7 @@ private fun SettingContent(
 		socialType = socialType,
 		isNotificationAllowed = isNotificationAllowed,
 		onMenuClick = { menu ->
-			when(menu) {
+			when (menu) {
 				Setting.USER_EXPERIENCE -> {
 					navigator.navigate(LyfeScreens.Feedback.name)
 				}
@@ -242,7 +242,7 @@ private fun SettingMenuList(
 	onMenuClick: (Setting) -> Unit,
 	onNotificationToggle: (Boolean) -> Unit,
 	onLogoutSuccess: () -> Unit,
-	onLogoutFailure: (Throwable?) -> Unit,
+	onLogoutFailure: (Throwable?) -> Unit
 ) {
 	val context = LocalContext.current
 
@@ -261,7 +261,7 @@ private fun SettingMenuList(
 					}
 					else -> {
 						SettingButtonRow(
-							title = stringResource(id = setting.content),
+							title = stringResource(id = setting.content)
 						) {
 							onMenuClick(setting)
 						}
@@ -353,7 +353,7 @@ fun SettingButtonRow(
 		Text(
 			text = title,
 			style = Body2,
-			color = DEFAULT,
+			color = DEFAULT
 		)
 
 		Spacer(modifier = Modifier.weight(1f))
@@ -384,8 +384,8 @@ private fun SettingModal(
 }
 
 private fun isNotificationPermissionAllowed(
-	context: Context,
-) : Boolean {
+	context: Context
+): Boolean {
 	return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 		ContextCompat.checkSelfPermission(
 			context,

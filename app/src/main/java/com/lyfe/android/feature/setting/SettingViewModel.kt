@@ -41,7 +41,6 @@ class SettingViewModel @Inject constructor(
 
 	val notificationPermission = getPermission()
 
-
 	init {
 		getSocialType()
 		checkGuest()
