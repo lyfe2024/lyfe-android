@@ -10,6 +10,7 @@ import com.lyfe.android.core.common.ui.permission.NeededPermission
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.domain.usecase.DeleteAccountUseCase
 import com.lyfe.android.core.domain.usecase.DeleteLocalDataUseCase
+import com.lyfe.android.core.domain.usecase.GetAccessTokenUseCase
 import com.lyfe.android.core.domain.usecase.GetSocialTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,56 +24,89 @@ class SettingViewModel @Inject constructor(
 	private val deleteAccountUseCase: DeleteAccountUseCase,
 	private val getSocialTypeUseCase: GetSocialTypeUseCase,
 	private val deleteLocalDataUseCase: DeleteLocalDataUseCase,
+	private val getAccessTokenUseCase: GetAccessTokenUseCase
 ) : ViewModel() {
-
-	var uiState by mutableStateOf<SettingUiState>(SettingUiState.IDLE)
-		private set
 
 	private val _event = MutableSharedFlow<SettingUiEvent>()
 	val event = _event.asSharedFlow()
 
-	val notificationPermission = getPermission()
+	var isGuest by mutableStateOf(true)
+		private set
 
 	var socialType by mutableStateOf("")
 		private set
 
+	var menuList by mutableStateOf<List<Setting>>(listOf())
+		private set
+
+	val notificationPermission = getPermission()
+
+
 	init {
 		getSocialType()
+		checkGuest()
 	}
 
 	private fun getSocialType() = viewModelScope.launch {
 		socialType = getSocialTypeUseCase().first()
 	}
 
-	fun updateUiState(uiState: SettingUiState) {
-		this.uiState = uiState
+	private fun checkGuest() = viewModelScope.launch {
+		getAccessTokenUseCase().collect { token ->
+			isGuest = token.isNullOrEmpty()
+			setMenuList(isGuest)
+		}
 	}
 
-	fun deleteAccount() {
-		uiState = SettingUiState.Loading
-		viewModelScope.launch {
-			uiState = when (val response = deleteAccountUseCase()) {
-				is Result.Failure -> {
-					SettingUiState.Failure(message = response.error)
-				}
+	private fun setMenuList(isGuest: Boolean) {
+		menuList = if (isGuest) {
+			listOf(
+				Setting.TERMS,
+				Setting.PRIVACY_POLICY
+			)
+		} else {
+			listOf(
+				Setting.NOTIFICATION,
+				Setting.USER_EXPERIENCE,
+				Setting.TERMS,
+				Setting.PRIVACY_POLICY,
+				Setting.DELETE_ACCOUNT
+			)
+		}
+	}
 
-				is Result.NetworkError -> {
-					SettingUiState.Failure(message = response.exception.message)
-				}
+	fun emitEvent(event: SettingUiEvent) = viewModelScope.launch {
+		_event.emit(event)
+	}
 
-				is Result.Success -> {
-					deleteLocalData()
-					SettingUiState.DeleteAccountSuccess
-				}
+	fun deleteAccount() = viewModelScope.launch {
+		_event.emit(SettingUiEvent.Loading)
+		when (val response = deleteAccountUseCase()) {
+			is Result.Failure -> {
+				_event.emit(SettingUiEvent.Failure(message = response.error))
+			}
 
-				is Result.Unexpected -> {
-					SettingUiState.Failure(message = response.t.message)
-				}
+			is Result.NetworkError -> {
+				_event.emit(SettingUiEvent.Failure(message = response.exception.message))
+			}
+
+			is Result.Success -> {
+				deleteLocalData()
+				_event.emit(SettingUiEvent.DeleteAccountSuccess)
+			}
+
+			is Result.Unexpected -> {
+				_event.emit(SettingUiEvent.Failure(message = response.t.message))
 			}
 		}
 	}
 
-	fun deleteLocalData() = viewModelScope.launch {
+	fun logout() = viewModelScope.launch {
+		deleteLocalData()
+		_event.emit(SettingUiEvent.LogoutSuccess)
+	}
+
+	private suspend fun deleteLocalData() {
 		deleteLocalDataUseCase()
 	}
 
