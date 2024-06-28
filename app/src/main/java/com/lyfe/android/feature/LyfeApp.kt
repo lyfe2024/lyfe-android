@@ -2,7 +2,6 @@ package com.lyfe.android.feature
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
@@ -38,7 +36,6 @@ fun LyfeApp(
 	modifier: Modifier = Modifier,
 	navigator: LyfeNavigator
 ) {
-	val density = LocalDensity.current
 	val navController = rememberNavController()
 	val scrollState = rememberScrollState()
 	var snackBarVisuals by remember { mutableStateOf(LyfeSnackBarVisuals()) }
