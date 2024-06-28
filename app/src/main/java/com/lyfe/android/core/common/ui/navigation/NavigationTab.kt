@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.platform.LocalDensity
@@ -48,7 +49,7 @@ fun NavigationTab(
 	selectedItemIndex: Int,
 	items: List<BottomNavItem>,
 	isNeedIndicatorAnimation: Boolean = true,
-	onClick: (index: Int) -> Unit
+	onClick: (index: Int) -> Unit,
 ) {
 	val density = LocalDensity.current
 	val navigationShowType = NavigationShowType.getNavigationShowType()

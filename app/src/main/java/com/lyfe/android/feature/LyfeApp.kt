@@ -2,33 +2,16 @@ package com.lyfe.android.feature
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,27 +22,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeSnackBar
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarVisuals
-import com.lyfe.android.core.common.ui.navigation.NavigationTab
-import com.lyfe.android.core.common.ui.theme.Main500
-import com.lyfe.android.core.common.ui.theme.ScrimColor
-import com.lyfe.android.core.common.ui.theme.Title3
-import com.lyfe.android.core.common.ui.util.clickableSingle
+import com.lyfe.android.core.common.ui.navigation.LyfeNavigationBar
 import com.lyfe.android.core.navigation.LyfeNavHost
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun LyfeApp(
 	modifier: Modifier = Modifier,
@@ -84,7 +57,6 @@ fun LyfeApp(
 	var prevbtmSelectedIdx by remember { mutableIntStateOf(0) }
 	var btmSelectedIdx by remember { mutableIntStateOf(0) }
 	var showBtmNavi by remember { mutableStateOf(true) }
-	var bottomNaviTopOffsetY by remember { mutableStateOf(0.dp) }
 	var createPostButtonsShow by remember { mutableStateOf(false) }
 
 	LaunchedEffect(scrollState) {
@@ -134,97 +106,37 @@ fun LyfeApp(
 			showBtmNavi = btmSelectedIdx != -1
 		}
 
-		if (createPostButtonsShow) {
-			Spacer(
-				modifier = Modifier
-					.fillMaxSize()
-					.background(ScrimColor)
-					.clickableSingle {
-						createPostButtonsShow = false
-						btmSelectedIdx = prevbtmSelectedIdx
-						prevbtmSelectedIdx = -1
-					}
-			)
-
-			Column(
-				modifier = Modifier.offset(y = bottomNaviTopOffsetY - 16.dp - 8.dp - 64.dp),
-				horizontalAlignment = Alignment.CenterHorizontally
-			) {
-				CreatePostBox(
-					modifier = Modifier.width(144.dp),
-					textRes = R.string.create_board_picture,
-					iconRes = R.drawable.ic_pic_fill,
-					click = {
-						createPostButtonsShow = false
-						navigator.navigate(LyfeScreens.CreatePhotoPost.name)
-					}
-				)
-
-				Spacer(
-					modifier = Modifier
-						.fillMaxWidth()
-						.height(8.dp)
-				)
-
-				CreatePostBox(
-					modifier = Modifier.width(144.dp),
-					textRes = R.string.create_board,
-					iconRes = R.drawable.ic_text,
-					click = {
-						createPostButtonsShow = false
-						navigator.navigate(LyfeScreens.CreateTextPost.name)
-					}
-				)
-
-				Spacer(
-					modifier = Modifier
-						.fillMaxWidth()
-						.height(16.dp)
-				)
-			}
-		}
-
 		if (showBtmNavi) {
-			AnimatedVisibility(
-				modifier = Modifier.align(Alignment.BottomCenter),
-				visible = !isNavigationBarHide,
-				enter = slideInVertically {
-					// Slide in from 40 dp from the top.
-					with(density) { -40.dp.roundToPx() }
-				} + expandVertically(
-					// Expand from the top.
-					expandFrom = Alignment.Top
-				) + fadeIn(
-					// Fade in with the initial alpha of 0.3f.
-					initialAlpha = 0.3f
-				),
-				exit = slideOutVertically() + shrinkVertically() + fadeOut()
-			) {
-				NavigationTab(
-					modifier = Modifier
-						.fillMaxWidth()
-						.padding(bottom = 8.dp, start = 20.dp, end = 20.dp)
-						.onGloballyPositioned {
-							with(density) {
-								bottomNaviTopOffsetY = it.boundsInRoot().top.toDp()
-							}
-						},
-					items = bottomNavItems,
-					selectedItemIndex = btmSelectedIdx,
-					isNeedIndicatorAnimation = !isNavigationBarHide && !this.transition.isRunning,
-					onClick = { index ->
-						if (btmSelectedIdx != index) {
-							prevbtmSelectedIdx = btmSelectedIdx
-							btmSelectedIdx = index
+			LyfeNavigationBar(
+				isNavigationBarHide = isNavigationBarHide,
+				bottomNavItems = bottomNavItems,
+				selectedItemIndex = btmSelectedIdx,
+				createPostButtonsShow = createPostButtonsShow,
+				createPostButtonsDismiss = {
+					createPostButtonsShow = false
+					btmSelectedIdx = prevbtmSelectedIdx
+					prevbtmSelectedIdx = -1
+				},
+				onClickPhotoBox = {
+					createPostButtonsShow = false
+					navigator.navigate(LyfeScreens.CreatePhotoPost.name)
+				},
+				onClickTextBox = {
+					createPostButtonsShow = false
+					navigator.navigate(LyfeScreens.CreateTextPost.name)
+				},
+				bottomItemClick = { index ->
+					if (btmSelectedIdx != index) {
+						prevbtmSelectedIdx = btmSelectedIdx
+						btmSelectedIdx = index
 
-							createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
-							if (bottomNavItems[index] != BottomNavItem.CreatePost) {
-								navigator.navigate(bottomNavItems[index].screenRoute)
-							}
+						createPostButtonsShow = bottomNavItems[index] == BottomNavItem.CreatePost
+						if (bottomNavItems[index] != BottomNavItem.CreatePost) {
+							navigator.navigate(bottomNavItems[index].screenRoute)
 						}
 					}
-				)
-			}
+				}
+			)
 		}
 
 		SnackbarHost(
@@ -243,36 +155,6 @@ fun LyfeApp(
 				Spacer(modifier = Modifier.height(80.dp))
 			}
 		}
-	}
-}
-
-@Composable
-private fun CreatePostBox(
-	modifier: Modifier = Modifier,
-	@StringRes textRes: Int,
-	@DrawableRes iconRes: Int,
-	click: () -> Unit
-) {
-	Row(
-		modifier
-			.background(color = Main500, shape = RoundedCornerShape(12.dp))
-			.clickableSingle { click() }
-			.padding(horizontal = 16.dp, vertical = 5.dp),
-		horizontalArrangement = Arrangement.spacedBy(8.dp),
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Icon(
-			modifier = Modifier.size(16.dp),
-			painter = painterResource(id = iconRes),
-			contentDescription = "icon",
-			tint = Color.White
-		)
-
-		Text(
-			text = stringResource(id = textRes),
-			style = Title3,
-			color = Color.White
-		)
 	}
 }
 
