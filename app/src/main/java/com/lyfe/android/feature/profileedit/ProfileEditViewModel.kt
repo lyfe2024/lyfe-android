@@ -117,7 +117,7 @@ class ProfileEditViewModel @Inject constructor(
 			}.collectLatest {
 				val uploadUrl = it.url
 				val imageUrl = uploadUrl.substring(8 until it.url.indexOf('?')).replace("//", "/")
-				val response = uploadImageUseCase(it.url, it.key, file)
+				val response = uploadImageUseCase(it.url, it.imageKey.data, file)
 				when (response) {
 					is Result.Success -> {
 						user.value.profileImage = "https://$imageUrl"

@@ -28,12 +28,12 @@ class GetUploadImageUrlUseCase @Inject constructor(
 		// 할당받은 imageUrl 데이터를 가지고 File Upload 진행
 		val uploadResult = imageRepository.uploadImage(
 			url = uploadImageUrl.url,
-			key = uploadImageUrl.key,
+			key = uploadImageUrl.imageKey.data,
 			file = file
 		)
 
 		if (uploadResult is Result.Success) {
-			flowOf(getImageServerUrl(uploadImageUrl.key))
+			flowOf(getImageServerUrl(uploadImageUrl.imageKey))
 		} else {
 			flowOf(null)
 		}
