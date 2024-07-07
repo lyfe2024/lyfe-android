@@ -62,13 +62,15 @@ class BoardRepositoryImpl @Inject constructor(
 	override fun getPopularBoards(
 		cursorId: Long,
 		boardType: String,
-		popularType: String
+		popularType: String,
+		date: String?
 	): Flow<List<Feed>> = flow {
 		when (
 			val response = boardDataSource.getPopularBoards(
 				cursorId = cursorId,
 				boardType = boardType,
-				popularType = popularType
+				popularType = popularType,
+				date = date
 			)
 		) {
 			is Result.Success -> {

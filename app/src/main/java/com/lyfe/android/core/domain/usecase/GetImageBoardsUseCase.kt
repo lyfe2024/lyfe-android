@@ -11,7 +11,8 @@ class GetImageBoardsUseCase @Inject constructor(
 
 	operator fun invoke(
 		cursorId: Long,
-		sortType: FeedSortType
+		sortType: FeedSortType,
+		date: String
 	) = when (sortType) {
 		FeedSortType.LATEST -> {
 			boardRepository.getLatestBoards(
@@ -23,7 +24,8 @@ class GetImageBoardsUseCase @Inject constructor(
 			boardRepository.getPopularBoards(
 				cursorId = cursorId,
 				boardType = FeedType.BOARD_PICTURE.name,
-				popularType = sortType.name
+				popularType = sortType.name,
+				date = date
 			)
 		}
 	}

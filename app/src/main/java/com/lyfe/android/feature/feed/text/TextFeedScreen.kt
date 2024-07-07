@@ -1,15 +1,19 @@
 package com.lyfe.android.feature.feed.text
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,12 +22,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.component.LyfeTextFeedView
+import com.lyfe.android.core.common.ui.theme.Caption3
 import com.lyfe.android.core.common.ui.theme.Grey100
+import com.lyfe.android.core.common.ui.theme.Grey300
 import com.lyfe.android.core.common.ui.util.LogUtil
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.feature.feed.FeedFilterView
@@ -33,13 +42,14 @@ import com.lyfe.android.feature.feed.SelectFilterListView
 fun TextFeedScreen(
 	viewModel: TextFeedViewModel = hiltViewModel(),
 	lazyListState: LazyListState = rememberLazyListState(),
+	selectingState: Boolean,
 	onScroll: (Boolean) -> Unit = {},
-	onFeedClick: () -> Unit = {}
+	onFeedClick: () -> Unit = {},
+	onToggleFilterView: (Boolean) -> Unit = {}
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
 	val feedList by viewModel.feedList.collectAsStateWithLifecycle()
-	var selectingState by remember { mutableStateOf(false) }
 
 	LaunchedEffect(lazyListState) {
 		snapshotFlow { lazyListState.isScrollInProgress }
@@ -52,11 +62,26 @@ fun TextFeedScreen(
 		Column(
 			modifier = Modifier.fillMaxSize()
 		) {
-			FeedFilterView(
-				modifier = Modifier.padding(vertical = 13.dp, horizontal = 20.dp),
-				feedSortType = feedSortType,
-				onClick = { selectingState = !selectingState }
-			)
+			Row(
+				modifier = Modifier
+					.fillMaxWidth()
+					.padding(horizontal = 20.dp, vertical = 13.dp),
+				horizontalArrangement = Arrangement.SpaceBetween,
+				verticalAlignment = Alignment.CenterVertically
+			) {
+				Text(
+					text = stringResource(R.string.feed_text_screen_description),
+					style = Caption3,
+					color = Grey300
+				)
+
+				FeedFilterView(
+					feedSortType = feedSortType,
+					onClick = {
+						onToggleFilterView(!selectingState)
+					}
+				)
+			}
 
 			TextFeedListScreen(
 				lazyListState = lazyListState,
@@ -64,7 +89,7 @@ fun TextFeedScreen(
 				uiState = uiState,
 				fetchNextFeedList = viewModel::fetchNextFeedList,
 				onFeedClick = {
-					selectingState = false
+					onToggleFilterView(false)
 					onFeedClick()
 				}
 			)
@@ -72,9 +97,12 @@ fun TextFeedScreen(
 
 		if (selectingState) {
 			SelectFilterListView(
+				modifier = Modifier
+					.align(Alignment.TopEnd)
+					.padding(top = 40.dp, end = 20.dp),
 				feedSortType = feedSortType,
 				onSelectSortType = {
-					selectingState = false
+					onToggleFilterView(false)
 					viewModel.selectFeedSortType(it)
 				}
 			)

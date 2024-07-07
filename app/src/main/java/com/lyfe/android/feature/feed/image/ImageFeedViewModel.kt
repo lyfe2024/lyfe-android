@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -36,7 +39,8 @@ class ImageFeedViewModel @Inject constructor(
 	val imageFeedList: StateFlow<List<Feed>> = imageFeedFetchingLastFeedId.flatMapLatest { lastFeedId ->
 		getImageBoardsUseCase(
 			cursorId = lastFeedId,
-			sortType = feedSortType.value
+			sortType = feedSortType.value,
+			date = getTodayDate()
 		).onStart {
 			_imageFeedUiState.value = ImageFeedListUiState.Loading
 		}.onCompletion {
@@ -52,6 +56,11 @@ class ImageFeedViewModel @Inject constructor(
 		started = SharingStarted.WhileSubscribed(5000L),
 		initialValue = emptyList()
 	)
+
+	private fun getTodayDate(): String {
+		val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+		return LocalDateTime.now().format(formatter)
+	}
 
 	fun fetchNextFeedList() {
 		if (imageFeedUiState.value != ImageFeedListUiState.Loading) {

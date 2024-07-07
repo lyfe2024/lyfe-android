@@ -20,7 +20,8 @@ interface BoardRepository {
 	fun getPopularBoards(
 		cursorId: Long = 0,
 		boardType: String,
-		popularType: String
+		popularType: String,
+		date: String? = null
 	): Flow<List<Feed>>
 
 	fun getUserBoards(

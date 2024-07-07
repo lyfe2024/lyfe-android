@@ -28,7 +28,7 @@
 	<string name="home_text_feed_more">함께 더 많은 고민을 나눠봐요!</string>
 
 	<!-- Feed -->
-	<string name="feed_screen_title">피드</string>
+	<string name="feed_screen_title">오늘의 전체보기</string>
 	<string name="feed_screen_request_photo">사진 신청</string>
 	<string name="feed_screen_image_tab_text">신청 사진</string>
 	<string name="feed_screen_text_tab_text">신청 글</string>
@@ -114,5 +114,7 @@
 
 	<!-- PersonalInfoTermsScreen -->
     <string name="personal_info_terms">개인정보 수집 및 이용</string>
+	<string name="feed_image_screen_description">23:59까지 신청한 사진을 전부 보여줘요</string>
+	<string name="feed_text_screen_description">23:59까지 작성한 글을 전부 보여줘요</string>
 
 </resources>
