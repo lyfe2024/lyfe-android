@@ -57,7 +57,9 @@ fun LyfeFeedCardView(
 				.fillMaxSize()
 				.clip(RoundedCornerShape(16.dp))
 				.align(Alignment.Center),
-			model = feed.feedImageUrl,
+			model = feed.feedImageUrl.ifEmpty {
+				"https://picsum.photos/400/600"
+			},
 			contentDescription = "feed_image",
 			contentScale = ContentScale.FillBounds
 		)

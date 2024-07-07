@@ -34,10 +34,6 @@ class HomeViewModel @Inject constructor(
 	private val _textFeedList = MutableStateFlow<List<Feed>>(emptyList())
 	val textFeedList get() = _textFeedList.asStateFlow()
 
-	private var textFeedCursorId by mutableLongStateOf(0)
-
-	private var imageFeedCursorId by mutableLongStateOf(0)
-
 	var todayTopic by mutableStateOf("오늘의 주제")
 		private set
 
@@ -61,14 +57,9 @@ class HomeViewModel @Inject constructor(
 	}
 
 	fun fetchLatestFeedList(feedType: FeedType) {
-		val cursorId = when (feedType) {
-			FeedType.BOARD -> textFeedCursorId
-			FeedType.BOARD_PICTURE -> imageFeedCursorId
-		}
-
 		viewModelScope.launch {
 			getLatestBoardsUseCase(
-				cursorId = cursorId,
+				cursorId = 0,
 				boardType = feedType.name
 			).catch { t ->
 				_uiState.update { HomeUiState.Failure(t.message ?: "") }
@@ -76,19 +67,9 @@ class HomeViewModel @Inject constructor(
 				when (feedType) {
 					FeedType.BOARD -> {
 						_textFeedList.compareAndSet(_textFeedList.value, it.subList(0, minOf(it.size, HOME_FEED_MAX_COUNT)))
-						textFeedCursorId = if (it.isNotEmpty()) {
-							it.last().feedId
-						} else {
-							textFeedCursorId
-						}
 					}
 					FeedType.BOARD_PICTURE -> {
 						_imageFeedList.compareAndSet(_imageFeedList.value, it.subList(0, minOf(it.size, HOME_FEED_MAX_COUNT)))
-						imageFeedCursorId = if (it.isNotEmpty()) {
-							it.last().feedId
-						} else {
-							imageFeedCursorId
-						}
 					}
 				}
 			}
