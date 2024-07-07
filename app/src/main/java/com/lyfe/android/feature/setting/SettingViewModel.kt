@@ -90,7 +90,7 @@ class SettingViewModel @Inject constructor(
 			}
 
 			is Result.Success -> {
-				deleteLocalData()
+				deleteLocalDataUseCase.invoke()
 				_event.emit(SettingUiEvent.DeleteAccountSuccess)
 			}
 
@@ -101,12 +101,8 @@ class SettingViewModel @Inject constructor(
 	}
 
 	fun logout() = viewModelScope.launch {
-		deleteLocalData()
+		deleteLocalDataUseCase.invoke()
 		_event.emit(SettingUiEvent.LogoutSuccess)
-	}
-
-	private suspend fun deleteLocalData() {
-		deleteLocalDataUseCase()
 	}
 
 	private fun getPermission(): NeededPermission? {
