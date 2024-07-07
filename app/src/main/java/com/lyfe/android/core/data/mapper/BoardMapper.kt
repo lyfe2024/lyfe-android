@@ -1,11 +1,11 @@
 package com.lyfe.android.core.data.mapper
 
-import com.lyfe.android.core.data.model.BoardDetail
+import com.lyfe.android.core.data.model.BoardDetailResponse
 import com.lyfe.android.core.data.model.PageInfo
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.Page
 
-internal fun BoardDetail.toDomain(): Feed =
+internal fun BoardDetailResponse.toDomain(): Feed =
 	Feed(
 		feedId = this.id,
 		title = this.title ?: "",
