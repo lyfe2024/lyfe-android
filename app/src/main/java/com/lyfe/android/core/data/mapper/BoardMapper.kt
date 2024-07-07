@@ -8,16 +8,16 @@ import com.lyfe.android.core.model.Page
 internal fun BoardDetail.toDomain(): Feed =
 	Feed(
 		feedId = this.id,
-		title = this.title,
-		content = this.content,
-		topic = this.topic,
-		feedImageUrl = this.imageUrl,
-		date = this.updatedAt,
-		userId = this.user.id,
-		userName = this.user.username,
-		userProfileImgUrl = this.user.profile,
-		whiskyCount = this.whiskyCount,
-		commentCount = this.commentCount,
+		title = this.title ?: "",
+		content = this.content ?: "",
+		topic = this.topic ?: "",
+		feedImageUrl = this.imageUrl ?: "",
+		date = this.updatedAt ?: "",
+		userId = this.user?.id ?: 0,
+		userName = this.user?.username ?: "",
+		userProfileImgUrl = this.user?.profile ?: "",
+		whiskyCount = this.whiskyCount ?: 0,
+		commentCount = this.commentCount ?: 0,
 		isLike = false
 	)
 
