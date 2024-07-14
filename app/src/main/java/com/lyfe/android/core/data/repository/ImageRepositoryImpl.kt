@@ -30,12 +30,15 @@ class ImageRepositoryImpl @Inject constructor(
 				val result = response.body
 				emit(result.toDomain())
 			}
+
 			is Result.Failure -> {
 				throw ApiResultException(response.error)
 			}
+
 			is Result.NetworkError -> {
 				throw response.exception
 			}
+
 			is Result.Unexpected -> {
 				throw response.t
 			}
@@ -44,6 +47,7 @@ class ImageRepositoryImpl @Inject constructor(
 
 	override suspend fun uploadImage(url: String, key: String, file: File): Result<Unit> {
 		val requestBody = file.asRequestBody()
+
 		return imageDataSource.uploadImage(
 			url = url,
 			key = key,

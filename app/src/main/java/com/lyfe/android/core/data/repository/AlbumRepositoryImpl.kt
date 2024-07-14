@@ -8,6 +8,8 @@ import com.lyfe.android.core.domain.repository.AlbumRepository
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 class AlbumRepositoryImpl @Inject constructor(
@@ -18,4 +20,10 @@ class AlbumRepositoryImpl @Inject constructor(
 	override fun getAllPhotos() = flow {
 		emit(deviceGalleryDataSource.getAllPhotos().map { it.toDomain() })
 	}.flowOn(ioDispatcher)
+
+	override suspend fun translateToFile(localContentUrl: String): File? {
+		return withContext(ioDispatcher) {
+			deviceGalleryDataSource.translateToFile(localContentUrl)
+		}
+	}
 }

@@ -1,6 +1,10 @@
 package com.lyfe.android.core.data.datasource
 
 import com.lyfe.android.core.data.model.GetBoardListResult
+import com.lyfe.android.core.data.model.board.RegisterBoardRequest
+import com.lyfe.android.core.data.model.board.RegisterBoardResponse
+import com.lyfe.android.core.data.model.board.UpdateBoardRequest
+import com.lyfe.android.core.data.model.board.UpdateBoardResponse
 import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.service.BoardService
 import javax.inject.Inject
@@ -43,5 +47,18 @@ class BoardRemoteDataSource @Inject constructor(
 			boardType = boardType,
 			cursorId = cursorId
 		)
+	}
+
+	override suspend fun registerBoard(
+		boardRequest: RegisterBoardRequest
+	): Result<RegisterBoardResponse> {
+		return boardService.registerBoard(boardRequest)
+	}
+
+	override suspend fun updateBoard(
+		boardId: Long,
+		boardRequest: UpdateBoardRequest
+	): Result<UpdateBoardResponse> {
+		return boardService.updateBoard(boardId = boardId, boardRequest = boardRequest)
 	}
 }

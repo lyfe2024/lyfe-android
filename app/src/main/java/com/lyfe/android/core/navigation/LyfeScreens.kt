@@ -15,13 +15,13 @@ sealed class LyfeScreens(
 	// 나중에 id값으로 변경 예정
 	object FeedDetail : LyfeScreens("feed/detail")
 
-	object Post : LyfeScreens("post")
-
 	object NotificationList : LyfeScreens("Alarm")
 
 	object Profile : LyfeScreens("profile")
 
-	object PostCreate : LyfeScreens("post/create")
+	object CreatePhotoPost : LyfeScreens("post/photo/create")
+
+	object CreateTextPost : LyfeScreens("post/text/create")
 
 	object SelectAlbum : LyfeScreens("album/select")
 

@@ -108,4 +108,25 @@
 	<string name="profile_text_feed_post">고민글 쓰러가기</string>
 	<string name="home_text_feed_more">함께 더 많은 고민을 나눠봐요!</string>
 
+	<!-- Create Post -->
+	<string name="create_board_picture">사진 신청하기</string>
+	<string name="create_board">고민글 작성하기</string>
+
+	<!-- Create Photo Post	-->
+	<string name="create_photo_post_title">사진 신청</string>
+	<string name="create_photo_post_uploading_box_text">사진 업로드</string>
+	<string name="create_photo_post_typing_box_title">제목</string>
+	<string name="create_photo_post_typing_box_hint">제목을 입력해주세요</string>
+	<string name="create_photo_post_btn_text">게시</string>
+
+	<!-- Select Album -->
+	<string name="select_album_header_text">사진을 선택해주세요</string>
+	<string name="select_album_button_text">선택 완료</string>
+
+	<!-- Create Text Post	-->
+	<string name="create_text_post_top_bar_text">고민글 작성</string>
+	<string name="create_text_post_title_textfield_title">제목</string>
+	<string name="create_text_post_title_textfield_hint">제목을 입력해주세요</string>
+	<string name="create_text_post_content_textfield_title">고민 내용</string>
+	<string name="create_text_post_content_textfield_hint">내용을 입력해주세요</string>
 </resources>

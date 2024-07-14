@@ -1,5 +1,6 @@
 package com.lyfe.android.core.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -8,15 +9,15 @@ import androidx.navigation.navArgument
 import com.lyfe.android.core.common.ui.component.LyfeSnackBarIconType
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.alarm.NotificationListRoute
-import com.lyfe.android.feature.album.SelectAlbumScreen
+import com.lyfe.android.feature.album.SelectAlbumRouter
 import com.lyfe.android.feature.detail.FeedDetailRouter
 import com.lyfe.android.feature.feed.FeedScreen
 import com.lyfe.android.feature.feedback.FeedbackScreen
 import com.lyfe.android.feature.home.HomeScreen
 import com.lyfe.android.feature.login.LoginScreen
 import com.lyfe.android.feature.nickname.CreateNicknameScreen
-import com.lyfe.android.feature.post.PostScreen
-import com.lyfe.android.feature.post.create.PostCreateScreen
+import com.lyfe.android.feature.post.create.photo.CreatePhotoPostRouter
+import com.lyfe.android.feature.post.create.text.CreateTextPostRouter
 import com.lyfe.android.feature.profile.ProfileScreen
 import com.lyfe.android.feature.profileedit.ProfileEditScreen
 import com.lyfe.android.feature.setting.SettingScreen
@@ -30,97 +31,140 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 	navHostController: NavHostController,
 	onScroll: (Boolean) -> Unit,
 	onShowSnackBar: (LyfeSnackBarIconType, String) -> Unit,
-	selectedScreen: (route: String) -> Unit
+	onScreenShow: (route: String) -> Unit
 ) {
 	composable(route = LyfeScreens.Home.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.Home.name)
+		}
+
 		HomeScreen(
 			navigator = lyfeNavigator,
 			onScroll = onScroll
 		)
-		selectedScreen(LyfeScreens.Home.name)
 	}
 
 	composable(route = LyfeScreens.Feed.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.Feed.name)
+		}
+
 		FeedScreen(
 			navigator = lyfeNavigator,
 			onScroll = onScroll
 		)
-		selectedScreen(LyfeScreens.Feed.name)
 	}
 
 	composable(route = LyfeScreens.FeedDetail.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.FeedDetail.name)
+		}
+
 		FeedDetailRouter(
 			navigator = lyfeNavigator
 		)
-		selectedScreen(LyfeScreens.FeedDetail.name)
 	}
 
-	composable(route = LyfeScreens.Post.name) {
-		PostScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.Post.name)
-	}
+	composable(route = LyfeScreens.CreatePhotoPost.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.CreatePhotoPost.name)
+		}
 
-	composable(route = LyfeScreens.PostCreate.name) {
-		PostCreateScreen(
+		CreatePhotoPostRouter(
 			navigator = lyfeNavigator,
 			navHostController = navHostController
 		)
-		selectedScreen(LyfeScreens.PostCreate.name)
+	}
+
+	composable(route = LyfeScreens.CreateTextPost.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.CreateTextPost.name)
+		}
+
+		CreateTextPostRouter(
+			navigator = lyfeNavigator
+		)
 	}
 
 	composable(route = LyfeScreens.NotificationList.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.NotificationList.name)
+		}
+
 		NotificationListRoute()
-		selectedScreen(LyfeScreens.NotificationList.name)
 	}
 
 	composable(route = LyfeScreens.Profile.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.Profile.name)
+		}
+
 		ProfileScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.Profile.name)
 	}
 
 	composable(route = LyfeScreens.SelectAlbum.name) {
-		SelectAlbumScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.SelectAlbum.name)
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.SelectAlbum.name)
+		}
+
+		SelectAlbumRouter(
+			navigator = lyfeNavigator
+		)
 	}
 
 	composable(route = LyfeScreens.ProfileEdit.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.ProfileEdit.name)
+		}
+
 		ProfileEditScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.ProfileEdit.name)
 	}
 
 	composable(route = LyfeScreens.Setting.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.Setting.name)
+		}
+
 		SettingScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.Setting.name)
 	}
 
 	composable(route = LyfeScreens.Feedback.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.Feedback.name)
+		}
+
 		FeedbackScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.Feedback.name)
 	}
 
 	composable(route = LyfeScreens.Login.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.Login.name)
+		}
+
 		LoginScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.Login.name)
 	}
 
 	composable(route = LyfeScreens.CreateNickname.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.CreateNickname.name)
+		}
+
 		CreateNicknameScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.CreateNickname.name)
 	}
 
 	composable(
@@ -132,31 +176,43 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 			}
 		)
 	) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.SignUpTerms.name)
+		}
+
 		SignUpTermsPolicyScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.SignUpTerms.name)
 	}
 
 	composable(route = LyfeScreens.ServiceTerms.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.ServiceTerms.name)
+		}
+
 		ServiceTermsScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.ServiceTerms.name)
 	}
 
 	composable(route = LyfeScreens.PersonalInfoTermsScreen.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.PersonalInfoTermsScreen.name)
+		}
+
 		PersonalInfoAgreementsScreen(
 			navigator = lyfeNavigator,
 			onShowSnackBar = onShowSnackBar
 		)
-		selectedScreen(LyfeScreens.PersonalInfoTermsScreen.name)
 	}
 
 	composable(route = LyfeScreens.SignUpComplete.name) {
+		LaunchedEffect(Unit) {
+			onScreenShow(LyfeScreens.SignUpComplete.name)
+		}
+
 		SignUpCompleteScreen(navigator = lyfeNavigator)
-		selectedScreen(LyfeScreens.SignUpComplete.name)
 	}
 }

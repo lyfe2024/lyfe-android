@@ -2,6 +2,7 @@ package com.lyfe.android.core.data.repository
 
 import com.lyfe.android.core.data.datasource.BoardDataSource
 import com.lyfe.android.core.data.mapper.toDomain
+import com.lyfe.android.core.data.mapper.toRequest
 import com.lyfe.android.core.data.network.Dispatcher
 import com.lyfe.android.core.data.network.LyfeDispatchers
 import com.lyfe.android.core.data.network.model.ApiResultException
@@ -9,6 +10,8 @@ import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.model.transform
 import com.lyfe.android.core.domain.repository.BoardRepository
 import com.lyfe.android.core.model.Feed
+import com.lyfe.android.core.model.board.RegisterBoardRequestData
+import com.lyfe.android.core.model.board.UpdateBoardRequestData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -117,5 +120,23 @@ class BoardRepositoryImpl @Inject constructor(
 				throw response.t
 			}
 		}
+	}.flowOn(ioDispatcher)
+
+	override fun registerBoard(
+		registerBoardRequestData: RegisterBoardRequestData
+	) = flow {
+		val response = boardDataSource.registerBoard(registerBoardRequestData.toRequest())
+		emit(response.transform { it.toDomain() })
+	}.flowOn(ioDispatcher)
+
+	override fun updateBoard(
+		boardId: Long,
+		updateBoardRequestData: UpdateBoardRequestData
+	) = flow {
+		val response = boardDataSource.updateBoard(
+			boardId = boardId,
+			boardRequest = updateBoardRequestData.toRequest()
+		)
+		emit(response.transform { it.toDomain() })
 	}.flowOn(ioDispatcher)
 }
