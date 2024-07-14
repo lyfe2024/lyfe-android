@@ -113,14 +113,14 @@ fun FeedScreen(
 					ImageFeedScreen(
 						onScroll = onScroll
 					) {
-						navigator.navigate(LyfeScreens.FeedDetail.name)
+						navigator.navigate("${LyfeScreens.FeedDetail.name}/${it}")
 					}
 				}
 				POPULAR_FEED -> {
 					TextFeedScreen(
 						onScroll = onScroll
 					) {
-						navigator.navigate(LyfeScreens.FeedDetail.name)
+						navigator.navigate("${LyfeScreens.FeedDetail.name}/${it}")
 					}
 				}
 			}

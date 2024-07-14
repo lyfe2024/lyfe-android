@@ -37,7 +37,7 @@ private const val EMPTY_SPACER_HEIGHT = 0.5f
 @Composable
 fun ProfileImageFeedScreen(
 	viewModel: ProfileImageFeedViewModel = hiltViewModel(),
-	onFeedClick: () -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onPostButtonClick: () -> Unit,
 	onScroll: (Boolean) -> Unit = {}
 ) {
@@ -73,7 +73,7 @@ private fun ImageFeedListView(
 	feeds: List<Feed>,
 	lazyGridState: LazyGridState,
 	fetchNextFeedList: () -> Unit,
-	onFeedClick: () -> Unit
+	onFeedClick: (feedId: Long) -> Unit
 ) {
 	val threshold = 10
 
@@ -93,7 +93,7 @@ private fun ImageFeedListView(
 				ProfileScreenImageFeedView(
 					modifier = Modifier,
 					feed = feed,
-					onClick = onFeedClick
+					onClick = { onFeedClick(feed.feedId) }
 				)
 			}
 		}

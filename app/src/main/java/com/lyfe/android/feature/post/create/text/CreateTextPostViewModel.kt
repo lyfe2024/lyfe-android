@@ -47,7 +47,7 @@ class CreateTextPostViewModel @Inject constructor(
 				when (result) {
 					is Result.Success -> {
 						_uiState.update {
-							uiState.value.copy(event = CreateTextPostUiEvent.CreateSuccess)
+							uiState.value.copy(event = CreateTextPostUiEvent.CreateSuccess(result.body.id))
 						}
 					}
 					is Result.Failure -> {

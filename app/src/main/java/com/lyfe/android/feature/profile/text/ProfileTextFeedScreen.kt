@@ -38,7 +38,7 @@ private const val EMPTY_SPACER_HEIGHT = 0.5f
 @Composable
 fun ProfileTextFeedScreen(
 	viewModel: ProfileTextFeedViewModel = hiltViewModel(),
-	onFeedClick: () -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onPostButtonClick: () -> Unit,
 	onScroll: (Boolean) -> Unit = {}
 ) {
@@ -74,7 +74,7 @@ private fun TextFeedListView(
 	feeds: List<Feed>,
 	lazyListState: LazyListState,
 	fetchNextFeedList: () -> Unit,
-	onFeedClick: () -> Unit
+	onFeedClick: (feedId: Long) -> Unit
 ) {
 	val threshold = 10
 
@@ -92,7 +92,7 @@ private fun TextFeedListView(
 				ProfileScreenTextFeedView(
 					modifier = Modifier,
 					feed = feed,
-					onClick = onFeedClick
+					onClick = { onFeedClick(feed.feedId) }
 				)
 
 				Spacer(modifier = Modifier.height(12.dp))

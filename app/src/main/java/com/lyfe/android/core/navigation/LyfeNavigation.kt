@@ -55,7 +55,15 @@ fun NavGraphBuilder.lyfeHomeNavigation(
 		)
 	}
 
-	composable(route = LyfeScreens.FeedDetail.name) {
+	composable(
+		route = "${LyfeScreens.FeedDetail.name}/{boardId}",
+		arguments = listOf(
+			navArgument("boardId") {
+				type = NavType.LongType
+				defaultValue = -1L
+			}
+		)
+	) {
 		LaunchedEffect(Unit) {
 			onScreenShow(LyfeScreens.FeedDetail.name)
 		}

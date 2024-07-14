@@ -63,11 +63,11 @@ fun CreateTextPostRouter(
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
 	DisposableEffect(uiState.event) {
-		when (uiState.event) {
+		when (val event = uiState.event) {
 			is CreateTextPostUiEvent.CreateFail -> {}
 
-			CreateTextPostUiEvent.CreateSuccess -> {
-				navigator.navigate(LyfeScreens.FeedDetail.name)
+			is CreateTextPostUiEvent.CreateSuccess -> {
+				navigator.navigate("${LyfeScreens.FeedDetail.name}/${event.boardId}")
 			}
 
 			CreateTextPostUiEvent.MoveToSelectAlbum -> {}

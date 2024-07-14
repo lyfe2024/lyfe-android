@@ -117,7 +117,7 @@ fun ProfileScreen(
 private fun ProfileContentArea(
 	uiState: ProfileUiState,
 	onMoveToLogin: () -> Unit,
-	onMoveToFeed: () -> Unit,
+	onMoveToFeed: (feedId: Long) -> Unit,
 	onMoveToPost: () -> Unit,
 	onMoveToProfileEdit: () -> Unit,
 	onError: (String?) -> Unit
@@ -213,7 +213,7 @@ private fun ProfileUserInfo(
 private fun ProfileUserPostTabContent(
 	isGuest: Boolean = true,
 	onMoveToLogin: () -> Unit,
-	onFeedClick: () -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onPostButtonClick: () -> Unit
 ) {
 	val pages = listOf(
@@ -352,7 +352,7 @@ private fun ProfileUserPostPager(
 	isGuest: Boolean,
 	pagerState: PagerState,
 	onScroll: (Boolean) -> Unit = {},
-	onFeedClick: () -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onPostButtonClick: () -> Unit
 ) {
 	HorizontalPager(

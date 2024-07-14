@@ -89,7 +89,7 @@ private val fakeFeed = Feed(
 fun HomeSwipeableImageFeeds(
 	modifier: Modifier,
 	feeds: List<Feed>,
-	onFeedClick: (Feed) -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onMoreFeedClick: () -> Unit
 ) {
 	val fakeFeeds = List(4) { fakeFeed }
@@ -112,7 +112,7 @@ fun HomeSwipeableImageFeeds(
 						val removed = feedList.last()
 						feedList = feedList - removed
 					},
-					onClick = onFeedClick,
+					onClick = { onFeedClick(feed.feedId) },
 					onMoreFeedClick = onMoreFeedClick
 				)
 			}

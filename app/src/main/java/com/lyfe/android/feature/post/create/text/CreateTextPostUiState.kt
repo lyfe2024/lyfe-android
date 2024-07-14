@@ -13,7 +13,9 @@ sealed interface CreateTextPostUiEvent {
 
 	object MoveToSelectAlbum : CreateTextPostUiEvent
 
-	object CreateSuccess : CreateTextPostUiEvent
+	data class CreateSuccess(
+		val boardId: Long
+	) : CreateTextPostUiEvent
 
 	data class CreateFail(
 		val message: String?

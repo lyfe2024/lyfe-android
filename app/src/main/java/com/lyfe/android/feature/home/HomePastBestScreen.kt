@@ -178,7 +178,7 @@ private fun HomePastBestFeeds(
 			pages = pages,
 			pagerState = pagerState,
 			onItemClick = {
-				navigator.navigate(LyfeScreens.FeedDetail.name)
+				navigator.navigate("${LyfeScreens.FeedDetail.name}/${it}")
 			}
 		)
 	}
@@ -221,7 +221,7 @@ private fun HomePostPastPageIndicator(
 private fun HomePostPastPager(
 	pages: List<Feed>,
 	pagerState: PagerState,
-	onItemClick: () -> Unit
+	onItemClick: (feedId: Long) -> Unit
 ) {
 	HorizontalPager(
 		modifier = Modifier.fillMaxWidth(),
@@ -234,13 +234,13 @@ private fun HomePostPastPager(
 			// 텍스트 피드
 			LyfeTextFeedView(
 				feed = feed,
-				onClick = onItemClick
+				onClick = { onItemClick(feed.feedId) }
 			)
 		} else {
 			// 이미지 피드
 			LyfeFeedCardView(
 				modifier = Modifier
-					.clickableSingle { onItemClick() },
+					.clickableSingle { onItemClick(feed.feedId) },
 				feed = feed
 			)
 		}

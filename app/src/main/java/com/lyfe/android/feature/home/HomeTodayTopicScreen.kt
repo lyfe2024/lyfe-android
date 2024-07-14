@@ -82,7 +82,7 @@ fun HomeTodayTopicScreen(
 		imageFeeds = imageFeeds,
 		textFeeds = textFeeds,
 		onFeedClick = {
-			navigator.navigate(LyfeScreens.FeedDetail.name)
+			navigator.navigate("${LyfeScreens.FeedDetail.name}/$it")
 		},
 		onMoreFeedClick = {
 			navigator.navigate(LyfeScreens.Feed.name)
@@ -96,7 +96,7 @@ private fun HomeTodayTopicFeedArea(
 	todayTopic: String,
 	imageFeeds: List<Feed>,
 	textFeeds: List<Feed>,
-	onFeedClick: (Feed) -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onMoreFeedClick: () -> Unit
 ) {
 	Column {
@@ -164,7 +164,7 @@ private fun HomeTopicText(text: String) {
 private fun HomeTextFeedPager(
 	pagerState: PagerState,
 	feeds: List<Feed>,
-	onFeedClick: (Feed) -> Unit,
+	onFeedClick: (feedId: Long) -> Unit,
 	onMoreFeedClick: () -> Unit
 ) {
 	HorizontalPager(
@@ -200,7 +200,7 @@ private fun HomeTextFeedPager(
 						),
 					feed = feeds[it],
 					onClick = {
-						onFeedClick(feeds[it])
+						onFeedClick(feeds[it].feedId)
 					}
 				)
 			}

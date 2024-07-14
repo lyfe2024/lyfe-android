@@ -1,5 +1,6 @@
 package com.lyfe.android.feature.detail
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,7 +46,7 @@ class FeedDetailViewModel @Inject constructor(
 	private val getCommentsUseCase: GetCommentsUseCase
 ) : ViewModel() {
 
-	private val boardId = savedStateHandle.getStateFlow<Long?>("boardId", 500L)
+	private val boardId = savedStateHandle.getStateFlow<Long?>("boardId", null)
 	private val fetchingCommentId = MutableStateFlow(0L)
 
 	private val commentList = mutableListOf<Comment>()
@@ -54,7 +55,7 @@ class FeedDetailViewModel @Inject constructor(
 	val commentsLoading = _commentsLoading.asStateFlow()
 
 	val feedDetailUiState = boardId.flatMapLatest { boardId ->
-		if (boardId == null) {
+		if (boardId == null || boardId == -1L) {
 			flowOf(FeedDetailUiState.Error("boardId is Null"))
 		} else {
 			val boardFlow = getBoardDetailUseCase(boardId = boardId)

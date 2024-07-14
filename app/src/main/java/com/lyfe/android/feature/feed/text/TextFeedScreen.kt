@@ -34,7 +34,7 @@ fun TextFeedScreen(
 	viewModel: TextFeedViewModel = hiltViewModel(),
 	lazyListState: LazyListState = rememberLazyListState(),
 	onScroll: (Boolean) -> Unit = {},
-	onFeedClick: () -> Unit = {}
+	onFeedClick: (feedId: Long) -> Unit = {}
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	val feedSortType by viewModel.feedSortType.collectAsStateWithLifecycle()
@@ -65,7 +65,7 @@ fun TextFeedScreen(
 				fetchNextFeedList = viewModel::fetchNextFeedList,
 				onFeedClick = {
 					selectingState = false
-					onFeedClick()
+					onFeedClick(it)
 				}
 			)
 		}
@@ -88,7 +88,7 @@ private fun TextFeedListScreen(
 	feedList: List<Feed>,
 	uiState: TextFeedListUiState,
 	fetchNextFeedList: () -> Unit,
-	onFeedClick: () -> Unit
+	onFeedClick: (feedId: Long) -> Unit
 ) {
 	Box(
 		modifier = Modifier.fillMaxSize()
@@ -111,7 +111,7 @@ private fun TextFeedListScreen(
 
 				key(feed.feedId) {
 					LyfeTextFeedView(feed = feed) {
-						onFeedClick()
+						onFeedClick(feed.feedId)
 					}
 
 					Divider(

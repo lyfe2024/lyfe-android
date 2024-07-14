@@ -35,7 +35,7 @@ fun ImageFeedScreen(
 	viewModel: ImageFeedViewModel = hiltViewModel(),
 	lazyGridState: LazyGridState = rememberLazyGridState(),
 	onScroll: (Boolean) -> Unit = {},
-	onFeedClick: () -> Unit = {}
+	onFeedClick: (feedId: Long) -> Unit = {}
 ) {
 	val uiState by viewModel.imageFeedUiState.collectAsStateWithLifecycle()
 	val feedList by viewModel.imageFeedList.collectAsStateWithLifecycle()
@@ -66,7 +66,7 @@ fun ImageFeedScreen(
 				fetchNextFeedList = viewModel::fetchNextFeedList,
 				onFeedClick = {
 					selectingState = false
-					onFeedClick()
+					onFeedClick(it)
 				}
 			)
 		}
@@ -89,7 +89,7 @@ private fun ImageFeedListScreen(
 	feedList: List<Feed>,
 	uiState: ImageFeedListUiState,
 	fetchNextFeedList: () -> Unit,
-	onFeedClick: () -> Unit
+	onFeedClick: (feedId: Long) -> Unit
 ) {
 	Box(
 		modifier = Modifier.fillMaxSize()
@@ -115,7 +115,7 @@ private fun ImageFeedListScreen(
 
 				key(feed.feedId) {
 					FeedScreenCardView(feed = feed) {
-						onFeedClick()
+						onFeedClick(feed.feedId)
 					}
 				}
 			}
