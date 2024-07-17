@@ -2,11 +2,9 @@ package com.lyfe.android.feature.feed
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
@@ -24,9 +22,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
@@ -35,13 +33,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyfe.android.R
 import com.lyfe.android.core.common.ui.model.TabItem
-import com.lyfe.android.core.common.ui.theme.Button1
 import com.lyfe.android.core.common.ui.theme.Grey200
 import com.lyfe.android.core.common.ui.theme.Grey50
 import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.H5
 import com.lyfe.android.core.common.ui.theme.Main500
-import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.LyfeScreens
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.feature.feed.image.ImageFeedScreen
@@ -70,11 +66,14 @@ fun FeedScreen(
 	val density = LocalDensity.current
 	var width by remember { mutableStateOf(0.dp) }
 
+	var selectingState by remember { mutableStateOf(false) }
+
 	LaunchedEffect(pagerState.currentPage) {
 		snapshotFlow { pagerState.currentPage }
 			.collect { currentPage ->
 				tabIdx = currentPage
 				pagerState.animateScrollToPage(currentPage)
+				selectingState = false
 			}
 	}
 
@@ -82,6 +81,7 @@ fun FeedScreen(
 		snapshotFlow { tabIdx }
 			.collect { currentPage ->
 				pagerState.animateScrollToPage(currentPage)
+				selectingState = false
 			}
 	}
 
@@ -94,14 +94,18 @@ fun FeedScreen(
 					it.size.width.toDp()
 				}
 			}
+			.pointerInput(Unit) {
+				detectTapGestures {
+					selectingState = false
+				}
+			}
 	) {
 		FeedTopBar(
 			tabWidth = width,
 			tabItemList = tabItemList,
 			selectedTabIndex = pagerState.currentPage,
 			tabIdx = tabIdx,
-			onChangeTabIdx = { index -> tabIdx = index },
-			onNavigateToRequestPhoto = {}
+			onChangeTabIdx = { index -> tabIdx = index }
 		)
 
 		HorizontalPager(
@@ -111,17 +115,33 @@ fun FeedScreen(
 			when (page) {
 				LATEST_FEED -> {
 					ImageFeedScreen(
-						onScroll = onScroll
-					) {
-						navigator.navigate(LyfeScreens.FeedDetail.name)
-					}
+						onScroll = {
+							onScroll(it)
+							selectingState = false
+						},
+						selectingState = selectingState,
+						onToggleFilterView = {
+							selectingState = it
+						},
+						onFeedClick = {
+							navigator.navigate(LyfeScreens.FeedDetail.name)
+						}
+					)
 				}
 				POPULAR_FEED -> {
 					TextFeedScreen(
-						onScroll = onScroll
-					) {
-						navigator.navigate(LyfeScreens.FeedDetail.name)
-					}
+						onScroll = {
+							onScroll(it)
+							selectingState = false
+						},
+						selectingState = selectingState,
+						onToggleFilterView = {
+							selectingState = it
+						},
+						onFeedClick = {
+							navigator.navigate(LyfeScreens.FeedDetail.name)
+						}
+					)
 				}
 			}
 		}
@@ -134,30 +154,14 @@ private fun FeedTopBar(
 	tabItemList: List<TabItem>,
 	selectedTabIndex: Int,
 	tabIdx: Int,
-	onChangeTabIdx: (tabIdx: Int) -> Unit,
-	onNavigateToRequestPhoto: () -> Unit
+	onChangeTabIdx: (tabIdx: Int) -> Unit
 ) {
-	Row(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(horizontal = 20.dp, vertical = 10.dp),
-		horizontalArrangement = Arrangement.SpaceBetween,
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Text(
-			text = stringResource(id = R.string.feed_screen_title),
-			style = H3,
-			color = Color.Black
-		)
-
-		Text(
-			modifier = Modifier
-				.clickableSingle { onNavigateToRequestPhoto() },
-			text = stringResource(id = R.string.feed_screen_request_photo),
-			style = Button1,
-			color = Main500
-		)
-	}
+	Text(
+		modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+		text = stringResource(id = R.string.feed_screen_title),
+		style = H3,
+		color = Color.Black
+	)
 
 	FeedTab(
 		modifier = Modifier.width(width = tabWidth),

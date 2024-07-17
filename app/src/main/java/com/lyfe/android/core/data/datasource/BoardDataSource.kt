@@ -23,7 +23,8 @@ interface BoardDataSource {
 	suspend fun getPopularBoards(
 		cursorId: Long = 0,
 		boardType: String = FeedType.BOARD.name,
-		popularType: String
+		popularType: String,
+		date: String? = null
 	): Result<GetBoardListResult>
 
 	suspend fun getUserBoards(

@@ -34,7 +34,8 @@ interface BoardService {
 	suspend fun getPopularBoards(
 		@Query("cursorId") cursorId: Long = 0,
 		@Query("type") boardType: String = "BOARD",
-		@Query("popularType") popularType: String = "WHISKY"
+		@Query("popularType") popularType: String = "WHISKY",
+		@Query("date") date: String? = null
 	): Result<GetBoardListResult>
 
 	// 자신이 작성한 글 조회

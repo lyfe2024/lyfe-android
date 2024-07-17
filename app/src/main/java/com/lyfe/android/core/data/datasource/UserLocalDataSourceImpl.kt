@@ -30,4 +30,10 @@ class UserLocalDataSourceImpl @Inject constructor(
 			token[PreferencesKeys.SOCIAL_TYPE] = socialType
 		}
 	}
+
+	override suspend fun deleteAllUserData() {
+		context.userDataStore.edit {
+			it.clear()
+		}
+	}
 }

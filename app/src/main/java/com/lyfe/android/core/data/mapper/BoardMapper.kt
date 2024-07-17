@@ -1,23 +1,23 @@
 package com.lyfe.android.core.data.mapper
 
-import com.lyfe.android.core.data.model.BoardDetail
+import com.lyfe.android.core.data.model.BoardDetailResponse
 import com.lyfe.android.core.data.model.PageInfo
 import com.lyfe.android.core.model.Feed
 import com.lyfe.android.core.model.Page
 
-internal fun BoardDetail.toDomain(): Feed =
+internal fun BoardDetailResponse.toDomain(): Feed =
 	Feed(
 		feedId = this.id,
-		title = this.title,
-		content = this.content,
-		topic = this.topic,
-		feedImageUrl = this.imageUrl,
-		date = this.updatedAt,
-		userId = this.user.id,
-		userName = this.user.username,
-		userProfileImgUrl = this.user.profile,
-		whiskyCount = this.whiskyCount,
-		commentCount = this.commentCount,
+		title = this.title ?: "",
+		content = this.content ?: "",
+		topic = this.topic ?: "",
+		feedImageUrl = this.imageUrl ?: "",
+		date = this.updatedAt ?: "",
+		userId = this.user?.id ?: 0,
+		userName = this.user?.username ?: "",
+		userProfileImgUrl = this.user?.profile ?: "",
+		whiskyCount = this.whiskyCount ?: 0,
+		commentCount = this.commentCount ?: 0,
 		isLike = false
 	)
 

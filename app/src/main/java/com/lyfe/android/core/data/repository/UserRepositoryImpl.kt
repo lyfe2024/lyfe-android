@@ -78,4 +78,6 @@ class UserRepositoryImpl @Inject constructor(
 			}
 		}
 	}
+
+	override suspend fun deleteAllLocalUserData() = userLocalDataSource.deleteAllUserData()
 }

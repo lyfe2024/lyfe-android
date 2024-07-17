@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -22,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +46,7 @@ import com.lyfe.android.core.common.ui.theme.Grey400
 import com.lyfe.android.core.common.ui.theme.Grey800
 import com.lyfe.android.core.common.ui.theme.H3
 import com.lyfe.android.core.common.ui.theme.pretenard
+import com.lyfe.android.core.common.ui.util.clickableSingle
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 
 @Composable
@@ -56,19 +60,9 @@ fun FeedbackScreen(
 			.padding(vertical = 16.dp, horizontal = 20.dp)
 			.fillMaxSize()
 	) {
-		Text(
-			text = stringResource(R.string.feedback_title),
-			color = Color.Black,
-			style = H3
-		)
-
-		Spacer(modifier = Modifier.height(8.dp))
-
-		Text(
-			text = stringResource(R.string.feedback_sub_title),
-			color = Color.Black,
-			style = Body3
-		)
+		FeedbackTopArea {
+			navigator.navigateUp()
+		}
 
 		Spacer(modifier = Modifier.height(16.dp))
 
@@ -87,6 +81,38 @@ fun FeedbackScreen(
 		FeedbackUiState.Loading -> {
 			// 로딩창 띄우기
 		}
+	}
+}
+
+@Composable
+private fun FeedbackTopArea(
+	onBack: () -> Unit
+) {
+	Column {
+		Icon(
+			modifier = Modifier
+				.size(24.dp)
+				.clickableSingle { onBack() },
+			painter = painterResource(id = R.drawable.ic_arrow_back),
+			contentDescription = "ic_arrow_back",
+			tint = Color.Black
+		)
+
+		Spacer(modifier = Modifier.height(16.dp))
+
+		Text(
+			text = stringResource(R.string.feedback_title),
+			color = Color.Black,
+			style = H3
+		)
+
+		Spacer(modifier = Modifier.height(8.dp))
+
+		Text(
+			text = stringResource(R.string.feedback_sub_title),
+			color = Color.Black,
+			style = Body3
+		)
 	}
 }
 

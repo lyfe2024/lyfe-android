@@ -31,11 +31,14 @@ class BoardRemoteDataSource @Inject constructor(
 	override suspend fun getPopularBoards(
 		cursorId: Long,
 		boardType: String,
-		popularType: String
+		popularType: String,
+		date: String?
 	): Result<GetBoardListResult> {
 		return boardService.getPopularBoards(
 			cursorId = cursorId,
-			boardType = boardType
+			boardType = boardType,
+			popularType = popularType,
+			date = date
 		)
 	}
 

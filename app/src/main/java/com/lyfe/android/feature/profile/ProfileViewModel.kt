@@ -27,6 +27,7 @@ class ProfileViewModel @Inject constructor(
 	private fun getUserInfo() = viewModelScope.launch {
 		getAccessTokenUseCase().collect { token ->
 			if (token.isNullOrEmpty()) {
+				_uiState.emit(ProfileUiState.Guest)
 				return@collect
 			}
 			getUserInfoUseCase().catch {

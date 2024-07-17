@@ -25,9 +25,10 @@
 	<string name="home_filter_latest">최신순</string>
 	<string name="home_filter_popular">인기순</string>
 	<string name="home_feed_more">더보기</string>
+	<string name="home_text_feed_more">함께 더 많은 고민을 나눠봐요!</string>
 
 	<!-- Feed -->
-	<string name="feed_screen_title">피드</string>
+	<string name="feed_screen_title">오늘의 전체보기</string>
 	<string name="feed_screen_request_photo">사진 신청</string>
 	<string name="feed_screen_image_tab_text">신청 사진</string>
 	<string name="feed_screen_text_tab_text">신청 글</string>
@@ -80,16 +81,24 @@
 	<string name="setting_screen_title">설정</string>
 	<string name="setting_screen_logout">로그아웃</string>
 	<string name="setting_screen_notification">알림설정</string>
-	<string name="setting_screen_scrap">스크랩</string>
+	<string name="setting_screen_terms">이용약관</string>
 	<string name="setting_screen_privacy_policy">개인정보 수집 및 이용동의</string>
 	<string name="setting_screen_delete_account">회원탈퇴</string>
+	<string name="setting_delete_account_success">회원탈퇴가 정상 처리되었습니다.</string>
+	<string name="setting_logout_success">로그아웃이 완료되었습니다.</string>
 
 	<!-- ProfileScreen -->
+	<string name="profile_screen_title">마이페이지</string>
+	<string name="profile_screen_need_login">로그인이 필요해요</string>
 	<string name="profile_screen_guest_login_title">로그인 하시면 신청한 사진,\n작성한 고민글을 모아 볼 수 있어요</string>
 	<string name="profile_screen_guest_login_btn_text">로그인 하러 가기</string>
 	<string name="profile_screen_guest_login_message">아직 회원이 아니신가요?</string>
 	<string name="profile_screen_image_feeds">신청 사진</string>
 	<string name="profile_screen_text_feeds">고민 글</string>
+	<string name="profile_image_feed_empty">신청한 사진이 없네요.\n사진을 신청하러 가볼까요?</string>
+	<string name="profile_image_feed_post">사진 신청하러 가기</string>
+	<string name="profile_text_feed_empty">고민을 털어놓으면 마음이 가벼워져요.\n첫번째 글을 작성해 보세요.</string>
+	<string name="profile_text_feed_post">고민글 쓰러가기</string>
 
 	<!-- SignUpTermsScreen -->
 	<string name="signup_terms_screen_title">회원가입 약관 동의</string>
@@ -98,15 +107,15 @@
 	<string name="signup_terms_screen_agree_to_privacy_rule">개인정보 수집 및 이용 (필수)</string>
 	<string name="signup_terms_screen_agree_to_service_rule">서비스 이용약관 (필수)</string>
 	<string name="signup_complete_start">시작하기</string>
-
-	<string name="service_terms">이용약관</string>
-    <string name="personal_info_terms">개인정보 수집 및 이용</string>
 	<string name="signup_terms_screen_finish">완료</string>
-	<string name="profile_image_feed_empty">신청한 사진이 없네요.\n사진을 신청하러 가볼까요?</string>
-	<string name="profile_image_feed_post">사진 신청하러 가기</string>
-	<string name="profile_text_feed_empty">고민을 털어놓으면 마음이 가벼워져요.\n첫번째 글을 작성해 보세요.</string>
-	<string name="profile_text_feed_post">고민글 쓰러가기</string>
-	<string name="home_text_feed_more">함께 더 많은 고민을 나눠봐요!</string>
+
+	<!-- ServiceTermsScreen -->
+	<string name="service_terms">이용약관</string>
+
+	<!-- PersonalInfoTermsScreen -->
+    <string name="personal_info_terms">개인정보 수집 및 이용</string>
+	<string name="feed_image_screen_description">23:59까지 신청한 사진을 전부 보여줘요</string>
+	<string name="feed_text_screen_description">23:59까지 작성한 글을 전부 보여줘요</string>
 
 	<!-- Create Post -->
 	<string name="create_board_picture">사진 신청하기</string>

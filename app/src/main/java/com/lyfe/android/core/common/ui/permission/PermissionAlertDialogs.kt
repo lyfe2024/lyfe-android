@@ -46,7 +46,10 @@ fun PermissionAlertDialogs(
 	permissionDialog.forEach { permission ->
 		PermissionAlertDialog(
 			neededPermission = permission,
-			onDismiss = { permissionDialog.remove(permission) },
+			onDismiss = {
+				permissionDialog.remove(permission)
+				if (permissionDialog.size == 0) onDismiss()
+			},
 			onOkClick = {
 				permissionDialog.remove(permission)
 				multiplePermissionLauncher.launch(arrayOf(permission.permission))

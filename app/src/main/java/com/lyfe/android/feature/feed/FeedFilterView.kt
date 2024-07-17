@@ -58,13 +58,13 @@ fun FeedFilterView(
 
 @Composable
 fun SelectFilterListView(
+	modifier: Modifier = Modifier,
 	feedSortType: FeedSortType,
 	onSelectSortType: (FeedSortType) -> Unit
 ) {
 	Column(
-		modifier = Modifier
+		modifier = modifier
 			.width(132.dp)
-			.padding(top = 40.dp, start = 20.dp)
 			.background(
 				color = Color.White,
 				shape = RoundedCornerShape(6.dp)
