@@ -8,6 +8,7 @@ import com.lyfe.android.core.data.network.model.Result
 import com.lyfe.android.core.data.network.model.zip
 import com.lyfe.android.core.domain.usecase.GetBoardDetailUseCase
 import com.lyfe.android.core.domain.usecase.GetCommentsUseCase
+import com.lyfe.android.core.domain.usecase.comment.CreateCommentUseCase
 import com.lyfe.android.core.model.BoardDetail
 import com.lyfe.android.core.model.Comment
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,11 +16,14 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -43,7 +47,8 @@ data class FeedDetail(
 class FeedDetailViewModel @Inject constructor(
 	private val savedStateHandle: SavedStateHandle,
 	private val getBoardDetailUseCase: GetBoardDetailUseCase,
-	private val getCommentsUseCase: GetCommentsUseCase
+	private val getCommentsUseCase: GetCommentsUseCase,
+	private val createCommentUseCase: CreateCommentUseCase
 ) : ViewModel() {
 
 	private val boardId = savedStateHandle.getStateFlow<Long?>("boardId", null)
@@ -59,13 +64,7 @@ class FeedDetailViewModel @Inject constructor(
 			flowOf(FeedDetailUiState.Error("boardId is Null"))
 		} else {
 			val boardFlow = getBoardDetailUseCase(boardId = boardId)
-
-			val commentsFlow = fetchingCommentId.flatMapLatest { _ ->
-				getCommentsUseCase(
-					boardId = boardId,
-					lastCommentId = 0
-				)
-			}
+			val commentsFlow = getCommentsUseCase(boardId)
 
 			combine(boardFlow, commentsFlow) { boardResult, commentsResult ->
 				Pair(boardResult, commentsResult)
@@ -109,6 +108,18 @@ class FeedDetailViewModel @Inject constructor(
 		if (!_commentsLoading.value) {
 			_commentsLoading.value = true
 			fetchingCommentId.value += 1
+		}
+	}
+
+	fun createComment(content: String, commentGroupId: Long? = null) {
+		viewModelScope.launch {
+			val boardId = boardId.firstOrNull() ?:return@launch
+
+			createCommentUseCase(
+				commentBoardId = boardId,
+				content = content,
+				commentGroupId = commentGroupId
+			)
 		}
 	}
 }

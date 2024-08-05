@@ -8,7 +8,19 @@ interface CommentRepository {
 
 	// 댓글 조회
 	fun fetchLatestComments(
-		boardId: Long,
-		lastCommentId: Long
+		boardId: Long
 	): Flow<Result<List<Comment>>>
+
+	// 댓글 생성
+	fun createComment(
+		commentBoardId: Long,
+		content: String,
+		commentGroupId: Long? = null
+	): Flow<Result<Long>>
+
+	// 댓글 수정
+	fun updateComment(
+		commentId: Long,
+		content: String
+	): Flow<Result<Long>>
 }

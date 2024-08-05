@@ -71,6 +71,13 @@ import com.lyfe.android.core.model.BoardDetail
 import com.lyfe.android.core.model.Comment
 import com.lyfe.android.core.navigation.navigator.LyfeNavigator
 import com.lyfe.android.core.navigation.navigator.LyfeNavigatorImpl
+import com.lyfe.android.feature.detail.component.FeedCommentInputArea
+import com.lyfe.android.feature.detail.component.FeedDetailCommentItemView
+import com.lyfe.android.feature.detail.component.FeedDetailImageInfoView
+import com.lyfe.android.feature.detail.component.FeedDetailReplyCommentItemView
+import com.lyfe.android.feature.detail.component.FeedDetailTopBar
+import com.lyfe.android.feature.detail.component.FeedDetailTopicBar
+import com.lyfe.android.feature.detail.component.FeedDetailUserInfoRow
 import com.lyfe.android.feature.feed.model.FeedCommentInputType
 
 @Composable
@@ -83,6 +90,7 @@ fun FeedDetailRouter(
 	FeedDetailScreen(
 		feedDetailUiState = feedDetailUiState,
 		fetchingNextCommentList = viewModel::fetchingCommentList,
+		createComment = viewModel::createComment,
 		onNavigateUp = navigator::navigateUp
 	)
 }
@@ -92,6 +100,8 @@ fun FeedDetailScreen(
 	modifier: Modifier = Modifier,
 	feedDetailUiState: FeedDetailUiState = FeedDetailUiState.Loading,
 	fetchingNextCommentList: () -> Unit = {},
+	createComment: (content: String) -> Unit = {},
+	onWhiskyClick: (feedId: Long) -> Unit = {},
 	onNavigateUp: () -> Unit = {}
 ) {
 	var topBarHeight by remember { mutableStateOf(0.dp) }
@@ -105,12 +115,10 @@ fun FeedDetailScreen(
 			.fillMaxSize()
 	) {
 		FeedDetailTopBar(
-			modifier = Modifier
-				.zIndex(1f)
-				.onGloballyPositioned {
-					topBarHeight = with(density) { it.size.height.toDp() }
-				}
-				.padding(horizontal = 20.dp, vertical = 16.dp),
+			modifier = Modifier.zIndex(1f),
+			onGloballyPositioned = {
+				topBarHeight = with(density) { it.size.height.toDp() }
+			},
 			toggleOptionDialog = { },
 			navigateUp = onNavigateUp
 		)
@@ -128,7 +136,8 @@ fun FeedDetailScreen(
 					clickReplyText = { comment ->
 						isShowChatDialog = true
 						commentInputType = FeedCommentInputType.ReplyInput(comment = comment)
-					}
+					},
+					onWhiskyClick = onWhiskyClick
 				)
 			}
 
@@ -159,7 +168,8 @@ fun FeedDetailScreen(
 				}
 			) {
 				FeedCommentInputDialogContent(
-					commentInputType = commentInputType
+					commentInputType = commentInputType,
+					createComment = createComment
 				)
 			}
 		}
@@ -175,7 +185,8 @@ private fun FeedDetailContent(
 	feedCommentList: List<Comment>,
 	threshold: Int = 10,
 	fetchingNextCommentList: () -> Unit,
-	clickReplyText: (comment: Comment) -> Unit
+	clickReplyText: (comment: Comment) -> Unit,
+	onWhiskyClick: (feedId: Long) -> Unit
 ) {
 	LazyColumn(
 		modifier = modifier
@@ -183,7 +194,8 @@ private fun FeedDetailContent(
 		item {
 			FeedDetailView(
 				topBarHeight = topBarHeight,
-				feedDetail = feedDetail
+				feedDetail = feedDetail,
+				onWhiskyClick = onWhiskyClick
 			)
 		}
 
@@ -195,7 +207,7 @@ private fun FeedDetailContent(
 			}
 
 			key(index) {
-				CommentItemView(
+				FeedDetailCommentItemView(
 					modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
 					comment = it,
 					clickReplyText = clickReplyText
@@ -215,219 +227,31 @@ private fun FeedDetailContent(
 
 @Composable
 private fun FeedDetailView(
+	modifier: Modifier = Modifier,
 	topBarHeight: Dp,
-	feedDetail: BoardDetail
-) {
-	Spacer(
-		modifier = Modifier
-			.fillMaxWidth()
-			.height(topBarHeight)
-	)
-
-	Text(
-		modifier = Modifier
-			.fillMaxWidth()
-			.padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
-		text = feedDetail.content,
-		style = H4,
-		color = Main500
-	)
-
-	ImageFeedDetailInfoView(
-		imageUrl = feedDetail.imageUrl,
-		content = feedDetail.title
-	)
-
-	FeedDetailUserRow(
-		cheersCnt = feedDetail.whiskyCount.toInt(),
-		commentCnt = feedDetail.commentCount.toInt(),
-		profileImg = feedDetail.user.profileImage,
-		userName = feedDetail.user.name,
-		date = feedDetail.updatedAt,
-		onWhiskyClick = {}
-	)
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-private fun FeedDetailUserRow(
-	modifier: Modifier = Modifier,
-	cheersCnt: Int,
-	commentCnt: Int,
-	profileImg: String,
-	userName: String,
-	date: String,
-	onWhiskyClick: () -> Unit = {}
-) {
-	Row(
-		modifier = modifier
-			.padding(horizontal = 20.dp, vertical = 12.dp),
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Row(
-			modifier = Modifier.clickableSingle { onWhiskyClick() },
-			horizontalArrangement = Arrangement.spacedBy(4.dp)
-		) {
-			Icon(
-				modifier = Modifier.size(24.dp),
-				painter = painterResource(id = R.drawable.ic_glass_cheers),
-				contentDescription = "ic_glass_cheers",
-				tint = Color.Black
-			)
-
-			Text(
-				text = cheersCnt.toString(),
-				style = Button2,
-				color = Color.Black
-			)
-		}
-
-		Spacer(modifier = Modifier.width(8.dp))
-
-		Icon(
-			modifier = Modifier.size(24.dp),
-			painter = painterResource(id = R.drawable.ic_comment),
-			contentDescription = "ic_glass_cheers",
-			tint = Color.Black
-		)
-
-		Spacer(modifier = Modifier.width(2.dp))
-
-		Text(
-			text = "댓글 $commentCnt",
-			style = Body3
-		)
-
-		Spacer(modifier = Modifier.weight(1f))
-
-		GlideImage(
-			modifier = Modifier
-				.size(32.dp)
-				.clip(CircleShape),
-			model = profileImg,
-			contentDescription = "profile_img",
-			contentScale = ContentScale.Crop
-		)
-
-		Spacer(modifier = Modifier.width(8.dp))
-
-		Column {
-			Text(
-				text = userName,
-				style = Title3,
-				color = Color.Black
-			)
-
-			Text(
-				text = date,
-				style = Caption4,
-				color = Grey400
-			)
-		}
-	}
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-private fun ImageFeedDetailInfoView(
-	modifier: Modifier = Modifier,
-	imageUrl: String,
-	content: String
-) {
-	Box(
-		modifier = modifier
-			.fillMaxWidth()
-			.aspectRatio(1f)
-	) {
-		LyfeImageView(
-			modifier = Modifier.fillMaxSize(),
-			imageUrl = imageUrl,
-			contentDescription = "feed_detail_image_content",
-			showBlurOnImage = true
-		)
-
-		Text(
-			modifier = Modifier
-				.fillMaxWidth()
-				.align(Alignment.BottomCenter)
-				.padding(horizontal = 20.dp, vertical = 16.dp),
-			text = content,
-			style = Title1,
-			color = Color.White
-		)
-	}
-}
-
-@Composable
-private fun FeedDetailTopBar(
-	modifier: Modifier = Modifier,
-	toggleOptionDialog: () -> Unit,
-	navigateUp: () -> Unit
-) {
-	Row(
-		modifier = modifier.fillMaxWidth(),
-		horizontalArrangement = Arrangement.SpaceBetween,
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Icon(
-			modifier = Modifier
-				.size(24.dp)
-				.clickableSingle { navigateUp() },
-			painter = painterResource(id = R.drawable.ic_arrow_back),
-			contentDescription = "ic_arrow_back",
-			tint = Color.Black
-		)
-
-		Icon(
-			modifier = Modifier
-				.size(24.dp)
-				.clickableSingle { toggleOptionDialog() },
-			painter = painterResource(id = R.drawable.ic_quill_meatballs),
-			contentDescription = "ic_quill_meatballs",
-			tint = Color.Black
-		)
-	}
-}
-
-@Composable
-private fun FeedCommentInputArea(
-	modifier: Modifier = Modifier,
-	clickCommentInputArea: () -> Unit = {}
+	feedDetail: BoardDetail,
+	onWhiskyClick: (feedId: Long) -> Unit = {}
 ) {
 	Column(
-		modifier = modifier.fillMaxWidth()
-			.clickableSingle { clickCommentInputArea() }
+		modifier = modifier
+			.padding(top = topBarHeight)
 	) {
-		Spacer(
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(8.dp)
-				.background(Grey10)
+		FeedDetailTopicBar(
+			topic = feedDetail.topic
 		)
 
-		Box(
-			modifier = Modifier
-				.padding(vertical = 8.dp, horizontal = 12.dp)
-		) {
-			FeedCommentInputBox()
-		}
-	}
-}
+		FeedDetailImageInfoView(
+			imageUrl = feedDetail.content,
+			content = feedDetail.title
+		)
 
-@Composable
-private fun FeedCommentInputBox(
-	modifier: Modifier = Modifier
-) {
-	Box(
-		modifier = modifier
-			.fillMaxWidth()
-			.border(width = 1.dp, color = Grey200, shape = RoundedCornerShape(8.dp))
-			.padding(vertical = 12.dp, horizontal = 12.dp)
-	) {
-		Text(
-			text = "댓글을 남겨주세요",
-			style = Body2,
-			color = Grey200
+		FeedDetailUserInfoRow(
+			cheersCnt = feedDetail.whiskyCount.toIntOrNull() ?: 0,
+			commentCnt = feedDetail.commentCount.toIntOrNull() ?: 0,
+			profileImg = feedDetail.user.profileImage,
+			userName = feedDetail.user.name,
+			date = feedDetail.updatedAt,
+			onWhiskyClick = { onWhiskyClick(feedDetail.id) }
 		)
 	}
 }
@@ -435,7 +259,8 @@ private fun FeedCommentInputBox(
 @Composable
 private fun FeedCommentInputDialogContent(
 	modifier: Modifier = Modifier,
-	commentInputType: FeedCommentInputType
+	commentInputType: FeedCommentInputType,
+	createComment: (content: String) -> Unit = {}
 ) {
 	var comment by remember { mutableStateOf("") }
 
@@ -490,8 +315,11 @@ private fun FeedCommentInputDialogContent(
 			)
 
 			Box(
-				modifier = Modifier.wrapContentWidth().wrapContentHeight()
+				modifier = Modifier
+					.wrapContentWidth()
+					.wrapContentHeight()
 					.align(Alignment.Bottom)
+					.clickableSingle { createComment(comment) }
 			) {
 				Image(
 					modifier = Modifier.align(Alignment.BottomCenter),
@@ -499,134 +327,6 @@ private fun FeedCommentInputDialogContent(
 					contentDescription = "comment_enter"
 				)
 			}
-		}
-	}
-}
-
-@Composable
-fun CommentItemView(
-	modifier: Modifier = Modifier,
-	comment: Comment,
-	showReplyComment: Boolean = true,
-	clickReplyText: (comment: Comment) -> Unit = {}
-) {
-	Column(
-		modifier = modifier
-	) {
-		UserRow(
-			profileImg = comment.user.profileImg,
-			userName = comment.user.username,
-			date = comment.updatedAt,
-			clickOption = {}
-		)
-
-		Spacer(modifier = Modifier.height(8.dp))
-
-		Text(
-			text = comment.content,
-			style = Body3,
-			color = Color.Black,
-			overflow = TextOverflow.Ellipsis,
-			maxLines = 2
-		)
-
-		if (showReplyComment) {
-			Spacer(modifier = Modifier.height(8.dp))
-
-			Text(
-				modifier = Modifier
-					.clickableSingle { clickReplyText(comment) },
-				text = stringResource(id = R.string.comment_reply_text),
-				style = Caption3,
-				color = Grey300
-			)
-		}
-
-		if (comment.replyList.isNotEmpty()) {
-			ReplyCommentItemView(replyCommentList = comment.replyList)
-		}
-	}
-}
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-private fun UserRow(
-	modifier: Modifier = Modifier,
-	profileImg: String,
-	userName: String,
-	date: String,
-	clickOption: () -> Unit = {}
-) {
-	Row(
-		modifier = modifier
-			.fillMaxWidth(),
-		verticalAlignment = Alignment.CenterVertically
-	) {
-		Box(
-			modifier = Modifier
-				.size(24.dp)
-				.clip(CircleShape)
-		) {
-			GlideImage(
-				modifier = Modifier.fillMaxSize(),
-				model = profileImg,
-				contentDescription = "profileImg",
-				contentScale = ContentScale.Crop
-			)
-		}
-
-		Spacer(modifier = Modifier.width(8.dp))
-
-		Text(
-			text = userName,
-			style = Button3,
-			color = Color.Black
-		)
-
-		Spacer(modifier = Modifier.width(8.dp))
-
-		Text(
-			text = date,
-			style = Caption4,
-			color = Grey300
-		)
-
-		Spacer(modifier = Modifier.weight(1f))
-
-		Icon(
-			modifier = Modifier
-				.size(24.dp)
-				.clickableSingle { clickOption() },
-			painter = painterResource(id = R.drawable.ic_menu_more),
-			contentDescription = "ic_menu_more",
-			tint = Grey300
-		)
-	}
-}
-
-@Composable
-private fun ReplyCommentItemView(
-	modifier: Modifier = Modifier,
-	replyCommentList: List<Comment>
-) {
-	replyCommentList.forEachIndexed { _, comment ->
-		Spacer(modifier = Modifier.height(8.dp))
-
-		Row(
-			modifier = modifier
-		) {
-			Image(
-				modifier = Modifier.size(16.dp),
-				painter = painterResource(id = R.drawable.ic_arrow_comment_reply),
-				contentDescription = "ic_arrow_comment_reply"
-			)
-
-			Spacer(modifier = Modifier.width(8.dp))
-
-			CommentItemView(
-				comment = comment,
-				showReplyComment = false
-			)
 		}
 	}
 }

@@ -9,10 +9,6 @@ class GetCommentsUseCase @Inject constructor(
 
 	// 댓글 조회
 	operator fun invoke(
-		boardId: Long,
-		lastCommentId: Long
-	) = commentRepository.fetchLatestComments(
-		boardId = boardId,
-		lastCommentId = lastCommentId
-	)
+		boardId: Long
+	) = commentRepository.fetchLatestComments(boardId)
 }
